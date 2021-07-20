@@ -212,7 +212,6 @@ switch_status_t switch_api_neighbor_create(
         krnlmon_log_error("routing tables update failed \n");
         return status;
       }
-
       rmac_entry->is_rmac_pd_programmed = true;
     }
   }

@@ -21,7 +21,7 @@
 #if defined(DPDK_TARGET)
 #include "dpdk/switch_pd_routing.h"
 #elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
+#include "es2k/lnw_v3/switch_pd_routing.h"
 #endif
 
 #ifndef __SWITCH_NHOP_INT_H__
