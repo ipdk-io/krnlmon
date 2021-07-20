@@ -17,7 +17,7 @@
 
 #include "switchapi/switch_l3.h"
 
-#include "switch_pd_routing.h"
+#include "switchapi/es2k/lnw_v3/switch_pd_routing.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
 
