@@ -1,18 +1,18 @@
 /*
-Copyright 2013-present Barefoot Networks, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright (c) 2022 Intel Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <stdint.h>
 #include <pthread.h>
@@ -36,9 +36,6 @@ static int cookie = 0;
 
 VLOG_DEFINE_THIS_MODULE(switchlink_main);
 
-//uint8_t g_log_level = SWITCHLINK_LOG_ERR;
-uint8_t g_log_level = SWITCHLINK_LOG_DEBUG;
-
 enum {
   SWITCHLINK_MSG_LINK,
   SWITCHLINK_MSG_ADDR,
@@ -55,7 +52,9 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-static void nl_sync_state() {
+// Currently we dont want to dump any existing kernel data when target is DPDK
+#ifdef NL_SYNC_STATE
+static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
     return;
@@ -131,6 +130,18 @@ static void nl_sync_state() {
     msg_idx++;
   }
 }
+#endif
+
+/*
+ * Routine Description:
+ *    Process netlink messages
+ *
+ * Arguments:
+ *    [in] nlmsg - netlink msg header
+ *
+ * Return Values:
+ *    void
+ */
 
 static void process_nl_message(struct nlmsghdr *nlmsg) {
   /* TODO: P4OVS: Enabling callback for link msg type only and prints for
@@ -138,50 +149,47 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
   */
   switch (nlmsg->nlmsg_type) {
     case RTM_NEWLINK:
-      VLOG_INFO("Switchlink Notification RTM_NEWLINK\n");
+      VLOG_DBG("Switchlink Notification RTM_NEWLINK\n");
       process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELLINK:
-      VLOG_INFO("Switchlink Notification RTM_DELLINK\n");
-      //process_link_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_DELLINK\n");
+      process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWADDR:
-      //printf("Switchlink Notification RTM_NEWADDR\n");
-     // process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_NEWADDR\n");
+      process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELADDR:
-     // printf("Switchlink Notification RTM_DELADDR\n");
-     // process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_DELADDR\n");
+      process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWROUTE:
-     // printf("Switchlink Notification RTM_NEWROUTE\n");
-     // process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_NEWROUTE\n");
+      process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELROUTE:
-     // printf("Switchlink Notification RTM_DELROUTE\n");
-     // process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_DELROUTE\n");
+      process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNEIGH:
-     // printf("Switchlink Notification RTM_NEWNEIGH\n");
-     // process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_NEWNEIGH\n");
+      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELNEIGH:
-     // printf("Switchlink Notification RTM_DELNEIGH\n");
-     // process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      VLOG_DBG("Switchlink Notification RTM_DELNEIGH\n");
+      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNETCONF:
-     // process_netconf_msg(nlmsg, nlmsg->nlmsg_type);
-      break;
     case RTM_GETMDB:
     case RTM_NEWMDB:
     case RTM_DELMDB:
-     // process_mdb_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case NLMSG_DONE:
-      nl_sync_state();
+      // P4-OVS comment nl_sync_state();
       break;
     default:
-      VLOG_INFO("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
+      VLOG_DBG("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
       break;
   }
 }
@@ -197,13 +205,13 @@ static int nl_sock_recv_msg(struct nl_msg *msg, void *arg) {
   return 0;
 }
 
-static void cleanup_nl_sock() {
+static void cleanup_nl_sock(void) {
   // free the socket
   nl_socket_free(g_nlsk);
   g_nlsk = NULL;
 }
 
-static void switchlink_nl_sock_intf_init() {
+static void switchlink_nl_sock_intf_init(void) {
   int nlsk_fd, sock_flags;
 
   // allocate a new socket
@@ -236,16 +244,11 @@ static void switchlink_nl_sock_intf_init() {
   nl_socket_add_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_MROUTE, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_NETCONF, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_MROUTE, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_NETCONF, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_MDB, 0);
+  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
+  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
+  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
+  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
 
   // set socket to be non-blocking
   nlsk_fd = nl_socket_get_fd(g_nlsk);
@@ -262,10 +265,10 @@ static void switchlink_nl_sock_intf_init() {
   }
 
   // start building state from the kernel
-  nl_sync_state();
+  // P4-OVS comment nl_sync_state();
 }
 
-static void process_nl_event_loop() {
+static void process_nl_event_loop(void) {
   int nlsk_fd;
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   ovs_assert(nlsk_fd > 0);
@@ -294,70 +297,17 @@ struct nl_sock *switchlink_get_nl_sock(void) {
   return g_nlsk;
 }
 
-static void *switchlink_main(void *args) {
-  /* P4 OVS: Switchlink Database maintain (Cache-optimized Trie-like struct)
-   * 1. Obj map stores handle for other objects (intf, bridge, ecmp, etc)
-   * 2. Separate Interface and Bridge Object maps (Trie inplace)
-   * 3. Mac object struct is hashable as well as maintain a linked list
-   * 4. All other objects (mac, neigh, route, etc) maintains as linked list
-   * 5. Every object need to have a handle so to get reference anywhere
-   */
+void *switchlink_main(void *args) {
+  pthread_mutex_init(&cookie_mutex, NULL);
+  int status = pthread_cond_init(&cookie_cv, NULL);
+   if (status) {
+      perror("pthread_cond_init failed");
+      return NULL;
+   }
+
   switchlink_db_init();
-
-  /* TODO - P4OVS:
-   * 1. SAI initialization happens here
-   *   - API callbacks registered for each use case (port, bridge, etc.)
-   *   - API can deal with creation, removal, get and set attrs, etc.
-   * 2. SAI API are maintained in API ID and Method Table pairs (sai_api_query)
-   * 3. SAI switch gets created (with switch id) - Receive FDB & Packet events
-   *    Q: Do we need (4) below ??
-   * 4. Interfaces need to be configured by SAI to deal with traps they receive.
-   *    - For each use case (STP, OSPF, etc), traps needs to be handled
-   *    - Each Trap has Type, Action, and Priority (SAI Attrs)
-   *    - A Host Interface Trap object is created
-   *      : Host intf id maps with switch id
-   *      : For each attr, do SAI-to-API mapping (SAI code to API reason code)
-   * 5. Port list needs to be prepared using SAI switch attributes
-   *    - Three attrs for Ports (CPU Port, Port number, and Port List)
-   *    - Convert SAI attrs to switch attrs (API backend map - dpdk, bm, etc.)
-   *      : Need to implement "get_switch_attribute" API in backend
-   *      : SAI Adapter specific metadata will be received here.
-   * 6. Bypassing function totally for netlink compilation
-   */
   switchlink_api_init();
-
-  /* TODO - P4OVS:
-   * 1. Function needs to fill/create VRF and Bridge structures
-   *    - create_vrf, create_bridge (further calls into SAI layer)
-   * 2. P4 OVS: Filled with dummy values to bypass for netlink compilation
-   */
   switchlink_link_init();
-
-  /* TODO: P4 OVS: Switchlink Packet Driver
-    1. Register a separate thread to deal with packet received on tuntap ports
-        - switchlink_port_map maintaints the list of "swp*" interfaces
-        - Num of total ports can be obtained from here
-    2. packet_driver_init prepares the switchlink_packet_intf structure
-        - switchlink_packet_intf have name, port, file desc and mac addr
-        - Initialize switch ports (CPU_INTF_NAME) and assign port_id
-        - Monitor the file descriprots to become "ready" (Select call)
-        - tunnel_alloc is called
-            :Open tap intf for "swp" port
-            :Set connection to non-blocking
-            :Update mac addr for received pkt in switchlink_packet_int struct
-    3. Packet recieved from userspace on tuntap interfaces are processed
-        - Read packet for all of these switch ports
-        - Ignore if it's not in port map (*Not on "swp" interface")
-        - switchlink_send_packet:
-            :Trasnmsit the packet to SAI layer
-            :SAI Attrs (HOSTIF_TX_TYPE & HOSTIF_PACKET_ATTR_EGRESS_PORT_OR_LAG)
-            :Get port object from port_id
-            :Callback into relevant Host intf callback from SAI to API layer.
-    */
-
-  //switchlink_packet_driver_init();
-
-  /* P4OVS: Switchlink receive Netlink Kernel Notifications */
   switchlink_nl_sock_intf_init();
 
   if (g_nlsk) {
@@ -374,25 +324,7 @@ static void *switchlink_main(void *args) {
   return NULL;
 }
 
-void *switchlink_init(void *args) {
-
-  pthread_mutex_init(&cookie_mutex, NULL);
-  pthread_cond_init(&cookie_cv, NULL);
-  int status = pthread_create(&switchlink_thread, NULL, switchlink_main, NULL);
-  if (status) return status;
-  pthread_mutex_lock(&cookie_mutex);
-  while (!cookie) {
-    pthread_cond_wait(&cookie_cv, &cookie_mutex);
-  }
-  pthread_mutex_unlock(&cookie_mutex);
-  pthread_mutex_destroy(&cookie_mutex);
-  pthread_cond_destroy(&cookie_cv);
-  return status;
-
-  return 0;
-}
-
-int switchlink_stop() {
+int switchlink_stop(void) {
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
     int s = pthread_join(switchlink_thread, NULL);

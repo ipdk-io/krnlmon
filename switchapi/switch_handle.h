@@ -1,25 +1,25 @@
 /*
-Copyright 2013-present Barefoot Networks, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+ * Copyright (c) 2022 Intel Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef __SWITCH_HANDLE_H__
 #define __SWITCH_HANDLE_H__
 
 #include "switch_base_types.h"
 #include "switch_status.h"
+#include "switch_id.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,6 +112,9 @@ typedef enum switch_handle_type_s {
   SWITCH_HANDLE_TYPE_SR_SIDLIST = 69,
   SWITCH_HANDLE_TYPE_EGRESS_METER = 70,
   SWITCH_HANDLE_TYPE_METER_COLOR_ACTION = 71,
+  SWITCH_HANDLE_TYPE_ECMP_GROUP = 72,
+  SWITCH_HANDLE_TYPE_L2_FWD_RX = 73,
+  SWITCH_HANDLE_TYPE_L2_FWD_TX = 74,
   SWITCH_HANDLE_TYPE_MAX = 128
 } switch_handle_type_t;
 
@@ -128,74 +131,6 @@ typedef enum switch_handle_type_s {
  * returned.
  */
 switch_handle_type_t switch_handle_type_get(switch_handle_t handle);
-
-/**
- * @brief Iterator to get next handle
- *
- * @param[in] device device id
- * @param[in] handle type handle type
- * @param[in] old_handle old handle value.
- *            Set it to 0 when calling for the first time.
- * @param[out] new_handle next handle in the iterator
- *
- * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
- * returned.
- */
-switch_status_t switch_api_handle_iterate(switch_device_t device,
-                                          switch_handle_type_t type,
-                                          switch_handle_t old_handle,
-                                          switch_handle_t *new_handle);
-
-/**
- * @brief Returns a list of all handles allocated of a handle type
- *
- * NOTE: The memory is allocated by the underlying API and the the application
- * has to free the memory.
- *
- * @param[in] device device id
- * @param[in] handle_type handle type
- * @param[out] num_entries number of handles
- * @param[out] handles handle values
- *
- * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
- * returned.
- */
-switch_status_t switch_api_handles_get(switch_device_t device,
-                                       switch_handle_type_t type,
-                                       switch_size_t *num_entries,
-                                       switch_handle_t **handles);
-
-/**
- * @brief Dump handle info
- *
- * @param[in] device device id
- * @param[in] handle handle
- * @param[in] cli_ctx cli context
- *
- * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
- * returned.
- */
-switch_status_t switch_api_handle_dump(const switch_device_t device,
-                                       const switch_handle_t handle,
-                                       void *cli_ctx);
-
-/**
- * @brief Dump all handle info based on handle type
- *
- * @param[in] device device id
- * @param[in] handle_type handle type
- * @param[in] cli_ctx cli context
- *
- * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
- * returned.
- */
-switch_status_t switch_api_handle_dump_all(
-    const switch_device_t device,
-    const switch_handle_type_t handle_type,
-    void *cli_ctx);
-
-switch_status_t switch_api_handle_info_dump_all(const switch_device_t device,
-                                                const void *cli_ctx);
 
 #ifdef __cplusplus
 }

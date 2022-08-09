@@ -1,23 +1,23 @@
 /*
-Copyright 2013-present Barefoot Networks, Inc.
-Copyright(c) 2021 Intel Corporation.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright (c) 2022 Intel Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef __SWITCH_PORT_H__
 #define __SWITCH_PORT_H__
 
+#include "switch_internal.h"
 #include "switch_base_types.h"
 #include "switch_handle.h"
 #include "switch_id.h"
@@ -32,9 +32,12 @@ extern "C" {
  *  related to MAC programming
     The basic configuration on the port dictates the MAC programming.
     The modes can be set to one of 1x100G, 2x50G, 4x25G, 2x40G or 4x10G.
-    The ports can be configured with an administrative mode and default behavior can be set.
-    The tables that get modified in response to the port APIs are mostly the early stage tables.
-    The port can have a default, which generally allows tagging of untagged packets to this default
+    The ports can be configured with an administrative mode and default 
+    behavior can be set.
+    The tables that get modified in response to the port APIs are mostly
+    the early stage tables.
+    The port can have a default, which generally allows tagging of
+    untagged packets to this default
     domain for forwarding the packets through the device.
  *  @{
  */  // begin of Port
