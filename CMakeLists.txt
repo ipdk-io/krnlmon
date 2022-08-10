@@ -7,6 +7,8 @@
 # TODO: Make Kernel Monitor a package.
 cmake_minimum_required(VERSION 3.5)
 
+project(krnlmon)
+
 include_directories(.)
 
 add_subdirectory(switchapi)

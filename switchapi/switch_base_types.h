@@ -1,18 +1,18 @@
 /*
-Copyright 2013-present Barefoot Networks, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright (c) 2022 Intel Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef __SWITCH_BASE_TYPES_H__
 #define __SWITCH_BASE_TYPES_H__
@@ -20,25 +20,19 @@ limitations under the License.
 /**
  * Third party includes
  */
-#include <judy-1.0.5/src/Judy.h>
-#include <tommyds/tommyhashtbl.h>
-#include <tommyds/tommylist.h>
-#include <bf_sal/bf_sys_mem.h>
-#include <bf_sal/bf_sys_timer.h>
+#include "judy-1.0.5/src/Judy.h"
+#include "tommyds/tommyhashtbl.h"
+#include "tommyds/tommylist.h"
+#include "bf_sal/bf_sys_mem.h"
+#include "bf_sal/bf_sys_timer.h"
 #ifdef STATIC_LINK_LIB
-#include <bf_switchd/bf_switchd.h>
-#endif
-
-/**
- * P4 includes
- */
-//#include "p4features.h"
-//#include "drop_reason_codes.h"
-//#include "p4_table_sizes.h"
+#include "bf_switchd/bf_switchd.h"
+#endif  // STATIC_LINK_LIB
 
 /**
  * standard includes
  */
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -289,7 +283,7 @@ typedef enum switch_ip_type_s {
 typedef unsigned char switch_uint8_t;
 typedef unsigned short switch_uint16_t;
 typedef unsigned int switch_uint32_t;
-typedef uint64_t switch_uint64_t;
+typedef unsigned long switch_uint64_t;
 typedef unsigned char switch_uchar_t;
 typedef char switch_int8_t;
 typedef char switch_char_t;
@@ -418,6 +412,7 @@ typedef struct switch_counter_s {
 } switch_counter_t;
 
 /* init */
+#if 0
 #ifdef STATIC_LINK_LIB
 switch_status_t switch_api_init(switch_device_t device,
                                 unsigned int num_ports,
@@ -433,6 +428,9 @@ switch_status_t switch_api_init(switch_device_t device,
                                 char *cpu_port,
                                 bool add_ports);
 #endif  // STATIC_LINK_LIB
+#endif
+
+switch_status_t switch_api_init(switch_device_t device);
 
 switch_status_t switch_mirror_on_drop_set(switch_device_t device,
                                           bool mirror_on_drop);

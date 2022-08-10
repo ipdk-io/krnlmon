@@ -1,46 +1,39 @@
 /*
- * Copyright 2013-present Barefoot Networks, Inc.
- * 
+ * Copyright (c) 2022 Intel Corporation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __SAIINTERNAL_H_
-#define __SAIINTERNAL_H_
-
-// TODO: NEED TO SORT THIS OUT
-// INTERFACE FILES SHOULD ONLY EXPOSE WHAT OTHER MODULES REQUIRE
-// AND SHOULD ONLY #INCLUDE WHAT THEY THEMSELVES NEED TO COMPILE
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <syslog.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <assert.h>
 
 #include "saitypes.h"
 #include "sai.h"
+#include "openvswitch/util.h"
+#include "switchapi/switch_base_types.h"
 
-// Which <util.h> is this? We have more than one.
-// Should specify parent directory to disambiguate.
-//#include <util.h>
-
-//#include <bfsys/bf_sal/bf_sys_intf.h>
-//#include <bfsys/bf_sal/bf_sys_mem.h>
+#ifndef __SAIINTERNAL_H_
+#define __SAIINTERNAL_H_
 
 #define SAI_MAX_ENTRY_STRING_LEN 200
 
 #define SAI_LOG_BUFFER_SIZE 1000
 
-#define SAI_ASSERT(x) ovs_assert(x)
+#define SAI_ASSERT(x) assert(x)
 
 #define SAI_MALLOC(x) bf_sys_malloc(x)
 
@@ -54,6 +47,15 @@
 #define SAI_MEMCPY memcpy
 #define SAI_MEMCMP memcmp
 
+typedef enum sai_l2_learn_from_t
+{
+    SAI_L2_FWD_LEARN_NONE,
+    SAI_L2_FWD_LEARN_TUNNEL_INTERFACE,
+    SAI_L2_FWD_LEARN_VLAN_INTERFACE,
+    SAI_L2_FWD_LEARN_PHYSICAL_INTERFACE,
+    SAI_L2_FWD_LEARN_MAX
+}sai_l2_learn_from_t;
+
 void sai_log(int level, sai_api_t api, char *fmt, ...);
 
 #define SAI_LOG(level, api_id, fmt, arg...) \
@@ -66,51 +68,6 @@ void sai_log(int level, sai_api_t api, char *fmt, ...);
             __func__,                       \
             ##arg);                         \
   } while (0);
-
-#ifdef SAI_LOG_STDOUT_ENABLE
-#define SAI_LOG_ENTER() \
-  SAI_LOG(SAI_LOG_LEVEL_DEBUG, api_id, "Entering %s\n", __FUNCTION__)
-
-#define SAI_LOG_EXIT() \
-  SAI_LOG(SAI_LOG_LEVEL_DEBUG, api_id, "Exiting %s\n", __FUNCTION__)
-
-#define SAI_LOG_DEBUG(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_DEBUG, api_id, fmt, ##arg)
-
-#define SAI_LOG_INFO(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_INFO, api_id, fmt, ##arg)
-
-#define SAI_LOG_NOTICE(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_NOTICE, api_id, fmt, ##arg)
-
-#define SAI_LOG_WARN(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_WARN, api_id, fmt, ##arg)
-
-#define SAI_LOG_ERROR(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_ERROR, api_id, fmt, ##arg)
-
-#define SAI_LOG_CRITICAL(fmt, arg...) \
-  SAI_LOG(SAI_LOG_LEVEL_CRITICAL, api_id, fmt, ##arg)
-
-#else
-#define SAI_LOG_ENTER() (void) api_id;
-
-#define SAI_LOG_EXIT() (void) api_id;
-
-/*
-#define SAI_LOG_DEBUG(fmt, arg...) \
-  VLOG_DBG(fmt, ##arg)
-
-#define SAI_LOG_INFO(fmt, arg...) \
-  VLOG_INFO(fmt, ##arg)
-
-#define SAI_LOG_WARN(fmt, arg...) \
-  VLOG_WARN(fmt, ##arg)
-
-#define SAI_LOG_ERROR(fmt, arg...) \
-  VLOG_ERR(fmt, ##arg)
-*/
-#endif
 
 // L2 learn timeout in milliseconds
 #define SAI_L2_LEARN_TIMEOUT 100
@@ -148,8 +105,6 @@ typedef struct _sai_api_service_t {
   sai_tunnel_api_t tunnel_api;
 } sai_api_service_t;
 
-//extern switch_device_t device;
-
 typedef struct _sai_switch_notification_t {
   sai_switch_state_change_notification_fn on_switch_state_change;
   sai_fdb_event_notification_fn on_fdb_event;
@@ -160,14 +115,12 @@ typedef struct _sai_switch_notification_t {
 
 extern sai_switch_notification_t sai_switch_notifications;
 
-#define SWITCH_SAI_APP_ID 0x1
-
 sai_status_t sai_acl_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_buffer_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_fdb_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_hash_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_hostif_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_initialize();
+sai_status_t sai_initialize(void);
 sai_status_t sai_ipmc_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_l2mc_initialize(sai_api_service_t *sai_api_service);
 sai_status_t sai_lag_initialize(sai_api_service_t *sai_api_service);
@@ -198,8 +151,6 @@ char *sai_status_to_string(_In_ const sai_status_t status);
 
 char *sai_object_type_to_string(_In_ sai_object_type_t object_type);
 
-//sai_status_t sai_switch_status_to_sai_status(_In_ const switch_status_t status);
-
 sai_status_t sai_ipv4_prefix_length(_In_ sai_ip4_t ip4,
                                     _Out_ uint32_t *prefix_length);
 
@@ -226,28 +177,13 @@ sai_status_t sai_ipprefix_to_string(_In_ sai_ip_prefix_t ip_prefix,
                                     _Out_ char *entry_string,
                                     _Out_ int *entry_length);
 
-//sai_status_t sai_ip_prefix_to_switch_ip_addr(
-  //  const _In_ sai_ip_prefix_t *sai_ip_prefix, _Out_ switch_ip_addr_t *ip_addr);
+sai_status_t sai_ip_prefix_to_switch_ip_addr(
+    const _In_ sai_ip_prefix_t *sai_ip_prefix, _Out_ switch_ip_addr_t *ip_addr);
 
-//sai_status_t sai_ip_addr_to_switch_ip_addr(
-  //  const _In_ sai_ip_address_t *sai_ip_addr, _Out_ switch_ip_addr_t *ip_addr);
+sai_status_t sai_ip_addr_to_switch_ip_addr(
+    const _In_ sai_ip_address_t *sai_ip_addr, _Out_ switch_ip_addr_t *ip_addr);
 
-//sai_status_t sai_port_speed_to_switch_port_speed(
-  //  uint32_t sai_port_speed, _Out_ switch_port_speed_t *switch_port_speed);
-
-//switch_acl_action_t sai_packet_action_to_switch_packet_action(
-  //  _In_ sai_packet_action_t action);
-
-//sai_packet_action_t switch_packet_action_to_sai_packet_action(
-  //  switch_acl_action_t acl_action);
-
-//sai_status_t sai_switch_status_to_sai_status(_In_ const switch_status_t status);
-
-//sai_status_t sai_switch_ip_addr_to_sai_ip_addr(
-  //  _Out_ sai_ip_address_t *sai_ip_addr, const _In_ switch_ip_addr_t *ip_addr);
-
-//sai_status_t sai_switch_port_enabled_to_sai_oper_status(
-  //  _In_ switch_port_oper_status_t oper_status, _Out_ sai_attribute_t *attr);
+sai_status_t sai_switch_status_to_sai_status(_In_ const switch_status_t status);
 
 const sai_attribute_t *get_attr_from_list(_In_ sai_attr_id_t attr_id,
                                           _In_ const sai_attribute_t *attr_list,
@@ -318,21 +254,8 @@ sai_status_t sai_hashtable_done(sai_hashtable_t *hashtable);
 */
 switch_uint32_t sai_acl_priority_to_switch_priority(sai_uint32_t);
 
-switch_uint32_t switch_sai_port_non_default_ppgs();
-bool switch_sai_default_initialize();
-
-//void sai_recv_hostif_packet_cb(switch_hostif_packet_t *hostif_packet);
-/*
-sai_status_t sai_switch_acl_actions_to_sai(
-    _In_ switch_acl_action_t *switch_actions,
-    _In_ uint32_t switch_actions_count,
-    _In_ sai_acl_stage_t stage,
-    _Out_ sai_acl_action_type_t *sai_actions,
-    _Inout_ uint32_t *sai_actions_count);
-
-sai_status_t sai_acl_get_number_of_supported_actions(
-    _Out_ uint32_t *actions_count);
-*/
+switch_uint32_t switch_sai_port_non_default_ppgs(void);
+bool switch_sai_default_initialize(void);
 
 #if defined(STATIC_LINK_LIB) && defined(THRIFT_ENABLED)
 int start_p4_sai_thrift_rpc_server(char *port);
