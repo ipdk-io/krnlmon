@@ -14,11 +14,13 @@ include_directories(.)
 add_subdirectory(switchapi)
 add_subdirectory(switchlink)
 add_subdirectory(switchsai)
+add_subdirectory(switchutils)
 
 add_library(krnlmon SHARED
     $<TARGET_OBJECTS:switchapi_o>
     $<TARGET_OBJECTS:switchlink_o>
     $<TARGET_OBJECTS:switchsai_o>
+    $<TARGET_OBJECTS:switchutils_o>
 )
 
 target_link_libraries(krnlmon nl-route-3 nl-3)

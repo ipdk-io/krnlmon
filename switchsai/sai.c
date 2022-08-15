@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +16,11 @@
  */
 
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "saiinternal.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_base_types.h"
 
-VLOG_DEFINE_THIS_MODULE(sai);
 static sai_api_service_t sai_api_service;
 
 #ifdef __cplusplus
@@ -75,7 +74,7 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
 
   if (!api_method_table) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null api method table: invalid parameter");
+    dzlog_error("null api method table: invalid parameter");
     return status;
   }
 
@@ -201,7 +200,7 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
       break;
 
     case SAI_API_UNSPECIFIED:
-      VLOG_ERR(" SAI API unspecified");
+      dzlog_error(" SAI API unspecified");
       break;
 
     case SAI_API_RPF_GROUP:
@@ -226,11 +225,11 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
   }
 
   if (status == SAI_STATUS_SUCCESS) {
-    VLOG_DBG("api query for module: %s", module[sai_api_id]);
+    dzlog_debug("api query for module: %s", module[sai_api_id]);
   } else if (sai_api_id >= SAI_API_MAX) {
-    VLOG_ERR("api query failed, invalid api id: %d\n", sai_api_id);
+    dzlog_error("api query failed, invalid api id: %d\n", sai_api_id);
   } else {
-    VLOG_ERR("api query failed, api %s not implemented\n",
+    dzlog_error("api query failed, api %s not implemented\n",
                   module[sai_api_id]);
   }
 

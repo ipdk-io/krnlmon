@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +15,12 @@
  * limitations under the License.
  */
 
-#include "openvswitch/vlog.h"
 #include "switch_tunnel.h"
 #include "switch_internal.h"
 #include "config.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switch_pd_utils.h"
 #include "switch_pd_p4_name_mapping.h"
-
-VLOG_DEFINE_THIS_MODULE(switch_pd_tunnel);
 
 switch_status_t switch_pd_tunnel_entry(
     switch_device_t device,
@@ -48,35 +46,35 @@ switch_status_t switch_pd_tunnel_entry(
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint32_t network_byte_order;
 
-    VLOG_DBG("%s", __func__);
+    dzlog_debug("%s", __func__);
 
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create flags handle, error: %d", status);
+        dzlog_error("Failed to create flags handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_device_get(dev_id, &dev_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to get device handle, error: %d", status);
+        dzlog_error("Failed to get device handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_target_create(dev_hdl, &target_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create target handle, error: %d", status);
+        dzlog_error("Failed to create target handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
     
     status = tdi_session_create(dev_hdl, &session);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create tdi session, error: %d", status);
+        dzlog_error("Failed to create tdi session, error: %d", status);
         return status;
     }
 
     status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to get tdi info handle, error: %d", status);
+        dzlog_error("Failed to get tdi info handle, error: %d", status);
         return status;
     }
 
@@ -84,21 +82,21 @@ switch_status_t switch_pd_tunnel_entry(
                                      LNW_VXLAN_ENCAP_MOD_TABLE,
                                      &table_hdl);
     if (status != TDI_SUCCESS || !table_hdl) {
-        VLOG_ERR("Unable to get table handle for: %s, error: %d",
+        dzlog_error("Unable to get table handle for: %s, error: %d",
                  LNW_VXLAN_ENCAP_MOD_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_key_allocate(table_hdl, &key_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to allocate key handle for: %s, error: %d",
+        dzlog_error("Unable to allocate key handle for: %s, error: %d",
                  LNW_VXLAN_ENCAP_MOD_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_info_get(table_hdl, &table_info_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to get table info handle for table, error: %d", status);
+        dzlog_error("Unable to get table info handle for table, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -106,21 +104,21 @@ switch_status_t switch_pd_tunnel_entry(
                                   LNW_VXLAN_ENCAP_MOD_TABLE_KEY_VENDORMETA_MOD_DATA_PTR,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-      VLOG_ERR("Unable to get field ID for key: %s, error: %d",
+      dzlog_error("Unable to get field ID for key: %s, error: %d",
                LNW_VXLAN_ENCAP_MOD_TABLE_KEY_VENDORMETA_MOD_DATA_PTR, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_key_field_set_value(key_hdl, field_id, 0 /*vni value*/);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to set value for key ID: %d for vxlan_encap_mod_table"
+        dzlog_error("Unable to set value for key ID: %d for vxlan_encap_mod_table"
                  ", error: %d", field_id, status);
         goto dealloc_handle_session;
     }
 
     if (entry_add) {
         /* Add an entry to target */
-        VLOG_INFO("Populate vxlan encap action in vxlan_encap_mod_table for "
+        dzlog_info("Populate vxlan encap action in vxlan_encap_mod_table for "
                   "tunnel interface %x",
                   (unsigned int) api_tunnel_info_t->overlay_rif_handle);
 
@@ -128,14 +126,14 @@ switch_status_t switch_pd_tunnel_entry(
                                        LNW_VXLAN_ENCAP_MOD_TABLE_ACTION_VXLAN_ENCAP,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get action allocator ID for: %s, error: %d",
+            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_VXLAN_ENCAP_MOD_TABLE_ACTION_VXLAN_ENCAP, status);
             goto dealloc_handle_session;
         }
 
         status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get action allocator for ID: %s, "
+            dzlog_error("Unable to get action allocator for ID: %s, "
                      "error: %d", LNW_VXLAN_ENCAP_MOD_TABLE_ACTION_VXLAN_ENCAP, status);
             goto dealloc_handle_session;
         }
@@ -144,7 +142,7 @@ switch_status_t switch_pd_tunnel_entry(
                                                    LNW_ACTION_VXLAN_ENCAP_PARAM_SRC_ADDR,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get data field id param for: %s, error: %d",
+            dzlog_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_VXLAN_ENCAP_PARAM_SRC_ADDR, status);
             goto dealloc_handle_session;
         }
@@ -154,7 +152,7 @@ switch_status_t switch_pd_tunnel_entry(
                                               (const uint8_t *)&network_byte_order,
                                               sizeof(uint32_t));
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to set action value for ID: %d, error: %d",
+            dzlog_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -163,7 +161,7 @@ switch_status_t switch_pd_tunnel_entry(
                                                    LNW_ACTION_VXLAN_ENCAP_PARAM_DST_ADDR,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get data field id param for: %s, error: %d",
+            dzlog_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_VXLAN_ENCAP_PARAM_DST_ADDR, status);
             goto dealloc_handle_session;
         }
@@ -173,7 +171,7 @@ switch_status_t switch_pd_tunnel_entry(
                                               (const uint8_t *)&network_byte_order,
                                               sizeof(uint32_t));
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to set action value for ID: %d, error: %d",
+            dzlog_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -182,7 +180,7 @@ switch_status_t switch_pd_tunnel_entry(
                                                    LNW_ACTION_VXLAN_ENCAP_PARAM_DST_PORT,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get data field id param for: %s, error: %d",
+            dzlog_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_VXLAN_ENCAP_PARAM_DST_PORT, status);
             goto dealloc_handle_session;
         }
@@ -192,7 +190,7 @@ switch_status_t switch_pd_tunnel_entry(
                                               (const uint8_t *)&network_byte_order_udp,
                                               sizeof(uint16_t));
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to set action value for ID: %d, error: %d",
+            dzlog_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -201,7 +199,7 @@ switch_status_t switch_pd_tunnel_entry(
                                                    LNW_ACTION_VXLAN_ENCAP_PARAM_VNI,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get data field id param for: %s, error: %d",
+            dzlog_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_VXLAN_ENCAP_PARAM_VNI, status);
             goto dealloc_handle_session;
         }
@@ -209,7 +207,7 @@ switch_status_t switch_pd_tunnel_entry(
         status = tdi_data_field_set_value_ptr(data_hdl, data_field_id, 0,
                                               sizeof(uint32_t));
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to set action value for ID: %d, error: %d",
+            dzlog_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -217,17 +215,17 @@ switch_status_t switch_pd_tunnel_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          VLOG_ERR("Unable to add %s entry, error: %d", 
+          dzlog_error("Unable to add %s entry, error: %d", 
                    LNW_VXLAN_ENCAP_MOD_TABLE, status);
             goto dealloc_handle_session;
         }
     } else {
         /* Delete an entry from target */
-        VLOG_INFO("Delete vxlan_encap_mod_table entry");
+        dzlog_info("Delete vxlan_encap_mod_table entry");
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
                                      flags_hdl, key_hdl);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to delete %s entry, error: %d", 
+            dzlog_error("Unable to delete %s entry, error: %d", 
                      LNW_VXLAN_ENCAP_MOD_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -237,18 +235,18 @@ dealloc_handle_session:
 
     status = tdi_flags_delete(flags_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate flags handle, error: %d", status);
+        dzlog_error("Unable to deallocate flags handle, error: %d", status);
     }
 
     status = tdi_target_delete(target_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate target handle, error: %d", status);
+        dzlog_error("Unable to deallocate target handle, error: %d", status);
     }
 
     status = tdi_switch_pd_deallocate_handle_session(key_hdl, data_hdl,
                                                      session, entry_add);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate session and handles");
+        dzlog_error("Unable to deallocate session and handles");
         return switch_pd_tdi_status_to_status(status);
     }
 
@@ -279,35 +277,35 @@ switch_status_t switch_pd_tunnel_term_entry(
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint32_t network_byte_order;
 
-    VLOG_DBG("%s", __func__);
+    dzlog_debug("%s", __func__);
 
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create flags handle, error: %d", status);
+        dzlog_error("Failed to create flags handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_device_get(dev_id, &dev_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to get device handle, error: %d", status);
+        dzlog_error("Failed to get device handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_target_create(dev_hdl, &target_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create target handle, error: %d", status);
+        dzlog_error("Failed to create target handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
     
     status = tdi_session_create(dev_hdl, &session);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to create tdi session, error: %d", status);
+        dzlog_error("Failed to create tdi session, error: %d", status);
         return status;
     }
 
     status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Failed to get tdi info handle, error: %d", status);
+        dzlog_error("Failed to get tdi info handle, error: %d", status);
         return status;
     }
 
@@ -315,21 +313,21 @@ switch_status_t switch_pd_tunnel_term_entry(
                                      LNW_IPV4_TUNNEL_TERM_TABLE,
                                      &table_hdl);
     if (status != TDI_SUCCESS || !table_hdl) {
-        VLOG_ERR("Unable to get table handle for: %s, error: %d",
+        dzlog_error("Unable to get table handle for: %s, error: %d",
                  LNW_IPV4_TUNNEL_TERM_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_key_allocate(table_hdl, &key_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to allocate key handle for: %s, error: %d",
+        dzlog_error("Unable to allocate key handle for: %s, error: %d",
                  LNW_IPV4_TUNNEL_TERM_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_info_get(table_hdl, &table_info_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to get table info handle for table");
+        dzlog_error("Unable to get table info handle for table");
         goto dealloc_handle_session;
     }
 
@@ -337,7 +335,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                   LNW_IPV4_TUNNEL_TERM_TABLE_KEY_TUNNEL_TYPE,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-      VLOG_ERR("Unable to get field ID for key: %s, error: %d",
+      dzlog_error("Unable to get field ID for key: %s, error: %d",
                LNW_IPV4_TUNNEL_TERM_TABLE_KEY_TUNNEL_TYPE, status);
         goto dealloc_handle_session;
     }
@@ -345,7 +343,7 @@ switch_status_t switch_pd_tunnel_term_entry(
     /* From p4 file the value expected is TUNNEL_TYPE_VXLAN=2 */
     status = tdi_key_field_set_value(key_hdl, field_id, 2);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to set value for key ID: %d of ipv4_tunnel_term_table"
+        dzlog_error("Unable to set value for key ID: %d of ipv4_tunnel_term_table"
                  ", error: %d", field_id, status);
         goto dealloc_handle_session;
     }
@@ -354,7 +352,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                   LNW_IPV4_TUNNEL_TERM_TABLE_KEY_IPV4_SRC,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to get field ID for key: %s",
+        dzlog_error("Unable to get field ID for key: %s",
                  LNW_IPV4_TUNNEL_TERM_TABLE_KEY_IPV4_SRC);
         goto dealloc_handle_session;
     }
@@ -366,7 +364,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                          (const uint8_t *)&network_byte_order,
                                          sizeof(uint32_t));
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to set value for key ID: %d", field_id);
+        dzlog_error("Unable to set value for key ID: %d", field_id);
         goto dealloc_handle_session;
     }
 
@@ -374,7 +372,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                   LNW_IPV4_TUNNEL_TERM_TABLE_KEY_IPV4_DST,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to get field ID for key: %s",
+        dzlog_error("Unable to get field ID for key: %s",
                  LNW_IPV4_TUNNEL_TERM_TABLE_KEY_IPV4_DST);
         goto dealloc_handle_session;
     }
@@ -386,12 +384,12 @@ switch_status_t switch_pd_tunnel_term_entry(
                                          (const uint8_t *)&network_byte_order,
                                          sizeof(uint32_t));
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to set value for key ID: %d", field_id);
+        dzlog_error("Unable to set value for key ID: %d", field_id);
         goto dealloc_handle_session;
     }
 
     if (entry_add) {
-        VLOG_INFO("Populate decap_outer_ipv4 action in ipv4_tunnel_term_table "
+        dzlog_info("Populate decap_outer_ipv4 action in ipv4_tunnel_term_table "
                   "for tunnel interface %x",
                    (unsigned int) api_tunnel_term_info_t->tunnel_handle);
 
@@ -399,7 +397,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                        LNW_IPV4_TUNNEL_TERM_TABLE_ACTION_DECAP_OUTER_IPV4,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get action allocator ID for: %s, error: %d",
+            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_IPV4_TUNNEL_TERM_TABLE_ACTION_DECAP_OUTER_IPV4, status);
             goto dealloc_handle_session;
         }
@@ -407,7 +405,7 @@ switch_status_t switch_pd_tunnel_term_entry(
         /* Add an entry to target */
         status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get action allocator for ID: %d, "
+            dzlog_error("Unable to get action allocator for ID: %d, "
                      "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -416,7 +414,7 @@ switch_status_t switch_pd_tunnel_term_entry(
                                                    LNW_ACTION_DECAP_OUTER_IPV4_PARAM_TUNNEL_ID,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to get data field id param for: %s, error: %d",
+            dzlog_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_DECAP_OUTER_IPV4_PARAM_TUNNEL_ID, status);
             goto dealloc_handle_session;
         }
@@ -424,7 +422,7 @@ switch_status_t switch_pd_tunnel_term_entry(
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_tunnel_term_info_t->tunnel_id);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to set action value for ID: %d, error: %d",
+            dzlog_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -432,18 +430,18 @@ switch_status_t switch_pd_tunnel_term_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          VLOG_ERR("Unable to add %s entry, error: %d", 
+          dzlog_error("Unable to add %s entry, error: %d", 
                    LNW_IPV4_TUNNEL_TERM_TABLE, status);
             goto dealloc_handle_session;
         }
 
     } else {
         /* Delete an entry from target */
-        VLOG_INFO("Delete ipv4_tunnel_term_table entry");
+        dzlog_info("Delete ipv4_tunnel_term_table entry");
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
                                      flags_hdl, key_hdl);
         if (status != TDI_SUCCESS) {
-            VLOG_ERR("Unable to delete %s entry, error: %d", 
+            dzlog_error("Unable to delete %s entry, error: %d", 
                      LNW_IPV4_TUNNEL_TERM_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -453,18 +451,18 @@ dealloc_handle_session:
 
     status = tdi_flags_delete(flags_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate flags handle, error: %d", status);
+        dzlog_error("Unable to deallocate flags handle, error: %d", status);
     }
 
     status = tdi_target_delete(target_hdl);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate target handle, error: %d", status);
+        dzlog_error("Unable to deallocate target handle, error: %d", status);
     }
 
     status = tdi_switch_pd_deallocate_handle_session(key_hdl, data_hdl,
                                                      session, entry_add);
     if (status != TDI_SUCCESS) {
-        VLOG_ERR("Unable to deallocate session and handles");
+        dzlog_error("Unable to deallocate session and handles");
         return switch_pd_tdi_status_to_status(status);
     }
 

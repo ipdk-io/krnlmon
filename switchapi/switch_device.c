@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +19,6 @@
 
 /* Local header includes */
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "switch_internal.h"
 #include "switch_port.h"
 #include "switch_config_int.h"
@@ -38,8 +38,6 @@ extern "C" {
 
 #define __FILE_ID__ SWITCH_DEVICE
 
-VLOG_DEFINE_THIS_MODULE(switch_device);
-
 #define SWITCH_PORT_STATS_POLL_TMR_PERIOD_MS 50
 
 switch_status_t switch_api_init(switch_device_t device) {
@@ -54,14 +52,14 @@ switch_status_t switch_api_init(switch_device_t device) {
 
   status = switch_config_init(&api_config);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("switch api init failed on device %d: %s\n",
+    dzlog_error("switch api init failed on device %d: %s\n",
                      device,
                      switch_error_to_string(status));
   }
 
   status = switch_api_device_add(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("switch api init failed on device %d: %s\n",
+    dzlog_error("switch api init failed on device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -70,7 +68,7 @@ switch_status_t switch_api_init(switch_device_t device) {
 #ifdef THRIFT_ENABLED
   status = start_switch_api_rpc_server();
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("start_switch_api_rpc_server on device %d",
+    dzlog_error("start_switch_api_rpc_server on device %d",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -86,7 +84,7 @@ switch_status_t switch_device_context_get(
 
   status = switch_config_device_context_get(device, device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device context get failed on device %d: "
         "device config context get failed(%s)",
         device,
@@ -105,7 +103,7 @@ switch_status_t switch_device_api_init(switch_device_t device) {
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device api init failed on device %d: "
         "device context get failed(%s)",
         device,
@@ -187,7 +185,7 @@ switch_status_t switch_device_api_init(switch_device_t device) {
     }
 
     if (status != SWITCH_STATUS_SUCCESS) {
-      VLOG_ERR(
+      dzlog_error(
           "device init failed on device %d "
           "for api type %d %s: (%s)",
           device,
@@ -200,7 +198,7 @@ switch_status_t switch_device_api_init(switch_device_t device) {
     device_ctx->api_inited[api_type] = true;
   }
 
-  VLOG_DBG("device api init successful on device %d\n", device);
+  dzlog_debug("device api init successful on device %d\n", device);
 
   return status;
 
@@ -217,7 +215,7 @@ switch_status_t switch_device_api_free(switch_device_t device) {
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device init failed on device %d: %s",
+    dzlog_error("device init failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -300,7 +298,7 @@ switch_status_t switch_device_api_free(switch_device_t device) {
     device_ctx->api_inited[api_type] = false;
 
     if (status != SWITCH_STATUS_SUCCESS) {
-      VLOG_ERR(
+      dzlog_error(
           "device free failed on device %d "
           "for api type %s: (%s)",
           device,
@@ -310,7 +308,7 @@ switch_status_t switch_device_api_free(switch_device_t device) {
     }
   }
 
-  VLOG_DBG("device api free successful on device %d\n", device);
+  dzlog_debug("device api free successful on device %d\n", device);
 
   return status;
 }
@@ -323,7 +321,7 @@ switch_status_t switch_device_init(switch_device_t device,
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device init failed on device %d: "
         "device context get failed(%s)",
         device,
@@ -333,7 +331,7 @@ switch_status_t switch_device_init(switch_device_t device,
 
   status = switch_table_init(device, table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device init failed on device %d: "
         "table init failed(%s)",
         device,
@@ -348,7 +346,7 @@ switch_status_t switch_device_init(switch_device_t device,
   status = switch_api_id_allocator_new(
       device, SWITCH_IFINDEX_SIZE, FALSE, &device_ctx->ifindex_allocator);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device init failed on device %d: "
         "ifindex allocator init failed(%s)",
         device,
@@ -358,7 +356,7 @@ switch_status_t switch_device_init(switch_device_t device,
 
   status = switch_device_api_init(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device init failed on device %d: "
         "device api init failed(%s)",
         device,
@@ -369,7 +367,7 @@ switch_status_t switch_device_init(switch_device_t device,
   status = switch_api_router_mac_group_create(
       device, SWITCH_RMAC_TYPE_ALL, &device_ctx->device_info.rmac_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device init failed on device %d: "
         "rmac group create failed(%s)",
         device,
@@ -377,7 +375,7 @@ switch_status_t switch_device_init(switch_device_t device,
     return status;
   }
 
-  VLOG_DBG("device init done on device %d", device);
+  dzlog_debug("device init done on device %d", device);
 
   return status;
 }
@@ -388,7 +386,7 @@ switch_status_t switch_device_free(switch_device_t device) {
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device free failed on device %d: "
         "device context get failed(%s)",
         device,
@@ -398,7 +396,7 @@ switch_status_t switch_device_free(switch_device_t device) {
 
   status = switch_table_free(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device free failed on device %d: "
         "table free failed(%s)",
         device,
@@ -408,7 +406,7 @@ switch_status_t switch_device_free(switch_device_t device) {
 
   status = switch_device_api_free(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device free failed on device %d: "
         "device api free failed(%s)",
         device,
@@ -419,14 +417,14 @@ switch_status_t switch_device_free(switch_device_t device) {
   status =
       switch_api_id_allocator_destroy(device, device_ctx->ifindex_allocator);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device free failed on device %d: "
         "ifindex allocator free failed(%s)",
         device,
         switch_error_to_string(status));
   }
 
-  VLOG_DBG("device free done on device %d", device);
+  dzlog_debug("device free done on device %d", device);
 
   return status;
 }
@@ -440,7 +438,7 @@ switch_status_t switch_device_table_get(switch_device_t device,
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -458,7 +456,7 @@ switch_status_t switch_device_api_context_set(switch_device_t device,
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -479,7 +477,7 @@ switch_status_t switch_device_api_context_get(switch_device_t device,
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -499,7 +497,7 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   if (SWITCH_CONFIG_DEVICE_INITED(device)) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    VLOG_ERR("device add failed for device %d: %s",
+    dzlog_error("device add failed for device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -508,7 +506,7 @@ switch_status_t switch_api_device_add(switch_device_t device) {
   device_ctx = SWITCH_MALLOC(device, sizeof(switch_device_context_t), 0x1);
   if (!device_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    VLOG_ERR("device add failed on device %d: %s",
+    dzlog_error("device add failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -523,7 +521,7 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   status = switch_config_table_sizes_get(device, table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device add failed for device %d: %s",
+    dzlog_error("device add failed for device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -531,7 +529,7 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device add failed on device %d: %s",
+    dzlog_error("device add failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -543,7 +541,7 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   status = switch_device_init(device, table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device add failed for device %d: %s",
+    dzlog_error("device add failed for device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -558,7 +556,7 @@ static switch_status_t switch_api_device_remove_internal(switch_device_t device)
 
   if (!SWITCH_CONFIG_DEVICE_INITED(device)) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    VLOG_ERR("device add failed for device %d: %s",
+    dzlog_error("device add failed for device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -566,7 +564,7 @@ static switch_status_t switch_api_device_remove_internal(switch_device_t device)
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -574,7 +572,7 @@ static switch_status_t switch_api_device_remove_internal(switch_device_t device)
 
   status = switch_device_free(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -595,7 +593,7 @@ switch_status_t switch_api_device_default_rmac_handle_get(
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("device context get failed on device %d: %s",
+    dzlog_error("device context get failed on device %d: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -613,7 +611,7 @@ switch_status_t switch_api_device_tunnel_dmac_get(
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "device tunnel dmac get failed: "
         "device context get failed on device %d: %s",
         device,

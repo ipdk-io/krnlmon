@@ -32,6 +32,4 @@ target_include_directories(switchlink_o PRIVATE
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/xxHash
     ${SDE_INSTALL_PREFIX}/include/target-sys
     ${SAI_SOURCE_DIR}/inc
-    ${OVS_INSTALL_PREFIX}/include
-    ${OVS_SOURCE_DIR}
 )

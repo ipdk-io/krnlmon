@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,16 +21,12 @@
 #include <netlink/msg.h>
 
 #include "config.h"
-#include "openvswitch/util.h"
 #include "switchlink.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_route.h"
 #include "switchlink_db.h"
 #include "switchlink_sai.h"
-#include "openvswitch/vlog.h"
-
-VLOG_DEFINE_THIS_MODULE(switchlink_route)
 
 /*
  * Routine Description:
@@ -51,18 +48,18 @@ static void ecmp_delete(switchlink_handle_t ecmp_h) {
   switchlink_handle_t nhops[SWITCHLINK_ECMP_NUM_MEMBERS_MAX] = {0};
 
   status = switchlink_db_ecmp_ref_dec(ecmp_h, &ref_count);
-  ovs_assert(status == SWITCHLINK_DB_STATUS_SUCCESS);
+  krnlmon_assert(status == SWITCHLINK_DB_STATUS_SUCCESS);
 
   if (ref_count == 0) {
     switchlink_db_ecmp_info_t ecmp_info;
     memset(&ecmp_info, 0, sizeof(switchlink_db_ecmp_info_t));
     status = switchlink_db_ecmp_handle_get_info(ecmp_h, &ecmp_info);
-    ovs_assert(status == SWITCHLINK_DB_STATUS_SUCCESS);
+    krnlmon_assert(status == SWITCHLINK_DB_STATUS_SUCCESS);
     num_nhops = ecmp_info.num_nhops;
     for (index = 0; index < num_nhops; index++) {
       nhops[index] = ecmp_info.nhops[index];
     }
-    VLOG_INFO("Deleting ecmp handler 0x%lx", ecmp_h);
+    dzlog_info("Deleting ecmp handler 0x%lx", ecmp_h);
     switchlink_ecmp_delete(&ecmp_info);
     switchlink_db_ecmp_delete(ecmp_h);
 
@@ -71,17 +68,17 @@ static void ecmp_delete(switchlink_handle_t ecmp_h) {
       status = switchlink_db_nexthop_handle_get_info(nhops[index],
                                                      &nexthop_info);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        VLOG_ERR("Cannot get nhop info for nhop handle 0x%lx", nhops[index]);
+        dzlog_error("Cannot get nhop info for nhop handle 0x%lx", nhops[index]);
         continue;
       }
 
       if (validate_nexthop_delete(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_ROUTE)) {
-        VLOG_DBG("Deleting nhop 0x%lx, from ecmp_delete", nexthop_info.nhop_h);
+        dzlog_debug("Deleting nhop 0x%lx, from ecmp_delete", nexthop_info.nhop_h);
         switchlink_nexthop_delete(nexthop_info.nhop_h);
         switchlink_db_nexthop_delete(&nexthop_info);
       } else {
-          VLOG_DBG("Removing Route learn from nhop");
+          dzlog_debug("Removing Route learn from nhop");
         nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_ROUTE;
         switchlink_db_nexthop_update_using_by(&nexthop_info);
       }
@@ -129,14 +126,14 @@ void route_create(switchlink_handle_t vrf_h,
       switchlink_db_status_t status;
       status = switchlink_db_nexthop_get_info(&nexthop_info);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          VLOG_DBG("Received nhop 0x%lx handler, update from"
+          dzlog_debug("Received nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
         nhop_h = nexthop_info.nhop_h;
         nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
         switchlink_db_nexthop_update_using_by(&nexthop_info);
       } else {
         if (!switchlink_nexthop_create(&nexthop_info)) {
-          VLOG_DBG("Created nhop 0x%lx handle, update from "
+          dzlog_debug("Created nhop 0x%lx handle, update from "
                    " route", nexthop_info.nhop_h);
           nhop_h = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
@@ -173,7 +170,7 @@ void route_create(switchlink_handle_t vrf_h,
   route_info.intf_h = intf_h;
 
   // add the route
-  VLOG_INFO("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
+  dzlog_info("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
              dst->prefix_len);
   if (switchlink_route_create(&route_info) == -1) {
     if (route_info.ecmp) {
@@ -220,7 +217,7 @@ void route_delete(switchlink_handle_t vrf_h, switchlink_ip_addr_t *dst) {
     return;
   }
 
-  VLOG_INFO("Delete route: 0x%x/%d", dst->ip.v4addr.s_addr,
+  dzlog_info("Delete route: 0x%x/%d", dst->ip.v4addr.s_addr,
              dst->prefix_len);
   if (switchlink_route_delete(&route_info) == -1) {
     return;
@@ -289,14 +286,14 @@ static switchlink_handle_t process_ecmp(uint8_t family,
         nexthop_info.vrf_h = vrf_h;
         status = switchlink_db_nexthop_get_info(&nexthop_info);
         if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          VLOG_DBG("Fetched nhop 0x%lx handler, update from"
+          dzlog_debug("Fetched nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
           ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
           switchlink_db_nexthop_update_using_by(&nexthop_info);
         } else {
           if (!switchlink_nexthop_create(&nexthop_info)) {
-             VLOG_DBG("Created nhop 0x%lx handler, update from"
+             dzlog_debug("Created nhop 0x%lx handler, update from"
                       " route", nexthop_info.nhop_h);
              ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
              nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
@@ -306,7 +303,7 @@ static switchlink_handle_t process_ecmp(uint8_t family,
           }
         }
         ecmp_info.num_nhops++;
-        ovs_assert(ecmp_info.num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
+        krnlmon_assert(ecmp_info.num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
       }
     }
     rnh = RTNH_NEXT(rnh);
@@ -360,10 +357,10 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
   bool iif_valid = false;
   uint32_t iif = 0;
 
-  ovs_assert((type == RTM_NEWROUTE) || (type == RTM_DELROUTE));
+  krnlmon_assert((type == RTM_NEWROUTE) || (type == RTM_DELROUTE));
   rmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct rtmsg);
-  VLOG_DBG(
+  dzlog_debug(
       "%sroute: family = %d, dst_len = %d, src_len = %d, tos = %d, "
        "table = %d, proto = %d, scope = %d, type = %d, "
        "flags = 0x%x\n",
@@ -379,7 +376,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
        rmsg->rtm_flags);
 
   if (rmsg->rtm_family > AF_MAX) {
-    ovs_assert(rmsg->rtm_type == RTN_MULTICAST);
+    krnlmon_assert(rmsg->rtm_type == RTN_MULTICAST);
     if (rmsg->rtm_family == RTNL_FAMILY_IPMR) {
       af = AF_INET;
     } else if (rmsg->rtm_family == RTNL_FAMILY_IP6MR) {
@@ -390,7 +387,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
   }
 
   if (af == AF_INET6) {
-    VLOG_DBG("Ignoring IPv6 routes, as supported is not available");
+    dzlog_debug("Ignoring IPv6 routes, as supported is not available");
     return;
   }
 
@@ -452,7 +449,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
         iif = nla_get_u32(attr);
         break;
       default:
-        VLOG_DBG("route: skipping attribute type %d \n", attr_type);
+        dzlog_debug("route: skipping attribute type %d \n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);
@@ -471,12 +468,12 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
       switchlink_db_status_t status;
       status = switchlink_db_interface_get_info(oif, &ifinfo);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        VLOG_ERR("route: Failed to get switchlink DB interface info, "
+        dzlog_error("route: Failed to get switchlink DB interface info, "
                  "error: %d \n", status);
         return;
       }
     }
-    VLOG_INFO("Create route for %s, with addr: 0x%x", ifinfo.ifname,
+    dzlog_info("Create route for %s, with addr: 0x%x", ifinfo.ifname,
                                                      dst_valid ?
                                                      dst_addr.ip.v4addr.s_addr :
                                                      0);
@@ -486,7 +483,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
                  ecmp_h,
                  ifinfo.intf_h);
   } else {
-    VLOG_INFO("Delete route with addr: 0x%x", dst_valid ?
+    dzlog_info("Delete route with addr: 0x%x", dst_valid ?
                                              dst_addr.ip.v4addr.s_addr : 0);
     route_delete(g_default_vrf_h, (dst_valid ? &dst_addr : NULL));
   }

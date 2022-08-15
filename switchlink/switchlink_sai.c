@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +24,8 @@
 
 #include "config.h"
 #include "sai.h"
-#include "openvswitch/util.h"
-#include "switchlink_sai.h"
-#include "openvswitch/vlog.h"
 #include "switchsai/saiinternal.h"
-
-VLOG_DEFINE_THIS_MODULE(switchlink_sai);
+#include "switchlink_sai.h"
 
 extern sai_status_t sai_initialize(void);
 
@@ -54,7 +51,7 @@ static inline uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len) {
 static inline struct in6_addr ipv6_prefix_len_to_mask(uint32_t prefix_len) {
   struct in6_addr mask;
   memset(&mask, 0, sizeof(mask));
-  ovs_assert(prefix_len <= 128);
+  krnlmon_assert(prefix_len <= 128);
 
   int i;
   for (i = 0; i < 4; i++) {
@@ -273,18 +270,18 @@ int switchlink_tunnel_interface_create(
 
     status = switchlink_create_tunnel(tnl_intf, tnl_intf_h);
     if (status != SAI_STATUS_SUCCESS) {
-        VLOG_ERR("Cannot create tunnel for interface: %s", tnl_intf->ifname);
+        dzlog_error("Cannot create tunnel for interface: %s", tnl_intf->ifname);
         return -1;
     }
-    VLOG_INFO("Created tunnel interface: %s", tnl_intf->ifname);
+    dzlog_info("Created tunnel interface: %s", tnl_intf->ifname);
 
     status = switchlink_create_term_table_entry(tnl_intf, tnl_term_h);
     if (status != SAI_STATUS_SUCCESS) {
-        VLOG_ERR("Cannot create tunnel termination table entry for "
+        dzlog_error("Cannot create tunnel termination table entry for "
                  "interface: %s", tnl_intf->ifname);
         return -1;
     }
-    VLOG_INFO("Created tunnel termination entry for "
+    dzlog_info("Created tunnel termination entry for "
               "interface: %s", tnl_intf->ifname);
 
     return 0;
@@ -346,21 +343,21 @@ int switchlink_tunnel_interface_delete(switchlink_db_tunnel_interface_info_t
 
   status = switchlink_remove_tunnel_term_table_entry(tnl_intf);
   if (status != SAI_STATUS_SUCCESS) {
-      VLOG_ERR("Cannot remove tunnel termination entry for "
+      dzlog_error("Cannot remove tunnel termination entry for "
                "interface: %s", tnl_intf->ifname);
       return -1;
   }
-  VLOG_INFO("Removed tunnel termination entry for "
+  dzlog_info("Removed tunnel termination entry for "
             "interface: %s", tnl_intf->ifname);
 
   status = switchlink_remove_tunnel(tnl_intf);
   if (status != SAI_STATUS_SUCCESS) {
-      VLOG_ERR("Cannot remove tunnel entry for "
+      dzlog_error("Cannot remove tunnel entry for "
                "interface: %s", tnl_intf->ifname);
       return -1;
   }
 
-  VLOG_INFO("Removed tunnel entry for interface: %s", tnl_intf->ifname);
+  dzlog_info("Removed tunnel entry for interface: %s", tnl_intf->ifname);
   // Add further code to remove tunnel dependent params here.
 
   return 0;
@@ -511,7 +508,7 @@ int switchlink_neighbor_create(switchlink_db_neigh_info_t *neigh_info) {
     neighbor_entry.ip_address.addr.ip4 =
         htonl(neigh_info->ip_addr.ip.v4addr.s_addr);
   } else {
-    ovs_assert(neigh_info->ip_addr.family == AF_INET6);
+    krnlmon_assert(neigh_info->ip_addr.family == AF_INET6);
     neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
     memcpy(neighbor_entry.ip_address.addr.ip6,
            &(neigh_info->ip_addr.ip.v6addr),
@@ -573,7 +570,7 @@ int switchlink_route_create(switchlink_db_route_info_t *route_info) {
     route_entry.destination.mask.ip4 =
         htonl(ipv4_prefix_len_to_mask(route_info->ip_addr.prefix_len));
   } else {
-    ovs_assert(route_info->ip_addr.family == AF_INET6);
+    krnlmon_assert(route_info->ip_addr.family == AF_INET6);
     route_entry.destination.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
     memcpy(route_entry.destination.addr.ip6,
            &(route_info->ip_addr.ip.v6addr),
@@ -593,7 +590,7 @@ int switchlink_route_create(switchlink_db_route_info_t *route_info) {
     attr_list[0].value.oid = route_info->nhop_h;
   }
 
-  VLOG_INFO("Switch SAI route create API is triggered");
+  dzlog_info("Switch SAI route create API is triggered");
   status = route_api->create_route_entry(&route_entry, 1, attr_list);
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
@@ -623,7 +620,7 @@ int switchlink_route_delete(switchlink_db_route_info_t *route_info) {
     route_entry.destination.mask.ip4 =
         htonl(ipv4_prefix_len_to_mask(route_info->ip_addr.prefix_len));
   } else {
-    ovs_assert(route_info->ip_addr.family == AF_INET6);
+    krnlmon_assert(route_info->ip_addr.family == AF_INET6);
     route_entry.destination.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
     memcpy(route_entry.destination.addr.ip6,
            &(route_info->ip_addr.ip.v6addr),
@@ -633,7 +630,7 @@ int switchlink_route_delete(switchlink_db_route_info_t *route_info) {
     memcpy(route_entry.destination.mask.ip6, &mask, sizeof(sai_ip6_t));
   }
 
-  VLOG_INFO("Switch SAI route delete API is triggered");
+  dzlog_info("Switch SAI route delete API is triggered");
   status = route_api->remove_route_entry(&route_entry);
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
@@ -663,7 +660,7 @@ int switchlink_ecmp_create(switchlink_db_ecmp_info_t *ecmp_info) {
   status = nhop_group_api->create_next_hop_group(
       &(ecmp_info->ecmp_h), 0, 0x1, attr_list);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Unable to create nexthop group for ECMP");
+    dzlog_error("Unable to create nexthop group for ECMP");
     return -1;
   }
 
@@ -676,7 +673,7 @@ int switchlink_ecmp_create(switchlink_db_ecmp_info_t *ecmp_info) {
     status = nhop_group_api->create_next_hop_group_member(
         &ecmp_info->nhop_member_handles[index], 0, 0x2, attr_member_list);
     if (status != SAI_STATUS_SUCCESS) {
-        VLOG_ERR("Unable to add members to nexthop group for ECMP");
+        dzlog_error("Unable to add members to nexthop group for ECMP");
         return -1;
     }
   }
@@ -722,27 +719,27 @@ void switchlink_api_init(void) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   status = sai_initialize();
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   status = sai_api_query(SAI_API_PORT, (void **)&port_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_VIRTUAL_ROUTER, (void **)&vrf_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_FDB, (void **)&fdb_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **)&rintf_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_NEIGHBOR, (void **)&neigh_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_NEXT_HOP, (void **)&nhop_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_ROUTE, (void **)&route_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_HOSTIF, (void **)&host_intf_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_TUNNEL, (void **)&tunnel_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void **)&nhop_group_api);
-  ovs_assert(status == SAI_STATUS_SUCCESS);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   return;
 }

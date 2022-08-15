@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,6 @@
  */
 
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "sairouterinterface.h"
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_rmac.h"
@@ -23,8 +23,6 @@
 #include "switchapi/switch_l3.h"
 #include "saiinternal.h"
 #include "switchapi/switch_device.h"
-
-VLOG_DEFINE_THIS_MODULE(sairouterinterface);
 
 static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
                                       uint32_t attr_count,
@@ -40,7 +38,7 @@ static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
   switch_status = switch_api_device_default_rmac_handle_get(switch_id, rmac_h);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to get default RMAC handle, error: %s",
+    dzlog_error("Failed to get default RMAC handle, error: %s",
                   sai_status_to_string(status));
     return status;
   }
@@ -55,7 +53,7 @@ static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
 
         if (switch_status == SWITCH_STATUS_SUCCESS) {
           memcpy(&mac.mac_addr, &attribute->value.mac, 6);
-          VLOG_DBG("MAC: %02x:%02x:%02x:%02x:%02x:%02x, add to group",
+          dzlog_debug("MAC: %02x:%02x:%02x:%02x:%02x:%02x, add to group",
                      mac.mac_addr[0], mac.mac_addr[1], mac.mac_addr[2],
                      mac.mac_addr[3], mac.mac_addr[4], mac.mac_addr[5]);
           switch_status = switch_api_router_mac_add(switch_id, *rmac_h, &mac);
@@ -82,7 +80,7 @@ static sai_status_t sai_delete_rmac_internal(switch_handle_t rif_handle,
                                                          rmac_handle);
       status = sai_switch_status_to_sai_status(switch_status);
       if (status != SAI_STATUS_SUCCESS) {
-        VLOG_ERR("Failed to remove router interface, error: %s",
+        dzlog_error("Failed to remove router interface, error: %s",
                   sai_status_to_string(status));
       }
       return status;
@@ -120,7 +118,7 @@ static sai_status_t sai_create_router_interface(
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list: %s", sai_status_to_string(status));
+    dzlog_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -128,7 +126,7 @@ static sai_status_t sai_create_router_interface(
                                  attr_list, attr_count);
   if (attribute == NULL) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("missing attribute %s", sai_status_to_string(status));
+    dzlog_error("missing attribute %s", sai_status_to_string(status));
     return status;
   }
 
@@ -141,7 +139,7 @@ static sai_status_t sai_create_router_interface(
                                  &api_rif_info);
     if ((status = sai_switch_status_to_sai_status(switch_status)) !=
         SAI_STATUS_SUCCESS) {
-      VLOG_ERR("Failed to get router interface, error: %s",
+      dzlog_error("Failed to get router interface, error: %s",
                sai_status_to_string(status));
       return status;
     }
@@ -158,7 +156,7 @@ static sai_status_t sai_create_router_interface(
     status = sai_create_rmac_internal(switch_id, attr_count, attr_list,
                                       &rmac_handle);
     if (status != SAI_STATUS_SUCCESS) {
-      VLOG_ERR("Failed to create RMAC, error: %s",
+      dzlog_error("Failed to create RMAC, error: %s",
                 sai_status_to_string(status));
       return status;
     }
@@ -175,7 +173,7 @@ static sai_status_t sai_create_router_interface(
                                    attr_list, attr_count);
     if (attribute == NULL) {
       status = SAI_STATUS_INVALID_PARAMETER;
-      VLOG_ERR("missing attribute %s", sai_status_to_string(status));
+      dzlog_error("missing attribute %s", sai_status_to_string(status));
       return status;
     }
 
@@ -185,7 +183,7 @@ static sai_status_t sai_create_router_interface(
                                           &rif_handle);
     status = sai_switch_status_to_sai_status(switch_status);
     if (status != SAI_STATUS_SUCCESS) {
-      VLOG_ERR("Failed to create router interface, error: %s",
+      dzlog_error("Failed to create router interface, error: %s",
                     sai_status_to_string(status));
       return status;
     }
@@ -216,7 +214,7 @@ static sai_status_t sai_remove_router_interface(_In_ sai_object_id_t rif_id) {
       0, rif_id, (switch_uint64_t)UINT64_MAX, &api_rif_info);
   if ((status = sai_switch_status_to_sai_status(switch_status)) !=
       SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove router interface, error: %s",
+    dzlog_error("Failed to remove router interface, error: %s",
                   sai_status_to_string(status));
     return status;
   }
@@ -224,14 +222,14 @@ static sai_status_t sai_remove_router_interface(_In_ sai_object_id_t rif_id) {
   rmac_handle = api_rif_info.rmac_handle;
   status = sai_delete_rmac_internal((switch_handle_t)rif_id, rmac_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove RMA, erorr: %s",
+    dzlog_error("Failed to remove RMA, erorr: %s",
                   sai_status_to_string(status));
   }
 
   switch_status = switch_api_rif_delete(0, (switch_handle_t)rif_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove router interface, error: %s",
+    dzlog_error("Failed to remove router interface, error: %s",
                   sai_status_to_string(status));
   }
 

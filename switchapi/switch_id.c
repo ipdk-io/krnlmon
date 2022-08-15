@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "openvswitch/vlog.h"
 #include "config.h"
 #include "switch_id.h"
 #include "switch_internal.h"
@@ -24,7 +24,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define __FILE_ID__ SWITCH_ID
-VLOG_DEFINE_THIS_MODULE(switch_id);
 
 static switch_status_t switch_api_id_allocator_new_internal(
     switch_device_t device,
@@ -36,7 +35,7 @@ static switch_status_t switch_api_id_allocator_new_internal(
   *allocator = SWITCH_MALLOC(device, sizeof(switch_id_allocator_t), 1);
   if (*allocator == NULL) {
     status = SWITCH_STATUS_NO_MEMORY;
-    VLOG_ERR("id alloc: Failed to allocate memory for switch_id_allocator_t, "
+    dzlog_error("id alloc: Failed to allocate memory for switch_id_allocator_t, "
              "error: %s\n", switch_error_to_string(status));
     return status;
   }
@@ -46,7 +45,7 @@ static switch_status_t switch_api_id_allocator_new_internal(
   if ((*allocator)->data == NULL) {
     status = SWITCH_STATUS_NO_MEMORY;
     SWITCH_FREE(device, *allocator);
-    VLOG_ERR("id alloc: Failed to allocate memory for allocator data, "
+    dzlog_error("id alloc: Failed to allocate memory for allocator data, "
              "error: %s\n", switch_error_to_string(status));
     return status;
   }
@@ -63,7 +62,7 @@ static switch_status_t switch_api_id_allocator_destroy_internal(
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("id destroy failed, error: %s", switch_error_to_string(status));
+    dzlog_error("id destroy failed, error: %s", switch_error_to_string(status));
     return status;
   }
 
@@ -101,7 +100,7 @@ static switch_status_t switch_api_id_allocator_allocate_contiguous_internal(
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("id alloc contiguous failed, error: %s",
+    dzlog_error("id alloc contiguous failed, error: %s",
              switch_error_to_string(status));
     return status;
   }
@@ -136,7 +135,7 @@ static switch_status_t switch_api_id_allocator_allocate_internal(
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("id alloc internal failed, error: %s",
+    dzlog_error("id alloc internal failed, error: %s",
              switch_error_to_string(status));
     return status;
   }
@@ -150,7 +149,7 @@ static switch_status_t switch_api_id_allocator_release_internal(
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("id release failed, error: %s", switch_error_to_string(status));
+    dzlog_error("id release failed, error: %s", switch_error_to_string(status));
     return status;
   }
 

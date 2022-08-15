@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,16 +24,12 @@
 #include <net/if.h>
 
 #include "config.h"
-#include "openvswitch/util.h"
 #include "switchlink.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_route.h"
 #include "switchlink_db.h"
 #include "switchlink_sai.h"
-#include "openvswitch/vlog.h"
-
-VLOG_DEFINE_THIS_MODULE(switchlink_neigh)
 
 /*
  * Routine Description:
@@ -74,7 +71,7 @@ static void mac_delete(switchlink_mac_addr_t mac_addr,
   if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
     return;
   }
-  VLOG_INFO("Delete a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
+  dzlog_info("Delete a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
                                                      mac_addr[2], mac_addr[3],
                                                      mac_addr[4], mac_addr[5]);
   switchlink_mac_delete(mac_addr, bridge_h);
@@ -104,11 +101,11 @@ static void mac_create(switchlink_mac_addr_t mac_addr,
     if (old_intf_h != intf_h) {
       mac_delete(mac_addr, bridge_h);
     } else {
-      VLOG_DBG("FDB entry already exist");
+      dzlog_debug("FDB entry already exist");
       return;
     }
   }
-  VLOG_INFO("Create a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
+  dzlog_info("Create a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
                                                      mac_addr[2], mac_addr[3],
                                                      mac_addr[4], mac_addr[5]);
 
@@ -151,7 +148,7 @@ static void neigh_delete(switchlink_handle_t vrf_h,
   memcpy(&(nexthop_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
 
   mac_delete(neigh_info.mac_addr, g_default_bridge_h);
-  VLOG_INFO("Delete a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
+  dzlog_info("Delete a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
   switchlink_neighbor_delete(&neigh_info);
   switchlink_db_neighbor_delete(&neigh_info);
 
@@ -159,11 +156,11 @@ static void neigh_delete(switchlink_handle_t vrf_h,
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
       if (validate_nexthop_delete(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_NEIGHBOR)) {
-          VLOG_DBG("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
+          dzlog_debug("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
           switchlink_nexthop_delete(nexthop_info.nhop_h);
           switchlink_db_nexthop_delete(&nexthop_info);
       } else {
-          VLOG_DBG("Removing Neighbor learn from nhop");
+          dzlog_debug("Removing Neighbor learn from nhop");
           nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_NEIGHBOR;
           switchlink_db_nexthop_update_using_by(&nexthop_info);
       }
@@ -235,7 +232,7 @@ void neigh_create(switchlink_handle_t vrf_h,
     return;
   }
 
-  VLOG_INFO("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
+  dzlog_info("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
   if (switchlink_neighbor_create(&neigh_info) == -1) {
     if (!nhop_available) {
         switchlink_nexthop_delete(nexthop_info.nhop_h);
@@ -281,16 +278,16 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
   bool ipaddr_valid = false;
   switchlink_ip_addr_t ipaddr;
 
-  ovs_assert((type == RTM_NEWNEIGH) || (type == RTM_DELNEIGH));
+  krnlmon_assert((type == RTM_NEWNEIGH) || (type == RTM_DELNEIGH));
   nbh = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ndmsg);
 
   if (nbh->ndm_family == AF_INET6) {
-    VLOG_DBG("Ignoring IPv6 neighbors, as IPv6 support is not available");
+    dzlog_debug("Ignoring IPv6 neighbors, as IPv6 support is not available");
     return;
   }
 
-  VLOG_DBG("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
+  dzlog_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
        flags = 0x%x, type = %u\n",
        ((type == RTM_NEWNEIGH) ? "new" : "del"),
        nbh->ndm_family,
@@ -304,11 +301,11 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
       SWITCHLINK_DB_STATUS_SUCCESS) {
     char intf_name[16] = {0};
     if (!if_indextoname(nbh->ndm_ifindex, intf_name)) {
-        VLOG_ERR("Failed to get ifname for the index: %d", nbh->ndm_ifindex);
+        dzlog_error("Failed to get ifname for the index: %d", nbh->ndm_ifindex);
         return;
     }
     if_indextoname(nbh->ndm_ifindex, intf_name);
-    VLOG_DBG("neigh: Failed to get switchlink database interface info "
+    dzlog_debug("neigh: Failed to get switchlink database interface info "
              "for :%s\n", intf_name);
     return;
   }
@@ -334,19 +331,19 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
               ipaddr.prefix_len = 128;
             }
         } else {
-            VLOG_DBG("Ignoring unused neighbor states for attribute type %d\n",
+            dzlog_debug("Ignoring unused neighbor states for attribute type %d\n",
                      attr_type);
             return;
         }
         break;
       case NDA_LLADDR: {
-        ovs_assert(nla_len(attr) == sizeof(switchlink_mac_addr_t));
+        krnlmon_assert(nla_len(attr) == sizeof(switchlink_mac_addr_t));
         mac_addr_valid = true;
         memcpy(mac_addr, nla_data(attr), nla_len(attr));
         break;
       }
       default:
-        VLOG_DBG("neigh: skipping attr %d\n", attr_type);
+        dzlog_debug("neigh: skipping attr %d\n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);
@@ -356,7 +353,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
   switchlink_handle_t bridge_h = g_default_bridge_h;
   if (ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L2_ACCESS) {
     bridge_h = ifinfo.bridge_h;
-    ovs_assert(bridge_h);
+    krnlmon_assert(bridge_h != 0);
   }
 
   if (type == RTM_NEWNEIGH) {

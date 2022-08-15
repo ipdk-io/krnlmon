@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +18,8 @@
 #include "config.h"
 #include "saivirtualrouter.h"
 #include "switchapi/switch_vrf.h"
-#include "openvswitch/vlog.h"
 #include "saiinternal.h"
 #include "switchapi/switch_base_types.h"
-
-VLOG_DEFINE_THIS_MODULE(saivirtualrouter);
 
 static void
 sai_vrf_entry_attribute_parse(uint32_t attr_count,
@@ -77,7 +75,7 @@ sai_create_virtual_router_entry(_Out_ sai_object_id_t *vr_id,
 
   status = (sai_object_id_t)switch_api_vrf_create(0, vrf_id, &vrf_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to create virtual router entry : %s",
+    dzlog_error("failed to create virtual router entry : %s",
                   sai_status_to_string(status));
   }
   *vr_id = vrf_handle;
@@ -107,7 +105,7 @@ sai_remove_virtual_router_entry(_In_ sai_object_id_t vr_id)
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to remove virtual router entry %lx : %s",
+    dzlog_error("failed to remove virtual router entry %lx : %s",
                   vr_id,
                   sai_status_to_string(status));
   }

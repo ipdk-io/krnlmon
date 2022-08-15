@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "openvswitch/vlog.h"
 #include "config.h"
 #include "switch_internal.h"
 #include "switch_config_int.h"
@@ -25,14 +25,13 @@ extern "C" {
 
 #define __FILE_ID__ SWITCH_CONFIG
 switch_config_info_t config_info;
-VLOG_DEFINE_THIS_MODULE(switch_config);
 
 switch_status_t switch_config_init(switch_config_t *switch_config) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (config_info.config_inited) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    VLOG_ERR("config init failed, error: %s", switch_error_to_string(status));
+    dzlog_error("config init failed, error: %s", switch_error_to_string(status));
     return status;
   }
 
@@ -75,7 +74,7 @@ switch_status_t switch_config_device_context_set(
 
   if (device_ctx && config_info.device_inited[device]) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    VLOG_ERR("config free failed for device %d, error: %s",
+    dzlog_error("config free failed for device %d, error: %s",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -98,7 +97,7 @@ switch_status_t switch_config_device_context_get(
 
   if (!config_info.device_inited[device]) {
     status = SWITCH_STATUS_UNINITIALIZED;
-    VLOG_ERR("Failed to get device context for device %d, error: %s\n",
+    dzlog_error("Failed to get device context for device %d, error: %s\n",
               device,
               switch_error_to_string(status));
     return status;
@@ -115,7 +114,7 @@ switch_status_t switch_config_table_sizes_get(switch_device_t device,
 
   status = switch_table_default_sizes_get(table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to get config table sizes for device %d, error: %s\n",
+    dzlog_error("Failed to get config table sizes for device %d, error: %s\n",
               device,
               switch_error_to_string(status));
     return status;

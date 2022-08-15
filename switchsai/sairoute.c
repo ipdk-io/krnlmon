@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +21,7 @@
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_interface.h"
 #include "switchapi/switch_l3.h"
-#include "openvswitch/vlog.h"
 #include "saiinternal.h"
-
-VLOG_DEFINE_THIS_MODULE(sairoute);
-
-//static sai_api_t api_id = SAI_API_ROUTE;
 
 static void sai_route_entry_to_string(_In_ const sai_route_entry_t *route_entry,
                                       _Out_ char *entry_string) {
@@ -92,14 +88,14 @@ static sai_status_t sai_route_entry_update(const sai_route_entry_t *route_entry,
   int action = -1, pri = -1;
   if (!route_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null route entry for route entry update: %s",
+    dzlog_error("null route entry for route entry update: %s",
              sai_status_to_string(status));
     return status;
   }
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list for route entry update: %s",
+    dzlog_error("null attribute list for route entry update: %s",
               sai_status_to_string(status));
     return status;
   }
@@ -152,7 +148,7 @@ sai_status_t sai_create_route_entry(_In_ const sai_route_entry_t *route_entry,
 
   status = sai_route_entry_update(route_entry, attr_count, attr_list);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to create route entry for %s, error: %s",
+    dzlog_error("Failed to create route entry for %s, error: %s",
                   entry_string,
                   sai_status_to_string(status));
   }
@@ -184,7 +180,7 @@ sai_status_t sai_remove_route_entry(_In_ const sai_route_entry_t *route_entry) {
 
   if (!route_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null route entry for remove route entry: %s", sai_status_to_string(status));
+    dzlog_error("null route entry for remove route entry: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -198,7 +194,7 @@ sai_status_t sai_remove_route_entry(_In_ const sai_route_entry_t *route_entry) {
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove route entry, error: %s",
+    dzlog_error("Failed to remove route entry, error: %s",
                   sai_status_to_string(status));
   }
 

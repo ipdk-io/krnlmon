@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +17,6 @@
 
 #include "switch_internal.h"
 #include "switch_table.h"
-#include "openvswitch/vlog.h"
 #include "config.h"
 
 #ifdef __cplusplus
@@ -24,7 +24,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define __FILE_ID__ SWITCH_TABLE
-VLOG_DEFINE_THIS_MODULE(switch_table);
 
 static char *switch_table_id_to_string(switch_table_id_t table_id) {
   switch (table_id) {
@@ -290,7 +289,7 @@ switch_status_t switch_table_init(switch_device_t device,
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("table init: Failed to get table info on device %d:%s",
+    dzlog_error("table init: Failed to get table info on device %d:%s",
               device,
               switch_error_to_string(status));
     return status;
@@ -317,7 +316,7 @@ switch_status_t switch_table_free(switch_device_t device) {
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("table free: Failed to get table info on device %d:%s",
+    dzlog_error("table free: Failed to get table info on device %d:%s",
              device,
              switch_error_to_string(status));
     return status;
@@ -338,7 +337,7 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
 
   if (!table_size) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("Failed to get table size on device %d, error: %s",
+    dzlog_error("Failed to get table size on device %d, error: %s",
               device,
               switch_error_to_string(status));
     return status;
@@ -346,7 +345,7 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("get table size: Failed to get table info on device %d, error: %s",
+    dzlog_error("get table size: Failed to get table info on device %d, error: %s",
              device,
              switch_error_to_string(status));
     return status;
@@ -363,7 +362,7 @@ switch_status_t switch_table_default_sizes_get(switch_size_t *table_sizes) {
 
   if (!table_sizes) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("Failed to get table default size, error: %s",
+    dzlog_error("Failed to get table default size, error: %s",
              switch_error_to_string(status));
     return status;
   }
