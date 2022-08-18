@@ -25,7 +25,7 @@ add_library(switchapi_o OBJECT
     switch_handle_int.h
     switch_handle.h
     switch_handle.c
-    switch_utils.c
+    switchapi_utils.c
     switch_port.h
     switch_port.c
     switch_pd_port.c
@@ -60,7 +60,6 @@ add_library(switchapi_o OBJECT
 )
 
 target_include_directories(switchapi_o PRIVATE
-    ${OVS_INSTALL_PREFIX}/include
     ${SDE_INSTALL_PREFIX}/include
     ${SDE_INSTALL_PREFIX}/include/target-utils # id
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party

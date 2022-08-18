@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,23 +27,16 @@
 #include <linux/version.h>
 
 #include "config.h"
-#include "openvswitch/util.h"
 #include "switchlink.h"
 #include "switchlink_int.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_db.h"
 #include "switchlink_sai.h"
-#include "openvswitch/vlog.h"
-#include "openvswitch/dynamic-string.h"
-
-// static unixctl_cb_func vxlan_dump_cache;
 
 switchlink_handle_t g_default_vrf_h = 0;
 switchlink_handle_t g_default_bridge_h = 0;
 switchlink_handle_t g_cpu_rx_nhop_h = 0;
-
-VLOG_DEFINE_THIS_MODULE(switchlink_link);
 
 /*
  * Routine Description:
@@ -62,11 +56,11 @@ static void interface_create(switchlink_db_interface_info_t *intf) {
   status = switchlink_db_interface_get_info(intf->ifindex, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     // create the interface
-    VLOG_DBG("Switchlink Interface Create: %s", intf->ifname);
+    dzlog_debug("Switchlink Interface Create: %s", intf->ifname);
 
     status = switchlink_interface_create(intf, &(intf->intf_h));
     if (status) {
-      VLOG_ERR("newlink: Failed to create switchlink interface, error: %d\n",
+      dzlog_error("newlink: Failed to create switchlink interface, error: %d\n",
                status);
       return;
     }
@@ -84,7 +78,7 @@ static void interface_create(switchlink_db_interface_info_t *intf) {
       // Delete if RMAC is configured previously, and create this new RMAC.
       status = switchlink_interface_create(&ifinfo, &ifinfo.intf_h);
       if (status) {
-        VLOG_ERR("newlink: Failed to create switchlink interface, error: %d\n",
+        dzlog_error("newlink: Failed to create switchlink interface, error: %d\n",
                  status);
         return;
       }
@@ -138,12 +132,12 @@ static void tunnel_interface_create(
                                                    &tnl_ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
 
-    VLOG_DBG("Switchlink tunnel interface: %s", tnl_intf->ifname);
+    dzlog_debug("Switchlink tunnel interface: %s", tnl_intf->ifname);
     status = switchlink_tunnel_interface_create(tnl_intf,
                                                 &(tnl_intf->orif_h),
                                                 &(tnl_intf->tnl_term_h));
     if (status) {
-      VLOG_ERR("newlink: Failed to create switchlink tunnel interface :%s, "
+      dzlog_error("newlink: Failed to create switchlink tunnel interface :%s, "
                "error: %d", tnl_intf->ifname, status);
       return;
     }
@@ -152,7 +146,7 @@ static void tunnel_interface_create(
     switchlink_db_tunnel_interface_add(tnl_intf->ifindex, tnl_intf);
     return;
   }
-  VLOG_DBG("Switchlink DB already has tunnel config for "
+  dzlog_debug("Switchlink DB already has tunnel config for "
            "interface: %s", tnl_intf->ifname);
   return;
 }
@@ -172,12 +166,12 @@ static void tunnel_interface_delete(uint32_t ifindex) {
   switchlink_db_tunnel_interface_info_t tnl_intf;
   if (switchlink_db_tunnel_interface_get_info(ifindex, &tnl_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-      VLOG_INFO("Trying to delete a tunnel which is not "
+      dzlog_info("Trying to delete a tunnel which is not "
                 "available");
     return;
   }
 
-  VLOG_DBG("Switchlink tunnel interface: %s", tnl_intf.ifname);
+  dzlog_debug("Switchlink tunnel interface: %s", tnl_intf.ifname);
 
   // delete the interface from backend and in DB
   switchlink_tunnel_interface_delete(&tnl_intf);
@@ -246,11 +240,11 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
   uint32_t vxlan_dst_port = 0;
   uint8_t ttl = 0;
 
-  ovs_assert((type == RTM_NEWLINK) || (type == RTM_DELLINK));
+  krnlmon_assert((type == RTM_NEWLINK) || (type == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifinfomsg);
 
-  VLOG_DBG("%slink: family = %d, type = %d, ifindex = %d, flags = 0x%x,"\
+  dzlog_debug("%slink: family = %d, type = %d, ifindex = %d, flags = 0x%x,"\
            "change = 0x%x\n", ((type == RTM_NEWLINK) ? "new" : "del"),
            ifmsg->ifi_family, ifmsg->ifi_type, ifmsg->ifi_index,
            ifmsg->ifi_flags, ifmsg->ifi_change);
@@ -264,10 +258,10 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
     int attr_type = nla_type(attr);
     switch (attr_type) {
       case IFLA_IFNAME:
-        ovs_strzcpy(intf_info.ifname,
-                nla_get_string(attr),
-                SWITCHLINK_INTERFACE_NAME_LEN_MAX);
-        VLOG_DBG("Interface name is %s\n", intf_info.ifname);
+        snprintf(intf_info.ifname,
+                 SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                 nla_get_string(attr));
+        dzlog_debug("Interface name is %s\n", intf_info.ifname);
         break;
       case IFLA_LINKINFO:
         nla_for_each_nested(nest_attr, attr, attrlen) {
@@ -282,12 +276,12 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                   switch (nest_attr_type_new) {
                       case IFLA_VXLAN_ID:
                         vni_id = *(uint32_t *) nla_data(nest_attr_new);
-                        VLOG_DBG("Interface VNI ID: %d\n", vni_id);
+                        dzlog_debug("Interface VNI ID: %d\n", vni_id);
                         break;
                       case IFLA_VXLAN_PORT:
                         vxlan_dst_port =
                             htons(*(uint16_t *) nla_data(nest_attr_new));
-                        VLOG_DBG("Interface Dst port: %d\n", vxlan_dst_port);
+                        dzlog_debug("Interface Dst port: %d\n", vxlan_dst_port);
                         break;
                       case IFLA_VXLAN_GROUP:
                         memset(&remote_ip_addr, 0,
@@ -296,7 +290,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                         remote_ip_addr.ip.v4addr.s_addr =
                             ntohl(nla_get_u32(nest_attr_new));
                         remote_ip_addr.prefix_len = 32;
-                        VLOG_DBG("Remote Ipv4 address: 0x%x\n",
+                        dzlog_debug("Remote Ipv4 address: 0x%x\n",
                                    remote_ip_addr.ip.v4addr.s_addr);
                         break;
                       case IFLA_VXLAN_LOCAL:
@@ -305,12 +299,12 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                         src_ip_addr.ip.v4addr.s_addr =
                             ntohl(nla_get_u32(nest_attr_new));
                         src_ip_addr.prefix_len = 32;
-                        VLOG_DBG("Src Ipv4 address: 0x%x\n",
+                        dzlog_debug("Src Ipv4 address: 0x%x\n",
                                    src_ip_addr.ip.v4addr.s_addr);
                         break;
                       case IFLA_VXLAN_TTL:
                         ttl = nla_get_u8(nest_attr_new);
-                        VLOG_DBG("TTL: %d\n", ttl);
+                        dzlog_debug("TTL: %d\n", ttl);
                         break;
                     default:
                       break;
@@ -323,10 +317,10 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         }
         break;
       case IFLA_ADDRESS: {
-        ovs_assert(nla_len(attr) == sizeof(switchlink_mac_addr_t));
+        krnlmon_assert(nla_len(attr) == sizeof(switchlink_mac_addr_t));
         memcpy(&(intf_info.mac_addr), nla_data(attr), nla_len(attr));
 
-        VLOG_DBG("Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
+        dzlog_debug("Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
                (unsigned char) intf_info.mac_addr[0],
                (unsigned char) intf_info.mac_addr[1],
                (unsigned char) intf_info.mac_addr[2],
@@ -365,8 +359,9 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         break;
 
       case SWITCHLINK_LINK_TYPE_VXLAN: {
-        ovs_strzcpy(tnl_intf_info.ifname, intf_info.ifname,
-                    SWITCHLINK_INTERFACE_NAME_LEN_MAX);
+        snprintf(tnl_intf_info.ifname,
+                 SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                 intf_info.ifname);
         tnl_intf_info.dst_ip = remote_ip_addr;
         tnl_intf_info.src_ip = src_ip_addr;
         tnl_intf_info.link_type = link_type;
@@ -382,13 +377,13 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         break;
     }
   } else {
-    ovs_assert(type == RTM_DELLINK);
+    krnlmon_assert(type == RTM_DELLINK);
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
         tunnel_interface_delete(ifmsg->ifi_index);
     } else if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
       interface_delete(ifmsg->ifi_index);
     } else {
-      VLOG_DBG("Unhandled link type");
+      dzlog_debug("Unhandled link type");
     }
   }
 }

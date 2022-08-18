@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +19,6 @@
 #include "sainexthopgroup.h"
 #include "saiinternal.h"
 #include "switchapi/switch_nhop.h"
-#include "openvswitch/vlog.h"
-
-VLOG_DEFINE_THIS_MODULE(sainexthopgroup);
 
 /*
 * Routine Description:
@@ -51,7 +49,7 @@ static sai_status_t sai_create_next_hop_group_entry(
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list: %s", sai_status_to_string(status));
+    dzlog_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -70,7 +68,7 @@ static sai_status_t sai_create_next_hop_group_entry(
 
   status = switch_api_ecmp_create(switch_id, &next_hop_group_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to create ECMP group %s",
+    dzlog_error("failed to create ECMP group %s",
                   sai_status_to_string(status));
     return status;
   }
@@ -100,7 +98,7 @@ static sai_status_t sai_remove_next_hop_group_entry(_In_ sai_object_id_t
       switch_api_ecmp_delete(0, (switch_handle_t)next_hop_group_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to remove ECMP group %lx: %s",
+    dzlog_error("failed to remove ECMP group %lx: %s",
                   next_hop_group_id,
                   sai_status_to_string(status));
   }
@@ -135,7 +133,7 @@ static sai_status_t sai_create_next_hop_group_member(
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list: %s", sai_status_to_string(status));
+    dzlog_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -161,7 +159,7 @@ static sai_status_t sai_create_next_hop_group_member(
                                              &member_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to add member to ECMP group %lx : %s",
+    dzlog_error("failed to add member to ECMP group %lx : %s",
                   nhop_group_id,
                   sai_status_to_string(status));
   }
@@ -190,7 +188,7 @@ static sai_status_t sai_remove_next_hop_group_member(_In_ sai_object_id_t
       0, next_hop_group_member_id, &nhop_group_id, &nhop_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to get ECMP group and nhop for member ID %lx : %s",
+    dzlog_error("failed to get ECMP group and nhop for member ID %lx : %s",
               next_hop_group_member_id,
               sai_status_to_string(status));
   }
@@ -199,7 +197,7 @@ static sai_status_t sai_remove_next_hop_group_member(_In_ sai_object_id_t
       0, (switch_handle_t)nhop_group_id, 0x1, (switch_handle_t *)&nhop_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("failed to remove member from ECMP group %lx : %s",
+    dzlog_error("failed to remove member from ECMP group %lx : %s",
                   next_hop_group_member_id,
                   sai_status_to_string(status));
   }
@@ -217,7 +215,7 @@ sai_next_hop_group_api_t nhop_group_api = {
     .remove_next_hop_group_member = sai_remove_next_hop_group_member};
 
 sai_status_t sai_next_hop_group_initialize(sai_api_service_t *sai_api_service) {
-  VLOG_DBG("Initializing ECMP group");
+  dzlog_debug("Initializing ECMP group");
   sai_api_service->nhop_group_api = nhop_group_api;
   return SAI_STATUS_SUCCESS;
 }

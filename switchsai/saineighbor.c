@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +23,7 @@
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_l3.h"
-#include "openvswitch/vlog.h"
 #include "saiinternal.h"
-
-VLOG_DEFINE_THIS_MODULE(saineighbor);
-
-//static sai_api_t api_id = SAI_API_NEIGHBOR;
 
 static void sai_neighbor_entry_to_string(
     _In_ const sai_neighbor_entry_t *neighbor_entry, _Out_ char *entry_string) {
@@ -110,13 +106,13 @@ static sai_status_t sai_create_neighbor_entry(
 
   if (!neighbor_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null neighbor entry: %s", sai_status_to_string(status));
+    dzlog_error("null neighbor entry: %s", sai_status_to_string(status));
     return status;
   }
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list: %s", sai_status_to_string(status));
+    dzlog_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -128,7 +124,7 @@ static sai_status_t sai_create_neighbor_entry(
 
   status = switch_api_neighbor_create(0, &api_neighbor, &neighbor_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to create neighbor entry, error: %s",
+    dzlog_error("Failed to create neighbor entry, error: %s",
                   sai_status_to_string(status));
   }
 
@@ -158,7 +154,7 @@ static sai_status_t sai_remove_neighbor_entry(
 
   if (!neighbor_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null neighbor entry: %s", sai_status_to_string(status));
+    dzlog_error("null neighbor entry: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -172,7 +168,7 @@ static sai_status_t sai_remove_neighbor_entry(
   switch_status = switch_api_neighbor_delete(0, neighbor_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove neighbor entry, error: %s",
+    dzlog_error("Failed to remove neighbor entry, error: %s",
                   sai_status_to_string(status));
     status = SAI_STATUS_SUCCESS;
   }

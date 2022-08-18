@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +16,10 @@
  */
 
 #include "config.h"
-#include "openvswitch/util.h"
-#include "openvswitch/vlog.h"
 #include "switch_l3.h"
 #include "switch_internal.h"
 #include "switch_nhop_int.h"
 #include "switch_pd_routing.h"
-
-VLOG_DEFINE_THIS_MODULE(switch_l3);
 
 switch_status_t switch_route_table_entry_key_init(void *args,
                                                   switch_uint8_t *key,
@@ -64,7 +61,7 @@ switch_status_t switch_l3_init(switch_device_t device) {
   l3_ctx = SWITCH_MALLOC(device, sizeof(switch_l3_context_t), 0x1);
   if (!l3_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    VLOG_ERR(
+    dzlog_error(
         "l3 init: Failed to allocate memory for switch_l3_context_t "
         "on device %d ,error: %s\n",
         device,
@@ -75,7 +72,7 @@ switch_status_t switch_l3_init(switch_device_t device) {
   status =
       switch_device_api_context_set(device, SWITCH_API_TYPE_L3, (void *)l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 init: Failed to set device context device %d "
         ",error: %s\n",
         device,
@@ -89,7 +86,7 @@ switch_status_t switch_l3_init(switch_device_t device) {
   
   status = SWITCH_HASHTABLE_INIT(&l3_ctx->route_hashtable);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 init: Failed to init hashtable on device %d: "
         ",error: %s\n",
         device,
@@ -100,7 +97,7 @@ switch_status_t switch_l3_init(switch_device_t device) {
   status = switch_handle_type_init(
       device, SWITCH_HANDLE_TYPE_ROUTE, IPV4_TABLE_SIZE);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 init: Failed to init SWITCH_HANDLE_TYPE_ROUTE on device %d: "
         ",error: %s\n",
         device,
@@ -118,7 +115,7 @@ switch_status_t switch_l3_free(switch_device_t device) {
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 free: Failed to get device context on device %d: "
         ",error: %s\n",
         device,
@@ -127,7 +124,7 @@ switch_status_t switch_l3_free(switch_device_t device) {
 
   status = SWITCH_HASHTABLE_DONE(&l3_ctx->route_hashtable);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 free: SWITCH_HASHTABLE_DONE failed on device %d: "
         ",error: %s\n",
         device,
@@ -136,7 +133,7 @@ switch_status_t switch_l3_free(switch_device_t device) {
 
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_ROUTE);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 free: Failed to free SWITCH_HANDLE_TYPE_ROUTE on device %d: "
         ",error: %s\n",
         device,
@@ -160,7 +157,7 @@ switch_status_t switch_route_table_hash_lookup(
 
   if (!route_entry) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR(
+    dzlog_error(
         "route table lookup failed on device %d: "
         ",error: %s\n",
         device,
@@ -171,7 +168,7 @@ switch_status_t switch_route_table_hash_lookup(
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route table lookup: Failed to get device context on device %d: "
         ",error: %s\n",
         device,
@@ -197,7 +194,7 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
 
   if (!SWITCH_ROUTE_HANDLE(route_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable insert failed on device %d "
         ",route handle 0x%lx, error: %s\n",
         device,
@@ -208,7 +205,7 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
 
   status = switch_route_get(device, route_handle, &route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable insert: Failed to get route info on device %d "
         ",route handle 0x%lx, error: %s\n",
         device,
@@ -222,7 +219,7 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable insert failed on device %d "
         "route handle 0x%lx: l3 context get failed(%s)\n",
         device,
@@ -236,7 +233,7 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
                                    (void *)route_entry,
                                    (void *)(route_info));
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable insert failed on device %d "
         "route handle 0x%lx: hashtable insert failed(%s)\n",
         device,
@@ -257,7 +254,7 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
 
   if (!SWITCH_ROUTE_HANDLE(route_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: route handle invalid(%s)\n",
         device,
@@ -268,7 +265,7 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
 
   status = switch_route_get(device, route_handle, &route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: route get failed(%s)\n",
         device,
@@ -282,7 +279,7 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: l3 context get failed(%s)\n",
         device,
@@ -294,7 +291,7 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
   status = SWITCH_HASHTABLE_DELETE(
       &l3_ctx->route_hashtable, (void *)route_entry, (void **)&route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: l3 hashtable delete failed(%s)\n",
         device,
@@ -320,7 +317,7 @@ switch_status_t switch_api_l3_route_add(
 
   if (!api_route_entry) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "parameters invalid(%s)\n",
         device,
@@ -331,7 +328,7 @@ switch_status_t switch_api_l3_route_add(
   vrf_handle = api_route_entry->vrf_handle;
   if (!SWITCH_VRF_HANDLE(vrf_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "vrf handle invalid(%s)\n",
@@ -349,7 +346,7 @@ switch_status_t switch_api_l3_route_add(
   status = switch_route_table_hash_lookup(device, &route_entry, &route_handle);
   if (status == SWITCH_STATUS_SUCCESS) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "route table lookup failed(%s)\n",
@@ -361,7 +358,7 @@ switch_status_t switch_api_l3_route_add(
 
   handle = switch_route_handle_create(device);
   if (handle == SWITCH_API_INVALID_HANDLE) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "route handle create failed(%s)\n",
         device,
@@ -371,7 +368,7 @@ switch_status_t switch_api_l3_route_add(
 
   status = switch_route_get(device, handle, &route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "route get failed(%s)\n",
         device,
@@ -384,7 +381,7 @@ switch_status_t switch_api_l3_route_add(
     status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
                                         SWITCH_ACTION_NHOP);
     if (status != SWITCH_STATUS_SUCCESS) {
-        VLOG_ERR("ipv4 table update failed for NHOP action "
+        dzlog_error("ipv4 table update failed for NHOP action "
                  ":%s \n", switch_error_to_string(status));
         return status;
     }
@@ -393,7 +390,7 @@ switch_status_t switch_api_l3_route_add(
     status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
                                         SWITCH_ACTION_ECMP);
     if(status != SWITCH_STATUS_SUCCESS) {
-      VLOG_ERR("ipv4 table update failed for ECMP action"
+      dzlog_error("ipv4 table update failed for ECMP action"
                 ": %s\n", switch_error_to_string(status));
       return status;
     }
@@ -402,7 +399,7 @@ switch_status_t switch_api_l3_route_add(
 
     status = switch_ecmp_group_get(device, ecmp_handle, &ecmp_info);
     if (status != SWITCH_STATUS_SUCCESS) {
-      VLOG_ERR(
+      dzlog_error(
           "Failed to get ecmp info on device %d handle: 0x%lx, error: %s",
           device,
           ecmp_handle,
@@ -412,7 +409,7 @@ switch_status_t switch_api_l3_route_add(
 
     status = switch_pd_ecmp_hash_table_entry(device, ecmp_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
-        VLOG_ERR("ipv4 table update failed for NHOP action, "
+        dzlog_error("ipv4 table update failed for NHOP action, "
                  "error: %s\n", switch_error_to_string(status));
         return status;
     }
@@ -430,7 +427,7 @@ switch_status_t switch_api_l3_route_add(
 
   status = switch_route_hashtable_insert(device, handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "route table insert failed(%s)\n",
@@ -456,7 +453,7 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
 
   if (!api_route_entry) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table delete failed on device %d "
         "parameters invalid(%s)\n",
         device,
@@ -471,7 +468,7 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
 
   status = switch_route_table_hash_lookup(device, &route_entry, &route_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table delete failed on device %d "
         "route entry hash find failed(%s)\n",
         device,
@@ -481,7 +478,7 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
 
   status = switch_route_get(device, route_handle, &route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table delete failed on device %d "
         "route get failed(%s)\n",
         device,
@@ -496,7 +493,7 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
       ecmp_handle = api_route_info.nhop_handle;
       status = switch_ecmp_group_get(device, ecmp_handle, &ecmp_info);
       if (status != SWITCH_STATUS_SUCCESS) {
-        VLOG_ERR(
+        dzlog_error(
             "ecmp info get failed on device %d ecmp handle 0x%lx: "
             "ecmp get Failed:(%s)\n",
             device,
@@ -507,7 +504,7 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
 
       status = switch_pd_ecmp_hash_table_entry(device, ecmp_info, false);
       if (status != SWITCH_STATUS_SUCCESS) {
-          VLOG_ERR("ipv4 table update failed for NHOP action \n");
+          dzlog_error("ipv4 table update failed for NHOP action \n");
           return status;
       }
     }
@@ -516,13 +513,13 @@ switch_status_t switch_api_l3_route_delete(switch_device_t device,
                                         false, SWITCH_ACTION_NONE);
     SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
     if(status != SWITCH_STATUS_SUCCESS)
-      VLOG_ERR("ipv4 table delete failed, error"
+      dzlog_error("ipv4 table delete failed, error"
                 ": %s\n", switch_error_to_string(status));
   }
 
   status = switch_route_hashtable_remove(device, route_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "l3 route table delete failed on device %d "
         "route table delete failed(%s)\n",
         device,

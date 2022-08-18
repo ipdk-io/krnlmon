@@ -1,6 +1,6 @@
 /*
- * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,20 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_LINK_H__
-#define __SWITCHLINK_LINK_H__
+#ifndef __KRNLMON_UTILS_H__
+#define __KRNLMON_UTILS_H__
 
-typedef enum {
-  SWITCHLINK_INTF_TYPE_NONE,
-  SWITCHLINK_INTF_TYPE_L2_ACCESS,
-  SWITCHLINK_INTF_TYPE_L3,
-  SWITCHLINK_INTF_TYPE_L3VI,
-} switchlink_intf_type_t;
+#include <assert.h>
+#include "zlog/zlog.h"
+#include "zlog/category.h"
 
-typedef enum {
-  SWITCHLINK_LINK_TYPE_NONE,
-  SWITCHLINK_LINK_TYPE_ETH,
-  SWITCHLINK_LINK_TYPE_TUN,
-  SWITCHLINK_LINK_TYPE_BRIDGE,
-  SWITCHLINK_LINK_TYPE_VXLAN,
-  SWITCHLINK_LINK_TYPE_BOND,
-} switchlink_link_type_t;
+#define krnlmon_assert                  assert
+#define krnlmon_snprintf                snprintf
 
-#endif /* __SWITCHLINK_LINK_H__ */
+#define DEFAULT_ZLOG_CFG_FILE           "switchutils/krnlmon-zlog-cfg"
+
+// Function declarations
+int krnlmon_zlog_init(const char *arg1);
+void krnlmon_zlog_close(void);
+
+#endif /* __KRNLMON_UTILS_H__*/

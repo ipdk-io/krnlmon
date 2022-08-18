@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +25,7 @@
 #include "switchapi/switch_handle_int.h"
 #include "bf_types/bf_types.h"
 #include "tdi/common/tdi_defs.h"
-#include "openvswitch/vlog.h"
+#include "switchutils/switch_utils.h"
 
 #ifdef __cplusplus
 extern "C" {

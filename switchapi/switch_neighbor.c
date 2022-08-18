@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +26,6 @@
 #include "switch_internal.h"
 #include "switch_pd_utils.h"
 
-VLOG_DEFINE_THIS_MODULE(switch_neighbor);
-
 switch_status_t switch_neighbor_init(switch_device_t device) {
   switch_neighbor_context_t *neighbor_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
@@ -34,7 +33,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
   neighbor_ctx = SWITCH_MALLOC(device, sizeof(switch_neighbor_context_t), 0x1);
   if (!neighbor_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    VLOG_ERR("neighbor init failed for device %d: %s\n",
+    dzlog_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -43,7 +42,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
   status = switch_device_api_context_set(
       device, SWITCH_API_TYPE_NEIGHBOR, (void *)neighbor_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("neighbor init failed for device %d: %s\n",
+    dzlog_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -53,7 +52,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
       device, SWITCH_HANDLE_TYPE_NEIGHBOR, NEIGHBOR_MOD_TABLE_SIZE);
 
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("neighbor init failed for device %d: %s\n",
+    dzlog_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     goto cleanup;
@@ -74,7 +73,7 @@ switch_status_t switch_neighbor_free(switch_device_t device) {
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_NEIGHBOR, (void **)&neighbor_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("neighbor free failed for device %d: %s\n",
+    dzlog_error("neighbor free failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -82,7 +81,7 @@ switch_status_t switch_neighbor_free(switch_device_t device) {
   
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_NEIGHBOR);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR("neighbor free failed for device %d: %s\n",
+    dzlog_error("neighbor free failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
   }
@@ -115,7 +114,7 @@ switch_status_t switch_api_neighbor_create(
 
   if (!api_neighbor_info) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    VLOG_ERR(
+    dzlog_error(
         "neighbor create failed on device %d: "
         "neighbor info invalid:(%s)\n",
         device,
@@ -125,7 +124,7 @@ switch_status_t switch_api_neighbor_create(
 
   if (!SWITCH_NHOP_HANDLE(api_neighbor_info->nhop_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    VLOG_ERR(
+    dzlog_error(
         "neighbor create failed on device %d nhop handle 0x%lx: "
         "nhop handle invalid:(%s)\n",
         device,
@@ -138,7 +137,7 @@ switch_status_t switch_api_neighbor_create(
   handle = switch_neighbor_handle_create(device);
   if (handle == SWITCH_API_INVALID_HANDLE) {
     status = SWITCH_STATUS_NO_MEMORY;
-    VLOG_ERR(
+    dzlog_error(
         "neighbor create failed on device %d: "
         "handle create failed:(%s)\n",
         device,
@@ -148,7 +147,7 @@ switch_status_t switch_api_neighbor_create(
 
   status = switch_neighbor_get(device, handle, &neighbor_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "neighbor create failed on device %d: "
         "neighbor get failed:(%s)\n",
         device,
@@ -187,7 +186,7 @@ switch_status_t switch_api_neighbor_create(
 
       status = switch_routing_table_entry(device, &pd_neighbor_info, true);
       if (status != SWITCH_STATUS_SUCCESS) {
-        VLOG_ERR("routing tables update failed \n");
+        dzlog_error("routing tables update failed \n");
         return status;
       }
 
@@ -215,7 +214,7 @@ switch_status_t switch_api_neighbor_create(
           status = switch_pd_rmac_table_entry(device, rmac_entry,
                                            api_neighbor_info->rif_handle, true);
           if (status != SWITCH_STATUS_SUCCESS) {
-              VLOG_ERR("routing tables update failed \n");
+              dzlog_error("routing tables update failed \n");
               return status;
           }
 
@@ -226,7 +225,7 @@ switch_status_t switch_api_neighbor_create(
   SWITCH_MEMCPY(&neighbor_info->switch_pd_routing_info,
                 &pd_neighbor_info,
                 sizeof(switch_pd_routing_info_t));
-  VLOG_INFO(
+  dzlog_info(
       "neighbor created on device %d neighbor handle 0x%lx\n", device, handle);
 
   return status;
@@ -241,7 +240,7 @@ switch_status_t switch_api_neighbor_delete(
 
   if (!SWITCH_NEIGHBOR_HANDLE(neighbor_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    VLOG_ERR(
+    dzlog_error(
         "neighbor delete failed on device %d neighbor handle 0x%lx: "
         "neighbor handle invalid(%s)\n",
         device,
@@ -252,7 +251,7 @@ switch_status_t switch_api_neighbor_delete(
 
   status = switch_neighbor_get(device, neighbor_handle, &neighbor_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "neighbor delete failed on device %d neighbor handle 0x%lx: "
         "neighbor get failed(%s)\n",
         device,
@@ -269,13 +268,13 @@ switch_status_t switch_api_neighbor_delete(
                                         &neighbor_info->switch_pd_routing_info,
                                         false);
     if(status != SWITCH_STATUS_SUCCESS)
-      VLOG_ERR("routing tables update failed \n");
+      dzlog_error("routing tables update failed \n");
   }
 
   status = switch_neighbor_handle_delete(device, neighbor_handle);
   SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
 
-  VLOG_INFO("neighbor deleted on device %d neighbor handle 0x%lx\n",
+  dzlog_info("neighbor deleted on device %d neighbor handle 0x%lx\n",
              device,
              neighbor_handle);
 

@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,18 +24,14 @@
 #include <netlink/netlink.h>
 
 #include "config.h"
-#include "openvswitch/util.h"
 #include "switchlink.h"
 #include "switchlink_int.h"
-#include "openvswitch/vlog.h"
 
 static struct nl_sock *g_nlsk = NULL;
 static pthread_t switchlink_thread;
 static pthread_mutex_t cookie_mutex;
 static pthread_cond_t cookie_cv;
 static int cookie = 0;
-
-VLOG_DEFINE_THIS_MODULE(switchlink_main);
 
 enum {
   SWITCHLINK_MSG_LINK,
@@ -149,35 +146,35 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
   */
   switch (nlmsg->nlmsg_type) {
     case RTM_NEWLINK:
-      VLOG_DBG("Switchlink Notification RTM_NEWLINK\n");
+      dzlog_debug("Switchlink Notification RTM_NEWLINK\n");
       process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELLINK:
-      VLOG_DBG("Switchlink Notification RTM_DELLINK\n");
+      dzlog_debug("Switchlink Notification RTM_DELLINK\n");
       process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWADDR:
-      VLOG_DBG("Switchlink Notification RTM_NEWADDR\n");
+      dzlog_debug("Switchlink Notification RTM_NEWADDR\n");
       process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELADDR:
-      VLOG_DBG("Switchlink Notification RTM_DELADDR\n");
+      dzlog_debug("Switchlink Notification RTM_DELADDR\n");
       process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWROUTE:
-      VLOG_DBG("Switchlink Notification RTM_NEWROUTE\n");
+      dzlog_debug("Switchlink Notification RTM_NEWROUTE\n");
       process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELROUTE:
-      VLOG_DBG("Switchlink Notification RTM_DELROUTE\n");
+      dzlog_debug("Switchlink Notification RTM_DELROUTE\n");
       process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNEIGH:
-      VLOG_DBG("Switchlink Notification RTM_NEWNEIGH\n");
+      dzlog_debug("Switchlink Notification RTM_NEWNEIGH\n");
       process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELNEIGH:
-      VLOG_DBG("Switchlink Notification RTM_DELNEIGH\n");
+      dzlog_debug("Switchlink Notification RTM_DELNEIGH\n");
       process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNETCONF:
@@ -189,7 +186,7 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
       // P4-OVS comment nl_sync_state();
       break;
     default:
-      VLOG_DBG("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
+      dzlog_debug("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
       break;
   }
 }
@@ -271,7 +268,7 @@ static void switchlink_nl_sock_intf_init(void) {
 static void process_nl_event_loop(void) {
   int nlsk_fd;
   nlsk_fd = nl_socket_get_fd(g_nlsk);
-  ovs_assert(nlsk_fd > 0);
+  krnlmon_assert(nlsk_fd > 0);
 
   while (1) {
     int ret, num_fds;
@@ -305,6 +302,13 @@ void *switchlink_main(void *args) {
       return NULL;
    }
 
+
+  //zlog initialization
+  char krnlmon_log_cfg_file[180] = {0};
+  sprintf(krnlmon_log_cfg_file, DEFAULT_ZLOG_CFG_FILE);
+  krnlmon_zlog_init(krnlmon_log_cfg_file);
+  dzlog_info("NUPUR: in switchlink main thread");
+
   switchlink_db_init();
   switchlink_api_init();
   switchlink_link_init();
@@ -325,10 +329,16 @@ void *switchlink_main(void *args) {
 }
 
 int switchlink_stop(void) {
+  //De-initialize zlog
+  krnlmon_zlog_close();
+
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
     int s = pthread_join(switchlink_thread, NULL);
     return s;
   }
+
+  zlog_fini();
+
   return status;
 }

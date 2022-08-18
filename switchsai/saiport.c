@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +16,10 @@
  */
 
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "saiport.h"
 #include "saiinternal.h"
 #include "switchapi/switch_port.h"
 #include "switchapi/switch_base_types.h"
-
-VLOG_DEFINE_THIS_MODULE(saiport);
 
 #define SAI_PORT_DEFAULT_MTU 9400
 /*
@@ -90,18 +88,18 @@ static sai_status_t sai_create_port(_Out_ sai_object_id_t *port_id,
     switch_handle_t port_handle = SWITCH_API_INVALID_HANDLE;
     switch_api_port_info_t api_port_info = {0};
 
-    VLOG_INFO("[SAI_CREATE_PORT] called ..\n");
+    dzlog_info("[SAI_CREATE_PORT] called ..\n");
 
     for (uint32_t index = 0; index < attr_count; index++) {
         attribute = &attr_list[index];
         switch (attribute->id) {
             case SAI_PORT_ATTR_HW_LANE_LIST:
                 portid = attribute->value.oid;
-                VLOG_INFO("[SAI_CREATE_PORT]: Port ID = %"PRIu64, portid);
+                dzlog_info("[SAI_CREATE_PORT]: Port ID = %"PRIu64, portid);
                 break;
             case SAI_PORT_ATTR_MTU:
                 mtu = attribute->value.u32;
-                VLOG_INFO("[SAI_CREATE_PORT]: MTU = %d\n", mtu);
+                dzlog_info("[SAI_CREATE_PORT]: MTU = %d\n", mtu);
                 break;
             default:
                 status = SAI_STATUS_NOT_IMPLEMENTED;

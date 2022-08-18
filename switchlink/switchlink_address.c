@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +21,6 @@
 #include <netlink/msg.h>
 
 #include "config.h"
-#include "openvswitch/vlog.h"
-#include "openvswitch/util.h"
 #include "switchlink.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
@@ -29,8 +28,6 @@
 #include "switchlink_db.h"
 #include "switchlink_sai.h"
 #include "switchlink_int.h"
-
-VLOG_DEFINE_THIS_MODULE(switchlink_address);
 
 /* TODO: P4-OVS: Dummy Processing of Netlink messages received
 * Support IPv4 Address group
@@ -55,10 +52,10 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   bool addr_valid = false;
   switchlink_ip_addr_t addr;
 
-  ovs_assert((type == RTM_NEWADDR) || (type == RTM_DELADDR));
+  krnlmon_assert((type == RTM_NEWADDR) || (type == RTM_DELADDR));
   addrmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifaddrmsg);
-  VLOG_DBG("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
+  dzlog_debug("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
        "scope = 0x%x ifindex = %d\n",
        ((type == RTM_NEWADDR) ? "new" : "del"),
        addrmsg->ifa_family,
@@ -68,7 +65,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
        addrmsg->ifa_index);
 
   if (addrmsg->ifa_family == AF_INET6) {
-    VLOG_DBG("Ignoring IPv6 addresses, as supported is not available");
+    dzlog_debug("Ignoring IPv6 addresses, as supported is not available");
     return;
   }
   if ((addrmsg->ifa_family != AF_INET) && (addrmsg->ifa_family != AF_INET6)) {
@@ -82,12 +79,12 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   switchlink_db_interface_info_t ifinfo;
   status = switchlink_db_interface_get_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-    VLOG_DBG("Found interface cache for: %s", ifinfo.ifname);
+    dzlog_debug("Found interface cache for: %s", ifinfo.ifname);
     intf_h = ifinfo.intf_h;
   } else {
     // TODO P4-OVS, for now we ignore these notifications.
     // Needed when, we get address add before port create notification
-    VLOG_DBG("Ignoring interface address notification ifindex: %d",
+    dzlog_debug("Ignoring interface address notification ifindex: %d",
              addrmsg->ifa_index);
     return;
   }

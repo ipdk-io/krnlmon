@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +20,11 @@
 #include <syslog.h>
 #include <string.h>
 #include <arpa/inet.h>
-#include <assert.h>
 
 #include "saitypes.h"
 #include "sai.h"
-#include "openvswitch/util.h"
 #include "switchapi/switch_base_types.h"
+#include "switchutils/switch_utils.h"
 
 #ifndef __SAIINTERNAL_H_
 #define __SAIINTERNAL_H_
@@ -33,7 +33,7 @@
 
 #define SAI_LOG_BUFFER_SIZE 1000
 
-#define SAI_ASSERT(x) assert(x)
+#define SAI_ASSERT(x) krnlmon_assert(x)
 
 #define SAI_MALLOC(x) bf_sys_malloc(x)
 

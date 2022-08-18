@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +24,6 @@
 #include "tommyds/tommytrieinp.h"
 #include "tommyds/tommyhashlin.h"
 #include "tommyds/tommylist.h"
-#include "openvswitch/util.h"
 #include "xxHash/xxhash.h"
 #include "switchlink.h"
 #include "switchlink_link.h"
@@ -80,7 +80,7 @@ switchlink_db_status_t switchlink_db_interface_add(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
   switchlink_db_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_intf_obj_t), 1);
-  ovs_assert(obj);
+  krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->intf_info), intf_info, sizeof(switchlink_db_interface_info_t));
   tommy_trie_inplace_insert(
@@ -108,7 +108,7 @@ switchlink_db_status_t switchlink_db_tuntap_add(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
   switchlink_db_tuntap_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tuntap_obj_t), 1);
-  ovs_assert(obj);
+  krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->tunp_info), tunp_info, sizeof(switchlink_db_tuntap_info_t));
   tommy_trie_inplace_insert(
@@ -135,7 +135,7 @@ switchlink_db_status_t switchlink_db_tuntap_add(
 
 switchlink_db_status_t switchlink_db_tuntap_get_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
-  ovs_assert(tunp_info);
+  krnlmon_assert(tunp_info != NULL);
   switchlink_db_tuntap_obj_t *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_tuntap_obj_map, ifindex);
   if (!obj) {
@@ -163,7 +163,7 @@ switchlink_db_status_t switchlink_db_tuntap_get_info(
 
 switchlink_db_status_t switchlink_db_interface_get_info(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
-  ovs_assert(intf_info);
+  krnlmon_assert(intf_info != NULL);
   switchlink_db_intf_obj_t *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_interface_obj_map, ifindex);
   if (!obj) {
@@ -265,7 +265,7 @@ switchlink_db_status_t switchlink_db_tunnel_interface_add(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tnl_intf_info) {
   switchlink_db_tunnel_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tunnel_intf_obj_t), 1);
-  ovs_assert(obj);
+  krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->tnl_intf_info), tnl_intf_info,
          sizeof(switchlink_db_tunnel_interface_info_t));
@@ -293,7 +293,7 @@ switchlink_db_status_t switchlink_db_tunnel_interface_add(
 
 switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info) {
-  ovs_assert(tunnel_intf_info);
+  krnlmon_assert(tunnel_intf_info != NULL);
   switchlink_db_tunnel_intf_obj_t *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
@@ -573,7 +573,7 @@ switchlink_db_status_t switchlink_db_nexthop_add(
     switchlink_db_nexthop_info_t *nexthop_info) {
   switchlink_db_nexthop_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_nexthop_obj_t), 1);
-  ovs_assert(obj);
+  krnlmon_assert(obj != NULL);
   memcpy(&(obj->nexthop_info), nexthop_info,
          sizeof(switchlink_db_nexthop_info_t));
   tommy_list_insert_tail(&switchlink_db_nexthop_obj_list, &obj->list_node, obj);
@@ -594,7 +594,7 @@ switchlink_db_status_t switchlink_db_nexthop_add(
 
 switchlink_db_status_t switchlink_db_nexthop_get_info(
     switchlink_db_nexthop_info_t *nexthop_info) {
-  ovs_assert(nexthop_info);
+  krnlmon_assert(nexthop_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
@@ -625,7 +625,7 @@ switchlink_db_status_t switchlink_db_nexthop_get_info(
  */
 switchlink_db_status_t switchlink_db_nexthop_update_using_by(
     switchlink_db_nexthop_info_t *nexthop_info) {
-  ovs_assert(nexthop_info);
+  krnlmon_assert(nexthop_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
@@ -718,7 +718,7 @@ switchlink_db_status_t switchlink_db_nexthop_delete(
 
 switchlink_db_status_t switchlink_db_ecmp_add(
     switchlink_db_ecmp_info_t *ecmp_info) {
-  ovs_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
+  krnlmon_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
   switchlink_db_ecmp_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_ecmp_obj_t), 1);
   memcpy(&(obj->ecmp_info), ecmp_info, sizeof(switchlink_db_ecmp_info_t));
@@ -816,7 +816,7 @@ switchlink_db_status_t switchlink_db_ecmp_ref_inc(switchlink_handle_t ecmp_h) {
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  ovs_assert(obj->ref_count >= 0);
+  krnlmon_assert(obj->ref_count >= 0);
   obj->ref_count++;
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
@@ -841,7 +841,7 @@ switchlink_db_status_t switchlink_db_ecmp_ref_dec(switchlink_handle_t ecmp_h,
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  ovs_assert(obj->ref_count >= 0);
+  krnlmon_assert(obj->ref_count >= 0);
   if (obj->ref_count != 0) {
     obj->ref_count--;
   }
@@ -867,7 +867,7 @@ switchlink_db_status_t switchlink_db_ecmp_delete(switchlink_handle_t ecmp_h) {
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  ovs_assert(obj->ref_count == 0);
+  krnlmon_assert(obj->ref_count == 0);
   tommy_trie_inplace_remove_existing(&switchlink_db_handle_obj_map,
                                      &obj->handle_node);
   tommy_list_remove_existing(&switchlink_db_ecmp_obj_list, &obj->list_node);

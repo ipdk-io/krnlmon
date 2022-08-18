@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +16,11 @@
  */
 
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "saitunnel.h"
 #include "saiinternal.h"
 #include "switchapi/switch_tunnel.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_status.h"
-
-//static sai_api_t api_id = SAI_API_TUNNEL;
-
-VLOG_DEFINE_THIS_MODULE(saitunnel);
 
 char *
 sai_status_to_string(_In_ const sai_status_t status)
@@ -200,7 +196,7 @@ sai_create_tunnel(_Out_ sai_object_id_t *tunnel_id,
 
   status = sai_tunnel_attribute_parse(attr_count, attr_list, &tunnel_info);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "Failed to parse atributes when creating tunnel, error: %s \n",
         sai_status_to_string(status));
     return status;
@@ -210,14 +206,14 @@ sai_create_tunnel(_Out_ sai_object_id_t *tunnel_id,
       switch_api_tunnel_create(switch_id, &tunnel_info, &tunnel_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR(
+    dzlog_error(
         "Failed to create tunnel, error: %s \n",
         sai_status_to_string(status));
     return status;
   }
 
   *tunnel_id = tunnel_handle;
-  VLOG_DBG("tunnel created for dest port: %d and handle"
+  dzlog_debug("tunnel created for dest port: %d and handle"
            "is: 0x%lx", tunnel_info.udp_port, tunnel_handle);
 
   return status;
@@ -244,12 +240,12 @@ sai_remove_tunnel(_In_ sai_object_id_t tunnel_handle)
   switch_status = switch_api_tunnel_delete(tunnel_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to delete tunnel, error: %s\n",
+    dzlog_error("Failed to delete tunnel, error: %s\n",
         sai_status_to_string(status));
     return status;
   }
 
-  VLOG_DBG("Tunnel entry delete success, handle 0x%lx", tunnel_handle);
+  dzlog_debug("Tunnel entry delete success, handle 0x%lx", tunnel_handle);
 
   return status;
 }
@@ -323,28 +319,28 @@ sai_tunnel_term_attribute_parse(uint32_t attr_count,
     switch (attr->id) {
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_VR_ID:
         tunnel_term_info->vrf_handle = (switch_handle_t)attr->value.oid;
-        VLOG_DBG("VRF handle 0x%lx", attr->value.oid);
+        dzlog_debug("VRF handle 0x%lx", attr->value.oid);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP:
         sai_ip_addr_to_switch_ip_addr(&attr->value.ipaddr,
                                       &tunnel_term_info->dst_ip);
-        VLOG_DBG("Tunnel Dip: 0x%x", attr->value.ipaddr.addr.ip4);
+        dzlog_debug("Tunnel Dip: 0x%x", attr->value.ipaddr.addr.ip4);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP:
         sai_ip_addr_to_switch_ip_addr(&attr->value.ipaddr,
                                       &tunnel_term_info->src_ip);
-        VLOG_DBG("Tunnel Sip: 0x%x", attr->value.ipaddr.addr.ip4);
+        dzlog_debug("Tunnel Sip: 0x%x", attr->value.ipaddr.addr.ip4);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID:
         tunnel_term_info->tunnel_id = (switch_handle_t)attr->value.u32;
-        VLOG_DBG("Tunnel ID %d", attr->value.u32);
+        dzlog_debug("Tunnel ID %d", attr->value.u32);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TYPE:
         status = sai_tunnel_term_to_switch_type(attr->value.s32,
                                                 &switch_tunnel_term_type);
         if (status == SAI_STATUS_SUCCESS) {
           tunnel_term_info->term_entry_type = switch_tunnel_term_type;
-          VLOG_DBG("Tunnel type %s", sai_tunnel_string(attr->value.s32));
+          dzlog_debug("Tunnel type %s", sai_tunnel_string(attr->value.s32));
         }
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TUNNEL_TYPE:
@@ -352,7 +348,7 @@ sai_tunnel_term_attribute_parse(uint32_t attr_count,
                                                   &switch_tunnel_type);
         if (status == SAI_STATUS_SUCCESS) {
           tunnel_term_info->tunnel_type = switch_tunnel_type;
-          VLOG_DBG("Tunnel term type %s",
+          dzlog_debug("Tunnel term type %s",
                    switch_tunnel_term_type_to_string(attr->value.s32));
         }
         break;
@@ -393,7 +389,7 @@ sai_create_tunnel_term_table_entry(_Out_ sai_object_id_t *tunnel_term_id,
 
   status = sai_tunnel_term_attribute_parse(attr_count, attr_list, &api_term_info);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to parse atributes when creating tunnel term "
+    dzlog_error("Failed to parse atributes when creating tunnel term "
              "table entry, error: %s \n", sai_status_to_string(status));
     return status;
   }
@@ -402,13 +398,13 @@ sai_create_tunnel_term_table_entry(_Out_ sai_object_id_t *tunnel_term_id,
                                                 &tunnel_term_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to create tunnel term table entry, "
+    dzlog_error("Failed to create tunnel term table entry, "
              "error: %s", sai_status_to_string(status));
     return status;
   }
 
   *tunnel_term_id = tunnel_term_handle;
-  VLOG_DBG("Tunnel term table entry add, handle 0x%lx", tunnel_term_handle);
+  dzlog_debug("Tunnel term table entry add, handle 0x%lx", tunnel_term_handle);
   return status;
 }
 
@@ -433,12 +429,12 @@ sai_remove_tunnel_term_table_entry(_In_ sai_object_id_t tunnel_term_handle)
   switch_status = switch_api_tunnel_term_delete(tunnel_term_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to delete tunnel term table entry, error: %s",
+    dzlog_error("Failed to delete tunnel term table entry, error: %s",
               sai_status_to_string(status));
     return status;
   }
 
-  VLOG_DBG("Tunnel term table entry delete success, handle 0x%lx",
+  dzlog_debug("Tunnel term table entry delete success, handle 0x%lx",
             tunnel_term_handle);
   return status;
 }

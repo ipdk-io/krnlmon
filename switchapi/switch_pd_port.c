@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +18,12 @@
 #include <stdio.h>
 
 #include "config.h"
-#include "openvswitch/vlog.h"
 #include "bf_types/bf_types.h"
 #include "switch_base_types.h"
 #include "switch_port.h"
 #include "switch_port_int.h"
 #include "switch_internal.h"
 #include "switch_pd_utils.h"
-
-VLOG_DEFINE_THIS_MODULE(switch_pd_port);
 
 enum switch_tuntap_type {
      SWITCH_PORT_ATTR_TYPE_UNKNOWN,
@@ -58,11 +56,11 @@ switch_status_t switch_pd_device_port_add(switch_device_t device,
    bf_dev_port = (bf_dev_port_t)dev_port;
    strncat(portName, portNameDpdk,10);
    strncpy(port_attrib.port_name, portName, sizeof(port_attrib.port_name));
-   VLOG_DBG("port_attrib.port_name=%s\n", port_attrib.port_name);
+   dzlog_debug("port_attrib.port_name=%s\n", port_attrib.port_name);
    bf_status = bf_pal_port_add(bf_dev_id, bf_dev_port, &port_attrib);
    if (bf_status != BF_SUCCESS)
    {
-       VLOG_ERR(
+       dzlog_error(
        "Failed to add the port "
        "on device %d \n",
        device);

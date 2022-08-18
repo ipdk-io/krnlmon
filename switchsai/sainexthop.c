@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +19,7 @@
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_tunnel.h"
-#include "openvswitch/vlog.h"
 #include "saiinternal.h"
-
-VLOG_DEFINE_THIS_MODULE(sainexthop);
-
-//static sai_api_t api_id = SAI_API_NEXT_HOP;
 
 static switch_nhop_type_t sai_nhop_type_to_switch_nhop_type(
     sai_next_hop_type_t sai_type) {
@@ -73,7 +69,7 @@ static sai_status_t sai_create_next_hop_entry(
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    VLOG_ERR("null attribute list: %s", sai_status_to_string(status));
+    dzlog_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -114,7 +110,7 @@ static sai_status_t sai_create_next_hop_entry(
 
   status = switch_api_nhop_create(switch_id, &api_nhop_info, &next_hop_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to create nexthop, error: %s",
+    dzlog_error("Failed to create nexthop, error: %s",
               sai_status_to_string(status));
   } else {
     *next_hop_id = next_hop_handle;
@@ -141,7 +137,7 @@ sai_status_t sai_remove_next_hop_entry(_In_ sai_object_id_t next_hop_id) {
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
   if (sai_object_type_query(next_hop_id) != SAI_OBJECT_TYPE_NEXT_HOP) {
-    VLOG_ERR("Failed to remove nexthop entry: invalid nexthop handle %lx\n",
+    dzlog_error("Failed to remove nexthop entry: invalid nexthop handle %lx\n",
                   next_hop_id);
     return SAI_STATUS_INVALID_PARAMETER;
   }
@@ -150,7 +146,7 @@ sai_status_t sai_remove_next_hop_entry(_In_ sai_object_id_t next_hop_id) {
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    VLOG_ERR("Failed to remove nexthop %lx, error: %s",
+    dzlog_error("Failed to remove nexthop %lx, error: %s",
                   next_hop_id,
                   sai_status_to_string(status));
   }

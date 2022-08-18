@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +19,8 @@
 #define __SWITCHLINK_DB_H__
 
 #include <stdbool.h>
-#include "switchlink/switchlink.h"
-#include "switchlink/switchlink_link.h"
+#include "switchlink.h"
+#include "switchlink_link.h"
 
 #define SWITCHLINK_INTERFACE_NAME_LEN_MAX 32
 #define SWITCHLINK_ECMP_NUM_MEMBERS_MAX 16

@@ -27,5 +27,4 @@ target_include_directories(switchsai_o PRIVATE
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_PREFIX}/include/target-sys # bf_sal
-    ${OVS_INSTALL_PREFIX}/include
 )

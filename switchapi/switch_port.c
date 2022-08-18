@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright (c) 2022 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +16,11 @@
  */
 
 #include "config.h"
-#include "openvswitch/util.h"
-#include "openvswitch/vlog.h"
 #include "switch_base_types.h"
 #include "switch_port.h"
 #include "switch_status.h"
 #include "switch_port_int.h"
-
-VLOG_DEFINE_THIS_MODULE(switch_port);
+#include "switchutils/switch_utils.h"
 
 switch_status_t switch_api_port_add(
     switch_device_t device,
@@ -33,14 +31,14 @@ switch_status_t switch_api_port_add(
   switch_uint32_t mtu = SWITCH_PORT_RX_MTU_DEFAULT;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
-  ovs_assert(api_port_info != NULL);
+  krnlmon_assert(api_port_info != NULL);
 
   port = api_port_info->port;
   mtu = api_port_info->rx_mtu;
 
   status = switch_pd_device_port_add(device, port, mtu);
   if (status != SWITCH_STATUS_SUCCESS) {
-      VLOG_ERR(
+      dzlog_error(
           "Failed to add port on device %d  for port %d: "
           ",error: %s\n",
           device,
