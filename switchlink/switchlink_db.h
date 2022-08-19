@@ -132,7 +132,7 @@ extern switchlink_db_status_t switchlink_db_interface_get_ifindex(
 extern switchlink_db_status_t switchlink_db_interface_update(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
 
-extern switchlink_db_status_t switchlink_db_interface_delete(uint32_t ifindex);
+extern switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex);
 
 /*** Tunnel ***/
 extern switchlink_db_status_t switchlink_db_tunnel_interface_add(
@@ -141,7 +141,7 @@ extern switchlink_db_status_t switchlink_db_tunnel_interface_add(
 extern switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info);
 
-extern switchlink_db_status_t switchlink_db_tunnel_interface_delete(
+extern switchlink_db_status_t switchlink_db_tunnel_delete_interface(
     uint32_t ifindex);
 
 /*** mac ***/
@@ -155,14 +155,14 @@ extern switchlink_db_status_t switchlink_db_mac_get_intf(
     switchlink_handle_t bridge_h,
     switchlink_handle_t *int_h);
 
-extern switchlink_db_status_t switchlink_db_mac_delete(
+extern switchlink_db_status_t switchlink_db_delete_mac(
     switchlink_mac_addr_t mac_addr, switchlink_handle_t bridge_h);
 
 /*** neighbor ***/
 extern switchlink_db_status_t switchlink_db_neighbor_add(
     switchlink_db_neigh_info_t *neigh_info);
 
-extern switchlink_db_status_t switchlink_db_neighbor_delete(
+extern switchlink_db_status_t switchlink_db_delete_neighbor(
     switchlink_db_neigh_info_t *neigh_info);
 
 extern switchlink_db_status_t switchlink_db_neighbor_get_info(

@@ -19,6 +19,7 @@
 #define __SWITCHLINK_H__
 
 #include <stdlib.h>
+#include <netinet/in.h>
 
 #include "switchutils/switch_utils.h"
 

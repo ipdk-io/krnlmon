@@ -18,16 +18,8 @@
 #ifndef __SWITCHLINK_ROUTE_H__
 #define __SWITCHLINK_ROUTE_H__
 
-extern void route_create(switchlink_handle_t vrf_h,
-                         switchlink_ip_addr_t *dst,
-                         switchlink_ip_addr_t *gateway,
-                         switchlink_handle_t ecmp_h,
-                         switchlink_handle_t intf_h);
-
-extern void route_delete(switchlink_handle_t vrf_h, switchlink_ip_addr_t *dst);
-
-extern bool validate_nexthop_delete(uint32_t using_by,
-                                    switchlink_nhop_using_by_e type);
+//#include "switchlink.h"
+#include "switchlink_handle.h"
 
 void process_route_msg(struct nlmsghdr *nlmsg, int type);
 

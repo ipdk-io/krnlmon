@@ -19,65 +19,27 @@
 #define __SWITCHLINK_SAI_H__
 
 #include <saitypes.h>
+#include <netinet/in.h>
+
 #include "switchlink.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_db.h"
+#include "sai.h"
 
-extern void switchlink_api_init(void);
+extern sai_router_interface_api_t *sai_rintf_api;
+extern sai_tunnel_api_t *sai_tunnel_intf_api;
+extern sai_port_api_t *sai_port_api;
+extern sai_virtual_router_api_t *sai_vrf_api;
+extern sai_fdb_api_t *sai_fdb_api;
+extern sai_router_interface_api_t *sai_rintf_api;
+extern sai_neighbor_api_t *sai_neigh_api;
+extern sai_next_hop_api_t *sai_nhop_api;
+extern sai_next_hop_group_api_t *sai_nhop_group_api;
+extern sai_route_api_t *sai_route_api;
+extern sai_hostif_api_t *sai_host_intf_api;
+extern sai_tunnel_api_t *sai_tunnel_intf_api;
 
-extern int switchlink_vrf_create(switchlink_handle_t *vrf_h);
-
-extern int switchlink_interface_create(switchlink_db_interface_info_t *intf,
-                                       switchlink_handle_t *intf_h);
-
-extern int switchlink_interface_delete(switchlink_db_interface_info_t *intf,
-                                       switchlink_handle_t intf_h);
-
-extern int switchlink_lag_create(switchlink_handle_t *lag_h);
-
-extern int switchlink_mac_create(switchlink_mac_addr_t mac_addr,
-                                 switchlink_handle_t bridge_h,
-                                 switchlink_handle_t intf_h);
-
-extern int switchlink_mac_delete(switchlink_mac_addr_t mac_addr,
-                                 switchlink_handle_t bridge_h);
-
-extern int switchlink_neighbor_create(switchlink_db_neigh_info_t *neigh_info);
-
-extern int switchlink_neighbor_delete(switchlink_db_neigh_info_t *neigh_info);
-
-extern int switchlink_nexthop_create(switchlink_db_nexthop_info_t *nexthop_info);
-
-extern int switchlink_nexthop_delete(switchlink_handle_t nhop_h);
-
-extern int switchlink_ecmp_create(switchlink_db_ecmp_info_t *ecmp_info);
-
-extern int switchlink_ecmp_delete(switchlink_db_ecmp_info_t *ecmp_info);
-
-extern int switchlink_route_create(switchlink_db_route_info_t *route_info);
-
-extern int switchlink_route_delete(switchlink_db_route_info_t *route_info);
-
-extern int switchlink_tunnel_interface_create(
-                                switchlink_db_tunnel_interface_info_t *tnl_intf,
-                                switchlink_handle_t *tnl_intf_h,
-                                switchlink_handle_t *tnl_term_h);
-extern int switchlink_tunnel_interface_delete(
-                              switchlink_db_tunnel_interface_info_t *tnl_intf);
-
-extern sai_status_t switchlink_create_tunnel(
-                                switchlink_db_tunnel_interface_info_t *tnl_intf,
-                                switchlink_handle_t *tnl_intf_h);
-
-extern sai_status_t switchlink_remove_tunnel_term_table_entry(
-                        switchlink_db_tunnel_interface_info_t *tnl_intf);
-
-extern sai_status_t switchlink_remove_tunnel(
-                        switchlink_db_tunnel_interface_info_t *tnl_intf);
-
-extern sai_status_t switchlink_create_term_table_entry(
-                            switchlink_db_tunnel_interface_info_t *tnl_intf,
-                            switchlink_handle_t *tnl_term_intf_h);
+extern void switchlink_init_api(void);
 
 #endif /* __SWITCHLINK_SAI_H__ */

@@ -51,7 +51,7 @@ enum {
 
 // Currently we dont want to dump any existing kernel data when target is DPDK
 #ifdef NL_SYNC_STATE
-static void nl_sync_state(void) {
+static void sync_nl_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
     return;
@@ -183,7 +183,7 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
     case RTM_DELMDB:
       break;
     case NLMSG_DONE:
-      // P4-OVS comment nl_sync_state();
+      // P4-OVS comment sync_nl_state();
       break;
     default:
       dzlog_debug("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
@@ -191,7 +191,7 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
   }
 }
 
-static int nl_sock_recv_msg(struct nl_msg *msg, void *arg) {
+static int recv_nl_sock_msg(struct nl_msg *msg, void *arg) {
   struct nlmsghdr *nl_msg = nlmsg_hdr(msg);
   int nl_msg_sz = nlmsg_get_max_size(msg);
   while (nlmsg_ok(nl_msg, nl_msg_sz)) {
@@ -225,9 +225,9 @@ static void switchlink_nl_sock_intf_init(void) {
 
   // set the callback function
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_sock_recv_msg, NULL);
+      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, recv_nl_sock_msg, NULL);
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_sock_recv_msg, NULL);
+      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, recv_nl_sock_msg, NULL);
 
   // connect to the netlink route socket
   if (nl_connect(g_nlsk, NETLINK_ROUTE) < 0) {
@@ -262,7 +262,7 @@ static void switchlink_nl_sock_intf_init(void) {
   }
 
   // start building state from the kernel
-  // P4-OVS comment nl_sync_state();
+  // P4-OVS comment sync_nl_state();
 }
 
 static void process_nl_event_loop(void) {
@@ -307,11 +307,10 @@ void *switchlink_main(void *args) {
   char krnlmon_log_cfg_file[180] = {0};
   sprintf(krnlmon_log_cfg_file, DEFAULT_ZLOG_CFG_FILE);
   krnlmon_zlog_init(krnlmon_log_cfg_file);
-  dzlog_info("NUPUR: in switchlink main thread");
 
-  switchlink_db_init();
-  switchlink_api_init();
-  switchlink_link_init();
+  switchlink_init_db();
+  switchlink_init_api();
+  switchlink_init_link();
   switchlink_nl_sock_intf_init();
 
   if (g_nlsk) {

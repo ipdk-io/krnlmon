@@ -21,6 +21,15 @@ add_library(switchlink_o OBJECT
    switchlink_route.h
    switchlink_sai.c
    switchlink_sai.h
+   switchlink_handle.h
+   switchlink_handle_link.c
+   switchlink_handle_tunnel.c
+   switchlink_handle_neigh.c
+   switchlink_handle_route.c
+   switchlink_handle_nexthop.c
+   switchlink_utils.c
+   switchlink_utils.h
+   switchlink_handle_ecmp.c
 )
 
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)

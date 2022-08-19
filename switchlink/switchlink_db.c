@@ -237,7 +237,7 @@ switchlink_db_status_t switchlink_db_interface_update(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_interface_delete(uint32_t ifindex) {
+switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex) {
   switchlink_db_intf_obj_t *obj;
   obj = tommy_trie_inplace_remove(&switchlink_db_interface_obj_map, ifindex);
   if (!obj) {
@@ -318,7 +318,7 @@ switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_tunnel_interface_delete(uint32_t ifindex) {
+switchlink_db_status_t switchlink_db_tunnel_delete_interface(uint32_t ifindex) {
   switchlink_db_tunnel_intf_obj_t *obj;
   obj = tommy_trie_inplace_remove(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
@@ -454,7 +454,7 @@ switchlink_db_status_t switchlink_db_mac_get_intf(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_mac_delete(switchlink_mac_addr_t mac_addr,
+switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
                                                 switchlink_handle_t bridge_h) {
   switchlink_db_mac_obj_t *obj;
   uint32_t hash;
@@ -538,7 +538,7 @@ switchlink_db_status_t switchlink_db_neighbor_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_neighbor_delete(
+switchlink_db_status_t switchlink_db_delete_neighbor(
     switchlink_db_neigh_info_t *neigh_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
@@ -969,7 +969,7 @@ switchlink_db_status_t switchlink_db_route_get_info(
  *    void
  */
 
-void switchlink_db_init(void) {
+void switchlink_init_db(void) {
   tommy_trie_inplace_init(&switchlink_db_handle_obj_map);
   tommy_trie_inplace_init(&switchlink_db_interface_obj_map);
   tommy_trie_inplace_init(&switchlink_db_tuntap_obj_map);

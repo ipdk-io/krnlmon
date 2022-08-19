@@ -30,11 +30,11 @@ The switchlink library provides a Netlink listener that listens to kernel notifi
 When P4-OVS is started as part of p4proto_init, a switchlink_main thread is spawned which is responsible for creating netlink socket and listening to netlink notifications from kernel in a loop.
 Following callbacks are registered during initialization:
 1. nl_socket_modify_cb(
-      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_sock_recv_msg, NULL)
+      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, recv_nl_sock_msg, NULL)
 2. nl_socket_modify_cb(
-      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_sock_recv_msg, NULL)
+      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, recv_nl_sock_msg, NULL)
 
-The netlink socket is continuously polled on, if any FD is set then the registered callback is invoked. eg: nl_sock_recv_msg
+The netlink socket is continuously polled on, if any FD is set then the registered callback is invoked. eg: recv_nl_sock_msg
 
 Based on the type of the netlink message, a respective process netlink API will be invoked. Following netlink notifications are subscribed to:
 1. RTM_NEWLINK & RTM_DELLINK - process_link_msg(nlmsg, nlmsg->nlmsg_type);

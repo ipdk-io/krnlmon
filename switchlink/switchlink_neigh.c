@@ -15,247 +15,15 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <linux/if_ether.h>
-#include <netlink/netlink.h>
-#include <netlink/msg.h>
-#include <netlink/route/neighbour.h>
 #include <net/if.h>
 
 #include "config.h"
 #include "switchlink.h"
-#include "switchlink_link.h"
+//#include "switchlink_link.h"
 #include "switchlink_neigh.h"
-#include "switchlink_route.h"
-#include "switchlink_db.h"
-#include "switchlink_sai.h"
-
-/*
- * Routine Description:
- *    Validate if any other feature is using this NHOP
- *
- * Arguments:
- *    [in] using_by - Flag which has consolidated features using this nhop.
- *    [in] type - Feature enum type, to be checked if this feature is the only
- *                feature referring to this NHOP.
- *
- * Return Values:
- *    true: if this NHOP can be deleted.
- *    false: if this NHOP is referred by other features.
- */
-
-bool
-validate_nexthop_delete(uint32_t using_by,
-                        switchlink_nhop_using_by_e type) {
-  return (using_by & ~(type)) ? false : true;
-}
-
-/*
- * Routine Description:
- *    Delete MAC entry
- *
- * Arguments:
- *    [in] mac_addr - MAC address associated with entry
- *    [in] bridge_h - bridge handle
- *
- * Return Values:
- *    void
- */
-
-static void mac_delete(switchlink_mac_addr_t mac_addr,
-                       switchlink_handle_t bridge_h) {
-  switchlink_handle_t intf_h;
-  switchlink_db_status_t status;
-  status = switchlink_db_mac_get_intf(mac_addr, bridge_h, &intf_h);
-  if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-    return;
-  }
-  dzlog_info("Delete a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
-                                                     mac_addr[2], mac_addr[3],
-                                                     mac_addr[4], mac_addr[5]);
-  switchlink_mac_delete(mac_addr, bridge_h);
-  switchlink_db_mac_delete(mac_addr, bridge_h);
-}
-
-/*
- * Routine Description:
- *    Create MAC entry
- *
- * Arguments:
- *    [in] mac_addr - MAC address associated with entry
- *    [in] bridge_h - bridge handle
- *    [in] intf_h - interface handle
- *
- * Return Values:
- *    void
- */
-
-static void mac_create(switchlink_mac_addr_t mac_addr,
-                       switchlink_handle_t bridge_h,
-                       switchlink_handle_t intf_h) {
-  switchlink_handle_t old_intf_h;
-  switchlink_db_status_t status;
-  status = switchlink_db_mac_get_intf(mac_addr, bridge_h, &old_intf_h);
-  if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-    if (old_intf_h != intf_h) {
-      mac_delete(mac_addr, bridge_h);
-    } else {
-      dzlog_debug("FDB entry already exist");
-      return;
-    }
-  }
-  dzlog_info("Create a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
-                                                     mac_addr[2], mac_addr[3],
-                                                     mac_addr[4], mac_addr[5]);
-
-  switchlink_mac_create(mac_addr, bridge_h, intf_h);
-  switchlink_db_mac_add(mac_addr, bridge_h, intf_h);
-}
-
-/*
- * Routine Description:
- *    Wrapper function to delete neighbor, nexthop, route entry
- *
- * Arguments:
- *    [in] vrf_h - vrf handle
- *    [in] ipaddr - IP address associated with neighbor entry
- *    [in] intf_h - interface handle
- *
- * Return Values:
- *    void
- */
-
-static void neigh_delete(switchlink_handle_t vrf_h,
-                         switchlink_ip_addr_t *ipaddr,
-                         switchlink_handle_t intf_h) {
-  switchlink_db_nexthop_info_t nexthop_info;
-  switchlink_db_neigh_info_t neigh_info;
-  switchlink_db_status_t status;
-
-  memset(&neigh_info, 0, sizeof(switchlink_db_neigh_info_t));
-  neigh_info.vrf_h = vrf_h;
-  neigh_info.intf_h = intf_h;
-  memcpy(&(neigh_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
-  status = switchlink_db_neighbor_get_info(&neigh_info);
-  if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-    return;
-  }
-
-  memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
-  nexthop_info.vrf_h = vrf_h;
-  nexthop_info.intf_h = intf_h;
-  memcpy(&(nexthop_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
-
-  mac_delete(neigh_info.mac_addr, g_default_bridge_h);
-  dzlog_info("Delete a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
-  switchlink_neighbor_delete(&neigh_info);
-  switchlink_db_neighbor_delete(&neigh_info);
-
-  status = switchlink_db_nexthop_get_info(&nexthop_info);
-  if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-      if (validate_nexthop_delete(nexthop_info.using_by,
-                                  SWITCHLINK_NHOP_FROM_NEIGHBOR)) {
-          dzlog_debug("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
-          switchlink_nexthop_delete(nexthop_info.nhop_h);
-          switchlink_db_nexthop_delete(&nexthop_info);
-      } else {
-          dzlog_debug("Removing Neighbor learn from nhop");
-          nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_NEIGHBOR;
-          switchlink_db_nexthop_update_using_by(&nexthop_info);
-      }
-  }
-
-  // delete the host route
-  route_delete(g_default_vrf_h, ipaddr);
-}
-
-/*
- * Routine Description:
- *    Wrapper function to create neighbor, nexthop, route entry
- *
- * Arguments:
- *    [in] vrf_h - vrf handle
- *    [in] ipaddr - IP address associated with neighbor entry
- *    [in] mac_addr - MAC address associated with neighbor entry
- *    [in] intf_h - interface handle
- *
- * Return Values:
- *    void
- */
-
-void neigh_create(switchlink_handle_t vrf_h,
-                  switchlink_ip_addr_t *ipaddr,
-                  switchlink_mac_addr_t mac_addr,
-                  switchlink_handle_t intf_h) {
-  bool nhop_available = false;
-  switchlink_db_status_t status;
-  switchlink_db_neigh_info_t neigh_info;
-  switchlink_db_nexthop_info_t nexthop_info;
-
-  if ((ipaddr->family == AF_INET6) &&
-      IN6_IS_ADDR_MULTICAST(&(ipaddr->ip.v6addr))) {
-    return;
-  }
-
-  memset(&neigh_info, 0, sizeof(switchlink_db_neigh_info_t));
-  neigh_info.vrf_h = vrf_h;
-  neigh_info.intf_h = intf_h;
-  memcpy(&(neigh_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
-
-  status = switchlink_db_neighbor_get_info(&neigh_info);
-  if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-    if (memcmp(neigh_info.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t)) ==
-        0) {
-      // no change
-      return;
-    }
-
-    // update, currently handled as a delete followed by add
-    neigh_delete(vrf_h, ipaddr, intf_h);
-  }
-
-  memcpy(neigh_info.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
-
-  memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
-  nexthop_info.vrf_h = vrf_h;
-  nexthop_info.intf_h = intf_h;
-  memcpy(&(nexthop_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
-
-  status = switchlink_db_nexthop_get_info(&nexthop_info);
-  if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-      nhop_available = true;
-  }
-
-  if (!nhop_available &&
-      switchlink_nexthop_create(&nexthop_info) == -1) {
-    return;
-  }
-
-  dzlog_info("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
-  if (switchlink_neighbor_create(&neigh_info) == -1) {
-    if (!nhop_available) {
-        switchlink_nexthop_delete(nexthop_info.nhop_h);
-    }
-    return;
-  }
-
-  switchlink_db_neighbor_add(&neigh_info);
-
-  nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_NEIGHBOR;
-  if (!nhop_available) {
-    switchlink_db_nexthop_add(&nexthop_info);
-  } else {
-    switchlink_db_nexthop_update_using_by(&nexthop_info);
-  }
-
-  // add a host route
-  route_create(g_default_vrf_h, ipaddr, ipaddr, 0, intf_h);
-}
-
-/* TODO: P4-OVS: Dummy Processing of Netlink messages received
- * Support IPv4 neigh/arp
- */
+//#include "switchlink_route.h"
+#include "switchlink_handle.h"
 
 /*
  * Routine Description:
@@ -331,8 +99,8 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
               ipaddr.prefix_len = 128;
             }
         } else {
-            dzlog_debug("Ignoring unused neighbor states for attribute type %d\n",
-                     attr_type);
+            dzlog_debug("Ignoring unused neighbor states for attribute "
+                        "type %d\n", attr_type);
             return;
         }
         break;
@@ -358,23 +126,23 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
 
   if (type == RTM_NEWNEIGH) {
     if (bridge_h && mac_addr_valid) {
-      mac_create(mac_addr, bridge_h, intf_h);
+      switchlink_create_mac(mac_addr, bridge_h, intf_h);
     } else if(mac_addr_valid && ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L3) {
       /* Here we are creating FDB entry from neighbor table, check for
        * type as SWITCHLINK_INTF_TYPE_L3 */
-      mac_create(mac_addr, bridge_h, intf_h);
+      switchlink_create_mac(mac_addr, bridge_h, intf_h);
     }
     if (ipaddr_valid) {
       if (mac_addr_valid) {
-        neigh_create(g_default_vrf_h, &ipaddr, mac_addr, intf_h);
+        switchlink_create_neigh(g_default_vrf_h, &ipaddr, mac_addr, intf_h);
       } else {
         /* mac address is not valid, remove the neighbor entry */
-        neigh_delete(g_default_vrf_h, &ipaddr, intf_h);
+        switchlink_delete_neigh(g_default_vrf_h, &ipaddr, intf_h);
       }
     }
   } else {
     if (ipaddr_valid) {
-      neigh_delete(g_default_vrf_h, &ipaddr, intf_h);
+      switchlink_delete_neigh(g_default_vrf_h, &ipaddr, intf_h);
     }
   }
 }

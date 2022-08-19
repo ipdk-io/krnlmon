@@ -15,17 +15,26 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_INT_H__
-#define __SWITCHLINK_INT_H__
+#include "switchlink_utils.h"
 
-struct nlmsghdr;
-extern void switchlink_init_db(void);
-extern void switchlink_init_api(void);
-extern void switchlink_init_link(void);
+uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len) {
+  return (prefix_len ? (((uint32_t)0xFFFFFFFF) << (32 - prefix_len)) : 0);
+}
 
-extern void process_link_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_neigh_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_address_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_route_msg(struct nlmsghdr *nlmsg, int type);
+struct in6_addr ipv6_prefix_len_to_mask(uint32_t prefix_len) {
+  struct in6_addr mask;
+  memset(&mask, 0, sizeof(mask));
+  krnlmon_assert(prefix_len <= 128);
 
-#endif /* __SWITCHLINK_INT_H__ */
+  int i;
+  for (i = 0; i < 4; i++) {
+    if (prefix_len > 32) {
+      mask.s6_addr32[i] = 0xFFFFFFFF;
+    } else {
+      mask.s6_addr32[i] = htonl(ipv4_prefix_len_to_mask(prefix_len));
+      break;
+    }
+    prefix_len -= 32;
+  }
+  return mask;
+}
