@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_route_api_t *sai_route_api = NULL;
 
 /*
  * Routine Description:
@@ -29,7 +32,7 @@
  *   -1 in case of error
  */
 
-static int route_create(const switchlink_db_route_info_t *route_info) {
+static int delete_create(const switchlink_db_route_info_t *route_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   sai_route_entry_t route_entry;
@@ -78,7 +81,7 @@ static int route_create(const switchlink_db_route_info_t *route_info) {
  *   -1 in case of error
  */
 
-static int route_delete(const switchlink_db_route_info_t *route_info) {
+static int delete_route(const switchlink_db_route_info_t *route_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   sai_route_entry_t route_entry;
@@ -143,20 +146,20 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
       nexthop_info.intf_h = intf_h;
       nexthop_info.vrf_h = vrf_h;
       switchlink_db_status_t status;
-      status = switchlink_db_nexthop_get_info(&nexthop_info);
+      status = switchlink_db_get_nexthop_info(&nexthop_info);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
           dzlog_debug("Received nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
         nhop_h = nexthop_info.nhop_h;
         nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
-        switchlink_db_nexthop_update_using_by(&nexthop_info);
+        switchlink_db_update_nexthop_using_by(&nexthop_info);
       } else {
         if (!switchlink_create_nexthop(&nexthop_info)) {
           dzlog_debug("Created nhop 0x%lx handle, update from "
                    " route", nexthop_info.nhop_h);
           nhop_h = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
-          switchlink_db_nexthop_add(&nexthop_info);
+          switchlink_db_add_nexthop(&nexthop_info);
         }
       }
     }
@@ -171,7 +174,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
   memset(&route_info, 0, sizeof(switchlink_db_route_info_t));
   route_info.vrf_h = vrf_h;
   memcpy(&(route_info.ip_addr), dst, sizeof(switchlink_ip_addr_t));
-  switchlink_db_status_t status = switchlink_db_route_get_info(&route_info);
+  switchlink_db_status_t status = switchlink_db_get_route_info(&route_info);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     if ((route_info.ecmp == ecmp_valid) && (route_info.nhop_h == nhop_h)) {
       // no change
@@ -191,7 +194,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
   // add the route
   dzlog_info("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
              dst->prefix_len);
-  if (route_create(&route_info) == -1) {
+  if (delete_create(&route_info) == -1) {
     if (route_info.ecmp) {
       switchlink_delete_ecmp(route_info.nhop_h);
     }
@@ -199,9 +202,9 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
   }
 
   // add the route to the db
-  if (switchlink_db_route_add(&route_info) == SWITCHLINK_DB_STATUS_SUCCESS) {
+  if (switchlink_db_add_route(&route_info) == SWITCHLINK_DB_STATUS_SUCCESS) {
     if (route_info.ecmp) {
-      switchlink_db_ecmp_ref_inc(route_info.nhop_h);
+      switchlink_db_inc_ecmp_ref(route_info.nhop_h);
     }
   }
 }
@@ -232,12 +235,12 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
   memset(&route_info, 0, sizeof(switchlink_db_route_info_t));
   route_info.vrf_h = vrf_h;
   memcpy(&(route_info.ip_addr), dst, sizeof(switchlink_ip_addr_t));
-  status = switchlink_db_route_get_info(&route_info);
+  status = switchlink_db_get_route_info(&route_info);
   if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
     return;
   }
 
-  if (route_delete(&route_info) == -1) {
+  if (delete_route(&route_info) == -1) {
     return;
   }
 
@@ -246,7 +249,7 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
   ecmp_enable = route_info.ecmp;
   ecmp_h = route_info.nhop_h;
 
-  status = switchlink_db_route_delete(&route_info);
+  status = switchlink_db_delete_route(&route_info);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     if (ecmp_enable) {
       switchlink_delete_ecmp(ecmp_h);

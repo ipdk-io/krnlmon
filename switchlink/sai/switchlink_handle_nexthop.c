@@ -15,7 +15,28 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_next_hop_api_t *sai_nhop_api = NULL;
+
+/*
+ * Routine Description:
+ *    Initialize Nexthop SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_nhop_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_NEXT_HOP, (void **)&sai_nhop_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
 
 /*
  * Routine Description:

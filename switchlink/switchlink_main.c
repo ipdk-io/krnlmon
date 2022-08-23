@@ -51,7 +51,7 @@ enum {
 
 // Currently we dont want to dump any existing kernel data when target is DPDK
 #ifdef NL_SYNC_STATE
-static void sync_nl_state(void) {
+static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
     return;
@@ -140,7 +140,7 @@ static void sync_nl_state(void) {
  *    void
  */
 
-static void process_nl_message(struct nlmsghdr *nlmsg) {
+static void nl_process_message(struct nlmsghdr *nlmsg) {
   /* TODO: P4OVS: Enabling callback for link msg type only and prints for
      few protocol families to avoid flood of messages. Enable, as needed.
   */
@@ -183,7 +183,7 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
     case RTM_DELMDB:
       break;
     case NLMSG_DONE:
-      // P4-OVS comment sync_nl_state();
+      // P4-OVS comment nl_sync_state();
       break;
     default:
       dzlog_debug("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
@@ -191,18 +191,18 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
   }
 }
 
-static int recv_nl_sock_msg(struct nl_msg *msg, void *arg) {
+static int nl_recv_sock_msg(struct nl_msg *msg, void *arg) {
   struct nlmsghdr *nl_msg = nlmsg_hdr(msg);
   int nl_msg_sz = nlmsg_get_max_size(msg);
   while (nlmsg_ok(nl_msg, nl_msg_sz)) {
-    process_nl_message(nl_msg);
+    nl_process_message(nl_msg);
     nl_msg = nlmsg_next(nl_msg, &nl_msg_sz);
   }
 
   return 0;
 }
 
-static void cleanup_nl_sock(void) {
+static void nl_cleanup_sock(void) {
   // free the socket
   nl_socket_free(g_nlsk);
   g_nlsk = NULL;
@@ -225,47 +225,47 @@ static void switchlink_nl_sock_intf_init(void) {
 
   // set the callback function
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, recv_nl_sock_msg, NULL);
+      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_recv_sock_msg, NULL);
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, recv_nl_sock_msg, NULL);
+      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_recv_sock_msg, NULL);
 
   // connect to the netlink route socket
   if (nl_connect(g_nlsk, NETLINK_ROUTE) < 0) {
     perror("nl_connect:NETLINK_ROUTE");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
 
   // register for the following messages
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_LINK, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_LINK, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
 
   // set socket to be non-blocking
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   if (nlsk_fd < 0) {
     perror("nl_socket_get_fd");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
   sock_flags = fcntl(nlsk_fd, F_GETFL, 0);
   if (fcntl(nlsk_fd, F_SETFL, sock_flags | O_NONBLOCK) < 0) {
     perror("fcntl");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
 
   // start building state from the kernel
-  // P4-OVS comment sync_nl_state();
+  // P4-OVS comment nl_sync_state();
 }
 
-static void process_nl_event_loop(void) {
+static void nl_process_event_loop(void) {
   int nlsk_fd;
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   krnlmon_assert(nlsk_fd > 0);
@@ -315,8 +315,8 @@ void *switchlink_main(void *args) {
 
   if (g_nlsk) {
     usleep(20000);
-    process_nl_event_loop();
-    cleanup_nl_sock();
+    nl_process_event_loop();
+    nl_cleanup_sock();
   }
 
   pthread_mutex_lock(&cookie_mutex);

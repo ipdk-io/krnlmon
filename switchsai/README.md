@@ -78,7 +78,7 @@ FDB entry is populated from 2 sources, one is from SwitchLink→SwitchSAI→Swit
 ## Route <a name="route"></a>
 
 * **create_route_entry:** Takes route attributes as input, creates Route entry in SwitchSAI with switch_api_l3_route_add
-* **remove_route_entry:** Takes route attributes as input, deletes Route entry in SwitchSAI with switch_api_l3_route_delete
+* **remove_route_entry:** Takes route attributes as input, deletes Route entry in SwitchSAI with switch_api_l3_delete_route
 
 ## Nexthop <a name="nexthop"></a>
 

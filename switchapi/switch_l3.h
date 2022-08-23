@@ -145,7 +145,7 @@ switch_status_t switch_api_l3_route_update(
  * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
  * returned.
  */
-switch_status_t switch_api_l3_route_delete(switch_device_t device,
+switch_status_t switch_api_l3_delete_route(switch_device_t device,
     switch_api_route_entry_t *api_route_entry);
 /**
  Lookup FIB table (host or LPM) for a given host address

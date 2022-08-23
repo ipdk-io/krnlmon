@@ -5,6 +5,13 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+include(FindPkgConfig)
+
+# Find netlink libraries
+pkg_check_modules(libnl3 REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0)
+
+add_subdirectory(sai)
+
 add_library(switchlink_o OBJECT
    switchlink_address.c
    switchlink_db.c
@@ -19,23 +26,16 @@ add_library(switchlink_o OBJECT
    switchlink_neigh.h
    switchlink_route.c
    switchlink_route.h
-   switchlink_sai.c
-   switchlink_sai.h
    switchlink_handle.h
-   switchlink_handle_link.c
-   switchlink_handle_tunnel.c
-   switchlink_handle_neigh.c
-   switchlink_handle_route.c
-   switchlink_handle_nexthop.c
    switchlink_utils.c
    switchlink_utils.h
-   switchlink_handle_ecmp.c
 )
 
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
 
+target_link_libraries(switchlink_o PkgConfig::libnl3)
+
 target_include_directories(switchlink_o PRIVATE
-    /usr/include/libnl3
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party  # judy
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/xxHash

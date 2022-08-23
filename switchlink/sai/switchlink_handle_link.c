@@ -15,7 +15,46 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_virtual_router_api_t *sai_vrf_api = NULL;
+static sai_router_interface_api_t *sai_rintf_api = NULL;
+/*
+ * Routine Description:
+ *    Initialize Router Interface SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_rintf_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **)&sai_rintf_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
+
+/*
+ * Routine Description:
+ *    Initialize Virtual Router SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_vrf_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_VIRTUAL_ROUTER, (void **)&sai_vrf_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
 
 /*
  * Routine Description:
@@ -124,7 +163,7 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
   switchlink_db_status_t status;
   switchlink_db_interface_info_t ifinfo;
 
-  status = switchlink_db_interface_get_info(intf->ifindex, &ifinfo);
+  status = switchlink_db_get_interface_info(intf->ifindex, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     // create the interface
     dzlog_debug("Switchlink Interface Create: %s", intf->ifname);
@@ -137,7 +176,7 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
     }
 
     // add the mapping to the db
-    switchlink_db_interface_add(intf->ifindex, intf);
+    switchlink_db_add_interface(intf->ifindex, intf);
   } else {
     // interface has already been created
     if (memcmp(&(ifinfo.mac_addr),
@@ -155,7 +194,7 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
         return;
       }
 
-      switchlink_db_interface_update(intf->ifindex, &ifinfo);
+      switchlink_db_update_interface(intf->ifindex, &ifinfo);
     }
     intf->intf_h = ifinfo.intf_h;
   }
@@ -174,7 +213,7 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
 
 void switchlink_delete_interface(uint32_t ifindex) {
   switchlink_db_interface_info_t intf;
-  if (switchlink_db_interface_get_info(ifindex, &intf) ==
+  if (switchlink_db_get_interface_info(ifindex, &intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     return;
   }

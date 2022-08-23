@@ -15,7 +15,46 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_neighbor_api_t *sai_neigh_api = NULL;
+static sai_fdb_api_t *sai_fdb_api = NULL;
+/*
+ * Routine Description:
+ *    Initialize Neighbor SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_neigh_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_NEIGHBOR, (void **)&sai_neigh_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
+
+/*
+ * Routine Description:
+ *    Initialize FDB SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_fdb_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_FDB, (void **)&sai_fdb_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
 
 /*
  * Routine Description:
@@ -180,7 +219,7 @@ void switchlink_delete_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t bridge_h) {
   switchlink_handle_t intf_h;
   switchlink_db_status_t status;
-  status = switchlink_db_mac_get_intf(mac_addr, bridge_h, &intf_h);
+  status = switchlink_db_get_mac_intf(mac_addr, bridge_h, &intf_h);
   if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
     return;
   }
@@ -209,7 +248,7 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t intf_h) {
   switchlink_handle_t old_intf_h;
   switchlink_db_status_t status;
-  status = switchlink_db_mac_get_intf(mac_addr, bridge_h, &old_intf_h);
+  status = switchlink_db_get_mac_intf(mac_addr, bridge_h, &old_intf_h);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     if (old_intf_h != intf_h) {
       delete_mac(mac_addr, bridge_h);
@@ -223,7 +262,7 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                                                      mac_addr[4], mac_addr[5]);
 
   create_mac(mac_addr, bridge_h, intf_h);
-  switchlink_db_mac_add(mac_addr, bridge_h, intf_h);
+  switchlink_db_add_mac(mac_addr, bridge_h, intf_h);
 }
 
 /*
@@ -259,7 +298,7 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
   neigh_info.intf_h = intf_h;
   memcpy(&(neigh_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
 
-  status = switchlink_db_neighbor_get_info(&neigh_info);
+  status = switchlink_db_get_neighbor_info(&neigh_info);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     if (memcmp(neigh_info.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t)) ==
         0) {
@@ -278,7 +317,7 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
   nexthop_info.intf_h = intf_h;
   memcpy(&(nexthop_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
 
-  status = switchlink_db_nexthop_get_info(&nexthop_info);
+  status = switchlink_db_get_nexthop_info(&nexthop_info);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
       nhop_available = true;
   }
@@ -296,13 +335,13 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
     return;
   }
 
-  switchlink_db_neighbor_add(&neigh_info);
+  switchlink_db_add_neighbor(&neigh_info);
 
   nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_NEIGHBOR;
   if (!nhop_available) {
-    switchlink_db_nexthop_add(&nexthop_info);
+    switchlink_db_add_nexthop(&nexthop_info);
   } else {
-    switchlink_db_nexthop_update_using_by(&nexthop_info);
+    switchlink_db_update_nexthop_using_by(&nexthop_info);
   }
 
   // add a host route
@@ -333,7 +372,7 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
   neigh_info.vrf_h = vrf_h;
   neigh_info.intf_h = intf_h;
   memcpy(&(neigh_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
-  status = switchlink_db_neighbor_get_info(&neigh_info);
+  status = switchlink_db_get_neighbor_info(&neigh_info);
   if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
     return;
   }
@@ -348,17 +387,17 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
   delete_neighbor(&neigh_info);
   switchlink_db_delete_neighbor(&neigh_info);
 
-  status = switchlink_db_nexthop_get_info(&nexthop_info);
+  status = switchlink_db_get_nexthop_info(&nexthop_info);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
       if (validate_delete_nexthop(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_NEIGHBOR)) {
           dzlog_debug("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
           switchlink_delete_nexthop(nexthop_info.nhop_h);
-          switchlink_db_nexthop_delete(&nexthop_info);
+          switchlink_db_delete_nexthop(&nexthop_info);
       } else {
           dzlog_debug("Removing Neighbor learn from nhop");
           nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_NEIGHBOR;
-          switchlink_db_nexthop_update_using_by(&nexthop_info);
+          switchlink_db_update_nexthop_using_by(&nexthop_info);
       }
   }
 

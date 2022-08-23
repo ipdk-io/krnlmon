@@ -15,7 +15,29 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
+
+/*
+ * Routine Description:
+ *    Initialize Nexthop group SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_nhop_group_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void **)&sai_nhop_group_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
+
 
 /*
  * Routine Description:
@@ -29,7 +51,7 @@
  *   -1 in case of error
  */
 
-static int ecmp_delete(switchlink_db_ecmp_info_t *ecmp_info) {
+static int delete_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
   uint8_t index = 0;
   for (index = 0; index < ecmp_info->num_nhops; index++) {
@@ -59,7 +81,7 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
   switchlink_db_nexthop_info_t nexthop_info;
   switchlink_handle_t nhops[SWITCHLINK_ECMP_NUM_MEMBERS_MAX] = {0};
 
-  status = switchlink_db_ecmp_ref_dec(ecmp_h, &ref_count);
+  status = switchlink_db_dec_ecmp_ref(ecmp_h, &ref_count);
   krnlmon_assert(status == SWITCHLINK_DB_STATUS_SUCCESS);
 
   if (ref_count == 0) {
@@ -72,12 +94,12 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
       nhops[index] = ecmp_info.nhops[index];
     }
     dzlog_info("Deleting ecmp handler 0x%lx", ecmp_h);
-    ecmp_delete(&ecmp_info);
-    switchlink_db_ecmp_delete(ecmp_h);
+    delete_ecmp(&ecmp_info);
+    switchlink_db_delete_ecmp(ecmp_h);
 
     for (index = 0; index < num_nhops; index++) {
       memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
-      status = switchlink_db_nexthop_handle_get_info(nhops[index],
+      status = switchlink_db__get_nexthop_handle_info(nhops[index],
                                                      &nexthop_info);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
         dzlog_error("Cannot get nhop info for nhop handle 0x%lx", nhops[index]);
@@ -86,13 +108,13 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
 
       if (validate_delete_nexthop(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_ROUTE)) {
-        dzlog_debug("Deleting nhop 0x%lx, from ecmp_delete", nexthop_info.nhop_h);
+        dzlog_debug("Deleting nhop 0x%lx, from delete_ecmp", nexthop_info.nhop_h);
         switchlink_delete_nexthop(nexthop_info.nhop_h);
-        switchlink_db_nexthop_delete(&nexthop_info);
+        switchlink_db_delete_nexthop(&nexthop_info);
       } else {
           dzlog_debug("Removing Route learn from nhop");
         nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_ROUTE;
-        switchlink_db_nexthop_update_using_by(&nexthop_info);
+        switchlink_db_update_nexthop_using_by(&nexthop_info);
       }
     }
   }

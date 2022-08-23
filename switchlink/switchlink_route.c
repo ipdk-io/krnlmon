@@ -62,27 +62,27 @@ static switchlink_handle_t process_ecmp(uint8_t family,
 
       switchlink_db_interface_info_t ifinfo;
       memset(&ifinfo, 0, sizeof(switchlink_db_interface_info_t));
-      status = switchlink_db_interface_get_info(rnh->rtnh_ifindex, &ifinfo);
+      status = switchlink_db_get_interface_info(rnh->rtnh_ifindex, &ifinfo);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
         switchlink_db_nexthop_info_t nexthop_info;
         memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
         memcpy(&(nexthop_info.ip_addr), &gateway, sizeof(switchlink_ip_addr_t));
         nexthop_info.intf_h = ifinfo.intf_h;
         nexthop_info.vrf_h = vrf_h;
-        status = switchlink_db_nexthop_get_info(&nexthop_info);
+        status = switchlink_db_get_nexthop_info(&nexthop_info);
         if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
           dzlog_debug("Fetched nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
           ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
-          switchlink_db_nexthop_update_using_by(&nexthop_info);
+          switchlink_db_update_nexthop_using_by(&nexthop_info);
         } else {
           if (!switchlink_create_nexthop(&nexthop_info)) {
              dzlog_debug("Created nhop 0x%lx handler, update from"
                       " route", nexthop_info.nhop_h);
              ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
              nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
-             switchlink_db_nexthop_add(&nexthop_info);
+             switchlink_db_add_nexthop(&nexthop_info);
           } else {
             ecmp_info.nhops[ecmp_info.num_nhops] = g_cpu_rx_nhop_h;
           }
@@ -98,10 +98,10 @@ static switchlink_handle_t process_ecmp(uint8_t family,
     return 0;
   }
 
-  status = switchlink_db_ecmp_get_info(&ecmp_info);
+  status = switchlink_db_get_ecmp_info(&ecmp_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     switchlink_create_ecmp(&ecmp_info);
-    switchlink_db_ecmp_add(&ecmp_info);
+    switchlink_db_add_ecmp(&ecmp_info);
   }
 
   return ecmp_info.ecmp_h;
@@ -251,7 +251,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
     memset(&ifinfo, 0, sizeof(ifinfo));
     if (oif_valid) {
       switchlink_db_status_t status;
-      status = switchlink_db_interface_get_info(oif, &ifinfo);
+      status = switchlink_db_get_interface_info(oif, &ifinfo);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
         dzlog_error("route: Failed to get switchlink DB interface info, "
                  "error: %d \n", status);

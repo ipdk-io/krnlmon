@@ -59,7 +59,7 @@ static tommy_list switchlink_db_route_obj_list;
  *    Object from the database matching the handle h
  */
 
-static void *switchlink_db_handle_get_obj(switchlink_handle_t h) {
+static void *switchlink_db_get_handle_obj(switchlink_handle_t h) {
   void *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_handle_obj_map, h);
   return obj;
@@ -76,7 +76,7 @@ static void *switchlink_db_handle_get_obj(switchlink_handle_t h) {
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_interface_add(
+switchlink_db_status_t switchlink_db_add_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
   switchlink_db_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_intf_obj_t), 1);
@@ -104,7 +104,7 @@ switchlink_db_status_t switchlink_db_interface_add(
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_tuntap_add(
+switchlink_db_status_t switchlink_db_add_tuntap(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
   switchlink_db_tuntap_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tuntap_obj_t), 1);
@@ -133,7 +133,7 @@ switchlink_db_status_t switchlink_db_tuntap_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_tuntap_get_info(
+switchlink_db_status_t switchlink_db_get_tuntap_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
   krnlmon_assert(tunp_info != NULL);
   switchlink_db_tuntap_obj_t *obj;
@@ -161,7 +161,7 @@ switchlink_db_status_t switchlink_db_tuntap_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_interface_get_info(
+switchlink_db_status_t switchlink_db_get_interface_info(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
   krnlmon_assert(intf_info != NULL);
   switchlink_db_intf_obj_t *obj;
@@ -189,10 +189,10 @@ switchlink_db_status_t switchlink_db_interface_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_interface_get_ifindex(
+switchlink_db_status_t switchlink_db_get_interface_ifindex(
     switchlink_handle_t intf_h, uint32_t *ifindex) {
   switchlink_db_intf_obj_t *obj;
-  obj = switchlink_db_handle_get_obj(intf_h);
+  obj = switchlink_db_get_handle_obj(intf_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -214,7 +214,7 @@ switchlink_db_status_t switchlink_db_interface_get_ifindex(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_interface_update(
+switchlink_db_status_t switchlink_db_update_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
   switchlink_db_intf_obj_t *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_interface_obj_map, ifindex);
@@ -261,7 +261,7 @@ switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex) {
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_tunnel_interface_add(
+switchlink_db_status_t switchlink_db_add_tunnel_interface(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tnl_intf_info) {
   switchlink_db_tunnel_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tunnel_intf_obj_t), 1);
@@ -291,7 +291,7 @@ switchlink_db_status_t switchlink_db_tunnel_interface_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
+switchlink_db_status_t switchlink_db_get_tunnel_interface_info(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info) {
   krnlmon_assert(tunnel_intf_info != NULL);
   switchlink_db_tunnel_intf_obj_t *obj;
@@ -318,7 +318,7 @@ switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_tunnel_delete_interface(uint32_t ifindex) {
+switchlink_db_status_t switchlink_db_delete_tunnel_interface(uint32_t ifindex) {
   switchlink_db_tunnel_intf_obj_t *obj;
   obj = tommy_trie_inplace_remove(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
@@ -344,7 +344,7 @@ switchlink_db_status_t switchlink_db_tunnel_delete_interface(uint32_t ifindex) {
  *    void
  */
 
-static inline void switchlink_db_mac_key_hash(switchlink_mac_addr_t mac_addr,
+static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
                                               switchlink_handle_t bridge_h,
                                               uint8_t *key,
                                               uint32_t *hash) {
@@ -372,11 +372,11 @@ static inline void switchlink_db_mac_key_hash(switchlink_mac_addr_t mac_addr,
  *    < 1 if key1 is smaller than key2
  */
 
-static inline int switchlink_db_mac_cmp(const void *key1, const void *arg) {
+static inline int switchlink_db_cmp_mac(const void *key1, const void *arg) {
   switchlink_db_mac_obj_t *obj = (switchlink_db_mac_obj_t *)arg;
   uint8_t key2[SWITCHLINK_MAC_KEY_LEN];
 
-  switchlink_db_mac_key_hash(obj->addr, obj->bridge_h, key2, NULL);
+  switchlink_db_hash_mac_key(obj->addr, obj->bridge_h, key2, NULL);
   return (memcmp(key1, key2, SWITCHLINK_MAC_KEY_LEN));
 }
 
@@ -393,7 +393,7 @@ static inline int switchlink_db_mac_cmp(const void *key1, const void *arg) {
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_mac_add(switchlink_mac_addr_t mac_addr,
+switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
                                              switchlink_handle_t bridge_h,
                                              switchlink_handle_t intf_h) {
   switchlink_db_mac_obj_t *obj =
@@ -404,7 +404,7 @@ switchlink_db_status_t switchlink_db_mac_add(switchlink_mac_addr_t mac_addr,
 
   uint32_t hash;
   uint8_t key[SWITCHLINK_MAC_KEY_LEN];
-  switchlink_db_mac_key_hash(mac_addr, bridge_h, key, &hash);
+  switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
   tommy_hashlin_insert(&switchlink_db_mac_obj_hash, &obj->hash_node, obj, hash);
   tommy_list_insert_tail(&switchlink_db_mac_obj_list, &obj->list_node, obj);
   return SWITCHLINK_DB_STATUS_SUCCESS;
@@ -424,17 +424,17 @@ switchlink_db_status_t switchlink_db_mac_add(switchlink_mac_addr_t mac_addr,
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_mac_get_intf(
+switchlink_db_status_t switchlink_db_get_mac_intf(
     switchlink_mac_addr_t mac_addr,
     switchlink_handle_t bridge_h,
     switchlink_handle_t *intf_h) {
   switchlink_db_mac_obj_t *obj;
   uint32_t hash;
   uint8_t key[SWITCHLINK_MAC_KEY_LEN];
-  switchlink_db_mac_key_hash(mac_addr, bridge_h, key, &hash);
+  switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
 
   obj = tommy_hashlin_search(
-      &switchlink_db_mac_obj_hash, switchlink_db_mac_cmp, key, hash);
+      &switchlink_db_mac_obj_hash, switchlink_db_cmp_mac, key, hash);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -459,10 +459,10 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
   switchlink_db_mac_obj_t *obj;
   uint32_t hash;
   uint8_t key[SWITCHLINK_MAC_KEY_LEN];
-  switchlink_db_mac_key_hash(mac_addr, bridge_h, key, &hash);
+  switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
 
   obj = tommy_hashlin_search(
-      &switchlink_db_mac_obj_hash, switchlink_db_mac_cmp, key, hash);
+      &switchlink_db_mac_obj_hash, switchlink_db_cmp_mac, key, hash);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -484,7 +484,7 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_neighbor_add(
+switchlink_db_status_t switchlink_db_add_neighbor(
     switchlink_db_neigh_info_t *neigh_info) {
   switchlink_db_neigh_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_neigh_obj_t), 1);
@@ -505,7 +505,7 @@ switchlink_db_status_t switchlink_db_neighbor_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_neighbor_get_info(
+switchlink_db_status_t switchlink_db_get_neighbor_info(
     switchlink_db_neigh_info_t *neigh_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
@@ -569,7 +569,7 @@ switchlink_db_status_t switchlink_db_delete_neighbor(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_nexthop_add(
+switchlink_db_status_t switchlink_db_add_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info) {
   switchlink_db_nexthop_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_nexthop_obj_t), 1);
@@ -592,7 +592,7 @@ switchlink_db_status_t switchlink_db_nexthop_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_nexthop_get_info(
+switchlink_db_status_t switchlink_db_get_nexthop_info(
     switchlink_db_nexthop_info_t *nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
@@ -623,7 +623,7 @@ switchlink_db_status_t switchlink_db_nexthop_get_info(
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
-switchlink_db_status_t switchlink_db_nexthop_update_using_by(
+switchlink_db_status_t switchlink_db_update_nexthop_using_by(
     switchlink_db_nexthop_info_t *nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
@@ -656,7 +656,7 @@ switchlink_db_status_t switchlink_db_nexthop_update_using_by(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_nexthop_handle_get_info(
+switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
     switchlink_handle_t nhop_h, switchlink_db_nexthop_info_t *nexthop_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
@@ -685,7 +685,7 @@ switchlink_db_status_t switchlink_db_nexthop_handle_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_nexthop_delete(
+switchlink_db_status_t switchlink_db_delete_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
@@ -716,7 +716,7 @@ switchlink_db_status_t switchlink_db_nexthop_delete(
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_ecmp_add(
+switchlink_db_status_t switchlink_db_add_ecmp(
     switchlink_db_ecmp_info_t *ecmp_info) {
   krnlmon_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
   switchlink_db_ecmp_obj_t *obj =
@@ -743,7 +743,7 @@ switchlink_db_status_t switchlink_db_ecmp_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_ecmp_get_info(
+switchlink_db_status_t switchlink_db_get_ecmp_info(
     switchlink_db_ecmp_info_t *ecmp_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_ecmp_obj_list);
   while (node) {
@@ -788,7 +788,7 @@ switchlink_db_status_t switchlink_db_ecmp_get_info(
 switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
     switchlink_handle_t ecmp_h, switchlink_db_ecmp_info_t *ecmp_info) {
   switchlink_db_ecmp_obj_t *obj;
-  obj = switchlink_db_handle_get_obj(ecmp_h);
+  obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -810,9 +810,9 @@ switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_ecmp_ref_inc(switchlink_handle_t ecmp_h) {
+switchlink_db_status_t switchlink_db_inc_ecmp_ref(switchlink_handle_t ecmp_h) {
   switchlink_db_ecmp_obj_t *obj;
-  obj = switchlink_db_handle_get_obj(ecmp_h);
+  obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -834,10 +834,10 @@ switchlink_db_status_t switchlink_db_ecmp_ref_inc(switchlink_handle_t ecmp_h) {
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_ecmp_ref_dec(switchlink_handle_t ecmp_h,
+switchlink_db_status_t switchlink_db_dec_ecmp_ref(switchlink_handle_t ecmp_h,
                                                   int *ref_count) {
   switchlink_db_ecmp_obj_t *obj;
-  obj = switchlink_db_handle_get_obj(ecmp_h);
+  obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -861,9 +861,9 @@ switchlink_db_status_t switchlink_db_ecmp_ref_dec(switchlink_handle_t ecmp_h,
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_ecmp_delete(switchlink_handle_t ecmp_h) {
+switchlink_db_status_t switchlink_db_delete_ecmp(switchlink_handle_t ecmp_h) {
   switchlink_db_ecmp_obj_t *obj;
-  obj = switchlink_db_handle_get_obj(ecmp_h);
+  obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -886,7 +886,7 @@ switchlink_db_status_t switchlink_db_ecmp_delete(switchlink_handle_t ecmp_h) {
  *    SWITCHLINK_DB_STATUS_SUCCESS on success
  */
 
-switchlink_db_status_t switchlink_db_route_add(
+switchlink_db_status_t switchlink_db_add_route(
     switchlink_db_route_info_t *route_info) {
   switchlink_db_route_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_route_obj_t), 1);
@@ -907,7 +907,7 @@ switchlink_db_status_t switchlink_db_route_add(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_route_delete(
+switchlink_db_status_t switchlink_db_delete_route(
     switchlink_db_route_info_t *route_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {
@@ -938,7 +938,7 @@ switchlink_db_status_t switchlink_db_route_delete(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 
-switchlink_db_status_t switchlink_db_route_get_info(
+switchlink_db_status_t switchlink_db_get_route_info(
     switchlink_db_route_info_t *route_info) {
   tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {

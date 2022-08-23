@@ -15,7 +15,19 @@
  * limitations under the License.
  */
 
-#include "switchlink_handle.h"
+#include "switchlink_init_sai.h"
+#include "switchlink/switchlink_handle.h"
+
+static sai_tunnel_api_t *sai_tunnel_intf_api = NULL;
+
+sai_status_t sai_init_tunnel_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_TUNNEL, (void **)&sai_tunnel_intf_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
 
 /*
  * Routine Description:
@@ -206,7 +218,7 @@ void switchlink_create_tunnel_interface(
   switchlink_db_status_t status;
   switchlink_db_tunnel_interface_info_t tnl_ifinfo;
 
-  status = switchlink_db_tunnel_interface_get_info(tnl_intf->ifindex,
+  status = switchlink_db_get_tunnel_interface_info(tnl_intf->ifindex,
                                                    &tnl_ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
 
@@ -221,7 +233,7 @@ void switchlink_create_tunnel_interface(
     }
 
     // add the mapping to the db
-    switchlink_db_tunnel_interface_add(tnl_intf->ifindex, tnl_intf);
+    switchlink_db_add_tunnel_interface(tnl_intf->ifindex, tnl_intf);
     return;
   }
   dzlog_debug("Switchlink DB already has tunnel config for "
@@ -242,7 +254,7 @@ void switchlink_create_tunnel_interface(
 
 void switchlink_delete_tunnel_interface(uint32_t ifindex) {
   switchlink_db_tunnel_interface_info_t tnl_intf;
-  if (switchlink_db_tunnel_interface_get_info(ifindex, &tnl_intf) ==
+  if (switchlink_db_get_tunnel_interface_info(ifindex, &tnl_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
       dzlog_info("Trying to delete a tunnel which is not "
                 "available");
@@ -253,7 +265,7 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
 
   // delete the interface from backend and in DB
   delete_tunnel_interface(&tnl_intf);
-  switchlink_db_tunnel_delete_interface(ifindex);
+  switchlink_db_delete_tunnel_interface(ifindex);
 
   return;
 }

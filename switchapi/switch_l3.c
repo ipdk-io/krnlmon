@@ -440,7 +440,7 @@ switch_status_t switch_api_l3_route_add(
   return status;
 }
 
-switch_status_t switch_api_l3_route_delete(switch_device_t device,
+switch_status_t switch_api_l3_delete_route(switch_device_t device,
     switch_api_route_entry_t *api_route_entry) {
 
   switch_route_entry_t route_entry;

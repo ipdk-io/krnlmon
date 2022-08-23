@@ -18,7 +18,6 @@
 #ifndef __SWITCHLINK_ROUTE_H__
 #define __SWITCHLINK_ROUTE_H__
 
-//#include "switchlink.h"
 #include "switchlink_handle.h"
 
 void process_route_msg(struct nlmsghdr *nlmsg, int type);

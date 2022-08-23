@@ -64,7 +64,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   switchlink_handle_t intf_h = 0;
 
   switchlink_db_interface_info_t ifinfo;
-  status = switchlink_db_interface_get_info(addrmsg->ifa_index, &ifinfo);
+  status = switchlink_db_get_interface_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     dzlog_debug("Found interface cache for: %s", ifinfo.ifname);
     intf_h = ifinfo.intf_h;

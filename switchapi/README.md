@@ -75,7 +75,7 @@ using platform independent API switch_pd_to_get_port_id and saved in rif_info st
     *  Once the handle is successfully created, if nhop handle is of type SWITCH_HANDLE_TYPE_NHOP,  call the platform dependent(PD) API to add entry to ipv4 table in target backend. If nhop handle is of type SWITCH_HANDLE_TYPE_ECMP_GROUP, call the platform dependent(PD) API to add entry to ip4 table  and ecmp_hash table
     * Once the table entry is successfully added to backend, cache the route_info in the hastable with route entry as the key
 
- * **switch_api_l3_route_delete**: Retrieve the route handle from hashtable using route entry as the key. Call the platform dependent(PD) API to delete the table entries from target backend and delete the route handle.
+ * **switch_api_l3_delete_route**: Retrieve the route handle from hashtable using route entry as the key. Call the platform dependent(PD) API to delete the table entries from target backend and delete the route handle.
 
 ## Platform Dependent(PD) API <a name="platform_dependent_api"></a>
 

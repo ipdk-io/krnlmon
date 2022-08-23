@@ -26,59 +26,59 @@
 #include <netlink/route/nexthop.h>
 #include <netlink/route/neighbour.h>
 
-#include "switchlink.h"
-#include "switchlink_db.h"
-#include "switchlink_utils.h"
-#include "sai.h"
-#include "switchlink_sai.h"
-#include "switchsai/saiinternal.h"
+#include "switchlink/switchlink.h"
+#include "switchlink/switchlink_db.h"
+
+extern void switchlink_init_api(void);
 
 // SWITCHLINK_LINK_TYPE_VXLAN handlers
-void switchlink_create_tunnel_interface(
+extern void switchlink_create_tunnel_interface(
          switchlink_db_tunnel_interface_info_t *tnl_intf);
-void switchlink_delete_tunnel_interface(uint32_t ifindex);
+extern void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_TUN handlers
-void switchlink_create_interface(switchlink_db_interface_info_t *intf);
-void switchlink_delete_interface(uint32_t ifindex);
+extern void switchlink_create_interface(switchlink_db_interface_info_t *intf);
+extern void switchlink_delete_interface(uint32_t ifindex);
 
 
 // RTM_NEWNEIGH/ RTM_DELNEIGH handlers
-void switchlink_create_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *ipaddr,
-                             switchlink_mac_addr_t mac_addr,
-                             switchlink_handle_t intf_h);
-void switchlink_delete_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *ipaddr,
-                             switchlink_handle_t intf_h);
-void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
-                           switchlink_handle_t bridge_h,
-                           switchlink_handle_t intf_h);
-void switchlink_delete_mac(switchlink_mac_addr_t mac_addr,
-                           switchlink_handle_t bridge_h);
+extern void switchlink_create_neigh(switchlink_handle_t vrf_h,
+                                    const switchlink_ip_addr_t *ipaddr,
+                                    switchlink_mac_addr_t mac_addr,
+                                    switchlink_handle_t intf_h);
+extern void switchlink_delete_neigh(switchlink_handle_t vrf_h,
+                                    const switchlink_ip_addr_t *ipaddr,
+                                    switchlink_handle_t intf_h);
+extern void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
+                                  switchlink_handle_t bridge_h,
+                                  switchlink_handle_t intf_h);
+extern void switchlink_delete_mac(switchlink_mac_addr_t mac_addr,
+                                  switchlink_handle_t bridge_h);
 
 // Nexthop handlers
-int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info);
-int switchlink_delete_nexthop(switchlink_handle_t nhop_h);
+extern int 
+switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info);
+extern int switchlink_delete_nexthop(switchlink_handle_t nhop_h);
 
 // RTM_NEWROUTE/ RTM_DELROUTE handlers
-void switchlink_create_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst,
-                             const switchlink_ip_addr_t *gateway,
-                             switchlink_handle_t ecmp_h,
-                             switchlink_handle_t intf_h);
-void switchlink_delete_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst);
+extern void switchlink_create_route(switchlink_handle_t vrf_h,
+                                    const switchlink_ip_addr_t *dst,
+                                    const switchlink_ip_addr_t *gateway,
+                                    switchlink_handle_t ecmp_h,
+                                    switchlink_handle_t intf_h);
+extern void switchlink_delete_route(switchlink_handle_t vrf_h,
+                                    const switchlink_ip_addr_t *dst);
 
 // ECMP handlers
-int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info);
-void switchlink_delete_ecmp(switchlink_handle_t ecmp_h);
+extern int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info);
+extern void switchlink_delete_ecmp(switchlink_handle_t ecmp_h);
 
 // VRF handler
-int switchlink_create_vrf(switchlink_handle_t *vrf_h);
+extern int switchlink_create_vrf(switchlink_handle_t *vrf_h);
 
 //General utility function
-bool
+extern bool
 validate_delete_nexthop(uint32_t using_by,
                         switchlink_nhop_using_by_e type);
+
 #endif /* __SWITCHLINK_ANALYZE_H__ */

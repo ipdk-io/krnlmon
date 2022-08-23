@@ -20,9 +20,7 @@
 
 #include "config.h"
 #include "switchlink.h"
-//#include "switchlink_link.h"
 #include "switchlink_neigh.h"
-//#include "switchlink_route.h"
 #include "switchlink_handle.h"
 
 /*
@@ -65,7 +63,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
        nbh->ndm_type);
 
   switchlink_db_interface_info_t ifinfo;
-  if (switchlink_db_interface_get_info(nbh->ndm_ifindex, &ifinfo) !=
+  if (switchlink_db_get_interface_info(nbh->ndm_ifindex, &ifinfo) !=
       SWITCHLINK_DB_STATUS_SUCCESS) {
     char intf_name[16] = {0};
     if (!if_indextoname(nbh->ndm_ifindex, intf_name)) {

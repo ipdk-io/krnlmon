@@ -21,8 +21,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <netlink/msg.h>
-#include <netlink/netlink.h>
+#include <netinet/in.h>
 
 #include "switchutils/switch_utils.h"
 
