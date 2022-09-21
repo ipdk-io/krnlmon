@@ -452,7 +452,7 @@ switch_status_t switch_api_ecmp_member_add (
   return status;
 }
 
-switch_status_t switch_api_ecmp_delete(const switch_device_t device,
+switch_status_t switch_api_delete_ecmp(const switch_device_t device,
                                        const switch_handle_t ecmp_handle) {
   switch_uint32_t index = 0;
   switch_node_t *node = NULL;

@@ -95,7 +95,7 @@ static sai_status_t sai_remove_next_hop_group_entry(_In_ sai_object_id_t
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
   switch_status =
-      switch_api_ecmp_delete(0, (switch_handle_t)next_hop_group_id);
+      switch_api_delete_ecmp(0, (switch_handle_t)next_hop_group_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
     dzlog_error("failed to remove ECMP group %lx: %s",

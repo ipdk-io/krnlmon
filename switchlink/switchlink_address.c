@@ -15,23 +15,10 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <netlink/netlink.h>
-#include <netlink/msg.h>
-
 #include "config.h"
-#include "switchlink.h"
-#include "switchlink_link.h"
-#include "switchlink_neigh.h"
 #include "switchlink_route.h"
-#include "switchlink_db.h"
-#include "switchlink_sai.h"
 #include "switchlink_int.h"
-
-/* TODO: P4-OVS: Dummy Processing of Netlink messages received
-* Support IPv4 Address group
-*/
+#include "switchlink_handle.h"
 
 /*
  * Routine Description:
@@ -77,7 +64,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   switchlink_handle_t intf_h = 0;
 
   switchlink_db_interface_info_t ifinfo;
-  status = switchlink_db_interface_get_info(addrmsg->ifa_index, &ifinfo);
+  status = switchlink_db_get_interface_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     dzlog_debug("Found interface cache for: %s", ifinfo.ifname);
     intf_h = ifinfo.intf_h;
@@ -118,7 +105,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
       null_gateway.family = addr.family;
 
       // add the subnet route for prefix_len, derived from IFA_ADDRESS
-      route_create(g_default_vrf_h, &addr, &null_gateway, 0, intf_h);
+      switchlink_create_route(g_default_vrf_h, &addr, &null_gateway, 0, intf_h);
 
       // add the interface route
       if (addrmsg->ifa_family == AF_INET) {
@@ -127,12 +114,12 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
         addr.prefix_len = 128;
       }
       // Add a route with new prefix_len
-      route_create(g_default_vrf_h, &addr, &null_gateway, 0, intf_h);
+      switchlink_create_route(g_default_vrf_h, &addr, &null_gateway, 0, intf_h);
     }
   } else {
     if (addr_valid) {
       // remove the subnet route
-      route_delete(g_default_vrf_h, &addr);
+      switchlink_delete_route(g_default_vrf_h, &addr);
 
       // remove the interface route
       if (addrmsg->ifa_family == AF_INET) {
@@ -140,7 +127,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
       } else {
         addr.prefix_len = 128;
       }
-      route_delete(g_default_vrf_h, &addr);
+      switchlink_delete_route(g_default_vrf_h, &addr);
     }
   }
 }

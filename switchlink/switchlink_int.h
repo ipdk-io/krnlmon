@@ -18,9 +18,10 @@
 #ifndef __SWITCHLINK_INT_H__
 #define __SWITCHLINK_INT_H__
 
-extern void switchlink_db_init(void);
-extern void switchlink_api_init(void);
-extern void switchlink_link_init(void);
+struct nlmsghdr;
+extern void switchlink_init_db(void);
+extern void switchlink_init_api(void);
+extern void switchlink_init_link(void);
 
 extern void process_link_msg(struct nlmsghdr *nlmsg, int type);
 extern void process_neigh_msg(struct nlmsghdr *nlmsg, int type);

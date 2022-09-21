@@ -15,11 +15,16 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_ROUTE_H__
-#define __SWITCHLINK_ROUTE_H__
+#ifndef __SWITCHLINK_UTILS_H__
+#define __SWITCHLINK_UTILS_H__
 
-#include "switchlink_handle.h"
 
-void process_route_msg(struct nlmsghdr *nlmsg, int type);
+#include <stdint.h>
+#include <stdbool.h>
+#include <netinet/in.h>
 
-#endif /* __SWITCHLINK_ROUTE_H__ */
+#include "switchutils/switch_utils.h"
+
+uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len);
+struct in6_addr ipv6_prefix_len_to_mask(uint32_t prefix_len);
+#endif /* __SWITCHLINK_UTILS_H__ */

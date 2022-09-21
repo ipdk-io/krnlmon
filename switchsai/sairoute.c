@@ -190,7 +190,7 @@ sai_status_t sai_remove_route_entry(_In_ const sai_route_entry_t *route_entry) {
   memcpy(&api_route_entry.ip_address, &ip_addr, sizeof(switch_ip_addr_t));
   api_route_entry.neighbor_installed = FALSE;
 
-  switch_status = switch_api_l3_route_delete(0, &api_route_entry);
+  switch_status = switch_api_l3_delete_route(0, &api_route_entry);
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {

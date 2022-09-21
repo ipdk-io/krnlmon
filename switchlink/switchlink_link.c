@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <netlink/netlink.h>
-#include <netlink/msg.h>
-#include <netlink/route/nexthop.h>
 #include <linux/if_bridge.h>
 #include <linux/if.h>
 #include <linux/version.h>
@@ -30,155 +25,11 @@
 #include "switchlink.h"
 #include "switchlink_int.h"
 #include "switchlink_link.h"
-#include "switchlink_neigh.h"
-#include "switchlink_db.h"
-#include "switchlink_sai.h"
+#include "switchlink_handle.h"
 
 switchlink_handle_t g_default_vrf_h = 0;
 switchlink_handle_t g_default_bridge_h = 0;
 switchlink_handle_t g_cpu_rx_nhop_h = 0;
-
-/*
- * Routine Description:
- *    Wrapper function to create interface
- *
- * Arguments:
- *    [in] intf - interface info
- *
- * Return Values:
- *    void
- */
-
-static void interface_create(switchlink_db_interface_info_t *intf) {
-  switchlink_db_status_t status;
-  switchlink_db_interface_info_t ifinfo;
-
-  status = switchlink_db_interface_get_info(intf->ifindex, &ifinfo);
-  if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    // create the interface
-    dzlog_debug("Switchlink Interface Create: %s", intf->ifname);
-
-    status = switchlink_interface_create(intf, &(intf->intf_h));
-    if (status) {
-      dzlog_error("newlink: Failed to create switchlink interface, error: %d\n",
-               status);
-      return;
-    }
-
-    // add the mapping to the db
-    switchlink_db_interface_add(intf->ifindex, intf);
-  } else {
-    // interface has already been created
-    if (memcmp(&(ifinfo.mac_addr),
-               &(intf->mac_addr),
-               sizeof(switchlink_mac_addr_t))) {
-       memcpy(&(ifinfo.mac_addr), &(intf->mac_addr),
-              sizeof(switchlink_mac_addr_t));
-
-      // Delete if RMAC is configured previously, and create this new RMAC.
-      status = switchlink_interface_create(&ifinfo, &ifinfo.intf_h);
-      if (status) {
-        dzlog_error("newlink: Failed to create switchlink interface, error: %d\n",
-                 status);
-        return;
-      }
-
-      switchlink_db_interface_update(intf->ifindex, &ifinfo);
-    }
-    intf->intf_h = ifinfo.intf_h;
-  }
-}
-
-/*
- * Routine Description:
- *    Wrapper function to delete interface
- *
- * Arguments:
- *    [in] ifindex - interface index
- *
- * Return Values:
- *    void
- */
-
-static void interface_delete(uint32_t ifindex) {
-  switchlink_db_interface_info_t intf;
-  if (switchlink_db_interface_get_info(ifindex, &intf) ==
-      SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    return;
-  }
-
-  // delete the interface from backend and DB
-  switchlink_interface_delete(&intf, intf.intf_h);
-  switchlink_db_interface_delete(intf.ifindex);
-}
-
-/*
- * Routine Description:
- *    Create tunnel interface
- *
- * Arguments:
- *    [in] tnl_intf - tunnel interface info
- *
- * Return Values:
- *    void
- */
-
-static void tunnel_interface_create(
-                             switchlink_db_tunnel_interface_info_t *tnl_intf) {
-  switchlink_db_status_t status;
-  switchlink_db_tunnel_interface_info_t tnl_ifinfo;
-
-  status = switchlink_db_tunnel_interface_get_info(tnl_intf->ifindex,
-                                                   &tnl_ifinfo);
-  if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-
-    dzlog_debug("Switchlink tunnel interface: %s", tnl_intf->ifname);
-    status = switchlink_tunnel_interface_create(tnl_intf,
-                                                &(tnl_intf->orif_h),
-                                                &(tnl_intf->tnl_term_h));
-    if (status) {
-      dzlog_error("newlink: Failed to create switchlink tunnel interface :%s, "
-               "error: %d", tnl_intf->ifname, status);
-      return;
-    }
-
-    // add the mapping to the db
-    switchlink_db_tunnel_interface_add(tnl_intf->ifindex, tnl_intf);
-    return;
-  }
-  dzlog_debug("Switchlink DB already has tunnel config for "
-           "interface: %s", tnl_intf->ifname);
-  return;
-}
-
-/*
- * Routine Description:
- *    Delete tunnel interface
- *
- * Arguments:
- *    [in] ifindex - interface index
- *
- * Return Values:
- *    void
- */
-
-static void tunnel_interface_delete(uint32_t ifindex) {
-  switchlink_db_tunnel_interface_info_t tnl_intf;
-  if (switchlink_db_tunnel_interface_get_info(ifindex, &tnl_intf) ==
-      SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-      dzlog_info("Trying to delete a tunnel which is not "
-                "available");
-    return;
-  }
-
-  dzlog_debug("Switchlink tunnel interface: %s", tnl_intf.ifname);
-
-  // delete the interface from backend and in DB
-  switchlink_tunnel_interface_delete(&tnl_intf);
-  switchlink_db_tunnel_interface_delete(ifindex);
-
-  return;
-}
 
 /*
  * Routine Description:
@@ -207,11 +58,7 @@ static switchlink_link_type_t get_link_type(char *info_kind) {
   return link_type;
 }
 
-/*
-TODO: P4-OVS: Process Received Netlink messages here
-*/
-
-// Support Port(tuntap), Routing and Vxlan features
+// Supports Port(tuntap), Routing and Vxlan features
 /*
  * Routine Description:
  *    Process link netlink messages
@@ -355,7 +202,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
           intf_info.vrf_h = g_default_vrf_h;
           intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
 
-          interface_create(&intf_info);
+          switchlink_create_interface(&intf_info);
         break;
 
       case SWITCHLINK_LINK_TYPE_VXLAN: {
@@ -370,7 +217,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         tnl_intf_info.dst_port = vxlan_dst_port;
         tnl_intf_info.ttl = ttl;
 
-        tunnel_interface_create(&tnl_intf_info);
+        switchlink_create_tunnel_interface(&tnl_intf_info);
       }
       break;
       default:
@@ -379,63 +226,16 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
   } else {
     krnlmon_assert(type == RTM_DELLINK);
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
-        tunnel_interface_delete(ifmsg->ifi_index);
+        switchlink_delete_tunnel_interface(ifmsg->ifi_index);
     } else if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
-      interface_delete(ifmsg->ifi_index);
+      switchlink_delete_interface(ifmsg->ifi_index);
     } else {
       dzlog_debug("Unhandled link type");
     }
   }
 }
 
-#if 0
-/* Loop through all p4 devices and print particular p4 device's
- * local data or print for all available p4 devices */
-static void
-vxlan_dump_cache(struct unixctl_conn *conn, int argc OVS_UNUSED,
-                 const char *argv[], void *aux OVS_UNUSED)
-{
-
-  // TODO, dump cache crashes after dumping the context. Fix
-  // the issue and then remove this return.
-  return;
-#if 0
-  struct ds results;
-  ds_init(&results);
-  unixctl_command_reply(conn, ds_cstr(&results));
-  ds_destroy(&results);
-#endif
-  switchlink_db_tunnel_interface_info_t tnl_ifinfo;
-  struct ds results = DS_EMPTY_INITIALIZER;
-  int if_index = if_nametoindex(argv[1]);
-  switchlink_db_status_t status;
-
-  if (if_index == 0) {
-    return;
-  }
-
-  status = switchlink_db_tunnel_interface_get_info(if_index, &tnl_ifinfo);
-  if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    ds_put_format(&results, "\nCannot find config for interface %s", argv[1]);
-  } else {
-    //    ds_put_format(&results, "\nConfig for VxLAN port %s is:", argv[1]);
-    ds_put_format(&results, "\n\tDestination port ID: %d", tnl_ifinfo.dst_port);
-    ds_put_format(&results, "\n\tDestination IP: %x", tnl_ifinfo.dst_ip.ip.v4addr.s_addr);
-    ds_put_format(&results, "\n\tSource IP: %x", tnl_ifinfo.src_ip.ip.v4addr.s_addr);
-    ds_put_format(&results, "\n\tIfindex: %d", tnl_ifinfo.ifindex);
-    ds_put_format(&results, "\n\tVNI ID: %d", tnl_ifinfo.vni_id);
-    ds_put_format(&results, "\n\tTTL : %d", tnl_ifinfo.ttl);
-  }
-
-  unixctl_command_reply(conn, ds_cstr(&results));
-  ds_destroy(&results);
-}
-#endif
-
-void switchlink_link_init(void) {
+void switchlink_init_link(void) {
   /* P4OVS: create default vrf*/
-  switchlink_vrf_create(&g_default_vrf_h);
-
-  //unixctl_command_register("p4vxlan/dump-cache", "[kernel-intf-name/all]", 1, 1,
-  //                           vxlan_dump_cache, NULL);
+  switchlink_create_vrf(&g_default_vrf_h);
 }

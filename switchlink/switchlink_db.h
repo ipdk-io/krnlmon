@@ -120,104 +120,104 @@ typedef struct switchlink_db_tunnel_interface_info_ {
 } switchlink_db_tunnel_interface_info_t;
 
 /*** interface ***/
-extern switchlink_db_status_t switchlink_db_interface_add(
+extern switchlink_db_status_t switchlink_db_add_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
 
-extern switchlink_db_status_t switchlink_db_interface_get_info(
+extern switchlink_db_status_t switchlink_db_get_interface_info(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
 
-extern switchlink_db_status_t switchlink_db_interface_get_ifindex(
+extern switchlink_db_status_t switchlink_db_get_interface_ifindex(
     switchlink_handle_t intf_h, uint32_t *ifindex);
 
-extern switchlink_db_status_t switchlink_db_interface_update(
+extern switchlink_db_status_t switchlink_db_update_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
 
-extern switchlink_db_status_t switchlink_db_interface_delete(uint32_t ifindex);
+extern switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex);
 
 /*** Tunnel ***/
-extern switchlink_db_status_t switchlink_db_tunnel_interface_add(
+extern switchlink_db_status_t switchlink_db_add_tunnel_interface(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tnl_intf_info);
 
-extern switchlink_db_status_t switchlink_db_tunnel_interface_get_info(
+extern switchlink_db_status_t switchlink_db_get_tunnel_interface_info(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info);
 
-extern switchlink_db_status_t switchlink_db_tunnel_interface_delete(
+extern switchlink_db_status_t switchlink_db_delete_tunnel_interface(
     uint32_t ifindex);
 
 /*** mac ***/
-extern switchlink_db_status_t switchlink_db_mac_add(
+extern switchlink_db_status_t switchlink_db_add_mac(
     switchlink_mac_addr_t mac_addr,
     switchlink_handle_t bridge_h,
     switchlink_handle_t intf_h);
 
-extern switchlink_db_status_t switchlink_db_mac_get_intf(
+extern switchlink_db_status_t switchlink_db_get_mac_intf(
     switchlink_mac_addr_t mac_addr,
     switchlink_handle_t bridge_h,
     switchlink_handle_t *int_h);
 
-extern switchlink_db_status_t switchlink_db_mac_delete(
+extern switchlink_db_status_t switchlink_db_delete_mac(
     switchlink_mac_addr_t mac_addr, switchlink_handle_t bridge_h);
 
 /*** neighbor ***/
-extern switchlink_db_status_t switchlink_db_neighbor_add(
+extern switchlink_db_status_t switchlink_db_add_neighbor(
     switchlink_db_neigh_info_t *neigh_info);
 
-extern switchlink_db_status_t switchlink_db_neighbor_delete(
+extern switchlink_db_status_t switchlink_db_delete_neighbor(
     switchlink_db_neigh_info_t *neigh_info);
 
-extern switchlink_db_status_t switchlink_db_neighbor_get_info(
+extern switchlink_db_status_t switchlink_db_get_neighbor_info(
     switchlink_db_neigh_info_t *neigh_info);
 
 /*** nexthop ***/
-extern switchlink_db_status_t switchlink_db_nexthop_add(
+extern switchlink_db_status_t switchlink_db_add_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info);
 
-extern switchlink_db_status_t switchlink_db_nexthop_delete(
+extern switchlink_db_status_t switchlink_db_delete_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info);
 
-extern switchlink_db_status_t switchlink_db_nexthop_get_info(
+extern switchlink_db_status_t switchlink_db_get_nexthop_info(
     switchlink_db_nexthop_info_t *nexthop_info);
 
-extern switchlink_db_status_t switchlink_db_nexthop_update_using_by(
+extern switchlink_db_status_t switchlink_db_update_nexthop_using_by(
     switchlink_db_nexthop_info_t *nexthop_info);
 
-extern switchlink_db_status_t switchlink_db_nexthop_handle_get_info(
+extern switchlink_db_status_t switchlink_db__get_nexthop_handle_info(
     switchlink_handle_t nhop_h, switchlink_db_nexthop_info_t *nexthop_info);
 
 /*** ecmp ***/
-extern switchlink_db_status_t switchlink_db_ecmp_add(
+extern switchlink_db_status_t switchlink_db_add_ecmp(
     switchlink_db_ecmp_info_t *ecmp_info);
 
-extern switchlink_db_status_t switchlink_db_ecmp_get_info(
+extern switchlink_db_status_t switchlink_db_get_ecmp_info(
     switchlink_db_ecmp_info_t *ecmp_info);
 
 extern switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
     switchlink_handle_t ecmp_h, switchlink_db_ecmp_info_t *ecmp_info);
 
-extern switchlink_db_status_t switchlink_db_ecmp_ref_inc(
+extern switchlink_db_status_t switchlink_db_inc_ecmp_ref(
     switchlink_handle_t ecmp_h);
 
-extern switchlink_db_status_t switchlink_db_ecmp_ref_dec(
+extern switchlink_db_status_t switchlink_db_dec_ecmp_ref(
     switchlink_handle_t ecmp_h, int *ref_count);
 
-extern switchlink_db_status_t switchlink_db_ecmp_delete(
+extern switchlink_db_status_t switchlink_db_delete_ecmp(
     switchlink_handle_t ecmp_h);
 
 /*** route ***/
-extern switchlink_db_status_t switchlink_db_route_add(
+extern switchlink_db_status_t switchlink_db_add_route(
     switchlink_db_route_info_t *route_info);
 
-extern switchlink_db_status_t switchlink_db_route_delete(
+extern switchlink_db_status_t switchlink_db_delete_route(
     switchlink_db_route_info_t *route_info);
 
-extern switchlink_db_status_t switchlink_db_route_get_info(
+extern switchlink_db_status_t switchlink_db_get_route_info(
     switchlink_db_route_info_t *route_info);
 
 /*** Tuntap entry ***/
-extern switchlink_db_status_t switchlink_db_tuntap_add(
+extern switchlink_db_status_t switchlink_db_add_tuntap(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info);
 
-extern switchlink_db_status_t switchlink_db_tuntap_get_info(
+extern switchlink_db_status_t switchlink_db_get_tuntap_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info);
 
 

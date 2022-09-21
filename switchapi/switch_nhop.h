@@ -215,7 +215,7 @@ switch_status_t switch_api_ecmp_create(const switch_device_t device,
  Delete a ECMP Group
  @param ecmp_handle - Handle that identifies ECMP group uniquely
 */
-switch_status_t switch_api_ecmp_delete(const switch_device_t device,
+switch_status_t switch_api_delete_ecmp(const switch_device_t device,
                                        const switch_handle_t ecmp_handle);
 
 /**

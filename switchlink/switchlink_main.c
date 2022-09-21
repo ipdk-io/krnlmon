@@ -140,7 +140,7 @@ static void nl_sync_state(void) {
  *    void
  */
 
-static void process_nl_message(struct nlmsghdr *nlmsg) {
+static void nl_process_message(struct nlmsghdr *nlmsg) {
   /* TODO: P4OVS: Enabling callback for link msg type only and prints for
      few protocol families to avoid flood of messages. Enable, as needed.
   */
@@ -191,18 +191,18 @@ static void process_nl_message(struct nlmsghdr *nlmsg) {
   }
 }
 
-static int nl_sock_recv_msg(struct nl_msg *msg, void *arg) {
+static int nl_recv_sock_msg(struct nl_msg *msg, void *arg) {
   struct nlmsghdr *nl_msg = nlmsg_hdr(msg);
   int nl_msg_sz = nlmsg_get_max_size(msg);
   while (nlmsg_ok(nl_msg, nl_msg_sz)) {
-    process_nl_message(nl_msg);
+    nl_process_message(nl_msg);
     nl_msg = nlmsg_next(nl_msg, &nl_msg_sz);
   }
 
   return 0;
 }
 
-static void cleanup_nl_sock(void) {
+static void nl_cleanup_sock(void) {
   // free the socket
   nl_socket_free(g_nlsk);
   g_nlsk = NULL;
@@ -225,39 +225,39 @@ static void switchlink_nl_sock_intf_init(void) {
 
   // set the callback function
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_sock_recv_msg, NULL);
+      g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_recv_sock_msg, NULL);
   nl_socket_modify_cb(
-      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_sock_recv_msg, NULL);
+      g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_recv_sock_msg, NULL);
 
   // connect to the netlink route socket
   if (nl_connect(g_nlsk, NETLINK_ROUTE) < 0) {
     perror("nl_connect:NETLINK_ROUTE");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
 
   // register for the following messages
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_LINK, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
-  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
-  //nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_LINK, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
+  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
+  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
 
   // set socket to be non-blocking
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   if (nlsk_fd < 0) {
     perror("nl_socket_get_fd");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
   sock_flags = fcntl(nlsk_fd, F_GETFL, 0);
   if (fcntl(nlsk_fd, F_SETFL, sock_flags | O_NONBLOCK) < 0) {
     perror("fcntl");
-    cleanup_nl_sock();
+    nl_cleanup_sock();
     return;
   }
 
@@ -265,7 +265,7 @@ static void switchlink_nl_sock_intf_init(void) {
   // P4-OVS comment nl_sync_state();
 }
 
-static void process_nl_event_loop(void) {
+static void nl_process_event_loop(void) {
   int nlsk_fd;
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   krnlmon_assert(nlsk_fd > 0);
@@ -307,17 +307,16 @@ void *switchlink_main(void *args) {
   char krnlmon_log_cfg_file[180] = {0};
   sprintf(krnlmon_log_cfg_file, DEFAULT_ZLOG_CFG_FILE);
   krnlmon_zlog_init(krnlmon_log_cfg_file);
-  dzlog_info("NUPUR: in switchlink main thread");
 
-  switchlink_db_init();
-  switchlink_api_init();
-  switchlink_link_init();
+  switchlink_init_db();
+  switchlink_init_api();
+  switchlink_init_link();
   switchlink_nl_sock_intf_init();
 
   if (g_nlsk) {
     usleep(20000);
-    process_nl_event_loop();
-    cleanup_nl_sock();
+    nl_process_event_loop();
+    nl_cleanup_sock();
   }
 
   pthread_mutex_lock(&cookie_mutex);
