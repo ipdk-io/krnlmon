@@ -181,7 +181,7 @@ extern switchlink_db_status_t switchlink_db_get_nexthop_info(
 extern switchlink_db_status_t switchlink_db_update_nexthop_using_by(
     switchlink_db_nexthop_info_t *nexthop_info);
 
-extern switchlink_db_status_t switchlink_db__get_nexthop_handle_info(
+extern switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
     switchlink_handle_t nhop_h, switchlink_db_nexthop_info_t *nexthop_info);
 
 /*** ecmp ***/

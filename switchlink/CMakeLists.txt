@@ -29,6 +29,7 @@ add_library(switchlink_o OBJECT
    switchlink_handle.h
    switchlink_utils.c
    switchlink_utils.h
+   $<TARGET_OBJECTS:switchlink_sai_o>
 )
 
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
