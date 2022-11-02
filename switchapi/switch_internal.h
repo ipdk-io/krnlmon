@@ -19,11 +19,10 @@
 #define _switch_internal_h_
 
 #include <stdio.h>
-#include "config.h"
 #include "switchapi/switch_status.h"
 #include "switchapi/switch_device_int.h"
 #include "switchapi/switch_handle_int.h"
-#include "bf_types/bf_types.h"
+//#include "bf_types.h"
 #include "tdi/common/tdi_defs.h"
 #include "switchutils/switch_utils.h"
 
@@ -96,7 +95,7 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable);
 
 char *switch_error_to_string(switch_status_t status);
 
-switch_status_t switch_pd_status_to_status(bf_status_t pd_status);
+//switch_status_t switch_pd_status_to_status(bf_status_t pd_status);
 
 switch_status_t switch_pd_tdi_status_to_status(tdi_status_t pd_status);
 

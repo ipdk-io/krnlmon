@@ -21,7 +21,6 @@
 #include <linux/if.h>
 #include <linux/version.h>
 
-#include "config.h"
 #include "switchlink.h"
 #include "switchlink_int.h"
 #include "switchlink_link.h"

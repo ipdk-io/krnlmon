@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "config.h"
+
 #include "sainexthop.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rif.h"

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switch_rmac.h"
 #include "switch_pd_routing.h"
 #include "switch_rmac_int.h"

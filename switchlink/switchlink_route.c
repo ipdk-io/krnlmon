@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
-//#include "switchlink_neigh.h"
 #include "switchlink_route.h"
 
 /*

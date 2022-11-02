@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switch_internal.h"
 #include "switch_config_int.h"
 

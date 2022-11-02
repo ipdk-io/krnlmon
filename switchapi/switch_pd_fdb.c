@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-#include "config.h"
-#include "bf_types/bf_types.h"
+#include "bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switch_pd_utils.h"
 #include "switch_internal.h"

@@ -22,9 +22,10 @@ add_library(switchsai_o OBJECT
 
 target_include_directories(switchsai_o PRIVATE
     ${SAI_SOURCE_DIR}/inc
-    ${SDE_INSTALL_PREFIX}/include
-    ${SDE_INSTALL_PREFIX}/include/target-utils # id
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
-    ${SDE_INSTALL_PREFIX}/include/target-sys # bf_sal
+    ${SDE_INSTALL_DIR}/include
+    ${SDE_INSTALL_DIR}/include/bf_types
+    ${SDE_INSTALL_DIR}/include/target-utils # id
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
+    ${SDE_INSTALL_DIR}/include/target-sys # bf_sal
 )

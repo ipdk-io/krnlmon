@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "saivirtualrouter.h"
 #include "switchapi/switch_vrf.h"
 #include "saiinternal.h"

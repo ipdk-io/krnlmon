@@ -20,7 +20,6 @@
 #include <string.h>
 #include <netinet/in.h>
 
-#include "config.h"
 #include "tommyds/tommytrieinp.h"
 #include "tommyds/tommyhashlin.h"
 #include "tommyds/tommylist.h"

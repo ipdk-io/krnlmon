@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switchlink_route.h"
 #include "switchlink_int.h"
 #include "switchlink_handle.h"

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "sairouterinterface.h"
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_rmac.h"

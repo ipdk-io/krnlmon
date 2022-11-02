@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "sai.h"
 #include "switchlink_init_sai.h"
 

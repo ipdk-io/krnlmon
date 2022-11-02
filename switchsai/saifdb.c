@@ -18,7 +18,6 @@
 #include <linux/if_ether.h>
 
 #include "saifdb.h"
-#include "config.h"
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_interface.h"
 #include "switchapi/switch_device.h"

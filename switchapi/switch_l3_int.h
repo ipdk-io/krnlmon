@@ -18,7 +18,6 @@
 #ifndef __SWITCH_L3_INT_H__
 #define __SWITCH_L3_INT_H__
 
-#include "config.h"
 #include "switch_types_int.h"
 
 #ifdef __cplusplus

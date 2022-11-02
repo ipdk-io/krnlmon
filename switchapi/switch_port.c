@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switch_base_types.h"
 #include "switch_port.h"
 #include "switch_status.h"
