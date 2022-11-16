@@ -7,8 +7,6 @@
 # TODO: Make Kernel Monitor a package.
 cmake_minimum_required(VERSION 3.5)
 
-project(krnlmon)
-
 include_directories(.)
 
 add_subdirectory(switchapi)
@@ -21,6 +19,9 @@ add_library(krnlmon SHARED
     $<TARGET_OBJECTS:switchlink_o>
     $<TARGET_OBJECTS:switchsai_o>
     $<TARGET_OBJECTS:switchutils_o>
+    $<TARGET_OBJECTS:switchlink_sai_o>
+    krnlmon_main.c
+    krnlmon_main.h
 )
 
 target_link_libraries(krnlmon nl-route-3 nl-3)
@@ -32,6 +33,8 @@ set_target_properties(krnlmon PROPERTIES
     LINK_OPTIONS -Wl,--version-script=libkrnlmon.sym
     LINK_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.sym
 )
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Version number for .pc file.
 set(VERSION 1.0)

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switch_neighbor_int.h"
 #include "switch_neighbor.h"
 #include "switch_fdb.h"

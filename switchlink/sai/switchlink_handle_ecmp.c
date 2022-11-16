@@ -99,7 +99,7 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
 
     for (index = 0; index < num_nhops; index++) {
       memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
-      status = switchlink_db__get_nexthop_handle_info(nhops[index],
+      status = switchlink_db_get_nexthop_handle_info(nhops[index],
                                                      &nexthop_info);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
         dzlog_error("Cannot get nhop info for nhop handle 0x%lx", nhops[index]);

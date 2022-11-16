@@ -17,7 +17,6 @@
 
 #include "switch_internal.h"
 #include "switch_table.h"
-#include "config.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -23,7 +23,6 @@
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
 
-#include "config.h"
 #include "switchlink.h"
 #include "switchlink_int.h"
 
@@ -237,11 +236,11 @@ static void switchlink_nl_sock_intf_init(void) {
   }
 
   // register for the following messages
-  nl_add_socket_memberships(g_nlsk, RTNLGRP_LINK, 0);
-  nl_add_socket_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
-  nl_add_socket_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
-  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
-  nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_LINK, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_NOTIFY, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "saiinternal.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_nhop.h"

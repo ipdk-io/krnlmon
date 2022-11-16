@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "sairoute.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_rif.h"

@@ -17,7 +17,6 @@
 
 #include <arpa/inet.h>
 
-#include "config.h"
 #include "saineighbor.h"
 #include "switchapi/switch_neighbor.h"
 #include "switchapi/switch_nhop.h"

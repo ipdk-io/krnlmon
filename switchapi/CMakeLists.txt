@@ -60,15 +60,16 @@ add_library(switchapi_o OBJECT
 )
 
 target_include_directories(switchapi_o PRIVATE
-    ${SDE_INSTALL_PREFIX}/include
-    ${SDE_INSTALL_PREFIX}/include/target-utils # id
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
-    ${SDE_INSTALL_PREFIX}/include/target-sys
+    ${SDE_INSTALL_DIR}/include
+    ${SDE_INSTALL_DIR}/include/bf_types
+    ${SDE_INSTALL_DIR}/include/target-utils # id
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
+    ${SDE_INSTALL_DIR}/include/target-sys
 )
 
-find_library(TDI tdi ${SDE_INSTALL_PREFIX}/lib)
-find_library(TDI_JSON_PARSER tdi_json_parser ${SDE_INSTALL_PREFIX}/lib)
+find_library(TDI tdi ${SDE_INSTALL_DIR}/lib)
+find_library(TDI_JSON_PARSER tdi_json_parser ${SDE_INSTALL_DIR}/lib)
 
 target_link_libraries(switchapi_o PRIVATE
-        ${TDI} ${TDI_JSON_PARSER})
+    ${TDI} ${TDI_JSON_PARSER})

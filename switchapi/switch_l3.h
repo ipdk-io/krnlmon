@@ -18,7 +18,6 @@
 #ifndef __SWITCH_L3_H__
 #define __SWITCH_L3_H__
 
-#include "config.h"
 #include "switch_base_types.h"
 #include "switch_handle.h"
 #include "switch_l3_int.h"

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "saiport.h"
 #include "saiinternal.h"
 #include "switchapi/switch_port.h"

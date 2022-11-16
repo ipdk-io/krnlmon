@@ -18,8 +18,7 @@
 #include <net/if.h>
 
 /* Local header includes */
-#include "config.h"
-#include "bf_types/bf_types.h"
+#include "bf_types.h"
 #include "switch_internal.h"
 #include "switch_rif_int.h"
 #include "switch_base_types.h"

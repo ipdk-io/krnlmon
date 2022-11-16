@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "saitunnel.h"
 #include "saiinternal.h"
 #include "switchapi/switch_tunnel.h"

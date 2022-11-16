@@ -17,8 +17,7 @@
 
 #include <net/if.h>
 
-#include "config.h"
-#include "bf_types/bf_types.h"
+#include "bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "bf_rt/bf_rt_common.h"
 #include "switch_internal.h"

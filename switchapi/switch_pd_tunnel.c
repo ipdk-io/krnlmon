@@ -17,8 +17,6 @@
 
 #include "switch_tunnel.h"
 #include "switch_internal.h"
-#include "config.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switch_pd_utils.h"
 #include "switch_pd_p4_name_mapping.h"
 

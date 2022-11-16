@@ -22,6 +22,24 @@ static sai_route_api_t *sai_route_api = NULL;
 
 /*
  * Routine Description:
+ *    Initialize Route SAI API
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+
+sai_status_t sai_init_route_api() {
+   sai_status_t status = SAI_STATUS_SUCCESS;
+
+   status = sai_api_query(SAI_API_ROUTE, (void **)&sai_route_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+
+  return status;
+}
+
+/*
+ * Routine Description:
  *    SAI call to create route entry
  *
  * Arguments:

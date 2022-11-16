@@ -18,7 +18,6 @@
 #include <linux/if.h>
 
 /* Local header includes */
-#include "config.h"
 #include "switch_internal.h"
 #include "switch_port.h"
 #include "switch_config_int.h"

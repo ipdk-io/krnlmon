@@ -29,6 +29,7 @@ add_library(switchlink_o OBJECT
    switchlink_handle.h
    switchlink_utils.c
    switchlink_utils.h
+   $<TARGET_OBJECTS:switchlink_sai_o>
 )
 
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
@@ -36,9 +37,9 @@ target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
 target_link_libraries(switchlink_o PkgConfig::libnl3)
 
 target_include_directories(switchlink_o PRIVATE
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party  # judy
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/xxHash
-    ${SDE_INSTALL_PREFIX}/include/target-sys
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash
+    ${SDE_INSTALL_DIR}/include/target-sys
     ${SAI_SOURCE_DIR}/inc
 )

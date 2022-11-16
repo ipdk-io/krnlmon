@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include "config.h"
 #include "switch_l3.h"
 #include "switch_internal.h"
 #include "switch_nhop_int.h"

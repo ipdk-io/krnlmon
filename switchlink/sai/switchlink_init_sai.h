@@ -35,7 +35,7 @@ sai_status_t sai_init_rintf_api();
 sai_status_t sai_init_vrf_api();
 sai_status_t sai_init_fdb_api();
 sai_status_t sai_init_neigh_api();
-sai_status_t sai_route_api_init();
+sai_status_t sai_init_route_api();
 sai_status_t sai_init_nhop_api();
 sai_status_t sai_init_nhop_group_api();
 

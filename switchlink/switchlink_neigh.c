@@ -18,7 +18,6 @@
 #include <linux/if_ether.h>
 #include <net/if.h>
 
-#include "config.h"
 #include "switchlink.h"
 #include "switchlink_neigh.h"
 #include "switchlink_handle.h"

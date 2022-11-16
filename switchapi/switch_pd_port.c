@@ -17,8 +17,7 @@
 
 #include <stdio.h>
 
-#include "config.h"
-#include "bf_types/bf_types.h"
+#include "bf_types.h"
 #include "switch_base_types.h"
 #include "switch_port.h"
 #include "switch_port_int.h"
@@ -35,7 +34,7 @@ enum switch_tuntap_type {
 // Typedefs to compile stuff
 typedef uint16_t switch_pd_table_id_t;
 typedef uint16_t switch_pd_action_id_t;
-typedef switch_status_t bf_status_t;
+typedef switch_status_t tdi_status_t;
 typedef switch_status_t switch_pd_status_t;
 #define SWITCH_PD_STATUS_SUCCESS 0
 
@@ -43,6 +42,8 @@ switch_status_t switch_pd_device_port_add(switch_device_t device,
     switch_dev_port_t dev_port,
     switch_uint32_t mtu)
 {
+//TODO: Possibly a dead code, confirm and remove
+#if 0
    bf_status_t bf_status = BF_SUCCESS;
    struct port_attributes_t port_attrib;
    bf_dev_id_t bf_dev_id;
@@ -67,4 +68,6 @@ switch_status_t switch_pd_device_port_add(switch_device_t device,
        return bf_status;
    }
    return switch_pd_status_to_status(bf_status);
+#endif
+   return 0;
 }
