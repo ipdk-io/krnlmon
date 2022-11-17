@@ -17,10 +17,10 @@ add_library(switchlink_sai_o OBJECT
 )
 
 target_include_directories(switchlink_sai_o PRIVATE
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party  # judy
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/tommyds
-    ${SDE_INSTALL_PREFIX}/include/target-utils/third-party/xxHash
-    ${SDE_INSTALL_PREFIX}/include/target-sys
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
+    ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash
+    ${SDE_INSTALL_DIR}/include/target-sys
     ${SAI_SOURCE_DIR}/inc
 )
 
