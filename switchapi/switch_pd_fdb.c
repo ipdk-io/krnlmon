@@ -49,37 +49,37 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint32_t network_byte_order;
 
-    dzlog_debug("%s", __func__);
+    krnlmon_log_debug("%s", __func__);
 
     // TODO: if session creation fails, need to clean up flags_create
     // and target_create
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create flags handle, error: %d", status);
+        krnlmon_log_error("Failed to create flags handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_device_get(dev_id, &dev_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get device handle, error: %d", status);
+        krnlmon_log_error("Failed to get device handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_target_create(dev_hdl, &target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create target handle, error: %d", status);
+        krnlmon_log_error("Failed to create target handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
     
     status = tdi_session_create(dev_hdl, &session);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create tdi session, error: %d", status);
+        krnlmon_log_error("Failed to create tdi session, error: %d", status);
         return status;
     }
 
     status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get tdi info handle, error: %d", status);
+        krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -87,21 +87,21 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                      LNW_L2_FWD_TX_TABLE,
                                      &table_hdl);
     if (status != TDI_SUCCESS || !table_hdl) {
-        dzlog_error("Unable to get table handle for: %s, error: %d",
+        krnlmon_log_error("Unable to get table handle for: %s, error: %d",
                  LNW_L2_FWD_TX_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_key_allocate(table_hdl, &key_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to allocate key handle for: %s, error: %d",
+        krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
                  LNW_L2_FWD_TX_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_info_get(table_hdl, &table_info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to get table info handle for table, error: %d", status);
+        krnlmon_log_error("Unable to get table info handle for table, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -109,7 +109,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                   LNW_L2_FWD_TX_TABLE_KEY_DST_MAC,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-      dzlog_error("Unable to get field ID for key: %s, error: %d",
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
                 LNW_L2_FWD_TX_TABLE_KEY_DST_MAC, status);
         goto dealloc_handle_session;
     }
@@ -119,7 +119,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                          &api_l2_tx_info->dst_mac.mac_addr,
                                          SWITCH_MAC_LENGTH);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to set value for key ID: %d, error: %d",
+        krnlmon_log_error("Unable to set value for key ID: %d, error: %d",
                  field_id, status);
         goto dealloc_handle_session;
     }
@@ -127,7 +127,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
     if (entry_add &&
         api_l2_tx_info->learn_from == SWITCH_L2_FWD_LEARN_TUNNEL_INTERFACE) {
 
-        dzlog_info("Populate set_tunnel action in %s for tunnel "
+        krnlmon_log_info("Populate set_tunnel action in %s for tunnel "
                   "interface %x", LNW_L2_FWD_TX_TABLE,
                   (unsigned int)api_l2_tx_info->rif_handle);
 
@@ -135,7 +135,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                        LNW_L2_FWD_TX_TABLE_ACTION_SET_TUNNEL,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_L2_FWD_TX_TABLE_ACTION_SET_TUNNEL, status);
             goto dealloc_handle_session;
         }
@@ -143,7 +143,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_action_data_allocate(table_hdl, action_id,
                                                 &data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator for ID: %d, "
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
                      "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -153,7 +153,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                                    action_id,
                                                    &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                     LNW_ACTION_SET_TUNNEL_PARAM_TUNNEL_ID, status);
             goto dealloc_handle_session;
         }
@@ -163,7 +163,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                               0,
                                               sizeof(uint32_t));
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -173,7 +173,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                                    action_id,
                                                    &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_SET_TUNNEL_PARAM_DST_ADDR, status);
             goto dealloc_handle_session;
         }
@@ -184,7 +184,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                               &network_byte_order,
                                               sizeof(uint32_t));
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -192,7 +192,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          dzlog_error("Unable to add %s table entry, error: %d", 
+          krnlmon_log_error("Unable to add %s table entry, error: %d", 
                    LNW_L2_FWD_TX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -201,7 +201,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                api_l2_tx_info->learn_from ==
                SWITCH_L2_FWD_LEARN_VLAN_INTERFACE) {
 
-        dzlog_info("Populate l2_fwd action in %s "
+        krnlmon_log_info("Populate l2_fwd action in %s "
                   "for VLAN netdev: vlan%d",
                   LNW_L2_FWD_TX_TABLE,
                   api_l2_tx_info->port_id+1);
@@ -210,7 +210,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                        LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD, status);
             goto dealloc_handle_session;
         }
@@ -219,7 +219,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                                 action_id,
                                                 &data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator for ID: %d, "
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
                      "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -229,7 +229,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                                    action_id,
                                                    &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_L2_FWD_PARAM_PORT, status);
             goto dealloc_handle_session;
         }
@@ -237,7 +237,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_l2_tx_info->port_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -245,7 +245,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          dzlog_error("Unable to add %s table entry, error: %d", 
+          krnlmon_log_error("Unable to add %s table entry, error: %d", 
                     LNW_L2_FWD_TX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -254,7 +254,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                api_l2_tx_info->learn_from ==
                SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) {
 
-        dzlog_info("Populate l2_fwd action in %s "
+        krnlmon_log_info("Populate l2_fwd action in %s "
                   "for physical port: %d",
                   LNW_L2_FWD_TX_TABLE, api_l2_tx_info->port_id);
         
@@ -262,7 +262,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                        LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD, status);
             goto dealloc_handle_session;
         }
@@ -270,7 +270,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_action_data_allocate(table_hdl, action_id,
                                                 &data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator for ID: %d, "
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
                      "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -280,7 +280,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                                                    action_id,
                                                    &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_L2_FWD_PARAM_PORT, status);
             goto dealloc_handle_session;
         }
@@ -288,7 +288,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_l2_tx_info->port_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -296,7 +296,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to add %s entry, error: %d",
+            krnlmon_log_error("Unable to add %s entry, error: %d",
                       LNW_L2_FWD_TX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -305,7 +305,7 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
                                      flags_hdl, key_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to delete %s table entry, error: %d", 
+            krnlmon_log_error("Unable to delete %s table entry, error: %d", 
                      LNW_L2_FWD_TX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -315,18 +315,18 @@ dealloc_handle_session:
 
     status = tdi_flags_delete(flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate flags handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate flags handle, error: %d", status);
     }
 
     status = tdi_target_delete(target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate target handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate target handle, error: %d", status);
     }
 
     status = tdi_switch_pd_deallocate_handle_session(key_hdl, data_hdl,
                                                      session, entry_add);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate session and handles, error: %d", status);
+        krnlmon_log_error("Unable to deallocate session and handles, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
@@ -360,35 +360,35 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
     switch_rif_info_t *rif_info = NULL;
     switch_port_t port_id;
 
-    dzlog_debug("%s", __func__);
+    krnlmon_log_debug("%s", __func__);
 
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create flags handle, error: %d", status);
+        krnlmon_log_error("Failed to create flags handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_device_get(dev_id, &dev_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get device handle, error: %d", status);
+        krnlmon_log_error("Failed to get device handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_target_create(dev_hdl, &target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create target handle, error: %d", status);
+        krnlmon_log_error("Failed to create target handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_session_create(dev_hdl, &session);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create tdi session, error: %d", status);
+        krnlmon_log_error("Failed to create tdi session, error: %d", status);
         return status;
     }
 
     status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get tdi info handle, error: %d", status);
+        krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -396,21 +396,21 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                      LNW_L2_FWD_RX_TABLE,
                                      &table_hdl);
     if (status != TDI_SUCCESS || !table_hdl) {
-        dzlog_error("Unable to get table handle for: %s, error: %d",
+        krnlmon_log_error("Unable to get table handle for: %s, error: %d",
                  LNW_L2_FWD_RX_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_key_allocate(table_hdl, &key_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to allocate key handle for: %s, error: %d",
+        krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
                  LNW_NEXTHOP_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_info_get(table_hdl, &table_info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to get table info handle for table, error: %d", status);
+        krnlmon_log_error("Unable to get table info handle for table, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -418,7 +418,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                   LNW_L2_FWD_RX_TABLE_KEY_DST_MAC,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-      dzlog_error("Unable to get field ID for key: %s, error: %d",
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
                LNW_L2_FWD_RX_TABLE_KEY_DST_MAC, status);
         goto dealloc_handle_session;
     }
@@ -428,14 +428,14 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                          &api_l2_rx_info->dst_mac.mac_addr, 
                                          SWITCH_MAC_LENGTH);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to set value for key ID: %d, error: %d",
+        krnlmon_log_error("Unable to set value for key ID: %d, error: %d",
                  field_id, status);
         goto dealloc_handle_session;
     }
 
     if (entry_add) {
         /* Add an entry to target */
-        dzlog_info("Populate l2_fwd action in %s for rif handle "
+        krnlmon_log_info("Populate l2_fwd action in %s for rif handle "
                   "%x ", LNW_L2_FWD_RX_TABLE,
                   (unsigned int) api_l2_rx_info->rif_handle);
 
@@ -443,7 +443,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                        LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD, status);
             goto dealloc_handle_session;
         }
@@ -451,7 +451,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
         status = tdi_table_action_data_allocate(table_hdl, action_id,
                                                 &data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator for ID: %d, "
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
                      "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -461,7 +461,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                                        rif_handle,
                                                        &rif_info);
         if (switch_status != SWITCH_STATUS_SUCCESS) {
-            dzlog_error("Unable to get rif info, error: %d", switch_status);
+            krnlmon_log_error("Unable to get rif info, error: %d", switch_status);
             goto dealloc_handle_session;
         }
 
@@ -478,14 +478,14 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                                    action_id,
                                                    &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_L2_FWD_PARAM_PORT, status);
             goto dealloc_handle_session;
         }
 
         status = tdi_data_field_set_value(data_hdl, data_field_id, port_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -493,7 +493,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          dzlog_error("Unable to add %s table entry, error: %d", 
+          krnlmon_log_error("Unable to add %s table entry, error: %d", 
                    LNW_L2_FWD_RX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -502,7 +502,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
                                     flags_hdl, key_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to delete %s entry, error: %d", 
+            krnlmon_log_error("Unable to delete %s entry, error: %d", 
                      LNW_L2_FWD_RX_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -512,18 +512,18 @@ dealloc_handle_session:
 
     status = tdi_flags_delete(flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate flags handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate flags handle, error: %d", status);
     }
 
     status = tdi_target_delete(target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate target handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate target handle, error: %d", status);
     }
 
     status = tdi_switch_pd_deallocate_handle_session(key_hdl, data_hdl,
                                                      session, entry_add);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate session and handles, error: %d", status);
+        krnlmon_log_error("Unable to deallocate session and handles, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
@@ -553,35 +553,35 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
     const tdi_table_hdl *table_hdl = NULL;
     const tdi_table_info_hdl *table_info_hdl = NULL;
 
-    dzlog_debug("%s", __func__);
+    krnlmon_log_debug("%s", __func__);
 
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create flags handle, error: %d", status);
+        krnlmon_log_error("Failed to create flags handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_device_get(dev_id, &dev_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get device handle, error: %d", status);
+        krnlmon_log_error("Failed to get device handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_target_create(dev_hdl, &target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create target handle, error: %d", status);
+        krnlmon_log_error("Failed to create target handle, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 
     status = tdi_session_create(dev_hdl, &session);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to create tdi session, error: %d", status);
+        krnlmon_log_error("Failed to create tdi session, error: %d", status);
         return status;
     }
 
     status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Failed to get tdi info handle, error: %d", status);
+        krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
         goto dealloc_handle_session;
     }
 
@@ -589,21 +589,21 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
                                      LNW_L2_FWD_RX_WITH_TUNNEL_TABLE,
                                      &table_hdl);
     if (status != TDI_SUCCESS || !table_hdl) {
-        dzlog_error("Unable to get table handle for: %s, error: %d",
+        krnlmon_log_error("Unable to get table handle for: %s, error: %d",
                  LNW_L2_FWD_RX_WITH_TUNNEL_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_key_allocate(table_hdl, &key_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to allocate key handle for: %s, error: %d",
+        krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
                  LNW_L2_FWD_RX_WITH_TUNNEL_TABLE, status);
         goto dealloc_handle_session;
     }
 
     status = tdi_table_info_get(table_hdl, &table_info_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to get table info handle for table");
+        krnlmon_log_error("Unable to get table info handle for table");
         goto dealloc_handle_session;
     }
 
@@ -611,7 +611,7 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
                                   LNW_L2_FWD_RX_WITH_TUNNEL_TABLE_KEY_DST_MAC,
                                   &field_id);
     if (status != TDI_SUCCESS) {
-      dzlog_error("Unable to get field ID for key: %s, error: %d",
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
                LNW_L2_FWD_RX_WITH_TUNNEL_TABLE_KEY_DST_MAC, status);
         goto dealloc_handle_session;
     }
@@ -621,13 +621,13 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
                                          &api_l2_rx_info->dst_mac.mac_addr, 
                                          SWITCH_MAC_LENGTH);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to set value for key ID: %d", field_id);
+        krnlmon_log_error("Unable to set value for key ID: %d", field_id);
         goto dealloc_handle_session;
     }
 
     if (entry_add) {
         /* Add an entry to target */
-        dzlog_info("Populate l2_fwd action in %s for rif handle %x",
+        krnlmon_log_info("Populate l2_fwd action in %s for rif handle %x",
                   LNW_L2_FWD_RX_WITH_TUNNEL_TABLE,
                   (unsigned int) api_l2_rx_info->rif_handle);
 
@@ -635,14 +635,14 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
                                        LNW_L2_FWD_RX_WITH_TUNNEL_TABLE_ACTION_L2_FWD,
                                        &action_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator ID for: %s, error: %d",
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
                      LNW_L2_FWD_RX_WITH_TUNNEL_TABLE_ACTION_L2_FWD, status);
             goto dealloc_handle_session;
         }
 
         status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get action allocator for ID: %d, "
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
                     "error: %d", action_id, status);
             goto dealloc_handle_session;
         }
@@ -651,7 +651,7 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
                                                    LNW_ACTION_L2_FWD_PARAM_PORT,
                                                    action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to get data field id param for: %s, error: %d",
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_L2_FWD_PARAM_PORT, status);
             goto dealloc_handle_session;
         }
@@ -659,7 +659,7 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_l2_rx_info->port_id);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to set action value for ID: %d, error: %d",
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
             goto dealloc_handle_session;
         }
@@ -667,7 +667,7 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
         status = tdi_table_entry_add(table_hdl, session, target_hdl,
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
-          dzlog_error("Unable to add %s entry, error: %d", 
+          krnlmon_log_error("Unable to add %s entry, error: %d", 
                    LNW_L2_FWD_RX_WITH_TUNNEL_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -676,7 +676,7 @@ switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
                                      flags_hdl, key_hdl);
         if (status != TDI_SUCCESS) {
-            dzlog_error("Unable to delete %s entry, error: %d", 
+            krnlmon_log_error("Unable to delete %s entry, error: %d", 
                      LNW_L2_FWD_RX_WITH_TUNNEL_TABLE, status);
             goto dealloc_handle_session;
         }
@@ -686,18 +686,18 @@ dealloc_handle_session:
 
     status = tdi_flags_delete(flags_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate flags handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate flags handle, error: %d", status);
     }
 
     status = tdi_target_delete(target_hdl);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate target handle, error: %d", status);
+        krnlmon_log_error("Unable to deallocate target handle, error: %d", status);
     }
 
     status = tdi_switch_pd_deallocate_handle_session(key_hdl, data_hdl,
                                                      session, entry_add);
     if (status != TDI_SUCCESS) {
-        dzlog_error("Unable to deallocate session and handles, error: %d", status);
+        krnlmon_log_error("Unable to deallocate session and handles, error: %d", status);
         return switch_pd_tdi_status_to_status(status);
     }
 

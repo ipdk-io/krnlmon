@@ -223,7 +223,7 @@ void switchlink_delete_mac(switchlink_mac_addr_t mac_addr,
   if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
     return;
   }
-  dzlog_info("Delete a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
+  krnlmon_log_info("Delete a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
                                                      mac_addr[2], mac_addr[3],
                                                      mac_addr[4], mac_addr[5]);
   delete_mac(mac_addr, bridge_h);
@@ -253,11 +253,11 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
     if (old_intf_h != intf_h) {
       delete_mac(mac_addr, bridge_h);
     } else {
-      dzlog_debug("FDB entry already exist");
+      krnlmon_log_debug("FDB entry already exist");
       return;
     }
   }
-  dzlog_info("Create a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
+  krnlmon_log_info("Create a FDB entry: %x:%x:%x:%x:%x:%x", mac_addr[0], mac_addr[1],
                                                      mac_addr[2], mac_addr[3],
                                                      mac_addr[4], mac_addr[5]);
 
@@ -327,7 +327,7 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
     return;
   }
 
-  dzlog_info("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
+  krnlmon_log_info("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
   if (create_neighbor(&neigh_info) == -1) {
     if (!nhop_available) {
         switchlink_delete_nexthop(nexthop_info.nhop_h);
@@ -383,7 +383,7 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
   memcpy(&(nexthop_info.ip_addr), ipaddr, sizeof(switchlink_ip_addr_t));
 
   switchlink_delete_mac(neigh_info.mac_addr, g_default_bridge_h);
-  dzlog_info("Delete a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
+  krnlmon_log_info("Delete a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
   delete_neighbor(&neigh_info);
   switchlink_db_delete_neighbor(&neigh_info);
 
@@ -391,11 +391,11 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
       if (validate_delete_nexthop(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_NEIGHBOR)) {
-          dzlog_debug("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
+          krnlmon_log_debug("Deleting nhop with neighbor delete 0x%lx", nexthop_info.nhop_h);
           switchlink_delete_nexthop(nexthop_info.nhop_h);
           switchlink_db_delete_nexthop(&nexthop_info);
       } else {
-          dzlog_debug("Removing Neighbor learn from nhop");
+          krnlmon_log_debug("Removing Neighbor learn from nhop");
           nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_NEIGHBOR;
           switchlink_db_update_nexthop_using_by(&nexthop_info);
       }

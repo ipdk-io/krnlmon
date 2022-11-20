@@ -6,9 +6,8 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(switchutils_o OBJECT
-    switch_utils.c
     switch_utils.h
-    krnlmon-zlog-cfg
+    switch_log.h
 )
 
 target_include_directories(switchutils_o PRIVATE

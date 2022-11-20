@@ -57,11 +57,11 @@ switch_status_t switch_pd_device_port_add(switch_device_t device,
    bf_dev_port = (bf_dev_port_t)dev_port;
    strncat(portName, portNameDpdk,10);
    strncpy(port_attrib.port_name, portName, sizeof(port_attrib.port_name));
-   dzlog_debug("port_attrib.port_name=%s\n", port_attrib.port_name);
+   krnlmon_log_debug("port_attrib.port_name=%s\n", port_attrib.port_name);
    bf_status = bf_pal_port_add(bf_dev_id, bf_dev_port, &port_attrib);
    if (bf_status != BF_SUCCESS)
    {
-       dzlog_error(
+       krnlmon_log_error(
        "Failed to add the port "
        "on device %d \n",
        device);

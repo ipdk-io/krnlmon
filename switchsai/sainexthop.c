@@ -69,7 +69,7 @@ static sai_status_t sai_create_next_hop_entry(
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null attribute list: %s", sai_status_to_string(status));
+    krnlmon_log_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -110,7 +110,7 @@ static sai_status_t sai_create_next_hop_entry(
 
   status = switch_api_nhop_create(switch_id, &api_nhop_info, &next_hop_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to create nexthop, error: %s",
+    krnlmon_log_error("Failed to create nexthop, error: %s",
               sai_status_to_string(status));
   } else {
     *next_hop_id = next_hop_handle;
@@ -137,7 +137,7 @@ sai_status_t sai_remove_next_hop_entry(_In_ sai_object_id_t next_hop_id) {
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
   if (sai_object_type_query(next_hop_id) != SAI_OBJECT_TYPE_NEXT_HOP) {
-    dzlog_error("Failed to remove nexthop entry: invalid nexthop handle %lx\n",
+    krnlmon_log_error("Failed to remove nexthop entry: invalid nexthop handle %lx\n",
                   next_hop_id);
     return SAI_STATUS_INVALID_PARAMETER;
   }
@@ -146,7 +146,7 @@ sai_status_t sai_remove_next_hop_entry(_In_ sai_object_id_t next_hop_id) {
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to remove nexthop %lx, error: %s",
+    krnlmon_log_error("Failed to remove nexthop %lx, error: %s",
                   next_hop_id,
                   sai_status_to_string(status));
   }

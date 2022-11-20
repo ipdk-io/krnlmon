@@ -87,14 +87,14 @@ static sai_status_t sai_route_entry_update(const sai_route_entry_t *route_entry,
   int action = -1, pri = -1;
   if (!route_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null route entry for route entry update: %s",
+    krnlmon_log_error("null route entry for route entry update: %s",
              sai_status_to_string(status));
     return status;
   }
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null attribute list for route entry update: %s",
+    krnlmon_log_error("null attribute list for route entry update: %s",
               sai_status_to_string(status));
     return status;
   }
@@ -147,7 +147,7 @@ sai_status_t sai_create_route_entry(_In_ const sai_route_entry_t *route_entry,
 
   status = sai_route_entry_update(route_entry, attr_count, attr_list);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to create route entry for %s, error: %s",
+    krnlmon_log_error("Failed to create route entry for %s, error: %s",
                   entry_string,
                   sai_status_to_string(status));
   }
@@ -179,7 +179,7 @@ sai_status_t sai_remove_route_entry(_In_ const sai_route_entry_t *route_entry) {
 
   if (!route_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null route entry for remove route entry: %s", sai_status_to_string(status));
+    krnlmon_log_error("null route entry for remove route entry: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -193,7 +193,7 @@ sai_status_t sai_remove_route_entry(_In_ const sai_route_entry_t *route_entry) {
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to remove route entry, error: %s",
+    krnlmon_log_error("Failed to remove route entry, error: %s",
                   sai_status_to_string(status));
   }
 

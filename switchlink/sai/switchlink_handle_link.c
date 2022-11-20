@@ -166,11 +166,11 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
   status = switchlink_db_get_interface_info(intf->ifindex, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     // create the interface
-    dzlog_debug("Switchlink Interface Create: %s", intf->ifname);
+    krnlmon_log_debug("Switchlink Interface Create: %s", intf->ifname);
 
     status = create_interface(intf, &(intf->intf_h));
     if (status) {
-      dzlog_error("newlink: Failed to create switchlink interface, error: %d\n",
+      krnlmon_log_error("newlink: Failed to create switchlink interface, error: %d\n",
                status);
       return;
     }
@@ -188,7 +188,7 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
       // Delete if RMAC is configured previously, and create this new RMAC.
       status = create_interface(&ifinfo, &ifinfo.intf_h);
       if (status) {
-        dzlog_error("newlink: Failed to create switchlink interface,"
+        krnlmon_log_error("newlink: Failed to create switchlink interface,"
                     " error: %d\n",
                     status);
         return;

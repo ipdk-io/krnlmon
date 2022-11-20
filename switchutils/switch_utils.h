@@ -19,16 +19,9 @@
 #define __KRNLMON_UTILS_H__
 
 #include <assert.h>
-#include "zlog/zlog.h"
-#include "zlog/category.h"
+#include "switch_log.h"
 
 #define krnlmon_assert                  assert
 #define krnlmon_snprintf                snprintf
-
-#define DEFAULT_ZLOG_CFG_FILE           "switchutils/krnlmon-zlog-cfg"
-
-// Function declarations
-int krnlmon_zlog_init(const char *arg1);
-void krnlmon_zlog_close(void);
 
 #endif /* __KRNLMON_UTILS_H__*/

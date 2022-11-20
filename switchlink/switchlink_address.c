@@ -41,7 +41,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   krnlmon_assert((type == RTM_NEWADDR) || (type == RTM_DELADDR));
   addrmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifaddrmsg);
-  dzlog_debug("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
+  krnlmon_log_debug("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
        "scope = 0x%x ifindex = %d\n",
        ((type == RTM_NEWADDR) ? "new" : "del"),
        addrmsg->ifa_family,
@@ -51,7 +51,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
        addrmsg->ifa_index);
 
   if (addrmsg->ifa_family == AF_INET6) {
-    dzlog_debug("Ignoring IPv6 addresses, as supported is not available");
+    krnlmon_log_debug("Ignoring IPv6 addresses, as supported is not available");
     return;
   }
   if ((addrmsg->ifa_family != AF_INET) && (addrmsg->ifa_family != AF_INET6)) {
@@ -65,12 +65,12 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
   switchlink_db_interface_info_t ifinfo;
   status = switchlink_db_get_interface_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-    dzlog_debug("Found interface cache for: %s", ifinfo.ifname);
+    krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
     intf_h = ifinfo.intf_h;
   } else {
     // TODO P4-OVS, for now we ignore these notifications.
     // Needed when, we get address add before port create notification
-    dzlog_debug("Ignoring interface address notification ifindex: %d",
+    krnlmon_log_debug("Ignoring interface address notification ifindex: %d",
              addrmsg->ifa_index);
     return;
   }

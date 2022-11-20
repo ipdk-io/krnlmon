@@ -143,18 +143,18 @@ create_tunnel_interface(const switchlink_db_tunnel_interface_info_t *tnl_intf,
 
     status = create_tunnel(tnl_intf, tnl_intf_h);
     if (status != SAI_STATUS_SUCCESS) {
-        dzlog_error("Cannot create tunnel for interface: %s", tnl_intf->ifname);
+        krnlmon_log_error("Cannot create tunnel for interface: %s", tnl_intf->ifname);
         return -1;
     }
-    dzlog_info("Created tunnel interface: %s", tnl_intf->ifname);
+    krnlmon_log_info("Created tunnel interface: %s", tnl_intf->ifname);
 
     status = create_term_table_entry(tnl_intf, tnl_term_h);
     if (status != SAI_STATUS_SUCCESS) {
-        dzlog_error("Cannot create tunnel termination table entry for "
+        krnlmon_log_error("Cannot create tunnel termination table entry for "
                  "interface: %s", tnl_intf->ifname);
         return -1;
     }
-    dzlog_info("Created tunnel termination entry for "
+    krnlmon_log_info("Created tunnel termination entry for "
               "interface: %s", tnl_intf->ifname);
 
     return 0;
@@ -182,21 +182,21 @@ static int delete_tunnel_interface(const switchlink_db_tunnel_interface_info_t
   status = 
     sai_tunnel_intf_api->remove_tunnel_term_table_entry(tnl_intf->tnl_term_h);
   if (status != SAI_STATUS_SUCCESS) {
-      dzlog_error("Cannot remove tunnel termination entry for "
+      krnlmon_log_error("Cannot remove tunnel termination entry for "
                "interface: %s", tnl_intf->ifname);
       return -1;
   }
-  dzlog_info("Removed tunnel termination entry for "
+  krnlmon_log_info("Removed tunnel termination entry for "
             "interface: %s", tnl_intf->ifname);
 
   status = sai_tunnel_intf_api->remove_tunnel(tnl_intf->orif_h);
   if (status != SAI_STATUS_SUCCESS) {
-      dzlog_error("Cannot remove tunnel entry for "
+      krnlmon_log_error("Cannot remove tunnel entry for "
                "interface: %s", tnl_intf->ifname);
       return -1;
   }
 
-  dzlog_info("Removed tunnel entry for interface: %s", tnl_intf->ifname);
+  krnlmon_log_info("Removed tunnel entry for interface: %s", tnl_intf->ifname);
   // Add further code to remove tunnel dependent params here.
 
   return 0;
@@ -222,12 +222,12 @@ void switchlink_create_tunnel_interface(
                                                    &tnl_ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
 
-    dzlog_debug("Switchlink tunnel interface: %s", tnl_intf->ifname);
+    krnlmon_log_debug("Switchlink tunnel interface: %s", tnl_intf->ifname);
     status = create_tunnel_interface(tnl_intf,
                                      &(tnl_intf->orif_h),
                                      &(tnl_intf->tnl_term_h));
     if (status) {
-      dzlog_error("newlink: Failed to create switchlink tunnel interface :%s, "
+      krnlmon_log_error("newlink: Failed to create switchlink tunnel interface :%s, "
                "error: %d", tnl_intf->ifname, status);
       return;
     }
@@ -236,7 +236,7 @@ void switchlink_create_tunnel_interface(
     switchlink_db_add_tunnel_interface(tnl_intf->ifindex, tnl_intf);
     return;
   }
-  dzlog_debug("Switchlink DB already has tunnel config for "
+  krnlmon_log_debug("Switchlink DB already has tunnel config for "
            "interface: %s", tnl_intf->ifname);
   return;
 }
@@ -256,12 +256,12 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
   switchlink_db_tunnel_interface_info_t tnl_intf;
   if (switchlink_db_get_tunnel_interface_info(ifindex, &tnl_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-      dzlog_info("Trying to delete a tunnel which is not "
+      krnlmon_log_info("Trying to delete a tunnel which is not "
                 "available");
     return;
   }
 
-  dzlog_debug("Switchlink tunnel interface: %s", tnl_intf.ifname);
+  krnlmon_log_debug("Switchlink tunnel interface: %s", tnl_intf.ifname);
 
   // delete the interface from backend and in DB
   delete_tunnel_interface(&tnl_intf);

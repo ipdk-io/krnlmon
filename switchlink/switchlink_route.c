@@ -69,14 +69,14 @@ static switchlink_handle_t process_ecmp(uint8_t family,
         nexthop_info.vrf_h = vrf_h;
         status = switchlink_db_get_nexthop_info(&nexthop_info);
         if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          dzlog_debug("Fetched nhop 0x%lx handler, update from"
+          krnlmon_log_debug("Fetched nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
           ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
           switchlink_db_update_nexthop_using_by(&nexthop_info);
         } else {
           if (!switchlink_create_nexthop(&nexthop_info)) {
-             dzlog_debug("Created nhop 0x%lx handler, update from"
+             krnlmon_log_debug("Created nhop 0x%lx handler, update from"
                       " route", nexthop_info.nhop_h);
              ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
              nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
@@ -143,7 +143,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
   krnlmon_assert((type == RTM_NEWROUTE) || (type == RTM_DELROUTE));
   rmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct rtmsg);
-  dzlog_debug(
+  krnlmon_log_debug(
       "%sroute: family = %d, dst_len = %d, src_len = %d, tos = %d, "
        "table = %d, proto = %d, scope = %d, type = %d, "
        "flags = 0x%x\n",
@@ -170,7 +170,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
   }
 
   if (af == AF_INET6) {
-    dzlog_debug("Ignoring IPv6 routes, as supported is not available");
+    krnlmon_log_debug("Ignoring IPv6 routes, as supported is not available");
     return;
   }
 
@@ -232,7 +232,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
         iif = nla_get_u32(attr);
         break;
       default:
-        dzlog_debug("route: skipping attribute type %d \n", attr_type);
+        krnlmon_log_debug("route: skipping attribute type %d \n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);
@@ -251,12 +251,12 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
       switchlink_db_status_t status;
       status = switchlink_db_get_interface_info(oif, &ifinfo);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        dzlog_error("route: Failed to get switchlink DB interface info, "
+        krnlmon_log_error("route: Failed to get switchlink DB interface info, "
                  "error: %d \n", status);
         return;
       }
     }
-    dzlog_info("Create route for %s, with addr: 0x%x", ifinfo.ifname,
+    krnlmon_log_info("Create route for %s, with addr: 0x%x", ifinfo.ifname,
                                                      dst_valid ?
                                                      dst_addr.ip.v4addr.s_addr :
                                                      0);
@@ -266,7 +266,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
                             ecmp_h,
                             ifinfo.intf_h);
   } else {
-    dzlog_info("Delete route with addr: 0x%x", dst_valid ?
+    krnlmon_log_info("Delete route with addr: 0x%x", dst_valid ?
                                              dst_addr.ip.v4addr.s_addr : 0);
     switchlink_delete_route(g_default_vrf_h, (dst_valid ? &dst_addr : NULL));
   }

@@ -91,7 +91,7 @@ static sai_status_t sai_fdb_entry_attribute_parse(uint32_t attr_count,
   } else if (mac_entry->learn_from == SWITCH_L2_FWD_LEARN_VLAN_INTERFACE) {
     mac_entry->rif_handle = -1;
   } else {
-    dzlog_error("Unrecognized learn from type");
+    krnlmon_log_error("Unrecognized learn from type");
     return SAI_STATUS_NOT_SUPPORTED;
   }
   return SAI_STATUS_SUCCESS;
@@ -121,13 +121,13 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 
   if (!fdb_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null fdb entry: %s", sai_status_to_string(status));
+    krnlmon_log_error("null fdb entry: %s", sai_status_to_string(status));
     return status;
   }
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null attribute list: %s", sai_status_to_string(status));
+    krnlmon_log_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -137,7 +137,7 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    dzlog_error("Failed to create fdb entry %s, error: %s",
+    krnlmon_log_error("Failed to create fdb entry %s, error: %s",
                   entry_string,
                   sai_status_to_string(status));
   }
@@ -146,7 +146,7 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 
   switch_status = switch_api_l2_handle_get(0, &mac_entry.dst_mac, &mac_handle);
   if (mac_handle != SWITCH_API_INVALID_HANDLE) {
-    dzlog_debug("MAC entry already programmed");
+    krnlmon_log_debug("MAC entry already programmed");
     return sai_switch_status_to_sai_status(switch_status);
   }
 
@@ -156,7 +156,7 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    dzlog_error("Failed to create fdb entry %s : error: %s",
+    krnlmon_log_error("Failed to create fdb entry %s : error: %s",
                   entry_string,
                   sai_status_to_string(status));
     return status;
@@ -185,7 +185,7 @@ static sai_status_t sai_remove_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry)
 
   if (!fdb_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null fdb entry: %s", sai_status_to_string(status));
+    krnlmon_log_error("null fdb entry: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -198,7 +198,7 @@ static sai_status_t sai_remove_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry)
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    dzlog_error("Failed to remove fdb entry %s, error: %s",
+    krnlmon_log_error("Failed to remove fdb entry %s, error: %s",
                   entry_string,
                   sai_status_to_string(status));
   }

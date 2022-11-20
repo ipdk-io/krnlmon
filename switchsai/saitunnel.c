@@ -195,7 +195,7 @@ sai_create_tunnel(_Out_ sai_object_id_t *tunnel_id,
 
   status = sai_tunnel_attribute_parse(attr_count, attr_list, &tunnel_info);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "Failed to parse atributes when creating tunnel, error: %s \n",
         sai_status_to_string(status));
     return status;
@@ -205,14 +205,14 @@ sai_create_tunnel(_Out_ sai_object_id_t *tunnel_id,
       switch_api_tunnel_create(switch_id, &tunnel_info, &tunnel_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "Failed to create tunnel, error: %s \n",
         sai_status_to_string(status));
     return status;
   }
 
   *tunnel_id = tunnel_handle;
-  dzlog_debug("tunnel created for dest port: %d and handle"
+  krnlmon_log_debug("tunnel created for dest port: %d and handle"
            "is: 0x%lx", tunnel_info.udp_port, tunnel_handle);
 
   return status;
@@ -239,12 +239,12 @@ sai_remove_tunnel(_In_ sai_object_id_t tunnel_handle)
   switch_status = switch_api_tunnel_delete(tunnel_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to delete tunnel, error: %s\n",
+    krnlmon_log_error("Failed to delete tunnel, error: %s\n",
         sai_status_to_string(status));
     return status;
   }
 
-  dzlog_debug("Tunnel entry delete success, handle 0x%lx", tunnel_handle);
+  krnlmon_log_debug("Tunnel entry delete success, handle 0x%lx", tunnel_handle);
 
   return status;
 }
@@ -318,28 +318,28 @@ sai_tunnel_term_attribute_parse(uint32_t attr_count,
     switch (attr->id) {
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_VR_ID:
         tunnel_term_info->vrf_handle = (switch_handle_t)attr->value.oid;
-        dzlog_debug("VRF handle 0x%lx", attr->value.oid);
+        krnlmon_log_debug("VRF handle 0x%lx", attr->value.oid);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP:
         sai_ip_addr_to_switch_ip_addr(&attr->value.ipaddr,
                                       &tunnel_term_info->dst_ip);
-        dzlog_debug("Tunnel Dip: 0x%x", attr->value.ipaddr.addr.ip4);
+        krnlmon_log_debug("Tunnel Dip: 0x%x", attr->value.ipaddr.addr.ip4);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP:
         sai_ip_addr_to_switch_ip_addr(&attr->value.ipaddr,
                                       &tunnel_term_info->src_ip);
-        dzlog_debug("Tunnel Sip: 0x%x", attr->value.ipaddr.addr.ip4);
+        krnlmon_log_debug("Tunnel Sip: 0x%x", attr->value.ipaddr.addr.ip4);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID:
         tunnel_term_info->tunnel_id = (switch_handle_t)attr->value.u32;
-        dzlog_debug("Tunnel ID %d", attr->value.u32);
+        krnlmon_log_debug("Tunnel ID %d", attr->value.u32);
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TYPE:
         status = sai_tunnel_term_to_switch_type(attr->value.s32,
                                                 &switch_tunnel_term_type);
         if (status == SAI_STATUS_SUCCESS) {
           tunnel_term_info->term_entry_type = switch_tunnel_term_type;
-          dzlog_debug("Tunnel type %s", sai_tunnel_string(attr->value.s32));
+          krnlmon_log_debug("Tunnel type %s", sai_tunnel_string(attr->value.s32));
         }
         break;
       case SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_TUNNEL_TYPE:
@@ -347,7 +347,7 @@ sai_tunnel_term_attribute_parse(uint32_t attr_count,
                                                   &switch_tunnel_type);
         if (status == SAI_STATUS_SUCCESS) {
           tunnel_term_info->tunnel_type = switch_tunnel_type;
-          dzlog_debug("Tunnel term type %s",
+          krnlmon_log_debug("Tunnel term type %s",
                    switch_tunnel_term_type_to_string(attr->value.s32));
         }
         break;
@@ -388,7 +388,7 @@ sai_create_tunnel_term_table_entry(_Out_ sai_object_id_t *tunnel_term_id,
 
   status = sai_tunnel_term_attribute_parse(attr_count, attr_list, &api_term_info);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to parse atributes when creating tunnel term "
+    krnlmon_log_error("Failed to parse atributes when creating tunnel term "
              "table entry, error: %s \n", sai_status_to_string(status));
     return status;
   }
@@ -397,13 +397,13 @@ sai_create_tunnel_term_table_entry(_Out_ sai_object_id_t *tunnel_term_id,
                                                 &tunnel_term_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to create tunnel term table entry, "
+    krnlmon_log_error("Failed to create tunnel term table entry, "
              "error: %s", sai_status_to_string(status));
     return status;
   }
 
   *tunnel_term_id = tunnel_term_handle;
-  dzlog_debug("Tunnel term table entry add, handle 0x%lx", tunnel_term_handle);
+  krnlmon_log_debug("Tunnel term table entry add, handle 0x%lx", tunnel_term_handle);
   return status;
 }
 
@@ -428,12 +428,12 @@ sai_remove_tunnel_term_table_entry(_In_ sai_object_id_t tunnel_term_handle)
   switch_status = switch_api_tunnel_term_delete(tunnel_term_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to delete tunnel term table entry, error: %s",
+    krnlmon_log_error("Failed to delete tunnel term table entry, error: %s",
               sai_status_to_string(status));
     return status;
   }
 
-  dzlog_debug("Tunnel term table entry delete success, handle 0x%lx",
+  krnlmon_log_debug("Tunnel term table entry delete success, handle 0x%lx",
             tunnel_term_handle);
   return status;
 }

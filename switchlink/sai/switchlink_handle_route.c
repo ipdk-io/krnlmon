@@ -166,14 +166,14 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
       switchlink_db_status_t status;
       status = switchlink_db_get_nexthop_info(&nexthop_info);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          dzlog_debug("Received nhop 0x%lx handler, update from"
+          krnlmon_log_debug("Received nhop 0x%lx handler, update from"
                    " route", nexthop_info.nhop_h);
         nhop_h = nexthop_info.nhop_h;
         nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
         switchlink_db_update_nexthop_using_by(&nexthop_info);
       } else {
         if (!switchlink_create_nexthop(&nexthop_info)) {
-          dzlog_debug("Created nhop 0x%lx handle, update from "
+          krnlmon_log_debug("Created nhop 0x%lx handle, update from "
                    " route", nexthop_info.nhop_h);
           nhop_h = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
@@ -210,7 +210,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
   route_info.intf_h = intf_h;
 
   // add the route
-  dzlog_info("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
+  krnlmon_log_info("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
              dst->prefix_len);
   if (delete_create(&route_info) == -1) {
     if (route_info.ecmp) {
@@ -262,7 +262,7 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
     return;
   }
 
-  dzlog_info("Route deleted: 0x%x/%d", dst->ip.v4addr.s_addr,
+  krnlmon_log_info("Route deleted: 0x%x/%d", dst->ip.v4addr.s_addr,
              dst->prefix_len);
   ecmp_enable = route_info.ecmp;
   ecmp_h = route_info.nhop_h;

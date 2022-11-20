@@ -34,7 +34,7 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
     bf_status_t bf_status;
 
     if (!if_indextoname(port_rif_info->rif_ifindex, if_name)) {
-        dzlog_error("Failed to get ifname for the index: %d",
+        krnlmon_log_error("Failed to get ifname for the index: %d",
                  port_rif_info->rif_ifindex);
         return;
     }
@@ -51,7 +51,7 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
         if (!strcmp((port_info)->port_attrib.port_name, if_name)) {
             // With multi-pipeline support, return target dp index
             // for both direction.
-            dzlog_debug("found the target dp index %d for sdk port id %d",
+            krnlmon_log_debug("found the target dp index %d for sdk port id %d",
                       port_info->port_attrib.port_in_id, i);
             port_rif_info->port_id = port_info->port_attrib.port_in_id;
             if (i > CONFIG_PORT_INDEX) {
@@ -60,11 +60,11 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
                 bf_pal_port_info_get(bf_dev_id, bf_dev_port_control,
                                      &port_info);
                 if (port_info == NULL) {
-                    dzlog_error("Failed to find the target dp index for "
+                    krnlmon_log_error("Failed to find the target dp index for "
                              "physical port associated with : %s", if_name);
                     return;
                 }
-                dzlog_debug("Found phy port target dp index %d for sdk port id %d",
+                krnlmon_log_debug("Found phy port target dp index %d for sdk port id %d",
                           port_info->port_attrib.port_in_id,
                           bf_dev_port_control);
                 port_rif_info->phy_port_id =
@@ -74,7 +74,7 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
         }
     }
 
-    dzlog_error("Failed to find the target dp index for ifname : %s", if_name);
+    krnlmon_log_error("Failed to find the target dp index for ifname : %s", if_name);
 
     return;
 }
@@ -89,18 +89,18 @@ tdi_status_t tdi_switch_pd_deallocate_handle_session(tdi_table_key_hdl *key_hdl_
         // Data handle is created only when entry is added to backend
         status = tdi_table_data_deallocate(data_hdl_t);
         if(status != TDI_SUCCESS) {
-            dzlog_error("Failed to deallocate data handle, error: %d", status);
+            krnlmon_log_error("Failed to deallocate data handle, error: %d", status);
         }
     }
 
     status = tdi_table_key_deallocate(key_hdl_t);
     if(status != TDI_SUCCESS) {
-        dzlog_error("Failed to deallocate key handle, error: %d", status);
+        krnlmon_log_error("Failed to deallocate key handle, error: %d", status);
     }
 
     status = tdi_session_destroy(session_t);
     if(status != TDI_SUCCESS) {
-        dzlog_error("Failed to destroy session, error: %d", status);
+        krnlmon_log_error("Failed to destroy session, error: %d", status);
     }
 
     return status;
