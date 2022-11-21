@@ -38,7 +38,7 @@ switch_status_t switch_rmac_init(switch_device_t device) {
   rmac_ctx = SWITCH_MALLOC(device, sizeof(switch_rmac_context_t), 0x1);
   if (!rmac_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    dzlog_error(
+    krnlmon_log_error(
         "rmac_init:Failed to allocate memory for switch_rmac_context_t "
         "on device %d ,error: %s\n",
         device,
@@ -49,7 +49,7 @@ switch_status_t switch_rmac_init(switch_device_t device) {
   status = switch_device_api_context_set(
       device, SWITCH_API_TYPE_RMAC, (void *)rmac_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac_init: Failed to set device api context on device %d "
         ",error: %s\n",
         device,
@@ -61,7 +61,7 @@ switch_status_t switch_rmac_init(switch_device_t device) {
   status = switch_handle_type_init(device, SWITCH_HANDLE_TYPE_RMAC, 16384);
 
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac init: Failed to initialize handle SWITCH_HANDLE_TYPE_RMAC on device %d "
         ",error: %s\n",
         device,
@@ -69,7 +69,7 @@ switch_status_t switch_rmac_init(switch_device_t device) {
     return status;
   }
   
-  dzlog_info("rmac init successful on device %d\n", device);
+  krnlmon_log_info("rmac init successful on device %d\n", device);
   return status;
 }
 
@@ -91,7 +91,7 @@ switch_status_t switch_rmac_free(switch_device_t device) {
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_RMAC, (void **)&rmac_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac free: Failed to get device api context on device %d "
         ",error: %s\n",
         device,
@@ -101,7 +101,7 @@ switch_status_t switch_rmac_free(switch_device_t device) {
 
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_RMAC);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac free: Failed to free handle SWITCH_HANDLE_TYPE_RMAC on device %d "
         ",error: %s\n",
         device,
@@ -126,7 +126,7 @@ switch_status_t switch_api_router_mac_group_create(
   handle = switch_rmac_handle_create(device);
   if (handle == SWITCH_API_INVALID_HANDLE) {
     status = SWITCH_STATUS_NO_MEMORY;
-    dzlog_error(
+    krnlmon_log_error(
         "rmac group create: Failed to create rmac handle on device %d "
         ",error: %s\n",
         device,
@@ -136,7 +136,7 @@ switch_status_t switch_api_router_mac_group_create(
 
   status = switch_rmac_get(device, handle, &rmac_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac group create: Failed to get rmac info on device %d "
         ",error: %s\n",
         device,
@@ -151,7 +151,7 @@ switch_status_t switch_api_router_mac_group_create(
 
   *rmac_handle = handle;
 
-  dzlog_info(
+  krnlmon_log_info(
       "rmac group created on device %d, "
       "rmac handle 0x%lx \n",
       device,
@@ -170,7 +170,7 @@ switch_status_t switch_api_router_mac_group_delete(
   
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "rmac group delete: Invalid rmac handle 0x%lx: on device %d "
         ",error: %s\n",
         rmac_handle,
@@ -182,7 +182,7 @@ switch_status_t switch_api_router_mac_group_delete(
   status = switch_rmac_get(device, rmac_handle, &rmac_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "rmac group delete: Failed to get rmac info on device %d rmac hadle "
         "0x%lx: ,error: %s\n",
         device,
@@ -197,7 +197,7 @@ switch_status_t switch_api_router_mac_group_delete(
         switch_api_router_mac_delete(device, rif_handle, rmac_handle,
                                      &rmac_entry->mac);
     if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
           "rmac group delete: Failed to delete router mac on device %d "
           "rmac handle 0x%lx: ,error: %s\n",
           device,
@@ -209,7 +209,7 @@ switch_status_t switch_api_router_mac_group_delete(
 
   status = switch_rmac_handle_delete(device, rmac_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "rmac group delete: Failed to delete rmac handle 0x%lx: on device %d "
         ",error: %s\n",
         rmac_handle,
@@ -218,7 +218,7 @@ switch_status_t switch_api_router_mac_group_delete(
     return status;
   }
 
-  dzlog_info(
+  krnlmon_log_info(
       "rmac group deleted on device %d, "
       "rmac handle 0x%lx\n",
       device,
@@ -240,7 +240,7 @@ switch_status_t switch_api_router_mac_delete(
 
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac delete: Invalid rmac handle 0x%lx, mac %s: on device %d "
         ",error: %s\n",
         rmac_handle,
@@ -253,7 +253,7 @@ switch_status_t switch_api_router_mac_delete(
   status = switch_rmac_get(device, rmac_handle, &rmac_info);
 
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "router mac delete: Failed to get rmac info, handle 0x%lx "
         ",error: %s\n",
         rmac_handle,
@@ -273,7 +273,7 @@ switch_status_t switch_api_router_mac_delete(
 
   if (!entry_found) {
     status = SWITCH_STATUS_ITEM_NOT_FOUND;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac delete: Failed to find rmac entry on device %d, rmac "
         "handle 0x%lx, mac %s: ,error: %s\n",
         device,
@@ -286,7 +286,7 @@ switch_status_t switch_api_router_mac_delete(
   if (rmac_entry && rmac_entry->is_rmac_pd_programmed) {
     status = switch_pd_rmac_table_entry(device, rmac_entry, rif_handle, false);
     if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
         "router mac delete: Failed to delete PD rmac entry on device %d ,"
         "rmac handle 0x%lx, mac %s: "
         ",error: %s\n",
@@ -300,7 +300,7 @@ switch_status_t switch_api_router_mac_delete(
 
   status = SWITCH_LIST_DELETE(&(rmac_info->rmac_list), node);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "router mac delete: Failed to delete from switch list on device %d ,"
         "rmac handle 0x%lx, mac %s: "
         ",error: %s\n",
@@ -311,7 +311,7 @@ switch_status_t switch_api_router_mac_delete(
     return status;
   }
 
-  dzlog_info("rmac deleted on device %d, rmac handle 0x%lx, mac %s\n",
+  krnlmon_log_info("rmac deleted on device %d, rmac handle 0x%lx, mac %s\n",
                    device,
                    rmac_handle,
                    switch_macaddress_to_string(mac));
@@ -334,7 +334,7 @@ switch_status_t switch_api_router_mac_add(
 
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac add: Invalid rmac handle 0x%lx: on device %d "
         ",error: %s\n",
         rmac_handle,
@@ -346,7 +346,7 @@ switch_status_t switch_api_router_mac_add(
   status = switch_rmac_get(device, rmac_handle, &rmac_info);
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac add: Failed to get rmac info on device %d, rmac "
         "handle 0x%lx: ,error: %s\n",
         device,
@@ -357,7 +357,7 @@ switch_status_t switch_api_router_mac_add(
 
   if (!mac || (!SWITCH_MAC_VALID((*mac)))) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac add: Invalid mac on device %d, rmac handle 0x%lx: "
         ",error: %s\n",
         device,
@@ -378,7 +378,7 @@ switch_status_t switch_api_router_mac_add(
   rmac_entry = SWITCH_MALLOC(device, sizeof(switch_rmac_entry_t), 0x1);
   if (!rmac_entry) {
     status = SWITCH_STATUS_NO_MEMORY;
-    dzlog_error(
+    krnlmon_log_error(
         "router mac add: Failed to allocate memory for switch_rmac_entry_t "
         "on device %d rmac handle 0x%lx: ,error: %s\n",
         device,
@@ -393,7 +393,7 @@ switch_status_t switch_api_router_mac_add(
 
   SWITCH_LIST_INSERT(&(rmac_info->rmac_list), &(rmac_entry->node), rmac_entry);
 
-  dzlog_info("RMAC added on device %d, rmac handle 0x%lx, mac %s\n", device,
+  krnlmon_log_info("RMAC added on device %d, rmac handle 0x%lx, mac %s\n", device,
              rmac_handle, switch_macaddress_to_string(&rmac_entry->mac));
 
   return status;

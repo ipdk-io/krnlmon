@@ -48,11 +48,11 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
   hdrlen = sizeof(struct ndmsg);
 
   if (nbh->ndm_family == AF_INET6) {
-    dzlog_debug("Ignoring IPv6 neighbors, as IPv6 support is not available");
+    krnlmon_log_debug("Ignoring IPv6 neighbors, as IPv6 support is not available");
     return;
   }
 
-  dzlog_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
+  krnlmon_log_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
        flags = 0x%x, type = %u\n",
        ((type == RTM_NEWNEIGH) ? "new" : "del"),
        nbh->ndm_family,
@@ -66,11 +66,11 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
       SWITCHLINK_DB_STATUS_SUCCESS) {
     char intf_name[16] = {0};
     if (!if_indextoname(nbh->ndm_ifindex, intf_name)) {
-        dzlog_error("Failed to get ifname for the index: %d", nbh->ndm_ifindex);
+        krnlmon_log_error("Failed to get ifname for the index: %d", nbh->ndm_ifindex);
         return;
     }
     if_indextoname(nbh->ndm_ifindex, intf_name);
-    dzlog_debug("neigh: Failed to get switchlink database interface info "
+    krnlmon_log_debug("neigh: Failed to get switchlink database interface info "
              "for :%s\n", intf_name);
     return;
   }
@@ -96,7 +96,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
               ipaddr.prefix_len = 128;
             }
         } else {
-            dzlog_debug("Ignoring unused neighbor states for attribute "
+            krnlmon_log_debug("Ignoring unused neighbor states for attribute "
                         "type %d\n", attr_type);
             return;
         }
@@ -108,7 +108,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
         break;
       }
       default:
-        dzlog_debug("neigh: skipping attr %d\n", attr_type);
+        krnlmon_log_debug("neigh: skipping attr %d\n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);

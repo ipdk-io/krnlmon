@@ -68,7 +68,7 @@ switch_status_t switch_l2_init(switch_device_t device)
   l2_ctx = SWITCH_MALLOC(device, sizeof(switch_l2_context_t), 0x1);
   if (!l2_ctx) {
       status = SWITCH_STATUS_NO_MEMORY;
-      dzlog_error(
+      krnlmon_log_error(
         "switch_l2_init: Failed to allocate memory for l2 context on "
         "device: %d, error: %s\n",
         device,
@@ -81,7 +81,7 @@ switch_status_t switch_l2_init(switch_device_t device)
   status = switch_device_api_context_set(
       device, SWITCH_API_TYPE_L2, (void *)l2_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
         "switch_l2_init: Failed to set device api context on device %d:"
         ",error: %s\n",
         device,
@@ -96,7 +96,7 @@ switch_status_t switch_l2_init(switch_device_t device)
 
   status = SWITCH_HASHTABLE_INIT(&l2_ctx->l2_hashtable);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("switch_l2_init: Failed to initialize hashtable for device %d\n",
+    krnlmon_log_error("switch_l2_init: Failed to initialize hashtable for device %d\n",
                      device);
     return status;
   }
@@ -104,7 +104,7 @@ switch_status_t switch_l2_init(switch_device_t device)
   status = switch_handle_type_init(
     device, SWITCH_HANDLE_TYPE_L2_FWD_RX, L2_FWD_RX_TABLE_SIZE);
   if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
         "switch_l2_init: Failed to initialize switch handle "
         "for type SWITCH_HANDLE_TYPE_L2_FWD_RX"
         "on device %d:, error: %s\n",
@@ -116,7 +116,7 @@ switch_status_t switch_l2_init(switch_device_t device)
   status = switch_handle_type_init(
       device, SWITCH_HANDLE_TYPE_L2_FWD_TX, L2_FWD_TX_TABLE_SIZE);
   if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
         "switch_l2_init: Failed to initialize switch handle "
         "for type SWITCH_HANDLE_TYPE_L2_FWD_TX"
         "on device %d:, error: %s\n",
@@ -142,7 +142,7 @@ switch_status_t switch_l2_free(switch_device_t device)
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L2, (void **)&l2_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "switch_l2_free: Failed to get device api context on device %d: "
         "error: %s\n",
         device,
@@ -152,14 +152,14 @@ switch_status_t switch_l2_free(switch_device_t device)
   
   status = SWITCH_HASHTABLE_DONE(&l2_ctx->l2_hashtable);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("switch_l2_free: SWITCH_HASHTABLE_DONE failed for device %d: %s\n",
+    krnlmon_log_error("switch_l2_free: SWITCH_HASHTABLE_DONE failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
   }
 
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_L2_FWD_TX);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "switch_l2_free: Failed to free handle type "
         "SWITCH_HANDLE_TYPE_L2_FWD_TX on device %d: "
         "error: %s\n",
@@ -169,7 +169,7 @@ switch_status_t switch_l2_free(switch_device_t device)
 
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_L2_FWD_RX);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "switch_l2_free: Failed to free handle type "
         "SWITCH_HANDLE_TYPE_L2_FWD_RX on device %d: "
         "error: %s\n",
@@ -194,7 +194,7 @@ switch_status_t switch_api_l2_handle_get(
 
   if (!l2_key || !l2_handle) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("Failed to find l2 handle due to invalid parameters \n"
+    krnlmon_log_error("Failed to find l2 handle due to invalid parameters \n"
              "error: %s\n",
              switch_error_to_string(status));
     return status;
@@ -203,7 +203,7 @@ switch_status_t switch_api_l2_handle_get(
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L2, (void **)&l2_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("switch_api_l2_handle_get: Failed to get device api context \n"
+    krnlmon_log_error("switch_api_l2_handle_get: Failed to get device api context \n"
              "error: %s\n",
               switch_error_to_string(status));
     return status;
@@ -233,7 +233,7 @@ switch_status_t switch_api_l2_forward_create(
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L2, (void **)&l2_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("switch_api_l2_forward_create: Failed to find the device api "
+    krnlmon_log_error("switch_api_l2_forward_create: Failed to find the device api "
              "context, error: %s \n",
               switch_error_to_string(status));
     return status;
@@ -244,7 +244,7 @@ switch_status_t switch_api_l2_forward_create(
   status = switch_api_l2_handle_get(device, &l2_mac, &handle);
   if (status != SWITCH_STATUS_SUCCESS &&
       status != SWITCH_STATUS_ITEM_NOT_FOUND) {
-    dzlog_error(
+    krnlmon_log_error(
         "switch_api_l2_forward_create: Failed to get api l2 handle on "
         "device %d: ,error: %s\n",
         device,
@@ -253,7 +253,7 @@ switch_status_t switch_api_l2_forward_create(
   }
 
   if (status == SWITCH_STATUS_SUCCESS) {
-    dzlog_info(
+    krnlmon_log_info(
         "switch_api_l2_forward_create: FDB handle 0x%lx on device %d "
         "already exists\n",
         handle,
@@ -267,7 +267,7 @@ switch_status_t switch_api_l2_forward_create(
     handle = switch_l2_tx_handle_create(device);
     if (handle == SWITCH_API_INVALID_HANDLE) {
         status = SWITCH_STATUS_NO_MEMORY;
-        dzlog_error("switch_api_l2_forward_create: Failed to create l2 tx "
+        krnlmon_log_error("switch_api_l2_forward_create: Failed to create l2 tx "
                  "handle on device %d: ,error: %s\n",
                  device, switch_error_to_string(status));
         return status;
@@ -275,7 +275,7 @@ switch_status_t switch_api_l2_forward_create(
 
     status = switch_l2_tx_get(device, handle, &l2_info);
     if (status != SWITCH_STATUS_SUCCESS) {
-        dzlog_error(
+        krnlmon_log_error(
             "switch_api_l2_forward_create: Failed to get l2 tx info for "
             "handle 0x%lx on device %d: ,error: %s\n",
             handle,
@@ -311,7 +311,7 @@ switch_status_t switch_api_l2_forward_create(
     status = switch_pd_l2_tx_forward_table_entry(device, api_l2_info,
                                                   api_tunnel_info,  true);
     if (status != SWITCH_STATUS_SUCCESS) {
-        dzlog_error(
+        krnlmon_log_error(
             "switch_api_l2_forward_create: Failed to create platform dependent"
             " l2 tx forward table entry on device %d: ,error :(%s)\n",
             device,
@@ -326,7 +326,7 @@ switch_status_t switch_api_l2_forward_create(
                                                                api_l2_info,
                                                                true);
       if (status != SWITCH_STATUS_SUCCESS) {
-          dzlog_error(
+          krnlmon_log_error(
               "switch_api_l2_forward_create: Failed to create platform "
               "dependent l2 rx forward tunnel table entry on device %d: "
               ",error :%s\n",
@@ -340,7 +340,7 @@ switch_status_t switch_api_l2_forward_create(
     handle = switch_l2_rx_handle_create(device);
     if (handle == SWITCH_API_INVALID_HANDLE) {
         status = SWITCH_STATUS_NO_MEMORY;
-        dzlog_error("switch_api_l2_forward_create: Failed to create l2 rx "
+        krnlmon_log_error("switch_api_l2_forward_create: Failed to create l2 rx "
                  "handle on device %d: ,error: %s\n",
                  device, switch_error_to_string(status));
         return status;
@@ -348,7 +348,7 @@ switch_status_t switch_api_l2_forward_create(
 
     status = switch_l2_rx_get(device, handle, &l2_info);
     if (status != SWITCH_STATUS_SUCCESS) {
-         dzlog_error(
+         krnlmon_log_error(
             "switch_api_l2_forward_create: Failed to get l2 rx info "
             "for handle 0x%lx on device %d: "
             ",error: %s\n",
@@ -360,7 +360,7 @@ switch_status_t switch_api_l2_forward_create(
 
     status = switch_pd_l2_rx_forward_table_entry(device, api_l2_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
               "switch_api_l2_forward_create: Failed to create platform "
               "dependent l2 rx forward table entry on device %d: ,error: %s\n",
               device,
@@ -368,7 +368,7 @@ switch_status_t switch_api_l2_forward_create(
       return status;
     }
   } else {
-    dzlog_error("switch_api_l2_forward_create: Invalid L2 FWD type");
+    krnlmon_log_error("switch_api_l2_forward_create: Invalid L2 FWD type");
     return SWITCH_STATUS_NOT_SUPPORTED;
   }
 
@@ -400,7 +400,7 @@ switch_status_t switch_api_l2_forward_delete (
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_L2, (void **)&l2_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("switch_api_l2_forward_delete: Failed to get device api "
+    krnlmon_log_error("switch_api_l2_forward_delete: Failed to get device api "
              "context, error: %s \n",
              switch_error_to_string(status));
     return status;
@@ -409,7 +409,7 @@ switch_status_t switch_api_l2_forward_delete (
   SWITCH_MEMCPY(&l2_mac, &api_l2_info->dst_mac, sizeof(switch_mac_addr_t));
   status = switch_api_l2_handle_get(device, &l2_mac, &l2_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "switch_api_l2_forward_delete: Failed to get api l2 "
         "handle on device: %d, error:%s\n",
         device,
@@ -426,7 +426,7 @@ switch_status_t switch_api_l2_forward_delete (
     status = switch_pd_l2_tx_forward_table_entry (device, api_l2_info, NULL,
                                                   false);
     if (status != SWITCH_STATUS_SUCCESS) {
-        dzlog_error(
+        krnlmon_log_error(
               "switch_api_l2_forward_delete: Failed to delete platform "
               "dependent l2 tx forward table entry on device %d: ,error :%s\n",
               device,
@@ -442,7 +442,7 @@ switch_status_t switch_api_l2_forward_delete (
                                                                api_l2_info,
                                                                false);
       if (status != SWITCH_STATUS_SUCCESS) {
-          dzlog_error(
+          krnlmon_log_error(
               "switch_api_l2_forward_delete: Failed to delete platform "
               "dependent l2 rx forward "
               "tunnel table entry on device %d: ,error :%s\n",
@@ -459,7 +459,7 @@ switch_status_t switch_api_l2_forward_delete (
   {
     status = switch_pd_l2_rx_forward_table_entry (device, api_l2_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
               "switch_api_l2_forward_delete: Failed to delete platform "
               "dependent l2 rx forward table entry on device %d: ,error :%s\n",
               device,
@@ -470,7 +470,7 @@ switch_status_t switch_api_l2_forward_delete (
     status = switch_l2_rx_handle_delete(device, l2_handle, 1);
     SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
   } else {
-      dzlog_error("Invalid L2 FWD type");
+      krnlmon_log_error("Invalid L2 FWD type");
       return SWITCH_STATUS_NOT_SUPPORTED;
   }
 

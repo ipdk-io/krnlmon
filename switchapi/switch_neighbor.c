@@ -32,7 +32,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
   neighbor_ctx = SWITCH_MALLOC(device, sizeof(switch_neighbor_context_t), 0x1);
   if (!neighbor_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    dzlog_error("neighbor init failed for device %d: %s\n",
+    krnlmon_log_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -41,7 +41,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
   status = switch_device_api_context_set(
       device, SWITCH_API_TYPE_NEIGHBOR, (void *)neighbor_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("neighbor init failed for device %d: %s\n",
+    krnlmon_log_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -51,7 +51,7 @@ switch_status_t switch_neighbor_init(switch_device_t device) {
       device, SWITCH_HANDLE_TYPE_NEIGHBOR, NEIGHBOR_MOD_TABLE_SIZE);
 
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("neighbor init failed for device %d: %s\n",
+    krnlmon_log_error("neighbor init failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     goto cleanup;
@@ -72,7 +72,7 @@ switch_status_t switch_neighbor_free(switch_device_t device) {
   status = switch_device_api_context_get(
       device, SWITCH_API_TYPE_NEIGHBOR, (void **)&neighbor_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("neighbor free failed for device %d: %s\n",
+    krnlmon_log_error("neighbor free failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
     return status;
@@ -80,7 +80,7 @@ switch_status_t switch_neighbor_free(switch_device_t device) {
   
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_NEIGHBOR);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("neighbor free failed for device %d: %s\n",
+    krnlmon_log_error("neighbor free failed for device %d: %s\n",
                      device,
                      switch_error_to_string(status));
   }
@@ -113,7 +113,7 @@ switch_status_t switch_api_neighbor_create(
 
   if (!api_neighbor_info) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor create failed on device %d: "
         "neighbor info invalid:(%s)\n",
         device,
@@ -123,7 +123,7 @@ switch_status_t switch_api_neighbor_create(
 
   if (!SWITCH_NHOP_HANDLE(api_neighbor_info->nhop_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor create failed on device %d nhop handle 0x%lx: "
         "nhop handle invalid:(%s)\n",
         device,
@@ -136,7 +136,7 @@ switch_status_t switch_api_neighbor_create(
   handle = switch_neighbor_handle_create(device);
   if (handle == SWITCH_API_INVALID_HANDLE) {
     status = SWITCH_STATUS_NO_MEMORY;
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor create failed on device %d: "
         "handle create failed:(%s)\n",
         device,
@@ -146,7 +146,7 @@ switch_status_t switch_api_neighbor_create(
 
   status = switch_neighbor_get(device, handle, &neighbor_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor create failed on device %d: "
         "neighbor get failed:(%s)\n",
         device,
@@ -185,7 +185,7 @@ switch_status_t switch_api_neighbor_create(
 
       status = switch_routing_table_entry(device, &pd_neighbor_info, true);
       if (status != SWITCH_STATUS_SUCCESS) {
-        dzlog_error("routing tables update failed \n");
+        krnlmon_log_error("routing tables update failed \n");
         return status;
       }
 
@@ -213,7 +213,7 @@ switch_status_t switch_api_neighbor_create(
           status = switch_pd_rmac_table_entry(device, rmac_entry,
                                            api_neighbor_info->rif_handle, true);
           if (status != SWITCH_STATUS_SUCCESS) {
-              dzlog_error("routing tables update failed \n");
+              krnlmon_log_error("routing tables update failed \n");
               return status;
           }
 
@@ -224,7 +224,7 @@ switch_status_t switch_api_neighbor_create(
   SWITCH_MEMCPY(&neighbor_info->switch_pd_routing_info,
                 &pd_neighbor_info,
                 sizeof(switch_pd_routing_info_t));
-  dzlog_info(
+  krnlmon_log_info(
       "neighbor created on device %d neighbor handle 0x%lx\n", device, handle);
 
   return status;
@@ -239,7 +239,7 @@ switch_status_t switch_api_neighbor_delete(
 
   if (!SWITCH_NEIGHBOR_HANDLE(neighbor_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor delete failed on device %d neighbor handle 0x%lx: "
         "neighbor handle invalid(%s)\n",
         device,
@@ -250,7 +250,7 @@ switch_status_t switch_api_neighbor_delete(
 
   status = switch_neighbor_get(device, neighbor_handle, &neighbor_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error(
+    krnlmon_log_error(
         "neighbor delete failed on device %d neighbor handle 0x%lx: "
         "neighbor get failed(%s)\n",
         device,
@@ -267,13 +267,13 @@ switch_status_t switch_api_neighbor_delete(
                                         &neighbor_info->switch_pd_routing_info,
                                         false);
     if(status != SWITCH_STATUS_SUCCESS)
-      dzlog_error("routing tables update failed \n");
+      krnlmon_log_error("routing tables update failed \n");
   }
 
   status = switch_neighbor_handle_delete(device, neighbor_handle);
   SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
 
-  dzlog_info("neighbor deleted on device %d neighbor handle 0x%lx\n",
+  krnlmon_log_info("neighbor deleted on device %d neighbor handle 0x%lx\n",
              device,
              neighbor_handle);
 

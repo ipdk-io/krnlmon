@@ -45,7 +45,7 @@ switch_status_t switch_rif_init(switch_device_t device) {
       switch_handle_type_init(device, SWITCH_HANDLE_TYPE_RIF, SWITCH_RIF_MAX);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  dzlog_debug("rif init successful on device %d\n", device);
+  krnlmon_log_debug("rif init successful on device %d\n", device);
 
   return status;
 }
@@ -67,7 +67,7 @@ switch_status_t switch_rif_free(switch_device_t device) {
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_RIF);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  dzlog_debug("RIF free successful on device %d\n", device);
+  krnlmon_log_debug("RIF free successful on device %d\n", device);
 
   return status;
 }
@@ -82,7 +82,7 @@ switch_status_t switch_api_rif_attribute_get(
 
   if (!SWITCH_RIF_HANDLE(rif_handle)) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error(
+    krnlmon_log_error(
         "rif attribute get: Invalid rif handle on device %d, "
         "rif handle 0x%lx: "
         "error: %s\n",
@@ -116,7 +116,7 @@ switch_status_t switch_api_rif_create(
 
   if (!SWITCH_RMAC_HANDLE(api_rif_info->rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
-    dzlog_error(
+    krnlmon_log_error(
         "rif create: Invalid rmac handle on device %d: "
         "error: %s\n",
         device,

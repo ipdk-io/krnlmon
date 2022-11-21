@@ -90,7 +90,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
   ifmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifinfomsg);
 
-  dzlog_debug("%slink: family = %d, type = %d, ifindex = %d, flags = 0x%x,"\
+  krnlmon_log_debug("%slink: family = %d, type = %d, ifindex = %d, flags = 0x%x,"\
            "change = 0x%x\n", ((type == RTM_NEWLINK) ? "new" : "del"),
            ifmsg->ifi_family, ifmsg->ifi_type, ifmsg->ifi_index,
            ifmsg->ifi_flags, ifmsg->ifi_change);
@@ -107,7 +107,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         snprintf(intf_info.ifname,
                  SWITCHLINK_INTERFACE_NAME_LEN_MAX,
                  nla_get_string(attr));
-        dzlog_debug("Interface name is %s\n", intf_info.ifname);
+        krnlmon_log_debug("Interface name is %s\n", intf_info.ifname);
         break;
       case IFLA_LINKINFO:
         nla_for_each_nested(nest_attr, attr, attrlen) {
@@ -122,12 +122,12 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                   switch (nest_attr_type_new) {
                       case IFLA_VXLAN_ID:
                         vni_id = *(uint32_t *) nla_data(nest_attr_new);
-                        dzlog_debug("Interface VNI ID: %d\n", vni_id);
+                        krnlmon_log_debug("Interface VNI ID: %d\n", vni_id);
                         break;
                       case IFLA_VXLAN_PORT:
                         vxlan_dst_port =
                             htons(*(uint16_t *) nla_data(nest_attr_new));
-                        dzlog_debug("Interface Dst port: %d\n", vxlan_dst_port);
+                        krnlmon_log_debug("Interface Dst port: %d\n", vxlan_dst_port);
                         break;
                       case IFLA_VXLAN_GROUP:
                         memset(&remote_ip_addr, 0,
@@ -136,7 +136,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                         remote_ip_addr.ip.v4addr.s_addr =
                             ntohl(nla_get_u32(nest_attr_new));
                         remote_ip_addr.prefix_len = 32;
-                        dzlog_debug("Remote Ipv4 address: 0x%x\n",
+                        krnlmon_log_debug("Remote Ipv4 address: 0x%x\n",
                                    remote_ip_addr.ip.v4addr.s_addr);
                         break;
                       case IFLA_VXLAN_LOCAL:
@@ -145,12 +145,12 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
                         src_ip_addr.ip.v4addr.s_addr =
                             ntohl(nla_get_u32(nest_attr_new));
                         src_ip_addr.prefix_len = 32;
-                        dzlog_debug("Src Ipv4 address: 0x%x\n",
+                        krnlmon_log_debug("Src Ipv4 address: 0x%x\n",
                                    src_ip_addr.ip.v4addr.s_addr);
                         break;
                       case IFLA_VXLAN_TTL:
                         ttl = nla_get_u8(nest_attr_new);
-                        dzlog_debug("TTL: %d\n", ttl);
+                        krnlmon_log_debug("TTL: %d\n", ttl);
                         break;
                     default:
                       break;
@@ -166,7 +166,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
         krnlmon_assert(nla_len(attr) == sizeof(switchlink_mac_addr_t));
         memcpy(&(intf_info.mac_addr), nla_data(attr), nla_len(attr));
 
-        dzlog_debug("Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
+        krnlmon_log_debug("Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
                (unsigned char) intf_info.mac_addr[0],
                (unsigned char) intf_info.mac_addr[1],
                (unsigned char) intf_info.mac_addr[2],
@@ -229,7 +229,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
     } else if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
       switchlink_delete_interface(ifmsg->ifi_index);
     } else {
-      dzlog_debug("Unhandled link type");
+      krnlmon_log_debug("Unhandled link type");
     }
   }
 }

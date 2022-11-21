@@ -163,7 +163,7 @@ switch_status_t SWITCH_LIST_INIT(switch_list_t *list) {
 
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("list insert failed, error: %s\n",
+    krnlmon_log_error("list insert failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -180,7 +180,7 @@ switch_status_t SWITCH_LIST_SORT(switch_list_t *list,
 
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("list insert failed, error: %s\n",
+    krnlmon_log_error("list insert failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -196,7 +196,7 @@ bool SWITCH_LIST_EMPTY(switch_list_t *list) {
 
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("list empty get failed, error: %s\n",
+    krnlmon_log_error("list empty get failed, error: %s\n",
              switch_error_to_string(status));
     return FALSE;
   }
@@ -226,7 +226,7 @@ switch_status_t SWITCH_LIST_INSERT(switch_list_t *list,
 
   if (!list || !node || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("list insert failed, error: %s\n",
+    krnlmon_log_error("list insert failed, error: %s\n",
              switch_error_to_string(status));
     return status;
   }
@@ -243,7 +243,7 @@ switch_status_t SWITCH_LIST_DELETE(switch_list_t *list, switch_node_t *node) {
 
   if (!list || !node) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("list delete failed, error: %s\n",
+    krnlmon_log_error("list delete failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -260,7 +260,7 @@ switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
 
   if (!hashtable || hashtable->size == 0) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable init failed, error: %s\n",
+    krnlmon_log_error("hashtable init failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -295,7 +295,7 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
 
   if (!hashtable || !node || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable insert failed, error: %s\n",
+    krnlmon_log_error("hashtable insert failed, error: %s\n",
              switch_error_to_string(status));
     return status;
   }
@@ -304,7 +304,7 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
 
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("hashtable insert failed, error: %s\n",
+    krnlmon_log_error("hashtable insert failed, error: %s\n",
              switch_error_to_string(status));
     return status;
   }
@@ -329,7 +329,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
 
   if (!hashtable || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable delete failed, error: %s\n",
+    krnlmon_log_error("hashtable delete failed, error: %s\n",
              switch_error_to_string(status));
     return status;
   }
@@ -338,7 +338,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
 
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("hashtable delete failed, error: %s\n",
+    krnlmon_log_error("hashtable delete failed, error: %s\n",
              switch_error_to_string(status));
     return status;
   }
@@ -348,7 +348,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
       &hashtable->table, hashtable->compare_func, hash_key, hash);
   if (!(*data)) {
     status = SWITCH_STATUS_ITEM_NOT_FOUND;
-    dzlog_error("hashtable delete failed, error: %s\n",
+    krnlmon_log_error("hashtable delete failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -366,7 +366,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t *hashtable,
 
   if (!hashtable || !node) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable delete node failed, error: %s\n",
+    krnlmon_log_error("hashtable delete node failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -389,7 +389,7 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
 
   if (!hashtable || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_debug("hashtable search failed, error: %s\n",
+    krnlmon_log_debug("hashtable search failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -398,7 +398,7 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
 
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_debug("hashtable search failed, error: %s\n",
+    krnlmon_log_debug("hashtable search failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -408,7 +408,7 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
       &hashtable->table, hashtable->compare_func, hash_key, hash);
   if (!(*data)) {
     status = SWITCH_STATUS_ITEM_NOT_FOUND;
-    dzlog_debug("hashtable search failed, error: %s\n",
+    krnlmon_log_debug("hashtable search failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -427,7 +427,7 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t *hashtable,
 
   if (!hashtable || !func || !arg) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable foreach arg failed, error: %s\n",
+    krnlmon_log_error("hashtable foreach arg failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }
@@ -443,7 +443,7 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable) {
 
   if (!hashtable) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("hashtable done failed, error: %s\n",
+    krnlmon_log_error("hashtable done failed, error: %s\n",
               switch_error_to_string(status));
     return status;
   }

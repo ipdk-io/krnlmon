@@ -87,18 +87,18 @@ static sai_status_t sai_create_port(_Out_ sai_object_id_t *port_id,
     switch_handle_t port_handle = SWITCH_API_INVALID_HANDLE;
     switch_api_port_info_t api_port_info = {0};
 
-    dzlog_info("[SAI_CREATE_PORT] called ..\n");
+    krnlmon_log_info("[SAI_CREATE_PORT] called ..\n");
 
     for (uint32_t index = 0; index < attr_count; index++) {
         attribute = &attr_list[index];
         switch (attribute->id) {
             case SAI_PORT_ATTR_HW_LANE_LIST:
                 portid = attribute->value.oid;
-                dzlog_info("[SAI_CREATE_PORT]: Port ID = %"PRIu64, portid);
+                krnlmon_log_info("[SAI_CREATE_PORT]: Port ID = %"PRIu64, portid);
                 break;
             case SAI_PORT_ATTR_MTU:
                 mtu = attribute->value.u32;
-                dzlog_info("[SAI_CREATE_PORT]: MTU = %d\n", mtu);
+                krnlmon_log_info("[SAI_CREATE_PORT]: MTU = %d\n", mtu);
                 break;
             default:
                 status = SAI_STATUS_NOT_IMPLEMENTED;

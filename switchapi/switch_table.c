@@ -288,7 +288,7 @@ switch_status_t switch_table_init(switch_device_t device,
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("table init: Failed to get table info on device %d:%s",
+    krnlmon_log_error("table init: Failed to get table info on device %d:%s",
               device,
               switch_error_to_string(status));
     return status;
@@ -315,7 +315,7 @@ switch_status_t switch_table_free(switch_device_t device) {
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("table free: Failed to get table info on device %d:%s",
+    krnlmon_log_error("table free: Failed to get table info on device %d:%s",
              device,
              switch_error_to_string(status));
     return status;
@@ -336,7 +336,7 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
 
   if (!table_size) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("Failed to get table size on device %d, error: %s",
+    krnlmon_log_error("Failed to get table size on device %d, error: %s",
               device,
               switch_error_to_string(status));
     return status;
@@ -344,7 +344,7 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    dzlog_error("get table size: Failed to get table info on device %d, error: %s",
+    krnlmon_log_error("get table size: Failed to get table info on device %d, error: %s",
              device,
              switch_error_to_string(status));
     return status;
@@ -361,7 +361,7 @@ switch_status_t switch_table_default_sizes_get(switch_size_t *table_sizes) {
 
   if (!table_sizes) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    dzlog_error("Failed to get table default size, error: %s",
+    krnlmon_log_error("Failed to get table default size, error: %s",
              switch_error_to_string(status));
     return status;
   }

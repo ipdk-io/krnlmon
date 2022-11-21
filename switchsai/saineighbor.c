@@ -105,13 +105,13 @@ static sai_status_t sai_create_neighbor_entry(
 
   if (!neighbor_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null neighbor entry: %s", sai_status_to_string(status));
+    krnlmon_log_error("null neighbor entry: %s", sai_status_to_string(status));
     return status;
   }
 
   if (!attr_list) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null attribute list: %s", sai_status_to_string(status));
+    krnlmon_log_error("null attribute list: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -123,7 +123,7 @@ static sai_status_t sai_create_neighbor_entry(
 
   status = switch_api_neighbor_create(0, &api_neighbor, &neighbor_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to create neighbor entry, error: %s",
+    krnlmon_log_error("Failed to create neighbor entry, error: %s",
                   sai_status_to_string(status));
   }
 
@@ -153,7 +153,7 @@ static sai_status_t sai_remove_neighbor_entry(
 
   if (!neighbor_entry) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null neighbor entry: %s", sai_status_to_string(status));
+    krnlmon_log_error("null neighbor entry: %s", sai_status_to_string(status));
     return status;
   }
 
@@ -167,7 +167,7 @@ static sai_status_t sai_remove_neighbor_entry(
   switch_status = switch_api_neighbor_delete(0, neighbor_handle);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("Failed to remove neighbor entry, error: %s",
+    krnlmon_log_error("Failed to remove neighbor entry, error: %s",
                   sai_status_to_string(status));
     status = SAI_STATUS_SUCCESS;
   }

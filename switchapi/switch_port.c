@@ -37,7 +37,7 @@ switch_status_t switch_api_port_add(
 
   status = switch_pd_device_port_add(device, port, mtu);
   if (status != SWITCH_STATUS_SUCCESS) {
-      dzlog_error(
+      krnlmon_log_error(
           "Failed to add port on device %d  for port %d: "
           ",error: %s\n",
           device,

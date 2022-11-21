@@ -74,7 +74,7 @@ sai_create_virtual_router_entry(_Out_ sai_object_id_t *vr_id,
 
   status = (sai_object_id_t)switch_api_vrf_create(0, vrf_id, &vrf_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("failed to create virtual router entry : %s",
+    krnlmon_log_error("failed to create virtual router entry : %s",
                   sai_status_to_string(status));
   }
   *vr_id = vrf_handle;
@@ -104,7 +104,7 @@ sai_remove_virtual_router_entry(_In_ sai_object_id_t vr_id)
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
-    dzlog_error("failed to remove virtual router entry %lx : %s",
+    krnlmon_log_error("failed to remove virtual router entry %lx : %s",
                   vr_id,
                   sai_status_to_string(status));
   }

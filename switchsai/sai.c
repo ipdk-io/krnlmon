@@ -73,7 +73,7 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
 
   if (!api_method_table) {
     status = SAI_STATUS_INVALID_PARAMETER;
-    dzlog_error("null api method table: invalid parameter");
+    krnlmon_log_error("null api method table: invalid parameter");
     return status;
   }
 
@@ -199,7 +199,7 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
       break;
 
     case SAI_API_UNSPECIFIED:
-      dzlog_error(" SAI API unspecified");
+      krnlmon_log_error(" SAI API unspecified");
       break;
 
     case SAI_API_RPF_GROUP:
@@ -224,11 +224,11 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
   }
 
   if (status == SAI_STATUS_SUCCESS) {
-    dzlog_debug("api query for module: %s", module[sai_api_id]);
+    krnlmon_log_debug("api query for module: %s", module[sai_api_id]);
   } else if (sai_api_id >= SAI_API_MAX) {
-    dzlog_error("api query failed, invalid api id: %d\n", sai_api_id);
+    krnlmon_log_error("api query failed, invalid api id: %d\n", sai_api_id);
   } else {
-    dzlog_error("api query failed, api %s not implemented\n",
+    krnlmon_log_error("api query failed, api %s not implemented\n",
                   module[sai_api_id]);
   }
 

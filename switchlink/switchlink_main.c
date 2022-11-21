@@ -145,35 +145,35 @@ static void nl_process_message(struct nlmsghdr *nlmsg) {
   */
   switch (nlmsg->nlmsg_type) {
     case RTM_NEWLINK:
-      dzlog_debug("Switchlink Notification RTM_NEWLINK\n");
+      krnlmon_log_debug("Switchlink Notification RTM_NEWLINK\n");
       process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELLINK:
-      dzlog_debug("Switchlink Notification RTM_DELLINK\n");
+      krnlmon_log_debug("Switchlink Notification RTM_DELLINK\n");
       process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWADDR:
-      dzlog_debug("Switchlink Notification RTM_NEWADDR\n");
+      krnlmon_log_debug("Switchlink Notification RTM_NEWADDR\n");
       process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELADDR:
-      dzlog_debug("Switchlink Notification RTM_DELADDR\n");
+      krnlmon_log_debug("Switchlink Notification RTM_DELADDR\n");
       process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWROUTE:
-      dzlog_debug("Switchlink Notification RTM_NEWROUTE\n");
+      krnlmon_log_debug("Switchlink Notification RTM_NEWROUTE\n");
       process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELROUTE:
-      dzlog_debug("Switchlink Notification RTM_DELROUTE\n");
+      krnlmon_log_debug("Switchlink Notification RTM_DELROUTE\n");
       process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNEIGH:
-      dzlog_debug("Switchlink Notification RTM_NEWNEIGH\n");
+      krnlmon_log_debug("Switchlink Notification RTM_NEWNEIGH\n");
       process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELNEIGH:
-      dzlog_debug("Switchlink Notification RTM_DELNEIGH\n");
+      krnlmon_log_debug("Switchlink Notification RTM_DELNEIGH\n");
       process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNETCONF:
@@ -185,7 +185,7 @@ static void nl_process_message(struct nlmsghdr *nlmsg) {
       // P4-OVS comment nl_sync_state();
       break;
     default:
-      dzlog_debug("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
+      krnlmon_log_debug("Unknown netlink message(%d). Ignoring\n", nlmsg->nlmsg_type);
       break;
   }
 }
@@ -302,11 +302,6 @@ void *switchlink_main(void *args) {
    }
 
 
-  //zlog initialization
-  char krnlmon_log_cfg_file[180] = {0};
-  sprintf(krnlmon_log_cfg_file, DEFAULT_ZLOG_CFG_FILE);
-  krnlmon_zlog_init(krnlmon_log_cfg_file);
-
   switchlink_init_db();
   switchlink_init_api();
   switchlink_init_link();
@@ -327,16 +322,11 @@ void *switchlink_main(void *args) {
 }
 
 int switchlink_stop(void) {
-  //De-initialize zlog
-  krnlmon_zlog_close();
-
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
     int s = pthread_join(switchlink_thread, NULL);
     return s;
   }
-
-  zlog_fini();
 
   return status;
 }
