@@ -34,6 +34,10 @@ add_library(switchlink_o OBJECT
 
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
 
+if(WITH_OVSP4RT)
+   target_compile_definitions(switchlink_o PRIVATE OVSP4RT_SUPPORT)
+endif()
+
 target_link_libraries(switchlink_o PkgConfig::libnl3)
 
 target_include_directories(switchlink_o PRIVATE

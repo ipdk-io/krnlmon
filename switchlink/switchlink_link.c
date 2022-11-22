@@ -194,16 +194,8 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
       case SWITCHLINK_LINK_TYPE_BOND:
       case SWITCHLINK_LINK_TYPE_NONE:
       case SWITCHLINK_LINK_TYPE_ETH:
-        break;
 
-      case SWITCHLINK_LINK_TYPE_TUN:
-          intf_info.ifindex = ifmsg->ifi_index;
-          intf_info.vrf_h = g_default_vrf_h;
-          intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
-
-          switchlink_create_interface(&intf_info);
-        break;
-
+#if !defined(OVSP4RT_SUPPORT)
       case SWITCHLINK_LINK_TYPE_VXLAN: {
         snprintf(tnl_intf_info.ifname,
                  SWITCHLINK_INTERFACE_NAME_LEN_MAX,
@@ -218,15 +210,31 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
 
         switchlink_create_tunnel_interface(&tnl_intf_info);
       }
+#endif
+
+      case SWITCHLINK_LINK_TYPE_TUN:
+          intf_info.ifindex = ifmsg->ifi_index;
+          intf_info.vrf_h = g_default_vrf_h;
+          intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
+
+          switchlink_create_interface(&intf_info);
+        break;
+
       break;
       default:
         break;
     }
   } else {
     krnlmon_assert(type == RTM_DELLINK);
+
+#if !defined(OVSP4RT_SUPPORT)
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
         switchlink_delete_tunnel_interface(ifmsg->ifi_index);
-    } else if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
+	return;
+    }
+#endif
+
+    if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
       switchlink_delete_interface(ifmsg->ifi_index);
     } else {
       krnlmon_log_debug("Unhandled link type");
