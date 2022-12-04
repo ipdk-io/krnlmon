@@ -65,9 +65,9 @@ static sai_status_t sai_create_next_hop_group_entry(
     return SAI_STATUS_INVALID_PARAMETER;
   }
 
-  status = switch_api_ecmp_create(switch_id, &next_hop_group_handle);
+  status = switch_api_create_nhop_group(switch_id, &next_hop_group_handle);
   if (status != SAI_STATUS_SUCCESS) {
-    krnlmon_log_error("failed to create ECMP group %s",
+    krnlmon_log_error("failed to create NHOP group %s",
                   sai_status_to_string(status));
     return status;
   }
@@ -94,10 +94,10 @@ static sai_status_t sai_remove_next_hop_group_entry(_In_ sai_object_id_t
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
   switch_status =
-      switch_api_delete_ecmp(0, (switch_handle_t)next_hop_group_id);
+      switch_api_delete_nhop_group(0, (switch_handle_t)next_hop_group_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    krnlmon_log_error("failed to remove ECMP group %lx: %s",
+    krnlmon_log_error("failed to remove NHOP group %lx: %s",
                   next_hop_group_id,
                   sai_status_to_string(status));
   }
@@ -151,14 +151,25 @@ static sai_status_t sai_create_next_hop_group_member(
     }
   }
 
-  switch_status = switch_api_ecmp_member_add(switch_id,
+  /* If NHOP group is not created, map this member to default group */
+  if (!nhop_group_id) {
+    switch_status = switch_api_get_default_nhop_group(switch_id,
+                                                      &nhop_group_id);
+    status = sai_switch_status_to_sai_status(switch_status);
+    if ((status != SAI_STATUS_SUCCESS) || !nhop_group_id) {
+      krnlmon_log_error("failed to get default NHOP group %s",
+                sai_status_to_string(status));
+    }
+  }
+
+  switch_status = switch_api_add_nhop_member(switch_id,
                                              (switch_handle_t)nhop_group_id,
                                              0x1,
                                              (switch_handle_t *)&nhop_id,
                                              &member_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    krnlmon_log_error("failed to add member to ECMP group %lx : %s",
+    krnlmon_log_error("failed to add member to NHOP group %lx : %s",
                   nhop_group_id,
                   sai_status_to_string(status));
   }
@@ -183,20 +194,20 @@ static sai_status_t sai_remove_next_hop_group_member(_In_ sai_object_id_t
   sai_status_t status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
-  switch_status = switch_api_ecmp_nhop_by_member_get(
+  switch_status = switch_api_nhop_group_by_nhop_member_get(
       0, next_hop_group_member_id, &nhop_group_id, &nhop_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    krnlmon_log_error("failed to get ECMP group and nhop for member ID %lx : %s",
+    krnlmon_log_error("failed to get NHOP group and nhop for member ID %lx : %s",
               next_hop_group_member_id,
               sai_status_to_string(status));
   }
 
-  switch_status = switch_api_ecmp_member_delete(
+  switch_status = switch_api_delete_nhop_member(
       0, (switch_handle_t)nhop_group_id, 0x1, (switch_handle_t *)&nhop_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {
-    krnlmon_log_error("failed to remove member from ECMP group %lx : %s",
+    krnlmon_log_error("failed to remove member from NHOP group %lx : %s",
                   next_hop_group_member_id,
                   sai_status_to_string(status));
   }
@@ -214,7 +225,7 @@ sai_next_hop_group_api_t nhop_group_api = {
     .remove_next_hop_group_member = sai_remove_next_hop_group_member};
 
 sai_status_t sai_next_hop_group_initialize(sai_api_service_t *sai_api_service) {
-  krnlmon_log_debug("Initializing ECMP group");
+  krnlmon_log_debug("Initializing NHOP group");
   sai_api_service->nhop_group_api = nhop_group_api;
   return SAI_STATUS_SUCCESS;
 }
