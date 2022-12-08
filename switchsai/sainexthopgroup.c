@@ -18,6 +18,7 @@
 #include "sainexthopgroup.h"
 #include "saiinternal.h"
 #include "switchapi/switch_nhop.h"
+#include "switchapi/switch_device.h"
 
 /*
 * Routine Description:
