@@ -26,7 +26,7 @@
 
 //add corresponding delete functions
 
-switch_status_t switch_nhop_group_member_list_add(
+switch_status_t switch_nhop_add_to_group_member_list(
     switch_device_t device,
     switch_nhop_info_t *nhop_info,
     switch_handle_t nhop_mem_handle) {
@@ -298,7 +298,7 @@ switch_status_t switch_api_create_nhop_group(const switch_device_t device,
   switch_handle_t handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
-  handle = switch_nhop_group_handle_create(device, 0);
+  handle = switch_nhop_group_create_handle(device, 0);
   if (handle == SWITCH_API_INVALID_HANDLE) {
     status = SWITCH_STATUS_NO_MEMORY;
     krnlmon_log_error(
@@ -309,7 +309,7 @@ switch_status_t switch_api_create_nhop_group(const switch_device_t device,
     return status;
   }
 
-  status = switch_nhop_group_get(device, handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop group create Failed on device %d "
@@ -361,7 +361,7 @@ switch_status_t switch_api_add_nhop_member (
   }
 
   SWITCH_ASSERT(SWITCH_NHOP_GROUP_HANDLE(nhop_group_handle));
-  status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop member add Failed on device %d nhop group handle 0x%lx: "
@@ -390,7 +390,7 @@ switch_status_t switch_api_add_nhop_member (
       return status;
     }
 
-    nhop_member_handle = switch_nhop_member_handle_create(device);
+    nhop_member_handle = switch_nhop_member_create_handle(device);
     if (nhop_member_handle == SWITCH_API_INVALID_HANDLE) {
       status = SWITCH_STATUS_NO_MEMORY;
       krnlmon_log_error(
@@ -404,7 +404,7 @@ switch_status_t switch_api_add_nhop_member (
       return status;
     }
 
-    status = switch_nhop_member_get(device, nhop_member_handle, &nhop_member);
+    status = switch_nhop_get_member(device, nhop_member_handle, &nhop_member);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
           "nhop member add Failed on device %d nhop group handle 0x%lx "
@@ -443,7 +443,7 @@ switch_status_t switch_api_add_nhop_member (
     status = switch_pd_handle_group(device, nhop_group_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
-            "switch_api_nhop_member_add: Failed to create platform dependent"
+            "switch_api_add_nhop_member: Failed to create platform dependent"
             " nhop selector entry %d: ,error :(%s)\n",
             device,
             switch_error_to_string(status));
@@ -453,7 +453,7 @@ switch_status_t switch_api_add_nhop_member (
     status = switch_pd_handle_group(device, nhop_group_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
-            "switch_api_nhop_member_add: Failed to create platform dependent"
+            "switch_api_add_nhop_member: Failed to create platform dependent"
             " nhop selector entry %d: ,error :(%s)\n",
             device,
             switch_error_to_string(status));
@@ -461,7 +461,8 @@ switch_status_t switch_api_add_nhop_member (
     }
 
     status =
-        switch_nhop_group_member_list_add(device, nhop_info, nhop_member_handle);
+        switch_nhop_add_to_group_member_list(device, nhop_info,
+                                             nhop_member_handle);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
           "Failed to add nhop member_handle to nhop , device %d"
@@ -508,7 +509,7 @@ switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
     return status;
   }
 
-  status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop_group delete failed on device %d nhop_group handle 0x%lx: "
@@ -543,7 +544,7 @@ switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
     status = switch_pd_handle_group(device, nhop_group_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-            "switch_api_nhop_member_add: Failed to create platform dependent"
+            "switch_api_add_nhop_member: Failed to create platform dependent"
             " nhop_group selector entry %d: ,error :(%s)\n",
             device,
             switch_error_to_string(status));
@@ -567,7 +568,7 @@ switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
     SWITCH_FREE(device, nhop_handles);
   }
 
-  status = switch_nhop_group_handle_delete(device, nhop_group_handle);
+  status = switch_nhop_group_delete_handle(device, nhop_group_handle);
   SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
 
   krnlmon_log_debug("nhop_group handle deleted on device %d nhop_group handle 0x%lx\n",
@@ -577,7 +578,7 @@ switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
   return status;
 }
 
-switch_status_t switch_api_nhop_group_by_nhop_member_get(
+switch_status_t switch_api_nhop_group_get_by_nhop_member(
     const switch_device_t device,
     const switch_handle_t nhop_member_handle,
     switch_handle_t *nhop_group_handle,
@@ -586,7 +587,7 @@ switch_status_t switch_api_nhop_group_by_nhop_member_get(
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(SWITCH_NHOP_MEMBER_HANDLE(nhop_member_handle));
-  status = switch_nhop_member_get(device, nhop_member_handle, &nhop_member);
+  status = switch_nhop_get_member(device, nhop_member_handle, &nhop_member);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop member get failed on device %d "
@@ -639,7 +640,7 @@ switch_status_t switch_nhop_member_get_from_nhop(
     return status;
   }
 
-  status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("Failed to get nhop member on device %d: %s",
                      device,
@@ -665,7 +666,7 @@ switch_status_t switch_nhop_member_get_from_nhop(
   return status;
 }
 
-switch_status_t switch_nhop_nhop_member_list_remove(
+switch_status_t switch_nhop_remove_from_group_member_list(
     switch_device_t device,
     switch_nhop_info_t *nhop_info,
     switch_handle_t nhop_mem_handle) {
@@ -730,7 +731,7 @@ switch_status_t switch_api_delete_nhop_member(
     return status;
   }
 
-  status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop member delete Failed on device %d nhop_group handle 0x%lx: "
@@ -786,7 +787,7 @@ switch_status_t switch_api_delete_nhop_member(
 
     member_handle = nhop_member->member_handle;
     status =
-        switch_nhop_nhop_member_list_remove(device, nhop_info, member_handle);
+        switch_nhop_remove_from_group_member_list(device, nhop_info, member_handle);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
           "nhop member delete Failed on device %d nhop_group handle 0x%lx "
@@ -804,7 +805,7 @@ switch_status_t switch_api_delete_nhop_member(
       status = switch_pd_handle_group(device, nhop_group_info, true);
       if (status != SWITCH_STATUS_SUCCESS) {
           krnlmon_log_error(
-              "switch_api_nhop_member_add: Failed to create platform dependent"
+              "switch_api_add_nhop_member: Failed to create platform dependent"
               " nhop_group selector entry %d: ,error :(%s)\n",
               device,
               switch_error_to_string(status));
@@ -824,7 +825,7 @@ switch_status_t switch_api_delete_nhop_member(
     status = SWITCH_LIST_DELETE(&(nhop_group_info->members), &(nhop_member->node));
     SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
 
-    status = switch_nhop_member_handle_delete(device, member_handle);
+    status = switch_nhop_delete_member_handle(device, member_handle);
     SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
   }
 
@@ -858,7 +859,7 @@ switch_status_t switch_api_delete_nhop_members (
     return status;
   }
 
-  status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+  status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "nhop members delete Failed on device %d nhop_group handle 0x%lx: "

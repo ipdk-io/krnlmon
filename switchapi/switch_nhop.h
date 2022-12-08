@@ -289,7 +289,7 @@ switch_status_t switch_api_nhop_handle_dump(const switch_device_t device,
 switch_status_t switch_api_nhop_table_size_get(switch_device_t device,
                                                switch_size_t *tbl_size);
 
-switch_status_t switch_api_nhop_group_by_nhop_member_get(
+switch_status_t switch_api_nhop_group_get_by_nhop_member(
     const switch_device_t device,
     const switch_handle_t nhop_member_handle,
     switch_handle_t *nhop_group_handle,

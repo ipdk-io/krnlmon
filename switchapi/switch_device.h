@@ -37,7 +37,7 @@ typedef struct switch_api_device_info_s {
   /** vlan handle */
   switch_handle_t vlan_handle;
 
-  /** vlan handle */
+  /** group handle */
   switch_handle_t group_handle;
 
   /** switch mac address */

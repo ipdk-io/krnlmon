@@ -44,20 +44,12 @@ extern "C" {
   switch_handle_create(                    \
       _device, SWITCH_HANDLE_TYPE_NHOP, sizeof(switch_nhop_info_t))
 
-#define switch_nhop_group_handle_create(_device, _count) \
+#define switch_nhop_group_create_handle(_device, _count) \
   switch_handle_create(                    \
       _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, sizeof(switch_nhop_group_info_t))
 
-#define switch_nhop_group_handle_delete(_device, _count) \
-  switch_handle_delete(                    \
-      _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle)
-
 #define switch_nhop_handle_delete(_device, _handle, _count) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_NHOP, _handle)
-
-#define switch_nhop_group_handle_delete_contiguous(_device, _handle, count) \
-  switch_handle_delete_contiguous(                                    \
-      _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle, count)
 
 #define switch_nhop_get(_device, _handle, _info)                    \
   ({                                                                \
@@ -67,14 +59,14 @@ extern "C" {
         _device, SWITCH_HANDLE_TYPE_NHOP, _handle, (void **)_info); \
   })
 
-#define switch_nhop_member_handle_create(_device) \
+#define switch_nhop_member_create_handle(_device) \
   switch_handle_create(                           \
       _device, SWITCH_HANDLE_TYPE_NHOP_MEMBER, sizeof(switch_nhop_member_t))
 
-#define switch_nhop_member_handle_delete(_device, _handle) \
+#define switch_nhop_delete_member_handle(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_NHOP_MEMBER, _handle)
 
-#define switch_nhop_member_get(_device, _handle, _info)                    \
+#define switch_nhop_get_member(_device, _handle, _info)                    \
   ({                                                                       \
     switch_nhop_member_t *_tmp_nhop_member_info = NULL;                    \
     (void)(_tmp_nhop_member_info == *_info);                               \
@@ -82,7 +74,7 @@ extern "C" {
         _device, SWITCH_HANDLE_TYPE_NHOP_MEMBER, _handle, (void **)_info); \
   })
 
-#define switch_nhop_group_get(_device, _handle, _info)                    \
+#define switch_nhop_get_group(_device, _handle, _info)                    \
   ({                                                                \
     switch_nhop_info_t *_tmp_nhop_info = NULL;                      \
     (void)(_tmp_nhop_info == *_info);                               \
@@ -90,7 +82,7 @@ extern "C" {
         _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle, (void **)_info); \
   })
 
-#define switch_nhop_group_handle_delete(_device, _handle) \
+#define switch_nhop_group_delete_handle(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle)
 
 #define SWITCH_NHOP_MEMBER_INIT(_m)                         \
@@ -250,12 +242,7 @@ switch_status_t switch_nhop_default_entries_delete(switch_device_t device);
  * Adds created nhop member to the list of members
  * maintained by nhop and increases ref count by 1
  */
-switch_status_t switch_nhop_group_member_list_add(
-    switch_device_t device,
-    switch_nhop_info_t *nhop_info,
-    switch_handle_t nhop_mem_handle);
-
-switch_status_t switch_nhop_group_member_list_remove(
+switch_status_t switch_nhop_add_to_group_member_list(
     switch_device_t device,
     switch_nhop_info_t *nhop_info,
     switch_handle_t nhop_mem_handle);
