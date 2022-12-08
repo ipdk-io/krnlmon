@@ -374,6 +374,17 @@ switch_status_t switch_device_init(switch_device_t device,
     return status;
   }
 
+  status = switch_api_create_nhop_group(
+      device, &device_ctx->device_info.group_handle);
+  if (status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error(
+        "device init failed on device %d: "
+        "nhop group create failed(%s)",
+        device,
+        switch_error_to_string(status));
+    return status;
+  }
+
   krnlmon_log_debug("device init done on device %d", device);
 
   return status;
@@ -599,6 +610,24 @@ switch_status_t switch_api_device_default_rmac_handle_get(
   }
 
   *rmac_handle = device_ctx->device_info.rmac_handle;
+
+  return status;
+}
+
+switch_status_t switch_api_get_default_nhop_group(
+    switch_device_t device, switch_handle_t *nhop_group_handle) {
+  switch_device_context_t *device_ctx = NULL;
+  switch_status_t status = SWITCH_STATUS_SUCCESS;
+
+  status = switch_device_context_get(device, &device_ctx);
+  if (status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error("device context get failed on device %d: %s",
+                     device,
+                     switch_error_to_string(status));
+    return status;
+  }
+
+  *nhop_group_handle = device_ctx->device_info.group_handle;
 
   return status;
 }

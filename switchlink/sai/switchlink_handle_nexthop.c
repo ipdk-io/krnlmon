@@ -19,6 +19,7 @@
 #include "switchlink/switchlink_handle.h"
 
 static sai_next_hop_api_t *sai_nhop_api = NULL;
+static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
 
 /*
  * Routine Description:
@@ -33,6 +34,8 @@ sai_status_t sai_init_nhop_api() {
    sai_status_t status = SAI_STATUS_SUCCESS;
 
    status = sai_api_query(SAI_API_NEXT_HOP, (void **)&sai_nhop_api);
+   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+   status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void **)&sai_nhop_group_api);
    krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
@@ -72,6 +75,16 @@ int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
   attr_list[2].value.oid = nexthop_info->intf_h;
   status =
       sai_nhop_api->create_next_hop(&(nexthop_info->nhop_h), 0, 3, attr_list);
+  if (status != SAI_STATUS_SUCCESS) {
+    return -1;
+  }
+
+  memset(attr_list, 0x0, sizeof(attr_list));
+  attr_list[0].id = SAI_NEXT_HOP_GROUP_MEMBER_ATTR_NEXT_HOP_ID;
+  attr_list[0].value.oid = nexthop_info->nhop_h;
+  status = sai_nhop_group_api->create_next_hop_group_member(
+           &(nexthop_info->nhop_member_h), 0, 1, attr_list);
+
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
