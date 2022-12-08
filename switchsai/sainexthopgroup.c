@@ -194,7 +194,7 @@ static sai_status_t sai_remove_next_hop_group_member(_In_ sai_object_id_t
   sai_status_t status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
-  switch_status = switch_api_nhop_group_by_nhop_member_get(
+  switch_status = switch_api_nhop_group_get_by_nhop_member(
       0, next_hop_group_member_id, &nhop_group_id, &nhop_id);
   status = sai_switch_status_to_sai_status(switch_status);
   if (status != SAI_STATUS_SUCCESS) {

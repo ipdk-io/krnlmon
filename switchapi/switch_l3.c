@@ -493,7 +493,7 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
     if (switch_handle_type_get(api_route_info.nhop_handle) ==
                                SWITCH_HANDLE_TYPE_NHOP_GROUP) {
       nhop_group_handle = api_route_info.nhop_handle;
-      status = switch_nhop_group_get(device, nhop_group_handle, &nhop_group_info);
+      status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
       if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
             "nhop_group info get failed on device %d nhop_group handle 0x%lx: "
