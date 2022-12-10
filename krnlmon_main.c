@@ -3,9 +3,7 @@
 
 #include "krnlmon_main.h"
 
-#if !defined(_GNU_SOURCE)
-#define __USE_GNU
-#endif
+#define _GNU_SOURCE
 #include <pthread.h>
 #include <stdio.h>
 
