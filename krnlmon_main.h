@@ -4,16 +4,13 @@
 #ifndef KRNLMON_MAIN_H_
 #define KRNLMON_MAIN_H_
 
-#if !defined(_GNU_SOURCE)
-#define _GNU_SOURCE
-#endif
-#include <pthread.h>
-
 #ifdef __cplusplus
 extern "C" {
-#endif	
+#endif
+
 int krnlmon_init(void);
-void krnlmon_shutdown(void);
+int krnlmon_shutdown(void);
+
 #ifdef __cplusplus
 }
 #endif
