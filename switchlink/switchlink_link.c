@@ -106,6 +106,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
       case IFLA_IFNAME:
         snprintf(intf_info.ifname,
                  SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                 "%s",
                  nla_get_string(attr));
         krnlmon_log_debug("Interface name is %s\n", intf_info.ifname);
         break;
@@ -199,6 +200,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
       case SWITCHLINK_LINK_TYPE_VXLAN: {
         snprintf(tnl_intf_info.ifname,
                  SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                 "%s",
                  intf_info.ifname);
         tnl_intf_info.dst_ip = remote_ip_addr;
         tnl_intf_info.src_ip = src_ip_addr;
