@@ -7,6 +7,10 @@
 # TODO: Make Kernel Monitor a package.
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+add_compile_options(-Werror)
+
 include_directories(.)
 
 add_subdirectory(switchapi)
@@ -33,8 +37,6 @@ set_target_properties(krnlmon PROPERTIES
     LINK_OPTIONS -Wl,--version-script=libkrnlmon.sym
     LINK_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.sym
 )
-
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Version number for .pc file.
 set(VERSION 1.0)

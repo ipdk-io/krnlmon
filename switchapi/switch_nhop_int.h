@@ -75,12 +75,8 @@ extern "C" {
   })
 
 #define switch_nhop_get_group(_device, _handle, _info)                    \
-  ({                                                                \
-    switch_nhop_info_t *_tmp_nhop_info = NULL;                      \
-    (void)(_tmp_nhop_info == *_info);                               \
     switch_handle_get(                                              \
-        _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle, (void **)_info); \
-  })
+        _device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle, (void **)_info)
 
 #define switch_nhop_group_delete_handle(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_NHOP_GROUP, _handle)
