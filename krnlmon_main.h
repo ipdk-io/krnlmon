@@ -4,15 +4,9 @@
 #ifndef KRNLMON_MAIN_H_
 #define KRNLMON_MAIN_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "absl/synchronization/notification.h"
 
-int krnlmon_init(void);
-int krnlmon_shutdown(void);
-
-#ifdef __cplusplus
-}
-#endif
+int krnlmon_init_main_thread(absl::Notification* ready);
+int krnlmon_init_shutdown_thread(absl::Notification* done);
 
 #endif  // KRNLMON_MAIN_H_

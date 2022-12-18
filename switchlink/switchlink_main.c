@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+#include "switchlink_main.h"
+
 #include <stdint.h>
 #include <pthread.h>
 #include <fcntl.h>
@@ -32,16 +34,6 @@ static pthread_mutex_t cookie_mutex;
 static pthread_cond_t cookie_cv;
 static int cookie = 0;
 
-// Switchlink_main pthread variables
-extern pthread_cond_t rpc_start_cond;
-extern pthread_mutex_t rpc_start_lock;
-extern int rpc_start_cookie;
-
-// Switchlink stop pthread varaibles
-extern pthread_cond_t rpc_stop_cond;
-extern pthread_mutex_t rpc_stop_lock;
-extern int rpc_stop_cookie;
-
 enum {
   SWITCHLINK_MSG_LINK,
   SWITCHLINK_MSG_ADDR,
@@ -58,8 +50,8 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-// Currently we dont want to dump any existing kernel data when target is DPDK
 #ifdef NL_SYNC_STATE
+// Currently we don't want to dump any existing kernel data when target is DPDK
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
@@ -148,7 +140,6 @@ static void nl_sync_state(void) {
  * Return Values:
  *    void
  */
-
 static void nl_process_message(struct nlmsghdr *nlmsg) {
   /* TODO: P4OVS: Enabling callback for link msg type only and prints for
      few protocol families to avoid flood of messages. Enable, as needed.
@@ -303,21 +294,22 @@ struct nl_sock *switchlink_get_nl_sock(void) {
   return g_nlsk;
 }
 
-void *switchlink_main(void *args) {
-  pthread_mutex_lock(&rpc_start_lock);
-  while (!rpc_start_cookie) {
-      pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
-  }
-  pthread_mutex_unlock(&rpc_start_lock);
-
+// start_routine if running in a thread
+void *switchlink_start(void *args) {
+  (void)args;
   krnlmon_log_debug("switchlink main started");
+  (void)switchlink_main();
+  return NULL;
+}
+
+// thread body
+int switchlink_main(void) {
   pthread_mutex_init(&cookie_mutex, NULL);
   int status = pthread_cond_init(&cookie_cv, NULL);
-   if (status) {
-      perror("pthread_cond_init failed");
-      return NULL;
-   }
-
+  if (status) {
+     perror("pthread_cond_init failed");
+     return -1;
+  }
 
   switchlink_init_db();
   switchlink_init_api();
@@ -335,19 +327,14 @@ void *switchlink_main(void *args) {
   pthread_cond_signal(&cookie_cv);
   pthread_mutex_unlock(&cookie_mutex);
 
-  return NULL;
+  return 0;
 }
 
-void *switchlink_stop(void *args) {
-  pthread_mutex_lock(&rpc_stop_lock);
-  while (!rpc_stop_cookie) {
-      pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
-  }
-  pthread_mutex_unlock(&rpc_stop_lock);
+int switchlink_stop(void) {
+  // TODO: switchlink_thread is never initialized!
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
-    pthread_join(switchlink_thread, NULL);
+    return pthread_join(switchlink_thread, NULL);
   }
-
-  return NULL;
+  return status;
 }
