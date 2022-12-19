@@ -1046,7 +1046,7 @@ switch_status_t switch_pd_handle_group(switch_device_t device,
         krnlmon_log_info("Populate nhop member in selector table for "
                   "NHOP group handle %x",
                   (unsigned int) nhop_group_pd_info->nhop_group_handle);
-        tommy_node* node = tommy_list_head(&(nhop_group_pd_info->members));
+        tommy_node* node = tommy_list_head(&nhop_group_pd_info->members.list);
 
         while (node) {
             switch_nhop_member_t *nhop_member = NULL;
