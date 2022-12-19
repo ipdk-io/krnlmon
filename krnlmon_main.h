@@ -6,7 +6,7 @@
 
 #include "absl/synchronization/notification.h"
 
-int krnlmon_init_main_thread(absl::Notification* ready);
-int krnlmon_init_shutdown_thread(absl::Notification* done);
+int krnlmon_create_main_thread(absl::Notification* ready);
+int krnlmon_create_shutdown_thread(absl::Notification* done);
 
 #endif  // KRNLMON_MAIN_H_
