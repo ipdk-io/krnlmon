@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <sys/select.h>
 #include <netlink/msg.h>
@@ -288,9 +289,18 @@ static void nl_process_event_loop(void) {
 
     ret = select(num_fds, &read_fds, NULL, NULL, NULL);
     if (ret == -1) {
-      perror("pselect");
+      char errbuf[64];
+
+      // errno is volatile. Make a local copy of its value.
+      int err = errno;
+
+      // This is not really an error condition. Ignore it.
+      if (err == EINTR)
+        continue;
+
+      krnlmon_log_critical("Error selecting event socket: %s",
+                            strerror_r(err, errbuf, sizeof(errbuf)));
       return;
-    } else if (ret == 0) {
     } else {
       if (FD_ISSET(nlsk_fd, &read_fds)) {
         nl_recvmsgs_default(g_nlsk);
