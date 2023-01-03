@@ -17,6 +17,8 @@
 
 #include "switchlink_utils.h"
 
+#include <string.h>
+
 uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len) {
   return (prefix_len ? (((uint32_t)0xFFFFFFFF) << (32 - prefix_len)) : 0);
 }

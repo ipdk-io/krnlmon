@@ -32,6 +32,16 @@ static pthread_mutex_t cookie_mutex;
 static pthread_cond_t cookie_cv;
 static int cookie = 0;
 
+// Switchlink_main pthread variables
+extern pthread_cond_t rpc_start_cond;
+extern pthread_mutex_t rpc_start_lock;
+extern int rpc_start_cookie;
+
+// Switchlink stop pthread varaibles
+extern pthread_cond_t rpc_stop_cond;
+extern pthread_mutex_t rpc_stop_lock;
+extern int rpc_stop_cookie;
+
 enum {
   SWITCHLINK_MSG_LINK,
   SWITCHLINK_MSG_ADDR,
@@ -294,6 +304,13 @@ struct nl_sock *switchlink_get_nl_sock(void) {
 }
 
 void *switchlink_main(void *args) {
+  pthread_mutex_lock(&rpc_start_lock);
+  while (!rpc_start_cookie) {
+      pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
+  }
+  pthread_mutex_unlock(&rpc_start_lock);
+
+  krnlmon_log_debug("switchlink main started");
   pthread_mutex_init(&cookie_mutex, NULL);
   int status = pthread_cond_init(&cookie_cv, NULL);
    if (status) {
@@ -321,12 +338,16 @@ void *switchlink_main(void *args) {
   return NULL;
 }
 
-int switchlink_stop(void) {
+void *switchlink_stop(void *args) {
+  pthread_mutex_lock(&rpc_stop_lock);
+  while (!rpc_stop_cookie) {
+      pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
+  }
+  pthread_mutex_unlock(&rpc_stop_lock);
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
-    int s = pthread_join(switchlink_thread, NULL);
-    return s;
+    pthread_join(switchlink_thread, NULL);
   }
 
-  return status;
+  return NULL;
 }

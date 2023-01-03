@@ -50,7 +50,7 @@ extern switchlink_handle_t g_cpu_rx_nhop_h;
 struct nl_sock *switchlink_get_nl_sock(void);
 
 /* P4-OVS: Define a flag for P4-OVS ?*/
-int switchlink_stop(void);
+void *switchlink_stop(void *);
 void *switchlink_main(void *);
 
 typedef enum switchlink_entry_type {
