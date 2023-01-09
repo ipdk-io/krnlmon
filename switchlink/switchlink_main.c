@@ -59,7 +59,6 @@ enum {
 } switchlink_msg_t;
 
 // Currently we dont want to dump any existing kernel data when target is DPDK
-#ifdef NL_SYNC_STATE
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
@@ -136,7 +135,6 @@ static void nl_sync_state(void) {
     msg_idx++;
   }
 }
-#endif
 
 /*
  * Routine Description:
@@ -271,7 +269,7 @@ static void switchlink_nl_sock_intf_init(void) {
   }
 
   // start building state from the kernel
-  // P4-OVS comment nl_sync_state();
+  nl_sync_state();
 }
 
 static void nl_process_event_loop(void) {
@@ -311,13 +309,6 @@ void *switchlink_main(void *args) {
   pthread_mutex_unlock(&rpc_start_lock);
 
   krnlmon_log_debug("switchlink main started");
-  pthread_mutex_init(&cookie_mutex, NULL);
-  int status = pthread_cond_init(&cookie_cv, NULL);
-   if (status) {
-      perror("pthread_cond_init failed");
-      return NULL;
-   }
-
 
   switchlink_init_db();
   switchlink_init_api();
@@ -329,11 +320,6 @@ void *switchlink_main(void *args) {
     nl_process_event_loop();
     nl_cleanup_sock();
   }
-
-  pthread_mutex_lock(&cookie_mutex);
-  cookie = 1;
-  pthread_cond_signal(&cookie_cv);
-  pthread_mutex_unlock(&cookie_mutex);
 
   return NULL;
 }

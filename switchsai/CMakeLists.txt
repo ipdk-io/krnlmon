@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 3.5)
 add_library(switchsai_o OBJECT
    sai.c
    saiinternal.h
-   saiport.c
    saifdb.c
    saineighbor.c
    sainexthop.c

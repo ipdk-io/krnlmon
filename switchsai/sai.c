@@ -438,7 +438,7 @@ sai_status_t sai_initialize(void) {
   switch_api_init(0);
 
 //  sai_switch_initialize(&sai_api_service);
-  sai_port_initialize(&sai_api_service);
+//  sai_port_initialize(&sai_api_service);
 //  sai_bridge_initialize(&sai_api_service);
   sai_fdb_initialize(&sai_api_service);
 //  sai_vlan_initialize(&sai_api_service);

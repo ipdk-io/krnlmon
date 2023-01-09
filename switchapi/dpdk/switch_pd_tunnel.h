@@ -15,24 +15,28 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_LINK_H__
-#define __SWITCHLINK_LINK_H__
+#ifndef __SWITCH_PD_TUNNEL_H__
+#define __SWITCH_PD_TUNNEL_H__
 
-typedef enum {
-  SWITCHLINK_INTF_TYPE_NONE,
-  SWITCHLINK_INTF_TYPE_L2_ACCESS,
-  SWITCHLINK_INTF_TYPE_L3,
-  SWITCHLINK_INTF_TYPE_L3VI,
-} switchlink_intf_type_t;
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_handle.h"
 
-typedef enum {
-  SWITCHLINK_LINK_TYPE_NONE,
-  SWITCHLINK_LINK_TYPE_ETH,
-  SWITCHLINK_LINK_TYPE_TUN,
-  SWITCHLINK_LINK_TYPE_BRIDGE,
-  SWITCHLINK_LINK_TYPE_VXLAN,
-  SWITCHLINK_LINK_TYPE_BOND,
-  SWITCHLINK_LINK_TYPE_RIF,
-} switchlink_link_type_t;
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#endif /* __SWITCHLINK_LINK_H__ */
+switch_status_t switch_pd_tunnel_entry(
+    switch_device_t device,
+    const switch_api_tunnel_info_t *api_tunnel_info_t,
+    bool entry_add);
+
+switch_status_t switch_pd_tunnel_term_entry(
+    switch_device_t device,
+    const switch_api_tunnel_term_info_t *api_tunnel_term_info_t,
+    bool entry_add);
+
+#ifdef  __cplusplus
+}
+#endif
+
+#endif 

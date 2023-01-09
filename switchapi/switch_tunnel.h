@@ -442,16 +442,6 @@ switch_status_t switch_tunnel_default_entries_add(switch_device_t device);
 
 switch_status_t switch_tunnel_default_entries_delete(switch_device_t device);
 
-switch_status_t switch_pd_tunnel_entry(
-    switch_device_t device,
-    const switch_api_tunnel_info_t *api_tunnel_info_t,
-    bool entry_add);
-
-switch_status_t switch_pd_tunnel_term_entry(
-    switch_device_t device,
-    const switch_api_tunnel_term_info_t *api_tunnel_term_info_t,
-    bool entry_add);
-
 #ifdef __cplusplus
 }
 #endif

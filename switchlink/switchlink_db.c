@@ -506,9 +506,11 @@ switchlink_db_status_t switchlink_db_add_neighbor(
 
 switchlink_db_status_t switchlink_db_get_neighbor_info(
     switchlink_db_neigh_info_t *neigh_info) {
+  krnlmon_assert(neigh_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
     switchlink_db_neigh_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((memcmp(&(neigh_info->ip_addr),
                 &(obj->neigh_info.ip_addr),
@@ -539,9 +541,11 @@ switchlink_db_status_t switchlink_db_get_neighbor_info(
 
 switchlink_db_status_t switchlink_db_delete_neighbor(
     switchlink_db_neigh_info_t *neigh_info) {
+  krnlmon_assert(neigh_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
     switchlink_db_neigh_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((memcmp(&(neigh_info->ip_addr),
                 &(obj->neigh_info.ip_addr),
@@ -597,6 +601,7 @@ switchlink_db_status_t switchlink_db_get_nexthop_info(
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((memcmp(&(nexthop_info->ip_addr),
                 &(obj->nexthop_info.ip_addr),
@@ -628,6 +633,7 @@ switchlink_db_status_t switchlink_db_update_nexthop_using_by(
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((memcmp(&(nexthop_info->ip_addr),
                 &(obj->nexthop_info.ip_addr),
@@ -660,6 +666,7 @@ switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if (nhop_h == obj->nexthop_info.nhop_h) {
       if (nexthop_info) {
@@ -686,9 +693,11 @@ switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
 
 switchlink_db_status_t switchlink_db_delete_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info) {
+  krnlmon_assert(nexthop_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
     switchlink_db_nexthop_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((memcmp(&(nexthop_info->ip_addr),
                 &(obj->nexthop_info.ip_addr),
@@ -717,6 +726,7 @@ switchlink_db_status_t switchlink_db_delete_nexthop(
 
 switchlink_db_status_t switchlink_db_add_ecmp(
     switchlink_db_ecmp_info_t *ecmp_info) {
+  krnlmon_assert(ecmp_info != NULL);
   krnlmon_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
   switchlink_db_ecmp_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_ecmp_obj_t), 1);
@@ -744,9 +754,11 @@ switchlink_db_status_t switchlink_db_add_ecmp(
 
 switchlink_db_status_t switchlink_db_get_ecmp_info(
     switchlink_db_ecmp_info_t *ecmp_info) {
+  krnlmon_assert(ecmp_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_ecmp_obj_list);
   while (node) {
     switchlink_db_ecmp_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if (obj->ecmp_info.num_nhops == ecmp_info->num_nhops) {
       int i, j;
@@ -786,6 +798,7 @@ switchlink_db_status_t switchlink_db_get_ecmp_info(
 
 switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
     switchlink_handle_t ecmp_h, switchlink_db_ecmp_info_t *ecmp_info) {
+  krnlmon_assert(ecmp_info != NULL);
   switchlink_db_ecmp_obj_t *obj;
   obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
@@ -887,6 +900,7 @@ switchlink_db_status_t switchlink_db_delete_ecmp(switchlink_handle_t ecmp_h) {
 
 switchlink_db_status_t switchlink_db_add_route(
     switchlink_db_route_info_t *route_info) {
+  krnlmon_assert(route_info != NULL);
   switchlink_db_route_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_route_obj_t), 1);
   memcpy(&(obj->route_info), route_info, sizeof(switchlink_db_route_info_t));
@@ -908,9 +922,11 @@ switchlink_db_status_t switchlink_db_add_route(
 
 switchlink_db_status_t switchlink_db_delete_route(
     switchlink_db_route_info_t *route_info) {
+  krnlmon_assert(route_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {
     switchlink_db_route_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((obj->route_info.vrf_h == route_info->vrf_h) &&
         (memcmp(&(obj->route_info.ip_addr),
@@ -939,9 +955,11 @@ switchlink_db_status_t switchlink_db_delete_route(
 
 switchlink_db_status_t switchlink_db_get_route_info(
     switchlink_db_route_info_t *route_info) {
+  krnlmon_assert(route_info != NULL);
   tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {
     switchlink_db_route_obj_t *obj = node->data;
+    krnlmon_assert(obj != NULL);
     node = node->next;
     if ((obj->route_info.vrf_h == route_info->vrf_h) &&
         (memcmp(&(obj->route_info.ip_addr),

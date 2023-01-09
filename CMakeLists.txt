@@ -20,6 +20,7 @@ add_subdirectory(switchutils)
 
 add_library(krnlmon SHARED
     $<TARGET_OBJECTS:switchapi_o>
+    $<TARGET_OBJECTS:switchapi_target_o>
     $<TARGET_OBJECTS:switchlink_o>
     $<TARGET_OBJECTS:switchsai_o>
     $<TARGET_OBJECTS:switchutils_o>

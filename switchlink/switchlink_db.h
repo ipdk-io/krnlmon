@@ -85,7 +85,9 @@ typedef struct switchlink_db_neigh_info_ {
 typedef struct switchlink_db_nexthop_info_ {
   switchlink_handle_t vrf_h;
   switchlink_handle_t nhop_h;
+#ifdef DPDK_TARGET
   switchlink_handle_t nhop_member_h;
+#endif
   switchlink_handle_t intf_h;
   switchlink_ip_addr_t ip_addr;
   uint32_t using_by;

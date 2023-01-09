@@ -54,6 +54,14 @@ sai_status_t sai_init_nhop_group_api() {
 static int delete_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
+#ifdef ES2K_TARGET
+  uint8_t index = 0;
+  for (index = 0; index < ecmp_info->num_nhops; index++) {
+    status = sai_nhop_group_api->remove_next_hop_group_member(
+    ecmp_info->nhop_member_handles[index]);
+  }
+#endif
+
   /* While deleting group, we loop through list of members and delete
    * member entries as well
    */

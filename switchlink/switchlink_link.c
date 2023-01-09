@@ -29,6 +29,7 @@
 switchlink_handle_t g_default_vrf_h = 0;
 switchlink_handle_t g_default_bridge_h = 0;
 switchlink_handle_t g_cpu_rx_nhop_h = 0;
+switchlink_mac_addr_t null_mac = {0, 0, 0, 0, 0, 0};
 
 /*
  * Routine Description:
@@ -43,6 +44,12 @@ switchlink_handle_t g_cpu_rx_nhop_h = 0;
 
 static switchlink_link_type_t get_link_type(char *info_kind) {
   switchlink_link_type_t link_type = SWITCHLINK_LINK_TYPE_ETH;
+
+#ifdef ES2K_TARGET
+  // ES2K creates netdev from idpf driver/sriov's.
+  // These Netdev's wont have any Link type
+  link_type = SWITCHLINK_LINK_TYPE_RIF;
+#endif
 
   if (!strcmp(info_kind, "bridge")) {
     link_type = SWITCHLINK_LINK_TYPE_BRIDGE;
@@ -195,26 +202,35 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
       case SWITCHLINK_LINK_TYPE_BOND:
       case SWITCHLINK_LINK_TYPE_NONE:
       case SWITCHLINK_LINK_TYPE_ETH:
+        break;
 
 #if !defined(OVSP4RT_SUPPORT)
       case SWITCHLINK_LINK_TYPE_VXLAN: {
-        snprintf(tnl_intf_info.ifname,
-                 SWITCHLINK_INTERFACE_NAME_LEN_MAX,
-                 "%s",
-                 intf_info.ifname);
-        tnl_intf_info.dst_ip = remote_ip_addr;
-        tnl_intf_info.src_ip = src_ip_addr;
-        tnl_intf_info.link_type = link_type;
-        tnl_intf_info.ifindex = ifmsg->ifi_index;
-        tnl_intf_info.vni_id = vni_id;
-        tnl_intf_info.dst_port = vxlan_dst_port;
-        tnl_intf_info.ttl = ttl;
+          snprintf(tnl_intf_info.ifname,
+                   SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                   "%s",
+                   intf_info.ifname);
+          tnl_intf_info.dst_ip = remote_ip_addr;
+          tnl_intf_info.src_ip = src_ip_addr;
+          tnl_intf_info.link_type = link_type;
+          tnl_intf_info.ifindex = ifmsg->ifi_index;
+          tnl_intf_info.vni_id = vni_id;
+          tnl_intf_info.dst_port = vxlan_dst_port;
+          tnl_intf_info.ttl = ttl;
 
-        switchlink_create_tunnel_interface(&tnl_intf_info);
-      }
+          switchlink_create_tunnel_interface(&tnl_intf_info);
+        }
+        break;
 #endif
 
       case SWITCHLINK_LINK_TYPE_TUN:
+      case SWITCHLINK_LINK_TYPE_RIF:
+          if (!memcmp(intf_info.mac_addr, null_mac, sizeof(null_mac))) {
+              krnlmon_log_info("Ignoring interfaces: %s with NULL MAC address",
+                                 intf_info.ifname);
+              break;
+          }
+
           intf_info.ifindex = ifmsg->ifi_index;
           intf_info.vrf_h = g_default_vrf_h;
           intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
@@ -231,17 +247,19 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
 
 #if !defined(OVSP4RT_SUPPORT)
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
-        switchlink_delete_tunnel_interface(ifmsg->ifi_index);
-	return;
+      switchlink_delete_tunnel_interface(ifmsg->ifi_index);
+  	  return;
     }
 #endif
 
-    if (link_type == SWITCHLINK_LINK_TYPE_TUN) {
+    if (link_type == SWITCHLINK_LINK_TYPE_TUN ||
+        link_type == SWITCHLINK_LINK_TYPE_RIF) {
       switchlink_delete_interface(ifmsg->ifi_index);
     } else {
       krnlmon_log_debug("Unhandled link type");
     }
   }
+  return;
 }
 
 void switchlink_init_link(void) {
