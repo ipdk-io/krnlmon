@@ -24,7 +24,7 @@ add_library(krnlmon SHARED
     $<TARGET_OBJECTS:switchsai_o>
     $<TARGET_OBJECTS:switchutils_o>
     $<TARGET_OBJECTS:switchlink_sai_o>
-    krnlmon_main.c
+    krnlmon_main.cc
     krnlmon_main.h
 )
 
