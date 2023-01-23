@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// Enable assert()
+#undef NDEBUG
+// Enable assert_perror()
+#define _GNU_SOURCE
+#include <assert.h>
 
 #include <stdint.h>
 #include <pthread.h>
@@ -314,20 +321,19 @@ struct nl_sock *switchlink_get_nl_sock(void) {
 }
 
 void *switchlink_main(void *args) {
-  pthread_mutex_lock(&rpc_start_lock);
+  int rc;
+  rc = pthread_mutex_lock(&rpc_start_lock);
+  assert_perror(rc);
   while (!rpc_start_cookie) {
-      pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
+    pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
   }
-  pthread_mutex_unlock(&rpc_start_lock);
+  rc = pthread_mutex_unlock(&rpc_start_lock);
+  assert_perror(rc);
 
   krnlmon_log_debug("switchlink main started");
   pthread_mutex_init(&cookie_mutex, NULL);
-  int status = pthread_cond_init(&cookie_cv, NULL);
-   if (status) {
-      perror("pthread_cond_init failed");
-      return NULL;
-   }
-
+  rc = pthread_cond_init(&cookie_cv, NULL);
+  assert_perror(rc);
 
   switchlink_init_db();
   switchlink_init_api();
@@ -340,22 +346,27 @@ void *switchlink_main(void *args) {
     nl_cleanup_sock();
   }
 
-  pthread_mutex_lock(&cookie_mutex);
+  rc = pthread_mutex_lock(&cookie_mutex);
+  assert_perror(rc);
   cookie = 1;
   pthread_cond_signal(&cookie_cv);
-  pthread_mutex_unlock(&cookie_mutex);
+  rc = pthread_mutex_unlock(&cookie_mutex);
+  assert_perror(rc);
 
   return NULL;
 }
 
 void *switchlink_stop(void *args) {
-  pthread_mutex_lock(&rpc_stop_lock);
+  int rc;
+  rc = pthread_mutex_lock(&rpc_stop_lock);
+  assert_perror(rc);
   while (!rpc_stop_cookie) {
-      pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
+    pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
   }
-  pthread_mutex_unlock(&rpc_stop_lock);
-  int status = pthread_cancel(switchlink_thread);
-  if (status == 0) {
+  rc = pthread_mutex_unlock(&rpc_stop_lock);
+  assert_perror(rc);
+  rc = pthread_cancel(switchlink_thread);
+  if (rc == 0) {
     pthread_join(switchlink_thread, NULL);
   }
 
