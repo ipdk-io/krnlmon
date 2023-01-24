@@ -36,9 +36,6 @@
 
 static struct nl_sock *g_nlsk = NULL;
 static pthread_t switchlink_thread;
-static pthread_mutex_t cookie_mutex;
-static pthread_cond_t cookie_cv;
-static int cookie = 0;
 
 // Switchlink_main pthread variables
 extern pthread_cond_t rpc_start_cond;
@@ -332,9 +329,6 @@ void *switchlink_main(void *args) {
   krnlmon_assert_perror(rc);
 
   krnlmon_log_debug("switchlink main started");
-  pthread_mutex_init(&cookie_mutex, NULL);
-  rc = pthread_cond_init(&cookie_cv, NULL);
-  krnlmon_assert_perror(rc);
 
   switchlink_init_db();
   switchlink_init_api();
@@ -346,13 +340,6 @@ void *switchlink_main(void *args) {
     nl_process_event_loop();
     nl_cleanup_sock();
   }
-
-  rc = pthread_mutex_lock(&cookie_mutex);
-  krnlmon_assert_perror(rc);
-  cookie = 1;
-  pthread_cond_signal(&cookie_cv);
-  rc = pthread_mutex_unlock(&cookie_mutex);
-  krnlmon_assert_perror(rc);
 
   return NULL;
 }
