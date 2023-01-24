@@ -772,8 +772,8 @@ switch_status_t switch_ipv4_to_string(switch_ip4_t ip4,
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
   switch_ip4_t v4addr = htonl(ip4);
-  inet_ntop(AF_INET, &v4addr, tmp_buffer, SWITCH_API_BUFFER_SIZE);
-  *length = (switch_int32_t)strlen(tmp_buffer);
+  inet_ntop(AF_INET, &v4addr, tmp_buffer, sizeof(tmp_buffer));
+  *length = (switch_int32_t)strnlen(tmp_buffer, sizeof(tmp_buffer));
   SWITCH_MEMCPY(buffer, tmp_buffer, *length);
   return SWITCH_STATUS_SUCCESS;
 }
@@ -785,8 +785,8 @@ switch_status_t switch_ipv6_to_string(switch_ip6_t ip6,
   SWITCH_ASSERT(buffer != NULL);
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
-  inet_ntop(AF_INET6, &ip6, tmp_buffer, SWITCH_API_BUFFER_SIZE);
-  *length = (switch_int32_t)strlen(tmp_buffer);
+  inet_ntop(AF_INET6, &ip6, tmp_buffer, sizeof(tmp_buffer));
+  *length = (switch_int32_t)strnlen(tmp_buffer, sizeof(tmp_buffer));
   SWITCH_MEMCPY(buffer, tmp_buffer, *length);
   return SWITCH_STATUS_SUCCESS;
 }

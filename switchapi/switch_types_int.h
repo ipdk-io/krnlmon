@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright (c) 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,8 @@ typedef struct switch_list_ {
   switch_size_t num_entries;
 } switch_list_t;
 
-static inline char *switch_macaddress_to_string(const switch_mac_addr_t *mac) {
+static inline const char *switch_macaddress_to_string(
+    const switch_mac_addr_t *mac) {
   static char mac_str[18];
   snprintf(mac_str,
            sizeof(mac_str),
@@ -91,19 +92,21 @@ static inline char *switch_macaddress_to_string(const switch_mac_addr_t *mac) {
   return mac_str;
 }
 
-static inline char *switch_ipaddress_to_string(
+static inline const char *switch_ipaddress_to_string(
     const switch_ip_addr_t *ip_addr) {
   static char ipv4_str[INET_ADDRSTRLEN + 10];
   static char ipv6_str[INET6_ADDRSTRLEN + 10];
   int len = 0;
   if (ip_addr->type == SWITCH_API_IP_ADDR_V4) {
     uint32_t v4addr = htonl(ip_addr->ip.v4addr);
-    len = strlen(inet_ntop(AF_INET, &v4addr, ipv4_str, INET_ADDRSTRLEN));
+    len = strnlen(inet_ntop(AF_INET, &v4addr, ipv4_str, INET_ADDRSTRLEN),
+                  INET_ADDRSTRLEN);
     snprintf(ipv4_str + len, 10, "/%d", ip_addr->prefix_len);
     return ipv4_str;
   } else {
-    len = strlen(
-        inet_ntop(AF_INET6, &ip_addr->ip.v6addr, ipv6_str, INET6_ADDRSTRLEN));
+    len = strnlen(
+        inet_ntop(AF_INET6, &ip_addr->ip.v6addr, ipv6_str, INET6_ADDRSTRLEN),
+        INET6_ADDRSTRLEN);
     snprintf(ipv6_str + len, 10, "/%d", ip_addr->prefix_len);
     return ipv6_str;
   }
