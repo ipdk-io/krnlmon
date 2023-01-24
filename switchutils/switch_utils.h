@@ -23,5 +23,6 @@
 
 #define krnlmon_assert                  assert
 #define krnlmon_snprintf                snprintf
+#define krnlmon_assert_perror           assert_perror
 
 #endif /* __KRNLMON_UTILS_H__*/
