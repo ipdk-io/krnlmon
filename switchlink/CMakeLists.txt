@@ -22,6 +22,7 @@ add_library(switchlink_o OBJECT
    switchlink_link.c
    switchlink_link.h
    switchlink_main.c
+   switchlink_main.h
    switchlink_neigh.c
    switchlink_neigh.h
    switchlink_route.c

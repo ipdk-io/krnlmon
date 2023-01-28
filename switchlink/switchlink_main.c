@@ -18,9 +18,15 @@
 
 // Enable assert()
 #undef NDEBUG
+
+#ifndef _GNU_SOURCE
 // Enable assert_perror()
 #define _GNU_SOURCE
+#endif
+
 #include <assert.h>
+
+#include "switchlink_main.h"
 
 #include <stdint.h>
 #include <pthread.h>
@@ -36,16 +42,6 @@
 
 static struct nl_sock *g_nlsk = NULL;
 static pthread_t switchlink_thread;
-
-// Switchlink_main pthread variables
-extern pthread_cond_t rpc_start_cond;
-extern pthread_mutex_t rpc_start_lock;
-extern int rpc_start_cookie;
-
-// Switchlink stop pthread varaibles
-extern pthread_cond_t rpc_stop_cond;
-extern pthread_mutex_t rpc_stop_lock;
-extern int rpc_stop_cookie;
 
 enum {
   SWITCHLINK_MSG_LINK,
@@ -63,7 +59,7 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-// Currently we dont want to dump any existing kernel data when target is DPDK
+// Currently we don't want to dump any existing kernel data when target is DPDK
 #ifdef NL_SYNC_STATE
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
@@ -317,19 +313,16 @@ struct nl_sock *switchlink_get_nl_sock(void) {
   return g_nlsk;
 }
 
-void *switchlink_main(void *args) {
-  int rc;
-  rc = pthread_mutex_lock(&rpc_start_lock);
-  krnlmon_assert_perror(rc);
-  while (!rpc_start_cookie) {
-    rc = pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
-    krnlmon_assert_perror(rc);
-  }
-  rc = pthread_mutex_unlock(&rpc_start_lock);
-  krnlmon_assert_perror(rc);
-
+// start_routine if running in a thread
+void *switchlink_start(void *args) {
+  (void)args;
   krnlmon_log_debug("switchlink main started");
+  (void)switchlink_main();
+  return NULL;
+}
 
+// thread body
+int switchlink_main(void) {
   switchlink_init_db();
   switchlink_init_api();
   switchlink_init_link();
@@ -341,23 +334,15 @@ void *switchlink_main(void *args) {
     nl_cleanup_sock();
   }
 
-  return NULL;
+  return 0;
 }
 
-void *switchlink_stop(void *args) {
-  int rc;
-  rc = pthread_mutex_lock(&rpc_stop_lock);
-  krnlmon_assert_perror(rc);
-  while (!rpc_stop_cookie) {
-    rc = pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
-    krnlmon_assert_perror(rc);
-  }
-  rc = pthread_mutex_unlock(&rpc_stop_lock);
-  krnlmon_assert_perror(rc);
-  rc = pthread_cancel(switchlink_thread);
-  if (rc == 0) {
-    pthread_join(switchlink_thread, NULL);
+int switchlink_stop(void) {
+  // TODO: switchlink_thread is never initialized!
+  int status = pthread_cancel(switchlink_thread);
+  if (status == 0) {
+    return pthread_join(switchlink_thread, NULL);
   }
 
-  return NULL;
+  return status;
 }
