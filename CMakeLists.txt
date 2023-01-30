@@ -1,6 +1,6 @@
 # CMake build file for Kernel Monitor
 #
-# Copyright 2022 Intel Corporation
+# Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 #
 
@@ -29,14 +29,6 @@ add_library(krnlmon SHARED
 )
 
 target_link_libraries(krnlmon nl-route-3 nl-3)
-
-configure_file(libkrnlmon.sym.in
-               ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.sym @ONLY)
-
-set_target_properties(krnlmon PROPERTIES
-    LINK_OPTIONS -Wl,--version-script=libkrnlmon.sym
-    LINK_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.sym
-)
 
 # Version number for .pc file.
 set(VERSION 1.0)
