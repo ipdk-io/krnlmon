@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright (c) 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #define __SWITCH_CONFIG_INT_H__
 
 #include "switch_config.h"
+
 #define SWITCH_DEFAULT_VRF 1
 
 #define SWITCH_DEFAULT_VLAN 1
@@ -89,7 +90,8 @@ extern switch_config_info_t config_info;
 #define SWITCH_CONFIG_CPU_ETH_INTF() config_info.api_switch_config.cpu_interface
 
 #define SWITCH_CONFIG_CPU_ETH_INTF_LEN() \
-  strlen(config_info.api_switch_config.cpu_interface)
+  strnlen(config_info.api_switch_config.cpu_interface, \
+          sizeof(config_info.api_switch_config.cpu_interface))
 
 #define SWITCH_CONFIG_SMAC_PROGRAM() config_info.api_switch_config.program_smac
 #define SWITCH_CONFIG_ACL_OPTIMIZATION() \
