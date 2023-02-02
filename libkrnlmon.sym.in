@@ -1,4 +1,0 @@
-libkrnlmon_@LT_CURRENT@ {
-global:
-        *;
-};

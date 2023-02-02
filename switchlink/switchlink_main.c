@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,22 @@
  * limitations under the License.
  */
 
+// Enable assert()
+#undef NDEBUG
+
+#ifndef _GNU_SOURCE
+// Enable assert_perror()
+#define _GNU_SOURCE
+#endif
+
+#include <assert.h>
+
+#include "switchlink_main.h"
+
 #include <stdint.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <sys/select.h>
 #include <netlink/msg.h>
@@ -28,19 +42,6 @@
 
 static struct nl_sock *g_nlsk = NULL;
 static pthread_t switchlink_thread;
-static pthread_mutex_t cookie_mutex;
-static pthread_cond_t cookie_cv;
-static int cookie = 0;
-
-// Switchlink_main pthread variables
-extern pthread_cond_t rpc_start_cond;
-extern pthread_mutex_t rpc_start_lock;
-extern int rpc_start_cookie;
-
-// Switchlink stop pthread varaibles
-extern pthread_cond_t rpc_stop_cond;
-extern pthread_mutex_t rpc_stop_lock;
-extern int rpc_stop_cookie;
 
 enum {
   SWITCHLINK_MSG_LINK,
@@ -58,7 +59,7 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-// Currently we dont want to dump any existing kernel data when target is DPDK
+// Currently we don't want to dump any existing kernel data when target is DPDK
 #ifdef NL_SYNC_STATE
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
@@ -288,9 +289,18 @@ static void nl_process_event_loop(void) {
 
     ret = select(num_fds, &read_fds, NULL, NULL, NULL);
     if (ret == -1) {
-      perror("pselect");
+      char errbuf[64];
+
+      // errno is volatile. Make a local copy of its value.
+      int err = errno;
+
+      // This is not really an error condition. Ignore it.
+      if (err == EINTR)
+        continue;
+
+      krnlmon_log_critical("Error selecting event socket: %s",
+                            strerror_r(err, errbuf, sizeof(errbuf)));
       return;
-    } else if (ret == 0) {
     } else {
       if (FD_ISSET(nlsk_fd, &read_fds)) {
         nl_recvmsgs_default(g_nlsk);
@@ -303,22 +313,16 @@ struct nl_sock *switchlink_get_nl_sock(void) {
   return g_nlsk;
 }
 
-void *switchlink_main(void *args) {
-  pthread_mutex_lock(&rpc_start_lock);
-  while (!rpc_start_cookie) {
-      pthread_cond_wait(&rpc_start_cond, &rpc_start_lock);
-  }
-  pthread_mutex_unlock(&rpc_start_lock);
-
+// start_routine if running in a thread
+void *switchlink_start(void *args) {
+  (void)args;
   krnlmon_log_debug("switchlink main started");
-  pthread_mutex_init(&cookie_mutex, NULL);
-  int status = pthread_cond_init(&cookie_cv, NULL);
-   if (status) {
-      perror("pthread_cond_init failed");
-      return NULL;
-   }
+  (void)switchlink_main();
+  return NULL;
+}
 
-
+// thread body
+int switchlink_main(void) {
   switchlink_init_db();
   switchlink_init_api();
   switchlink_init_link();
@@ -330,24 +334,15 @@ void *switchlink_main(void *args) {
     nl_cleanup_sock();
   }
 
-  pthread_mutex_lock(&cookie_mutex);
-  cookie = 1;
-  pthread_cond_signal(&cookie_cv);
-  pthread_mutex_unlock(&cookie_mutex);
-
-  return NULL;
+  return 0;
 }
 
-void *switchlink_stop(void *args) {
-  pthread_mutex_lock(&rpc_stop_lock);
-  while (!rpc_stop_cookie) {
-      pthread_cond_wait(&rpc_stop_cond, &rpc_stop_lock);
-  }
-  pthread_mutex_unlock(&rpc_stop_lock);
+int switchlink_stop(void) {
+  // TODO: switchlink_thread is never initialized!
   int status = pthread_cancel(switchlink_thread);
   if (status == 0) {
-    pthread_join(switchlink_thread, NULL);
+    return pthread_join(switchlink_thread, NULL);
   }
 
-  return NULL;
+  return status;
 }

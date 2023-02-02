@@ -23,7 +23,7 @@
 
 #include "switchutils/switch_utils.h"
 
-#define switchlink_malloc(x, c) malloc(x *c)
+#define switchlink_malloc(x, c) malloc((x) * (c))
 #define switchlink_free(x) free(x)
 
 #define SWITCHLINK_LOG_ERR 1
@@ -48,10 +48,6 @@ extern switchlink_handle_t g_default_bridge_h;
 extern switchlink_handle_t g_cpu_rx_nhop_h;
 
 struct nl_sock *switchlink_get_nl_sock(void);
-
-/* P4-OVS: Define a flag for P4-OVS ?*/
-void *switchlink_stop(void *);
-void *switchlink_main(void *);
 
 typedef enum switchlink_entry_type {
   SWITCHLINK_FDB_NONE = 0,
