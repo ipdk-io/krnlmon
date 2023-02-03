@@ -77,6 +77,7 @@ static void *switchlink_db_get_handle_obj(switchlink_handle_t h) {
 
 switchlink_db_status_t switchlink_db_add_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
+  krnlmon_assert(intf_info != NULL);
   switchlink_db_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_intf_obj_t), 1);
   krnlmon_assert(obj != NULL);
@@ -105,6 +106,7 @@ switchlink_db_status_t switchlink_db_add_interface(
 
 switchlink_db_status_t switchlink_db_add_tuntap(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
+  krnlmon_assert(tunp_info != NULL);
   switchlink_db_tuntap_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tuntap_obj_t), 1);
   krnlmon_assert(obj != NULL);
@@ -140,10 +142,7 @@ switchlink_db_status_t switchlink_db_get_tuntap_info(
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  if (tunp_info) {
-    memcpy(
-        tunp_info, &(obj->tunp_info), sizeof(switchlink_db_tuntap_info_t));
-  }
+  memcpy(tunp_info, &(obj->tunp_info), sizeof(switchlink_db_tuntap_info_t));
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -168,10 +167,7 @@ switchlink_db_status_t switchlink_db_get_interface_info(
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  if (intf_info) {
-    memcpy(
-        intf_info, &(obj->intf_info), sizeof(switchlink_db_interface_info_t));
-  }
+  memcpy(intf_info, &(obj->intf_info), sizeof(switchlink_db_interface_info_t));
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -262,6 +258,7 @@ switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex) {
 
 switchlink_db_status_t switchlink_db_add_tunnel_interface(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tnl_intf_info) {
+  krnlmon_assert(tnl_intf_info != NULL);
   switchlink_db_tunnel_intf_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_tunnel_intf_obj_t), 1);
   krnlmon_assert(obj != NULL);
@@ -292,16 +289,13 @@ switchlink_db_status_t switchlink_db_add_tunnel_interface(
 
 switchlink_db_status_t switchlink_db_get_tunnel_interface_info(
     uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info) {
-  krnlmon_assert(tunnel_intf_info != NULL);
   switchlink_db_tunnel_intf_obj_t *obj;
   obj = tommy_trie_inplace_search(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  if (tunnel_intf_info) {
-    memcpy(tunnel_intf_info, &(obj->tnl_intf_info),
-           sizeof(switchlink_db_tunnel_interface_info_t));
-  }
+  memcpy(tunnel_intf_info, &(obj->tnl_intf_info),
+         sizeof(switchlink_db_tunnel_interface_info_t));
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -397,6 +391,7 @@ switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
                                              switchlink_handle_t intf_h) {
   switchlink_db_mac_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_mac_obj_t), 1);
+  krnlmon_assert(obj != NULL);
   memcpy(obj->addr, mac_addr, sizeof(switchlink_mac_addr_t));
   obj->bridge_h = bridge_h;
   obj->intf_h = intf_h;
@@ -485,8 +480,10 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
 
 switchlink_db_status_t switchlink_db_add_neighbor(
     switchlink_db_neigh_info_t *neigh_info) {
+  krnlmon_assert(neigh_info != NULL);
   switchlink_db_neigh_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_neigh_obj_t), 1);
+  krnlmon_assert(obj != NULL);
   memcpy(&(obj->neigh_info), neigh_info, sizeof(switchlink_db_neigh_info_t));
   tommy_list_insert_tail(&switchlink_db_neigh_obj_list, &obj->list_node, obj);
   return SWITCHLINK_DB_STATUS_SUCCESS;
@@ -517,10 +514,8 @@ switchlink_db_status_t switchlink_db_get_neighbor_info(
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (neigh_info->vrf_h == obj->neigh_info.vrf_h) &&
         (neigh_info->intf_h == obj->neigh_info.intf_h)) {
-      if (neigh_info) {
-        memcpy(
-            neigh_info, &(obj->neigh_info), sizeof(switchlink_db_neigh_info_t));
-      }
+      memcpy(
+          neigh_info, &(obj->neigh_info), sizeof(switchlink_db_neigh_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
@@ -574,6 +569,7 @@ switchlink_db_status_t switchlink_db_delete_neighbor(
 
 switchlink_db_status_t switchlink_db_add_nexthop(
     switchlink_db_nexthop_info_t *nexthop_info) {
+  krnlmon_assert(nexthop_info != NULL);
   switchlink_db_nexthop_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_nexthop_obj_t), 1);
   krnlmon_assert(obj != NULL);
@@ -730,6 +726,7 @@ switchlink_db_status_t switchlink_db_add_ecmp(
   krnlmon_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
   switchlink_db_ecmp_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_ecmp_obj_t), 1);
+  krnlmon_assert(obj != NULL);
   memcpy(&(obj->ecmp_info), ecmp_info, sizeof(switchlink_db_ecmp_info_t));
   obj->ref_count = 0;
   tommy_list_insert_tail(&switchlink_db_ecmp_obj_list, &obj->list_node, obj);
@@ -774,9 +771,7 @@ switchlink_db_status_t switchlink_db_get_ecmp_info(
           return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
         }
       }
-      if (ecmp_info) {
-        memcpy(ecmp_info, &(obj->ecmp_info), sizeof(switchlink_db_ecmp_info_t));
-      }
+      memcpy(ecmp_info, &(obj->ecmp_info), sizeof(switchlink_db_ecmp_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
@@ -804,9 +799,7 @@ switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
-  if (ecmp_info) {
-    memcpy(ecmp_info, &(obj->ecmp_info), sizeof(switchlink_db_ecmp_info_t));
-  }
+  memcpy(ecmp_info, &(obj->ecmp_info), sizeof(switchlink_db_ecmp_info_t));
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -903,6 +896,7 @@ switchlink_db_status_t switchlink_db_add_route(
   krnlmon_assert(route_info != NULL);
   switchlink_db_route_obj_t *obj =
       switchlink_malloc(sizeof(switchlink_db_route_obj_t), 1);
+  krnlmon_assert(obj != NULL);
   memcpy(&(obj->route_info), route_info, sizeof(switchlink_db_route_info_t));
   tommy_list_insert_tail(&switchlink_db_route_obj_list, &obj->list_node, obj);
   return SWITCHLINK_DB_STATUS_SUCCESS;

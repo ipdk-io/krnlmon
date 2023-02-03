@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ static switch_uint32_t MurmurHash(const void *key,
 #define r 24
 
   // Initialize the hash to a 'random' value
-  switch_uint32_t h = seed ^ (switch_uint32_t)length;
+  switch_uint32_t h = seed ^ length;
 
   // Mix 4 bytes at a time into the hash
   const unsigned char *data = (const unsigned char *)key;
@@ -60,7 +61,7 @@ static switch_uint32_t MurmurHash(const void *key,
       h ^= data[1] << 8;
     /* fall through */
     case 1:
-      h ^= data[0];
+      h ^= (switch_uint32_t)data[0];
       h *= m;
   };
 
@@ -771,8 +772,8 @@ switch_status_t switch_ipv4_to_string(switch_ip4_t ip4,
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
   switch_ip4_t v4addr = htonl(ip4);
-  inet_ntop(AF_INET, &v4addr, tmp_buffer, SWITCH_API_BUFFER_SIZE);
-  *length = (switch_int32_t)strlen(tmp_buffer);
+  inet_ntop(AF_INET, &v4addr, tmp_buffer, sizeof(tmp_buffer));
+  *length = (switch_int32_t)strnlen(tmp_buffer, sizeof(tmp_buffer));
   SWITCH_MEMCPY(buffer, tmp_buffer, *length);
   return SWITCH_STATUS_SUCCESS;
 }
@@ -784,8 +785,8 @@ switch_status_t switch_ipv6_to_string(switch_ip6_t ip6,
   SWITCH_ASSERT(buffer != NULL);
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
-  inet_ntop(AF_INET6, &ip6, tmp_buffer, SWITCH_API_BUFFER_SIZE);
-  *length = (switch_int32_t)strlen(tmp_buffer);
+  inet_ntop(AF_INET6, &ip6, tmp_buffer, sizeof(tmp_buffer));
+  *length = (switch_int32_t)strnlen(tmp_buffer, sizeof(tmp_buffer));
   SWITCH_MEMCPY(buffer, tmp_buffer, *length);
   return SWITCH_STATUS_SUCCESS;
 }

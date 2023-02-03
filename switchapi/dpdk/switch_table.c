@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright (c) 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ extern "C" {
 
 #define __FILE_ID__ SWITCH_TABLE
 
-static char *switch_table_id_to_string(switch_table_id_t table_id) {
+static const char *switch_table_id_to_string(switch_table_id_t table_id) {
   switch (table_id) {
     case SWITCH_TABLE_INGRESS_PORT_MAPPING:
       return "ingress port mapping";
@@ -279,12 +279,19 @@ static char *switch_table_id_to_string(switch_table_id_t table_id) {
   }
 }
 
+static void set_table_name(char *dest, size_t destsize, const char *src) {
+  size_t nchars = strnlen(src, destsize);
+  if (nchars >= destsize)
+    nchars = destsize - 1;
+  strncpy(dest, src, nchars);
+  dest[nchars] = 0;
+}
+
 switch_status_t switch_table_init(switch_device_t device,
                                   switch_size_t *table_sizes) {
   switch_table_t *table_info = NULL;
   switch_uint32_t index = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_char_t *table_str = NULL;
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
@@ -300,9 +307,9 @@ switch_status_t switch_table_init(switch_device_t device,
     table_info[index].num_entries = 0;
     if (table_sizes[index]) {
       table_info[index].valid = TRUE;
-      table_str = switch_table_id_to_string(index);
-      SWITCH_MEMCPY(
-          &table_info[index].table_name, table_str, strlen(table_str));
+      set_table_name(table_info[index].table_name,
+                     sizeof(table_info[0].table_name),
+                     switch_table_id_to_string(index));
     }
   }
 

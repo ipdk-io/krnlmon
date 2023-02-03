@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright (c) 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ sai_ipv6_to_string(_In_ sai_ip6_t ip6,
                    _Out_ int *entry_length)
 {
   inet_ntop(AF_INET6, &ip6, entry_string, max_length);
-  *entry_length = (int)strlen(entry_string);
+  *entry_length = (int)strnlen(entry_string, max_length);
   return SAI_STATUS_SUCCESS;
 }
 
