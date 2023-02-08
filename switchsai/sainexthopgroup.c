@@ -152,7 +152,7 @@ static sai_status_t sai_create_next_hop_group_member(
     }
   }
 
-#ifdef DPDK_TARGET
+#if defined(DPDK_TARGET)
   /* If NHOP group is not created, map this member to default group */
   if (!nhop_group_id) {
     switch_status = switch_api_get_default_nhop_group(switch_id,

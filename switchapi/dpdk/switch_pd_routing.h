@@ -21,8 +21,8 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_l3.h"
-#include "switchapi/switch_rmac_int.h"
 #include "switchapi/switch_nhop.h"
+#include "switchapi/switch_rmac_int.h"
 
 #ifdef  __cplusplus
 extern "C" {

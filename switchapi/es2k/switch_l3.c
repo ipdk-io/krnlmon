@@ -16,6 +16,7 @@
  */
 
 #include "switchapi/switch_l3.h"
+
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
 #include "switch_pd_routing.h"
@@ -313,8 +314,6 @@ switch_status_t switch_api_l3_route_add(
   switch_route_entry_t route_entry;
   switch_handle_t route_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t vrf_handle = SWITCH_API_INVALID_HANDLE;
-  switch_handle_t nhop_default_group_handle = SWITCH_API_INVALID_HANDLE;
-  switch_nhop_member_t *nhop_member = NULL;
 
   if (!api_route_entry) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
@@ -379,7 +378,6 @@ switch_status_t switch_api_l3_route_add(
 
   if (switch_handle_type_get(api_route_entry->nhop_handle) ==
                        SWITCH_HANDLE_TYPE_NHOP) {
-    api_route_entry->nhop_member_handle = nhop_member->member_handle;
     status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
                                         SWITCH_ACTION_NHOP);
     if (status != SWITCH_STATUS_SUCCESS) {

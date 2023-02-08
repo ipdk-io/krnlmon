@@ -18,6 +18,8 @@
 #ifndef __SWITCH_PD_TUNNEL_H__
 #define __SWITCH_PD_TUNNEL_H__
 
+#include "switchapi/switch_tunnel.h"
+
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 

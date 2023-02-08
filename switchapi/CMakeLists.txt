@@ -1,44 +1,44 @@
 # CMake build file for krnlmon/switchapi
 #
-# Copyright 2022 Intel Corporation
+# Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 cmake_minimum_required(VERSION 3.5)
 
 if(ES2K_TARGET)
-add_subdirectory(es2k)
+  add_subdirectory(es2k)
 elseif(DPDK_TARGET)
-add_subdirectory(dpdk)
+  add_subdirectory(dpdk)
 endif()
 
 add_library(switchapi_o OBJECT
-  switch_vrf.h
-  switch_tunnel.h
-  switch_status.h
-  switch_rmac_int.h
-  switch_rmac.h
-  switch_rif_int.h
-  switch_rif.h
-  switch_port_int.h
-  switch_neighbor_int.h
-  switch_neighbor.h
-  switch_l3_int.h
-  switch_interface.h
-  switch_id.h
-  switch_fdb.h
-  switch_config_int.h
-  switch_config.h
   switch_base_types.h
-  switch_table.h
-  switch_nhop_int.h
-  switch_nhop.h
-  switch_l3.h
-  switch_handle_int.h
-  switch_handle.h
-  switch_device_int.h
+  switch_config.h
+  switch_config_int.h
   switch_device.h
-  switch_types_int.h
+  switch_device_int.h
+  switch_fdb.h
+  switch_handle.h
+  switch_handle_int.h
+  switch_id.h
+  switch_interface.h
   switch_internal.h
+  switch_l3.h
+  switch_l3_int.h
+  switch_neighbor.h
+  switch_neighbor_int.h
+  switch_nhop.h
+  switch_nhop_int.h
+  switch_port_int.h
+  switch_rif.h
+  switch_rif_int.h
+  switch_rmac.h
+  switch_rmac_int.h
+  switch_status.h
+  switch_table.h
+  switch_tunnel.h
+  switch_types_int.h
+  switch_vrf.h
   $<TARGET_OBJECTS:switchapi_target_o>
 )
 

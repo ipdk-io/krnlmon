@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_neighbor_int.h"
 #include "switchapi/switch_neighbor.h"
+#include "switchapi/switch_neighbor_int.h"
+
 #include "switchapi/switch_fdb.h"
+#include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rmac_int.h"
-#include "switchapi/switch_internal.h"
+
 #include "switch_pd_utils.h"
 #include "switch_pd_fdb.h"
 

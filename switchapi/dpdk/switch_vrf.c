@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_status.h"
 #include "switchapi/switch_vrf.h"
+
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
+#include "switchapi/switch_status.h"
 
 switch_status_t switch_vrf_init(switch_device_t device) {
   switch_vrf_context_t *vrf_ctx = NULL;

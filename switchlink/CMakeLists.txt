@@ -18,6 +18,7 @@ add_library(switchlink_o OBJECT
    switchlink_db.h
    switchlink_db_int.h
    switchlink.h
+   switchlink_handle.h
    switchlink_int.h
    switchlink_link.c
    switchlink_link.h
@@ -27,7 +28,6 @@ add_library(switchlink_o OBJECT
    switchlink_neigh.h
    switchlink_route.c
    switchlink_route.h
-   switchlink_handle.h
    switchlink_utils.c
    switchlink_utils.h
    $<TARGET_OBJECTS:switchlink_sai_o>

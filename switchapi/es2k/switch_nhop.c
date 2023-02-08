@@ -17,11 +17,12 @@
 
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_nhop_int.h"
+
 #include "switchapi/switch_handle_int.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_neighbor_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rif.h"
-#include "switchapi/switch_neighbor_int.h"
 #include "switch_pd_routing.h"
 
 //add corresponding delete functions
@@ -321,8 +322,6 @@ switch_status_t switch_api_create_nhop_group(const switch_device_t device,
 
   nhop_group_info->nhop_group_handle = handle;
   nhop_group_info->id_type = SWITCH_NHOP_ID_TYPE_ECMP;
-  nhop_group_info->first_insert_complete = false;
-  nhop_group_info->pd_nhop_group_deleted = false;
 
   SWITCH_LIST_INIT(&(nhop_group_info->members));
 

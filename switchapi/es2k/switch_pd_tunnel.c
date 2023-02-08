@@ -16,10 +16,11 @@
  */
 
 #include "switchapi/switch_tunnel.h"
-#include "switchapi/switch_internal.h"
-#include "switch_pd_utils.h"
-#include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_tunnel.h"
+
+#include "switchapi/switch_internal.h"
+#include "switch_pd_p4_name_mapping.h"
+#include "switch_pd_utils.h"
 
 switch_status_t switch_pd_tunnel_entry(
     switch_device_t device,

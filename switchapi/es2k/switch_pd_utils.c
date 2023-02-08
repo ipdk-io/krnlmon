@@ -17,14 +17,16 @@
 
 #include <net/if.h>
 
+#include "switch_pd_utils.h"
+
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
+#include "switchapi/switch_rmac_int.h"
+#include "switch_pd_p4_name_mapping.h"
+
 #include "bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "bf_rt/bf_rt_common.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_rmac_int.h"
-#include "switch_pd_utils.h"
-#include "switch_pd_p4_name_mapping.h"
 
 tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
                                             uint32_t netdev_port_id,
@@ -47,6 +49,7 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
     const tdi_table_hdl *table_hdl = NULL;
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint32_t network_byte_order = 0;
+    uint64_t get_pd_phy_port = 0;
 
     krnlmon_log_debug("Entered: %s", __func__);
 
@@ -171,14 +174,16 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
                  status);
         goto dealloc_resources;
     }
-    status = tdi_data_field_get_value_ptr(data_hdl, data_field_id,
-                                          sizeof(*physical_port_id),
-                                          physical_port_id);
+//    status = tdi_data_field_get_value_ptr(data_hdl, data_field_id,
+//                                          sizeof(*physical_port_id),
+//                                          physical_port_id);
+    status = tdi_data_field_get_value(data_hdl, data_field_id,
+                                      &get_pd_phy_port);
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Failed to get value for the handle: %d", status);
         goto dealloc_resources;
     }
-
+    *physical_port_id = (uint8_t) (get_pd_phy_port & 0xff);
 dealloc_resources:
     status = tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl,
                                                 key_hdl, data_hdl,

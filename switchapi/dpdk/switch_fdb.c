@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_status.h"
-#include "switchapi/switch_fdb.h"
-#include "switchapi/switch_rif_int.h"
-#include "switch_pd_utils.h"
 #include "switch_pd_fdb.h"
+
+#include "switch_pd_utils.h"
+
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_fdb.h"
+#include "switchapi/switch_internal.h"
+#include "switchapi/switch_rif_int.h"
+#include "switchapi/switch_status.h"
 
 switch_status_t switch_l2_hash_key_init(void *args,
                                           switch_uint8_t *key,

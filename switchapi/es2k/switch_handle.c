@@ -16,9 +16,10 @@
  */
 
 #include "switchapi/switch_handle.h"
-#include "switchapi/switch_status.h"
-#include "switchapi/switch_nhop_int.h"
+
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_nhop_int.h"
+#include "switchapi/switch_status.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -20,6 +20,7 @@
 
 #include "switch_base_types.h"
 #include "switch_handle.h"
+#include "switch_table.h"
 
 #ifdef __cplusplus
 extern "C" {

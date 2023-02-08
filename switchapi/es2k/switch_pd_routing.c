@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_base_types.h"
 #include "switch_pd_routing.h"
+
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switch_pd_utils.h"
 #include "switch_pd_p4_name_mapping.h"
+#include "switch_pd_utils.h"
+
+#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 
 switch_status_t switch_routing_table_entry (
         switch_device_t device,
@@ -1071,10 +1073,13 @@ switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
                 goto dealloc_resources;
             }
 
+            // For MEV we need to program nhop_id action in host byte order
+            network_byte_order = ntohs(api_route_entry->nhop_handle &
+                                       ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                        SWITCH_HANDLE_TYPE_SHIFT));
+
             status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                              api_route_entry->nhop_handle &
-                                               ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                               SWITCH_HANDLE_TYPE_SHIFT));
+                                              network_byte_order);
             if (status != TDI_SUCCESS) {
                 krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
                          data_field_id, status);

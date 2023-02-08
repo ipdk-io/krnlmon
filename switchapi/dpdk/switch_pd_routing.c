@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_base_types.h"
 #include "switch_pd_routing.h"
+
+#include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
+
 #include "switch_pd_utils.h"
 #include "switch_pd_p4_name_mapping.h"
+
+#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 
 switch_status_t switch_routing_table_entry (
         switch_device_t device,

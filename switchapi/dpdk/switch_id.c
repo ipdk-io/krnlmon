@@ -16,6 +16,7 @@
  */
 
 #include "switchapi/switch_id.h"
+
 #include "switchapi/switch_internal.h"
 
 #ifdef __cplusplus

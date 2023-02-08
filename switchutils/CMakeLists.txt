@@ -6,8 +6,8 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(switchutils_o OBJECT
-    switch_utils.h
     switch_log.h
+    switch_utils.h
 )
 
 target_include_directories(switchutils_o PRIVATE

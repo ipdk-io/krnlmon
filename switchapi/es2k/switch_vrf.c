@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
 #include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
 #include "switchapi/switch_status.h"
 #include "switchapi/switch_vrf.h"
 

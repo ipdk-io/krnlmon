@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
 #include "switchapi/switch_config_int.h"
+#include "switchapi/switch_internal.h"
 
 #ifdef __cplusplus
 extern "C" {

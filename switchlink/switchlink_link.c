@@ -45,9 +45,9 @@ switchlink_mac_addr_t null_mac = {0, 0, 0, 0, 0, 0};
 static switchlink_link_type_t get_link_type(char *info_kind) {
   switchlink_link_type_t link_type = SWITCHLINK_LINK_TYPE_ETH;
 
-#ifdef ES2K_TARGET
+#if defined(ES2K_TARGET)
   // ES2K creates netdev from idpf driver/sriov's.
-  // These Netdev's wont have any Link type
+  // These Netdevs won't have any Link type
   link_type = SWITCHLINK_LINK_TYPE_RIF;
 #endif
 
@@ -200,14 +200,13 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
     switch (link_type) {
       case SWITCHLINK_LINK_TYPE_BRIDGE:
       case SWITCHLINK_LINK_TYPE_BOND:
-      case SWITCHLINK_LINK_TYPE_NONE:
       case SWITCHLINK_LINK_TYPE_ETH:
         break;
 
 #if !defined(OVSP4RT_SUPPORT)
       case SWITCHLINK_LINK_TYPE_VXLAN: {
           snprintf(tnl_intf_info.ifname,
-                   SWITCHLINK_INTERFACE_NAME_LEN_MAX,
+                   sizeof(tnl_intf_info.ifname),
                    "%s",
                    intf_info.ifname);
           tnl_intf_info.dst_ip = remote_ip_addr;
@@ -224,6 +223,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
 #endif
 
       case SWITCHLINK_LINK_TYPE_TUN:
+      case SWITCHLINK_LINK_TYPE_NONE:
       case SWITCHLINK_LINK_TYPE_RIF:
           if (!memcmp(intf_info.mac_addr, null_mac, sizeof(null_mac))) {
               krnlmon_log_info("Ignoring interfaces: %s with NULL MAC address",
@@ -248,7 +248,7 @@ void process_link_msg(struct nlmsghdr *nlmsg, int type) {
 #if !defined(OVSP4RT_SUPPORT)
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
       switchlink_delete_tunnel_interface(ifmsg->ifi_index);
-  	  return;
+      return;
     }
 #endif
 

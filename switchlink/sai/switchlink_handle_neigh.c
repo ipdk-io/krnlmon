@@ -344,7 +344,7 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
     switchlink_db_update_nexthop_using_by(&nexthop_info);
   }
 
-#ifdef DPDK_TARGET
+#if defined(DPDK_TARGET)
   // add a host route
   switchlink_create_route(g_default_vrf_h, ipaddr, ipaddr, 0, intf_h);
 #endif
@@ -403,7 +403,7 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
       }
   }
 
-#ifdef DPDK_TARGET
+#if defined(DPDK_TARGET)
   // delete the host route
   switchlink_delete_route(g_default_vrf_h, ipaddr);
 #endif

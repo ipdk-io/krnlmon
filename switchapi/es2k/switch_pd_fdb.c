@@ -15,15 +15,17 @@
  * limitations under the License.
  */
 
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switchapi/switch_internal.h"
 #include "switchapi/switch_fdb.h"
-#include "switchapi/switch_rif_int.h"
+#include "switch_pd_fdb.h"
+
 #include "switchapi/switch_base_types.h"
+#include "switchapi/switch_internal.h"
+#include "switchapi/switch_rif_int.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_utils.h"
-#include "switch_pd_fdb.h"
+
+#include "bf_types.h"
+#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 
 switch_status_t switch_pd_l2_tx_forward_table_entry(
     switch_device_t device,

@@ -19,6 +19,7 @@
 #define __SWITCH_CONFIG_INT_H__
 
 #include "switch_config.h"
+#include "switch_device_int.h"
 
 #define SWITCH_DEFAULT_VRF 1
 

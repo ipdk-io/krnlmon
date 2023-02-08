@@ -18,12 +18,10 @@
 #include "switch_types_int.h"
 #include "switch_nhop.h"
 
-#ifdef DPDK_TARGET
-#include "dpdk/switch_pd_routing.h"
-#endif
-
-#ifdef ES2K_TARGET
-#include "es2k/switch_pd_routing.h"
+#if defined(DPDK_TARGET)
+  #include "dpdk/switch_pd_routing.h"
+#elif defined(ES2K_TARGET)
+  #include "es2k/switch_pd_routing.h"
 #endif
 
 #ifndef __SWITCH_NHOP_INT_H__

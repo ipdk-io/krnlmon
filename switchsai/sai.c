@@ -437,34 +437,13 @@ sai_status_t sai_initialize(void) {
   // Init Switch API
   switch_api_init(0);
 
-//  sai_switch_initialize(&sai_api_service);
-//  sai_port_initialize(&sai_api_service);
-//  sai_bridge_initialize(&sai_api_service);
   sai_fdb_initialize(&sai_api_service);
-//  sai_vlan_initialize(&sai_api_service);
-//  sai_lag_initialize(&sai_api_service);
   sai_router_interface_initialize(&sai_api_service);
   sai_next_hop_initialize(&sai_api_service);
   sai_next_hop_group_initialize(&sai_api_service);
   sai_route_initialize(&sai_api_service);
   sai_virtual_router_initialize(&sai_api_service);
-//  sai_stp_initialize(&sai_api_service);
   sai_neighbor_initialize(&sai_api_service);
-//  sai_hostif_initialize(&sai_api_service);
-//  sai_acl_initialize(&sai_api_service);
-//  sai_mirror_initialize(&sai_api_service);
-//  sai_policer_initialize(&sai_api_service);
-//  sai_buffer_initialize(&sai_api_service);
-//  sai_scheduler_initialize(&sai_api_service);
-//  sai_scheduler_group_initialize(&sai_api_service);
-//  sai_qos_map_initialize(&sai_api_service);
-//  sai_ipmc_initialize(&sai_api_service);
-//  sai_l2mc_initialize(&sai_api_service);
-//  sai_hash_initialize(&sai_api_service);
-//  sai_udf_initialize(&sai_api_service);
-//  sai_queue_initialize(&sai_api_service);
-//  sai_dtel_initialize(&sai_api_service);
-//  sai_wred_initialize(&sai_api_service);
   sai_tunnel_initialize(&sai_api_service);
 
   return SAI_STATUS_SUCCESS;
