@@ -104,7 +104,7 @@ typedef struct switch_api_l2_info_s {
 
     switch_l2_info_type_t type;
 
-    switch_port_t port_id;
+    uint8_t port_id;
 
     switch_l2_learn_from_t learn_from;
 
@@ -150,22 +150,6 @@ switch_status_t switch_api_l2_handle_get(
     const switch_device_t device,
     const switch_mac_addr_t *l2_key,
     switch_handle_t *l2_handle);
-
-switch_status_t switch_pd_l2_tx_forward_table_entry(
-    switch_device_t device,
-    const switch_api_l2_info_t *api_l2_tx_info,
-    const switch_api_tunnel_info_t *api_tunnel_info_t,
-    bool entry_add);
-
-switch_status_t switch_pd_l2_rx_forward_table_entry(
-    switch_device_t device,
-    const switch_api_l2_info_t *api_l2_rx_info,
-    bool entry_add);
-
-switch_status_t switch_pd_l2_rx_forward_with_tunnel_table_entry(
-    switch_device_t device,
-    const switch_api_l2_info_t *api_l2_rx_info,
-    bool entry_add);
 
 #ifdef __cplusplus
 }

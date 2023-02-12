@@ -60,7 +60,6 @@ enum {
 } switchlink_msg_t;
 
 // Currently we don't want to dump any existing kernel data when target is DPDK
-#ifdef NL_SYNC_STATE
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
@@ -137,7 +136,6 @@ static void nl_sync_state(void) {
     msg_idx++;
   }
 }
-#endif
 
 /*
  * Routine Description:
@@ -272,7 +270,7 @@ static void switchlink_nl_sock_intf_init(void) {
   }
 
   // start building state from the kernel
-  // P4-OVS comment nl_sync_state();
+  nl_sync_state();
 }
 
 static void nl_process_event_loop(void) {

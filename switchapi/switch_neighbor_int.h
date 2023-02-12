@@ -24,7 +24,12 @@ extern "C" {
 
 #include "switch_types_int.h"
 #include "switch_rif.h"
-#include "switch_pd_routing.h"
+
+#if defined(DPDK_TARGET)
+  #include "dpdk/switch_pd_routing.h"
+#elif defined(ES2K_TARGET)
+  #include "es2k/switch_pd_routing.h"
+#endif
 
 #define switch_neighbor_handle_create(_device) \
   switch_handle_create(                        \

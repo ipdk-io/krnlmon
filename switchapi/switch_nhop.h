@@ -107,24 +107,6 @@ typedef struct switch_api_nhop_info_s {
 
 } switch_api_nhop_info_t;
 
-/**
- * create pd_nexthop structure to hold
- * the data to be sent to 
- * the backend to update the table */
-typedef struct switch_pd_nexthhop_info_s
-{
-  switch_handle_t neighbor_handle;
-
-  switch_handle_t nexthop_handle;
-
-  switch_handle_t rif_handle;
-
-  switch_mac_addr_t dst_mac_addr;
-
-  switch_port_t port_id;
-
-} switch_pd_nexthop_info_t;
-
 /** nhop_group info struct */
 typedef struct switch_nhop_group_info_s
 {

@@ -95,10 +95,6 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable);
 
 char *switch_error_to_string(switch_status_t status);
 
-//switch_status_t switch_pd_status_to_status(bf_status_t pd_status);
-
-switch_status_t switch_pd_tdi_status_to_status(tdi_status_t pd_status);
-
 //char *switch_table_id_to_string(switch_table_id_t table_id);
 
 switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id);

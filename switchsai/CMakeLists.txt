@@ -7,17 +7,16 @@ cmake_minimum_required(VERSION 3.5)
 
 add_library(switchsai_o OBJECT
    sai.c
-   saiinternal.h
-   saiport.c
    saifdb.c
+   saiinternal.h
    saineighbor.c
    sainexthop.c
+   sainexthopgroup.c
    sairoute.c
    sairouterinterface.c
    saitunnel.c
    saiutils.c
    saivirtualrouter.c
-   sainexthopgroup.c
 )
 
 target_include_directories(switchsai_o PRIVATE
