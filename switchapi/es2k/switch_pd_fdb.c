@@ -51,7 +51,6 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
     const tdi_table_hdl *table_hdl = NULL;
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint32_t network_byte_order = 0;
-    uint32_t host_byte_order_phy_port_id = 0;
 
     krnlmon_log_debug("%s", __func__);
 
@@ -303,11 +302,8 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
             goto dealloc_resources;
         }
 
-        // For ES2K we need to program phyport id action in host byte order
-        host_byte_order_phy_port_id = ntohl(api_l2_tx_info->port_id);
-
         status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                          host_byte_order_phy_port_id);
+                                          api_l2_tx_info->port_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);

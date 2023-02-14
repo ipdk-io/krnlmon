@@ -114,7 +114,6 @@ switch_status_t switch_pd_nexthop_table_entry(
     tdi_table_data_hdl *data_hdl = NULL;
     const tdi_table_hdl *table_hdl = NULL;
     const tdi_table_info_hdl *table_info_hdl = NULL;
-    uint32_t host_byte_order_phy_port_id = 0;
     uint16_t network_byte_order_rif_id = 0;
 
     krnlmon_log_debug("%s", __func__);
@@ -268,11 +267,8 @@ switch_status_t switch_pd_nexthop_table_entry(
             goto dealloc_resources;
         }
 
-        // For ES2K we need to program phyport id action in host byte order
-        host_byte_order_phy_port_id = ntohl(api_nexthop_pd_info->port_id);
-
         status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                          host_byte_order_phy_port_id);
+                                          api_nexthop_pd_info->port_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
                      data_field_id, status);
@@ -1172,6 +1168,7 @@ switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
     const tdi_table_info_hdl *table_info_hdl = NULL;
 
     uint16_t network_byte_order_ecmp_id = -1;
+    uint32_t network_byte_order = -1;
     static uint32_t total_ecmp_list = 0;
     switch_list_t nhop_members;
     uint32_t ecmp_list = 0;
@@ -1328,10 +1325,13 @@ switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
             }
 
             if (entry_add) {
+                // For MEV we need to program nhop_id action in host byte order
+                network_byte_order = ntohs(nhop_handle &
+                                           ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                           SWITCH_HANDLE_TYPE_SHIFT));
+
                 status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                                  nhop_handle &
-                                                  ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                                  SWITCH_HANDLE_TYPE_SHIFT));
+                                                  network_byte_order);
                 if (status != TDI_SUCCESS) {
                     krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
                              data_field_id, status);
