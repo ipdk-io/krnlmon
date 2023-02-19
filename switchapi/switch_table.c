@@ -279,14 +279,6 @@ static const char *switch_table_id_to_string(switch_table_id_t table_id) {
   }
 }
 
-static void set_table_name(char *dest, size_t destsize, const char *src) {
-  size_t nchars = strnlen(src, destsize);
-  if (nchars >= destsize)
-    nchars = destsize - 1;
-  strncpy(dest, src, nchars);
-  dest[nchars] = 0;
-}
-
 switch_status_t switch_table_init(switch_device_t device,
                                   switch_size_t *table_sizes) {
   switch_table_t *table_info = NULL;
@@ -307,9 +299,12 @@ switch_status_t switch_table_init(switch_device_t device,
     table_info[index].num_entries = 0;
     if (table_sizes[index]) {
       table_info[index].valid = TRUE;
-      set_table_name(table_info[index].table_name,
-                     sizeof(table_info[0].table_name),
-                     switch_table_id_to_string(index));
+      strncpy(
+        table_info[index].table_name,
+        switch_table_id_to_string(index),
+        sizeof(table_info[0].table_name));
+      // ensures that table_name is null terminated
+      table_info[index].table_name[sizeof(table_info[index].table_name) - 1] = 0;
     }
   }
 
