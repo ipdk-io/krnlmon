@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,15 +31,15 @@ static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
   uint32_t index = 0;
   switch_mac_addr_t mac;
   const sai_attribute_t *attribute;
-  sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t sai_status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
 
   switch_status = switch_api_device_default_rmac_handle_get(switch_id, rmac_h);
-  status = sai_switch_status_to_sai_status(switch_status);
-  if (status != SAI_STATUS_SUCCESS) {
+  sai_status = sai_switch_status_to_sai_status(switch_status);
+  if (sai_status != SAI_STATUS_SUCCESS) {
     krnlmon_log_error("Failed to get default RMAC handle, error: %s",
-                  sai_status_to_string(status));
-    return status;
+                  sai_status_to_string(sai_status));
+    return sai_status;
   }
 
   for (index = 0; index < attr_count; index++) {
@@ -57,13 +57,14 @@ static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
                      mac.mac_addr[3], mac.mac_addr[4], mac.mac_addr[5]);
           switch_status = switch_api_router_mac_add(switch_id, *rmac_h, &mac);
         }
+        sai_status = sai_switch_status_to_sai_status(switch_status);
         break;
 
       default:
         break;
     }
   }
-  return status;
+  return sai_status;
 }
 
 static sai_status_t sai_delete_rmac_internal(switch_handle_t rif_handle,
