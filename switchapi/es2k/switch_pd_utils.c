@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -261,22 +261,28 @@ tdi_status_t tdi_switch_pd_deallocate_resources(tdi_flags_hdl *flags_hdl,
                                                 tdi_table_data_hdl *data_hdl,
                                                 tdi_session_hdl *session,
                                                 bool entry_type) {
-    tdi_status_t status = TDI_SUCCESS;
+    tdi_status_t retval = TDI_SUCCESS;
+    tdi_status_t status;
 
     status = tdi_deallocate_flag(flags_hdl);
+    if (!retval) retval = status;
 
     status = tdi_deallocate_target(target_hdl);
+    if (!retval) retval = status;
 
     if (entry_type) {
         // Data handle is created only when entry is added to backend
         status = tdi_deallocate_table_data(data_hdl);
+        if (!retval) retval = status;
     }
 
     status = tdi_deallocate_table_key(key_hdl);
+    if (!retval) retval = status;
 
     status = tdi_deallocate_session(session);
+    if (!retval) retval = status;
 
-    return status;
+    return retval;
 }
 
 tdi_status_t tdi_deallocate_flag(tdi_flags_hdl *flags_hdl) {

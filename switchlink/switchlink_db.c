@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -959,10 +959,8 @@ switchlink_db_status_t switchlink_db_get_route_info(
         (memcmp(&(obj->route_info.ip_addr),
                 &(route_info->ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0)) {
-      if (route_info) {
-        memcpy(
-            route_info, &(obj->route_info), sizeof(switchlink_db_route_info_t));
-      }
+      memcpy(
+          route_info, &(obj->route_info), sizeof(switchlink_db_route_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
