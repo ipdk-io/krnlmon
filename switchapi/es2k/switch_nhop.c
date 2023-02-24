@@ -884,15 +884,6 @@ switch_status_t switch_api_nhop_create(
 
   SWITCH_ASSERT(api_nhop_info != NULL);
   SWITCH_ASSERT(nhop_handle != NULL);
-  if (!api_nhop_info || !nhop_handle) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error(
-        "nhop create Failed on device %d: "
-        "parameters invalid:(%s)\n",
-        device,
-        switch_error_to_string(status));
-    return status;
-  }
 
   *nhop_handle = SWITCH_API_INVALID_HANDLE;
 

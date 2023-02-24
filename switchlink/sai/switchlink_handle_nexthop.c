@@ -84,9 +84,11 @@ int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
   attr_list[0].value.oid = nexthop_info->nhop_h;
   status = sai_nhop_group_api->create_next_hop_group_member(
            &(nexthop_info->nhop_member_h), 0, 1, attr_list);
-
+  if (status != SAI_STATUS_SUCCESS) {
+    return -1;
+  }
 #endif
-  return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
+  return status;
 }
 
 /*

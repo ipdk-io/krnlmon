@@ -161,12 +161,6 @@ switch_status_t SWITCH_LIST_INIT(switch_list_t *list) {
 
   SWITCH_ASSERT(list != NULL);
 
-  if (!list) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("list insert failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_list_init(&list->list);
   list->num_entries = 0;
   return SWITCH_STATUS_SUCCESS;
@@ -178,12 +172,6 @@ switch_status_t SWITCH_LIST_SORT(switch_list_t *list,
 
   SWITCH_ASSERT(list != NULL);
 
-  if (!list) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("list insert failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_list_sort(&list->list, compare_func);
   return SWITCH_STATUS_SUCCESS;
 }
@@ -194,23 +182,12 @@ bool SWITCH_LIST_EMPTY(switch_list_t *list) {
 
   SWITCH_ASSERT(list != NULL);
 
-  if (!list) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("list empty get failed, error: %s\n",
-             switch_error_to_string(status));
-    return FALSE;
-  }
-
   is_empty = tommy_list_empty(&list->list);
   return is_empty;
 }
 
 switch_size_t SWITCH_LIST_COUNT(switch_list_t *list) {
   SWITCH_ASSERT(list != NULL);
-
-  if (!list) {
-    return 0;
-  }
 
   return list->num_entries;
 }
@@ -224,12 +201,6 @@ switch_status_t SWITCH_LIST_INSERT(switch_list_t *list,
   SWITCH_ASSERT(node != NULL);
   SWITCH_ASSERT(data != NULL);
 
-  if (!list || !node || !data) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("list insert failed, error: %s\n",
-             switch_error_to_string(status));
-    return status;
-  }
   tommy_list_insert_head(&list->list, node, data);
   list->num_entries++;
   return SWITCH_STATUS_SUCCESS;
@@ -241,12 +212,6 @@ switch_status_t SWITCH_LIST_DELETE(switch_list_t *list, switch_node_t *node) {
   SWITCH_ASSERT(list != NULL);
   SWITCH_ASSERT(node != NULL);
 
-  if (!list || !node) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("list delete failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_list_remove_existing(&list->list, node);
   list->num_entries--;
   return SWITCH_STATUS_SUCCESS;
@@ -258,12 +223,6 @@ switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(hashtable->size != 0);
 
-  if (!hashtable || hashtable->size == 0) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable init failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_hashtable_init(&hashtable->table, hashtable->size);
   hashtable->num_entries = 0;
   return SWITCH_STATUS_SUCCESS;
@@ -271,10 +230,6 @@ switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
 
 switch_size_t SWITCH_HASHTABLE_COUNT(switch_hashtable_t *hashtable) {
   SWITCH_ASSERT(hashtable != NULL);
-
-  if (!hashtable) {
-    return 0;
-  }
 
   return hashtable->num_entries;
 }
@@ -292,13 +247,6 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
   SWITCH_ASSERT(node != NULL);
   SWITCH_ASSERT(key != NULL);
   SWITCH_ASSERT(data != NULL);
-
-  if (!hashtable || !node || !key || !data) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable insert failed, error: %s\n",
-             switch_error_to_string(status));
-    return status;
-  }
 
   SWITCH_MEMSET(hash_key, 0x0, SWITCH_API_BUFFER_SIZE);
 
@@ -326,13 +274,6 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(key != NULL);
   SWITCH_ASSERT(data != NULL);
-
-  if (!hashtable || !key || !data) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable delete failed, error: %s\n",
-             switch_error_to_string(status));
-    return status;
-  }
 
   SWITCH_MEMSET(hash_key, 0x0, SWITCH_API_BUFFER_SIZE);
 
@@ -364,12 +305,6 @@ switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t *hashtable,
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(node != NULL);
 
-  if (!hashtable || !node) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable delete node failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_hashtable_remove_existing(&hashtable->table, node);
   hashtable->num_entries--;
   return SWITCH_STATUS_SUCCESS;
@@ -386,13 +321,6 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(key != NULL);
   SWITCH_ASSERT(data != NULL);
-
-  if (!hashtable || !key || !data) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_debug("hashtable search failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
 
   SWITCH_MEMSET(hash_key, 0x0, SWITCH_API_BUFFER_SIZE);
 
@@ -425,12 +353,6 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t *hashtable,
   SWITCH_ASSERT(func != NULL);
   SWITCH_ASSERT(arg != NULL);
 
-  if (!hashtable || !func || !arg) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable foreach arg failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_hashtable_foreach_arg(&hashtable->table, func, arg);
 
   return SWITCH_STATUS_SUCCESS;
@@ -441,12 +363,6 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable) {
 
   SWITCH_ASSERT(hashtable != NULL);
 
-  if (!hashtable) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("hashtable done failed, error: %s\n",
-              switch_error_to_string(status));
-    return status;
-  }
   tommy_hashtable_done(&hashtable->table);
   return SWITCH_STATUS_SUCCESS;
 }

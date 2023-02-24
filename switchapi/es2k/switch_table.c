@@ -334,14 +334,6 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
   SWITCH_ASSERT(SWITCH_TABLE_ID_VALID(table_id));
   SWITCH_ASSERT(table_size != NULL);
 
-  if (!table_size) {
-    status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("Failed to get table size on device %d, error: %s",
-              device,
-              switch_error_to_string(status));
-    return status;
-  }
-
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("get table size: Failed to get table info on device %d, error: %s",
