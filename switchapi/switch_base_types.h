@@ -297,7 +297,7 @@ typedef switch_uint16_t switch_vlan_t;
 typedef switch_uint32_t switch_ifindex_t;
 typedef switch_uint32_t switch_port_lag_index_t;
 typedef switch_uint32_t switch_port_t;
-typedef switch_uint16_t switch_device_t;
+typedef switch_uint8_t switch_device_t;
 typedef switch_uint8_t switch_pipe_t;
 typedef switch_uint8_t switch_cos_t;
 typedef switch_uint32_t switch_vrf_t;

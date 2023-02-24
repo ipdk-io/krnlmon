@@ -77,7 +77,7 @@ static inline switch_int32_t switch_api_id_fit_width(switch_uint32_t val,
   switch_uint32_t mask = 0;
   switch_uint32_t b = 0;
 
-  while (offset >= width) {
+  while (offset > width) {
     mask = (((switch_uint32_t)1 << width) - 1) << (offset - width);
     b = val & mask;
     if (!b) {

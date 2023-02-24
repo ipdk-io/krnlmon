@@ -170,5 +170,5 @@ int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
     }
   }
 
-  return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
+  return status; 
 }
