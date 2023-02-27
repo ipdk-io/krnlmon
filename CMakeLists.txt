@@ -40,5 +40,9 @@ configure_file(libkrnlmon.pc.in
 
 install(TARGETS krnlmon LIBRARY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.pc
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.pc
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
