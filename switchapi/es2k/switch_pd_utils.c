@@ -232,23 +232,19 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
 
     bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
     if (bf_status != BF_SUCCESS) {
-#if defined(ACC) || defined(ACC_CPFLIB)
         // First SWITCH_PD_TARGET_VPORT_OFFSET entries are reserved for
         // MEV h/w ports. Hence VSI ID/Port ID should be offset with
         // SWITCH_PD_TARGET_VPORT_OFFSET
-        // As per CP_INIT conf file, VSI_ID/Port ID is added part of
+        // As per CP_INIT conf file on IMC, VSI_ID/Port ID is added as part of
         // 2nd byte in interface MAC address.
-        // Fall back mechanism specific to ACC, as IDPF interfaces are already
-        // available.
+        // Example: If MAC address of an IPDF interface is 00:11:22:33:44:55,
+        //          then VSI_ID/Port ID is 0x11 for that interface.
         port_id = rmac_entry->mac.mac_addr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
-#else
-        krnlmon_log_error("Failed to get the port ID for MAC: %s", mac_str);
-        return;
-#endif
+        krnlmon_log_error("Failed to get the port ID, error: %d, Deriving "
+                          "port ID from second byte of MAC address: "
+                          "%s", bf_status, mac_str);
     }
 
-    // For now we are going with only single physical port.
-    // Hard code this phy_port_id to 0
     port_rif_info->port_id = port_id;
 
     krnlmon_log_debug("Found port ID: %d for MAC: %s", port_id, mac_str);
