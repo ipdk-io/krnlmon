@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +25,13 @@ extern void switchlink_init_db(void);
 extern void switchlink_init_api(void);
 extern void switchlink_init_link(void);
 
-extern void process_link_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_neigh_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_address_msg(struct nlmsghdr *nlmsg, int type);
-extern void process_route_msg(struct nlmsghdr *nlmsg, int type);
+extern void switchlink_process_link_msg(const struct nlmsghdr *nlmsg,
+                                        int msgtype);
+extern void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg,
+                                         int msgtype);
+extern void switchlink_process_address_msg(const struct nlmsghdr *nlmsg,
+                                           int msgtype);
+extern void switchlink_process_route_msg(const struct nlmsghdr *nlmsg,
+                                         int msgtype);
 
 #endif /* __SWITCHLINK_INT_H__ */

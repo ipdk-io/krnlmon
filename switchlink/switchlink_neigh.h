@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +34,6 @@ extern void switchlink_linux_mac_update(switchlink_mac_addr_t mac_addr,
                                         switchlink_handle_t intf_h,
                                         bool create);
 */
-void process_neigh_msg(struct nlmsghdr *nlmsg, int type);
+void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype);
 
 #endif /* __SWITCHLINK_NEIGH_H__ */

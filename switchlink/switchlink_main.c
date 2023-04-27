@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2023 Intel Corporation.
+ *
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -155,35 +156,35 @@ static void nl_process_message(struct nlmsghdr *nlmsg) {
   switch (nlmsg->nlmsg_type) {
     case RTM_NEWLINK:
       krnlmon_log_debug("Switchlink Notification RTM_NEWLINK\n");
-      process_link_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELLINK:
       krnlmon_log_debug("Switchlink Notification RTM_DELLINK\n");
-      process_link_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWADDR:
       krnlmon_log_debug("Switchlink Notification RTM_NEWADDR\n");
-      process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELADDR:
       krnlmon_log_debug("Switchlink Notification RTM_DELADDR\n");
-      process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWROUTE:
       krnlmon_log_debug("Switchlink Notification RTM_NEWROUTE\n");
-      process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELROUTE:
       krnlmon_log_debug("Switchlink Notification RTM_DELROUTE\n");
-      process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNEIGH:
       krnlmon_log_debug("Switchlink Notification RTM_NEWNEIGH\n");
-      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELNEIGH:
       krnlmon_log_debug("Switchlink Notification RTM_DELNEIGH\n");
-      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNETCONF:
     case RTM_GETMDB:

@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +36,7 @@
  *    void
  */
 
-void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
+void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   int hdrlen, attrlen;
   struct nlattr *attr;
   struct ndmsg *nbh;
@@ -43,7 +45,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
   bool ipaddr_valid = false;
   switchlink_ip_addr_t ipaddr;
 
-  krnlmon_assert((type == RTM_NEWNEIGH) || (type == RTM_DELNEIGH));
+  krnlmon_assert((msgtype == RTM_NEWNEIGH) || (msgtype == RTM_DELNEIGH));
   nbh = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ndmsg);
 
@@ -54,7 +56,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
 
   krnlmon_log_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
        flags = 0x%x, type = %u\n",
-       ((type == RTM_NEWNEIGH) ? "new" : "del"),
+       ((msgtype == RTM_NEWNEIGH) ? "new" : "del"),
        nbh->ndm_family,
        nbh->ndm_ifindex,
        nbh->ndm_state,
@@ -121,7 +123,7 @@ void process_neigh_msg(struct nlmsghdr *nlmsg, int type) {
     krnlmon_assert(bridge_h != 0);
   }
 
-  if (type == RTM_NEWNEIGH) {
+  if (msgtype == RTM_NEWNEIGH) {
     if (bridge_h && mac_addr_valid) {
       switchlink_create_mac(mac_addr, bridge_h, intf_h);
     } else if(mac_addr_valid && ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L3) {

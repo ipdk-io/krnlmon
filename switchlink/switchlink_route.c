@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +123,7 @@ static switchlink_handle_t process_ecmp(uint8_t family,
  *    void
  */
 
-void process_route_msg(struct nlmsghdr *nlmsg, int type) {
+void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   int hdrlen, attrlen;
   struct nlattr *attr;
   struct rtmsg *rmsg;
@@ -140,14 +142,14 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
   bool iif_valid = false;
   uint32_t iif = 0;
 
-  krnlmon_assert((type == RTM_NEWROUTE) || (type == RTM_DELROUTE));
+  krnlmon_assert((msgtype == RTM_NEWROUTE) || (msgtype == RTM_DELROUTE));
   rmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct rtmsg);
   krnlmon_log_debug(
       "%sroute: family = %d, dst_len = %d, src_len = %d, tos = %d, "
        "table = %d, proto = %d, scope = %d, type = %d, "
        "flags = 0x%x\n",
-       ((type == RTM_NEWROUTE) ? "new" : "del"),
+       ((msgtype == RTM_NEWROUTE) ? "new" : "del"),
        rmsg->rtm_family,
        rmsg->rtm_dst_len,
        rmsg->rtm_src_len,
@@ -245,7 +247,7 @@ void process_route_msg(struct nlmsghdr *nlmsg, int type) {
     dst_addr.prefix_len = 0;
   }
 
-  if (type == RTM_NEWROUTE) {
+  if (msgtype == RTM_NEWROUTE) {
     memset(&ifinfo, 0, sizeof(ifinfo));
     if (oif_valid) {
       switchlink_db_status_t status;
