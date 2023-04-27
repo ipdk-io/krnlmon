@@ -1069,7 +1069,7 @@ switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
                 goto dealloc_resources;
             }
 
-            // For MEV we need to program nhop_id action in host byte order
+            // For ES2100 we need to program nhop_id action in host byte order
             network_byte_order = ntohs(api_route_entry->nhop_handle &
                                        ~(SWITCH_HANDLE_TYPE_NHOP <<
                                         SWITCH_HANDLE_TYPE_SHIFT));
@@ -1325,7 +1325,7 @@ switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
             }
 
             if (entry_add) {
-                // For MEV we need to program nhop_id action in host byte order
+                // For ES2100 we need to program nhop_id action in host byte order
                 network_byte_order = ntohs(nhop_handle &
                                            ~(SWITCH_HANDLE_TYPE_NHOP <<
                                            SWITCH_HANDLE_TYPE_SHIFT));

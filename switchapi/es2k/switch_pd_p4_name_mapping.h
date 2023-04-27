@@ -55,7 +55,7 @@ extern "C" {
         "linux_networking_control.vxlan_decap_outer_ipv4"
 
 /* RIF_MOD_TABLE */
-//Verified for MEV - 3 tables instead of 1
+//Verified for ES2100 - 3 tables instead of 1
 #define LNW_RIF_MOD_TABLE_START \
         "linux_networking_control.rif_mod_table_start"
 
@@ -101,7 +101,7 @@ extern "C" {
 
 
 /* IPV4_TUNNEL_TERM_TABLE */
-//Verified for MEV
+//Verified for ES2100
 #define LNW_IPV4_TUNNEL_TERM_TABLE \
         "linux_networking_control.ipv4_tunnel_term_table"
 #define LNW_IPV4_TUNNEL_TERM_TABLE_KEY_TUNNEL_FLAG_TYPE \
@@ -161,7 +161,7 @@ extern "C" {
 
 
 /* NEXTHOP_TABLE */
-//Verified for MEV
+//Verified for ES2100
 #define LNW_NEXTHOP_TABLE \
         "linux_networking_control.nexthop_table"
 
@@ -203,7 +203,7 @@ extern "C" {
 #define LNW_IPV4_TABLE \
         "linux_networking_control.ipv4_table"
 
-//TODO_LNW_MEV: One additional key for MEV(ipv4_table has 2 keys for MEV)
+//TODO_LNW_ES2100: One additional key for ES2100(ipv4_table has 2 keys for ES2100)
 #define LNW_IPV4_TABLE_KEY_IPV4_TABLE_LPM_ROOT \
         "ipv4_table_lpm_root"
 
