@@ -171,11 +171,6 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     af = rmsg->rtm_family;
   }
 
-  if (af == AF_INET6) {
-    krnlmon_log_debug("Ignoring IPv6 routes, as supported is not available");
-    return;
-  }
-
   if ((af != AF_INET) && (af != AF_INET6)) {
     return;
   }

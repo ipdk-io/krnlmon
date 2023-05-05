@@ -49,11 +49,6 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   nbh = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ndmsg);
 
-  if (nbh->ndm_family == AF_INET6) {
-    krnlmon_log_debug("Ignoring IPv6 neighbors, as IPv6 support is not available");
-    return;
-  }
-
   krnlmon_log_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
        flags = 0x%x, type = %u\n",
        ((msgtype == RTM_NEWNEIGH) ? "new" : "del"),

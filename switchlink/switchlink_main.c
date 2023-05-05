@@ -251,9 +251,9 @@ static void switchlink_nl_sock_intf_init(void) {
   nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
-  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
-  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
 
   // set socket to be non-blocking

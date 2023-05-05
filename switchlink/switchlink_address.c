@@ -52,10 +52,6 @@ void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
        addrmsg->ifa_scope,
        addrmsg->ifa_index);
 
-  if (addrmsg->ifa_family == AF_INET6) {
-    krnlmon_log_debug("Ignoring IPv6 addresses, as supported is not available");
-    return;
-  }
   if ((addrmsg->ifa_family != AF_INET) && (addrmsg->ifa_family != AF_INET6)) {
     // an address family that we are not interested in, skip
     return;
