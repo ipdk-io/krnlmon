@@ -227,9 +227,9 @@ switch_status_t switch_pd_nexthop_table_entry(
         }
 
 	// For ES2K we need to program RIF_id action in Big endian
-        network_byte_order_rif_id = ntohs(api_nexthop_pd_info->rif_handle &
-                                          ~(SWITCH_HANDLE_TYPE_RIF <<
-                                          SWITCH_HANDLE_TYPE_SHIFT));
+        network_byte_order_rif_id = api_nexthop_pd_info->rif_handle &
+                                     ~(SWITCH_HANDLE_TYPE_RIF <<
+                                     SWITCH_HANDLE_TYPE_SHIFT);
 
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           network_byte_order_rif_id);
@@ -940,9 +940,9 @@ dealloc_resources:
     return switch_pd_tdi_status_to_status(status);
 }
 
-switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
+switch_status_t switch_pd_ipv6_table_entry (switch_device_t device,
     const switch_api_route_entry_t *api_route_entry,
-    bool entry_add, switch_ipv4_table_action_t action)
+    bool entry_add, switch_ip_table_action_t action)
 {
     tdi_status_t status;
 
@@ -964,6 +964,221 @@ switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
     uint32_t network_byte_order = 0;
 
     krnlmon_log_debug("%s", __func__);
+
+    if (action == SWITCH_ACTION_NONE &&
+        entry_add) {
+        krnlmon_log_debug("Ignore NONE action for ipv6 table entry addition");
+        return SWITCH_STATUS_SUCCESS;
+    }
+
+    status = tdi_flags_create(0, &flags_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create flags handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_device_get(dev_id, &dev_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to get device handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_target_create(dev_hdl, &target_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create target handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_session_create(dev_hdl, &session);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create tdi session, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_from_name_get(info_hdl,
+                                     LNW_IPV6_TABLE,
+                                     &table_hdl);
+    if (status != TDI_SUCCESS || !table_hdl) {
+        krnlmon_log_error("Unable to get table handle for: %s, error: %d",
+                LNW_IPV6_TABLE, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_key_allocate(table_hdl, &key_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
+                 LNW_IPV6_TABLE, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_info_get(table_hdl, &table_info_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to get table info handle for table, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_key_field_id_get(table_info_hdl,
+                                  LNW_IPV6_TABLE_KEY_IPV6_DST_MATCH,
+                                  &field_id);
+    if (status != TDI_SUCCESS) {
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+               LNW_IPV6_TABLE_KEY_IPV6_DST_MATCH, status);
+        goto dealloc_resources;
+    }
+
+    /* Use LPM API for LPM match type*/
+    status = tdi_key_field_set_value_lpm_ptr(key_hdl, field_id,
+                                             (const uint8_t *)&api_route_entry->ip_address.ip.v6addr.u.addr8,
+                                             (const uint16_t)api_route_entry->ip_address.prefix_len,
+                                             16);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to set value for key ID: %d for ipv4_table, error: %d",
+                 field_id, status);
+        goto dealloc_resources;
+    }
+
+    if (entry_add) {
+        if(action == SWITCH_ACTION_NHOP) {
+        krnlmon_log_info("Populate set_nexthop_id action in ipv4_table for "
+                  "route handle %x",
+                  (unsigned int) api_route_entry->route_handle);
+
+            status = tdi_action_name_to_id(table_info_hdl,
+                                           LNW_IPV6_TABLE_ACTION_IPV6_SET_NEXTHOP_ID,
+                                           &action_id);
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                         LNW_IPV6_TABLE_ACTION_IPV6_SET_NEXTHOP_ID, status);
+                goto dealloc_resources;
+            }
+
+            status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                         "error: %d", action_id, status);
+                goto dealloc_resources;
+            }
+
+            status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                       LNW_ACTION_SET_NEXTHOP_ID_PARAM_NEXTHOP_ID,
+                                                       action_id, &data_field_id);
+            if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_SET_NEXTHOP_ID_PARAM_NEXTHOP_ID, status);
+                goto dealloc_resources;
+            }
+
+            network_byte_order = api_route_entry->nhop_handle &
+                                  ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                   SWITCH_HANDLE_TYPE_SHIFT);
+
+            status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                              network_byte_order);
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                         data_field_id, status);
+                goto dealloc_resources;
+            }
+        }
+
+        if(action == SWITCH_ACTION_NHOP_GROUP) {
+            status = tdi_action_name_to_id(table_info_hdl,
+                                           LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION,
+                                           &action_id);
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                         LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION, status);
+                goto dealloc_resources;
+            }
+
+            status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                         "error: %d", action_id, status);
+                goto dealloc_resources;
+            }
+
+            status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                       LNW_ACTION_ECMP_HASH_ACTION_PARAM_ECMP_GROUP_ID,
+                                                       action_id, &data_field_id);
+            if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                              LNW_ACTION_ECMP_HASH_ACTION_PARAM_ECMP_GROUP_ID,
+                              status);
+                goto dealloc_resources;
+            }
+
+            status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                              (api_route_entry->nhop_handle &
+                                              ~(SWITCH_HANDLE_TYPE_NHOP_GROUP <<
+                                              SWITCH_HANDLE_TYPE_SHIFT)));
+            if (status != TDI_SUCCESS) {
+                krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                         data_field_id, status);
+                goto dealloc_resources;
+            }
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to add %s entry, error: %d", LNW_IPV6_TABLE, status);
+            goto dealloc_resources;
+        }
+  } else {
+        /* Delete an entry from target */
+        krnlmon_log_info("Delete ipv6_table entry");
+        status = tdi_table_entry_del(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to delete %s entry, error: %d", LNW_IPV6_TABLE, status);
+            goto dealloc_resources;
+        }
+  }
+
+dealloc_resources:
+    status = tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl,
+                                                key_hdl, data_hdl,
+                                                session, entry_add);
+    return switch_pd_tdi_status_to_status(status);
+}
+
+switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
+    const switch_api_route_entry_t *api_route_entry,
+    bool entry_add, switch_ip_table_action_t action)
+{
+    tdi_status_t status;
+
+    tdi_id_t field_id = 0;
+    tdi_id_t action_id = 0;
+    tdi_id_t data_field_id = 0;
+
+    tdi_dev_id_t dev_id = device;
+
+    tdi_flags_hdl *flags_hdl = NULL;
+    tdi_target_hdl *target_hdl = NULL;
+    const tdi_device_hdl *dev_hdl = NULL;
+    tdi_session_hdl *session = NULL;
+    const tdi_info_hdl *info_hdl = NULL;
+    tdi_table_key_hdl *key_hdl = NULL;
+    tdi_table_data_hdl *data_hdl = NULL;
+    const tdi_table_hdl *table_hdl = NULL;
+    const tdi_table_info_hdl *table_info_hdl = NULL;
+    uint32_t network_byte_order = 0;
+
+    krnlmon_log_debug("%s", __func__);
+
+    if (action == SWITCH_ACTION_NONE &&
+        entry_add) {
+        krnlmon_log_debug("Ignore NONE action for ipv4 table entry addition");
+        return SWITCH_STATUS_SUCCESS;
+    }
 
     status = tdi_flags_create(0, &flags_hdl);
     if (status != TDI_SUCCESS) {
@@ -1069,10 +1284,9 @@ switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
                 goto dealloc_resources;
             }
 
-            // For MEV we need to program nhop_id action in host byte order
-            network_byte_order = ntohs(api_route_entry->nhop_handle &
-                                       ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                        SWITCH_HANDLE_TYPE_SHIFT));
+            network_byte_order = api_route_entry->nhop_handle &
+                                  ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                  SWITCH_HANDLE_TYPE_SHIFT);
 
             status = tdi_data_field_set_value(data_hdl, data_field_id,
                                               network_byte_order);
@@ -1289,9 +1503,9 @@ switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
     nhop_members = (switch_list_t) ecmp_info->members;
 
     // For ES2K program ECMP Group ID in host byte order
-    network_byte_order_ecmp_id = ntohs(ecmp_handle &
-                                       ~(SWITCH_HANDLE_TYPE_NHOP_GROUP <<
-                                         SWITCH_HANDLE_TYPE_SHIFT));
+    network_byte_order_ecmp_id = ecmp_handle &
+                                  ~(SWITCH_HANDLE_TYPE_NHOP_GROUP <<
+                                   SWITCH_HANDLE_TYPE_SHIFT);
 
     while ((total_ecmp_list < LNW_ECMP_HASH_SIZE) &&
            (ecmp_list < LNW_ECMP_PER_GROUP_HASH_SIZE)) {
@@ -1325,10 +1539,9 @@ switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
             }
 
             if (entry_add) {
-                // For MEV we need to program nhop_id action in host byte order
-                network_byte_order = ntohs(nhop_handle &
-                                           ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                           SWITCH_HANDLE_TYPE_SHIFT));
+                network_byte_order = nhop_handle &
+                                      ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                      SWITCH_HANDLE_TYPE_SHIFT);
 
                 status = tdi_data_field_set_value(data_hdl, data_field_id,
                                                   network_byte_order);

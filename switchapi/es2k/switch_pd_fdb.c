@@ -335,6 +335,187 @@ dealloc_resources:
     return switch_pd_tdi_status_to_status(status);
 }
 
+switch_status_t switch_pd_l2_tx_ipv6_forward_table_entry(
+    switch_device_t device,
+    const switch_api_l2_info_t *api_l2_tx_info,
+    const switch_api_tunnel_info_t *api_tunnel_info,
+    bool entry_add) {
+
+    tdi_status_t status;
+
+    tdi_id_t field_id = 0;
+    tdi_id_t action_id = 0;
+    tdi_id_t data_field_id = 0;
+
+    tdi_dev_id_t dev_id = device;
+
+    tdi_flags_hdl *flags_hdl = NULL;
+    tdi_target_hdl *target_hdl = NULL;
+    const tdi_device_hdl *dev_hdl = NULL;
+    tdi_session_hdl *session = NULL;
+    const tdi_info_hdl *info_hdl = NULL;
+    tdi_table_key_hdl *key_hdl = NULL;
+    tdi_table_data_hdl *data_hdl = NULL;
+    const tdi_table_hdl *table_hdl = NULL;
+    const tdi_table_info_hdl *table_info_hdl = NULL;
+
+    krnlmon_log_debug("%s", __func__);
+
+    status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_flags_create(0, &flags_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create flags handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_device_get(dev_id, &dev_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to get device handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_target_create(dev_hdl, &target_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create target handle, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_session_create(dev_hdl, &session);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Failed to create tdi session, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_from_name_get(info_hdl,
+                                     LNW_L2_FWD_TX_IPV6_TABLE,
+                                     &table_hdl);
+    if (status != TDI_SUCCESS || !table_hdl) {
+        krnlmon_log_error("Unable to get table handle for: %s, error: %d",
+                 LNW_L2_FWD_TX_IPV6_TABLE, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_key_allocate(table_hdl, &key_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
+                 LNW_L2_FWD_TX_IPV6_TABLE, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_table_info_get(table_hdl, &table_info_hdl);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to get table info handle for table, error: %d", status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_key_field_id_get(table_info_hdl,
+                                  LNW_L2_FWD_TX_IPV6_TABLE_KEY_DST_MAC,
+                                  &field_id);
+    if (status != TDI_SUCCESS) {
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                LNW_L2_FWD_TX_IPV6_TABLE_KEY_DST_MAC, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_key_field_set_value_ptr(key_hdl, field_id,
+                                         (const uint8_t *)
+                                         &api_l2_tx_info->dst_mac.mac_addr,
+                                         SWITCH_MAC_LENGTH);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to set value for key ID: %d, error: %d",
+                 field_id, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_key_field_id_get(table_info_hdl,
+                                  LNW_L2_FWD_TX_IPV6_TABLE_KEY_TUN_FLAG,
+                                  &field_id);
+    if (status != TDI_SUCCESS) {
+      krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                LNW_L2_FWD_TX_IPV6_TABLE_KEY_TUN_FLAG, status);
+        goto dealloc_resources;
+    }
+
+    status = tdi_key_field_set_value(key_hdl, field_id, 0);
+    if (status != TDI_SUCCESS) {
+        krnlmon_log_error("Unable to set value for key ID: %d"
+                 ", error: %d", field_id, status);
+        goto dealloc_resources;
+    }
+
+    if (entry_add &&
+               api_l2_tx_info->learn_from ==
+               SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) {
+
+        krnlmon_log_info("Populate l2_fwd action in %s "
+                  "for physical port: %d",
+                  LNW_L2_FWD_TX_IPV6_TABLE, api_l2_tx_info->port_id);
+
+        status = tdi_action_name_to_id(table_info_hdl,
+                                       LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD,
+                                       &action_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                     LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_action_data_allocate(table_hdl, action_id,
+                                                &data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                     "error: %d", action_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_L2_FWD_PARAM_PORT,
+                                                   action_id,
+                                                   &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_L2_FWD_PARAM_PORT, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          api_l2_tx_info->port_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to add %s entry, error: %d",
+                      LNW_L2_FWD_TX_IPV6_TABLE, status);
+            goto dealloc_resources;
+        }
+    } else {
+        /* Delete an entry from target */
+        status = tdi_table_entry_del(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to delete %s table entry, error: %d",
+                     LNW_L2_FWD_TX_IPV6_TABLE, status);
+            goto dealloc_resources;
+        }
+    }
+
+dealloc_resources:
+    status = tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl,
+                                                key_hdl, data_hdl,
+                                                session, entry_add);
+    return switch_pd_tdi_status_to_status(status);
+}
+
 switch_status_t switch_pd_sem_bypass_table_entry(
     switch_device_t device,
     const switch_api_l2_info_t *api_l2_tx_info,

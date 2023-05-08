@@ -116,8 +116,8 @@ static sai_status_t sai_create_neighbor_entry(
   }
 
   memset(&api_neighbor, 0, sizeof(switch_api_neighbor_info_t));
-  sai_neighbor_entry_parse(neighbor_entry, &api_neighbor);
   sai_neighbor_entry_attribute_parse(attr_count, attr_list, &api_neighbor);
+  sai_neighbor_entry_parse(neighbor_entry, &api_neighbor);
   sai_neighbor_entry_nexthop_get(&api_neighbor);
   sai_neighbor_entry_to_string(neighbor_entry, entry_string);
 

@@ -314,15 +314,13 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
                                         void *key,
                                         void **data) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_uint8_t hash_key[SWITCH_API_BUFFER_SIZE];
+  switch_uint8_t hash_key[SWITCH_API_BUFFER_SIZE] = {0};
   switch_uint32_t hash_length = 0;
   switch_uint32_t hash = 0;
 
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(key != NULL);
   SWITCH_ASSERT(data != NULL);
-
-  SWITCH_MEMSET(hash_key, 0x0, SWITCH_API_BUFFER_SIZE);
 
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {

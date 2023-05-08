@@ -30,12 +30,12 @@ extern "C" {
 
 /** enum to decide the proper key and action based on ecmp or nhop
  * */
-typedef enum switch_pv4_table_action_s
+typedef enum switch_ip_table_action_s
 {
   SWITCH_ACTION_NHOP = 0,
   SWITCH_ACTION_NHOP_GROUP = 1,
   SWITCH_ACTION_NONE = 2
-}switch_ipv4_table_action_t;
+}switch_ip_table_action_t;
 
 /**
  * create pd_routing structure to hold
@@ -91,7 +91,11 @@ switch_status_t switch_pd_rif_mod_last_entry(
 
 switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
     const switch_api_route_entry_t *api_route_entry,
-    bool entry_add, switch_ipv4_table_action_t action);
+    bool entry_add, switch_ip_table_action_t action);
+
+switch_status_t switch_pd_ipv6_table_entry (switch_device_t device,
+    const switch_api_route_entry_t *api_route_entry,
+    bool entry_add, switch_ip_table_action_t action);
 
 switch_status_t switch_pd_ecmp_hash_table_entry(switch_device_t device,
     const switch_nhop_group_info_t *ecmp_info, bool entry_add);

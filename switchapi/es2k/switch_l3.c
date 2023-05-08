@@ -376,42 +376,54 @@ switch_status_t switch_api_l3_route_add(
     return status;
   }
 
+  switch_ip_table_action_t ip_table_action = SWITCH_ACTION_NONE;
+
   if (switch_handle_type_get(api_route_entry->nhop_handle) ==
-                       SWITCH_HANDLE_TYPE_NHOP) {
-    status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
-                                        SWITCH_ACTION_NHOP);
-    if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("ipv4 table update failed for NHOP action "
-                 ":%s \n", switch_error_to_string(status));
-        return status;
-    }
+                             SWITCH_HANDLE_TYPE_NHOP) {
+      ip_table_action = SWITCH_ACTION_NHOP;
   } else if (switch_handle_type_get(api_route_entry->nhop_handle) ==
-                                   SWITCH_HANDLE_TYPE_NHOP_GROUP) {
-    status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
-                                        SWITCH_ACTION_NHOP_GROUP);
-    if(status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error("ipv4 table update failed for ECMP action"
-                ": %s\n", switch_error_to_string(status));
-      return status;
-    }
-    nhop_group_handle = api_route_entry->nhop_handle;
+                                    SWITCH_HANDLE_TYPE_NHOP_GROUP) {
+      ip_table_action = SWITCH_ACTION_NHOP_GROUP;
+      nhop_group_handle = api_route_entry->nhop_handle;
 
-    status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
-    if (status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error(
-          "Failed to get ecmp info on device %d handle: 0x%lx, error: %s",
-          device,
-          nhop_group_handle,
-          switch_error_to_string(status));
-      return status;
-    }
-
-    status = switch_pd_ecmp_hash_table_entry(device, nhop_group_info, true);
-    if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("ipv4 table update failed for NHOP action, "
-                          "error: %s\n", switch_error_to_string(status));
+      status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
+      if (status != SWITCH_STATUS_SUCCESS) {
+        krnlmon_log_error(
+            "Failed to get ecmp info on device: %d, handle: 0x%lx, error: %s",
+            device,
+            nhop_group_handle,
+            switch_error_to_string(status));
         return status;
-    }
+      }
+
+      /* As action is ECMP, program ECMP hash table as well */
+      status = switch_pd_ecmp_hash_table_entry(device, nhop_group_info, true);
+      if (status != SWITCH_STATUS_SUCCESS) {
+          krnlmon_log_error("Failed to update ECMP hash table for NHOP group "
+                            "action, error: %s\n", switch_error_to_string(status));
+          return status;
+      }
+  }
+
+  if (api_route_entry->ip_address.type == SWITCH_API_IP_ADDR_V4) {
+      /* Configure IPv4_table */
+      status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
+                                          ip_table_action);
+  } else if (api_route_entry->ip_address.type == SWITCH_API_IP_ADDR_V6) {
+      /* Configure IPv6_table */
+      status = switch_pd_ipv6_table_entry(device, api_route_entry, true,
+                                            ip_table_action);
+  } else {
+      krnlmon_log_error("Invalid IP address type: %d",
+                         api_route_entry->ip_address.type);
+      return SWITCH_STATUS_INVALID_PARAMETER;
+  }
+
+  if (status != SWITCH_STATUS_SUCCESS) {
+      krnlmon_log_error("Failed to update IP table for NHOP action: %d,"
+                        "error: %s\n", ip_table_action,
+                        switch_error_to_string(status));
+      return status;
   }
 
   api_route_entry->route_handle = handle;
@@ -493,8 +505,8 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
       status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
       if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
-            "nhop_group info get failed on device %d nhop_group handle 0x%lx: "
-            "nhop_group get Failed:(%s)\n",
+            "nhop_group info get failed on device: %d, nhop_group handle: "
+	    "0x%lx, nhop_group get Failed:(%s)\n",
             device,
             nhop_group_handle,
             switch_error_to_string(status));
@@ -503,17 +515,31 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
 
       status = switch_pd_ecmp_hash_table_entry(device, nhop_group_info, false);
       if (status != SWITCH_STATUS_SUCCESS) {
-          krnlmon_log_error("ipv4 table update failed for NHOP action \n");
+          krnlmon_log_error("Failed to delete ECMP hash table for NHOP group"
+                            " action");
           return status;
       }
     }
 
-    status = switch_pd_ipv4_table_entry(device, &api_route_info,
-                                        false, SWITCH_ACTION_NONE);
-    SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
-    if(status != SWITCH_STATUS_SUCCESS)
-      krnlmon_log_error("ipv4 table delete failed, error"
-                ": %s\n", switch_error_to_string(status));
+    if (api_route_info.ip_address.type == SWITCH_API_IP_ADDR_V4) {
+      /* Delete IPv4_table entry */
+      status = switch_pd_ipv4_table_entry(device, &api_route_info,
+                                          false, SWITCH_ACTION_NONE);
+    } else if (api_route_info.ip_address.type == SWITCH_API_IP_ADDR_V6) {
+      /* Delete IPv6_table entry */
+      status = switch_pd_ipv6_table_entry(device, api_route_entry,
+                                          false, SWITCH_ACTION_NONE);
+    } else {
+        krnlmon_log_error("Invalid IP address type: %d",
+                           api_route_info.ip_address.type);
+        return SWITCH_STATUS_INVALID_PARAMETER;
+    }
+
+    if(status != SWITCH_STATUS_SUCCESS) {
+      krnlmon_log_error("Failed to Delete IP table entry, error: %s",
+                        switch_error_to_string(status));
+      return status;
+    }
   }
 
   status = switch_route_hashtable_remove(device, route_handle);

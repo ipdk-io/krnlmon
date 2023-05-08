@@ -309,12 +309,29 @@ switch_status_t switch_api_l2_forward_create(
         CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
     }
 
+    // When L2 MAC address is learnt, we will not be aware if that MAC is
+    // learnt against an IPv6 Neighbor or IPv4 Neighbor. Hence program both
+    // l2_tx_forward and l2_tx_ipv6_forward with the same MAC key.
+    // TODO: This will be optimized in later patches, where we need to fetch
+    // if the MAC is learnt for IPv4 neighbor or Ipv6 neighbor by a lookup
+    // and then program respective table
     status = switch_pd_l2_tx_forward_table_entry(device, api_l2_info,
                                                   api_tunnel_info,  true);
     if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
             "switch_api_l2_forward_create: Failed to create platform dependent"
-            " l2 tx forward table entry on device %d: ,error :(%s)\n",
+            " l2 tx forward table entry on device: %d,error: (%s)\n",
+            device,
+            switch_error_to_string(status));
+        return status;
+    }
+
+    status = switch_pd_l2_tx_ipv6_forward_table_entry(device, api_l2_info,
+                                                      api_tunnel_info,  true);
+    if (status != SWITCH_STATUS_SUCCESS) {
+        krnlmon_log_error(
+            "switch_api_l2_ipv6_forward_create: Failed to create platform dependent"
+            " l2 tx forward table entry on device: %d,error: (%s)\n",
             device,
             switch_error_to_string(status));
         return status;
@@ -443,6 +460,17 @@ switch_status_t switch_api_l2_forward_delete (
               "dependent l2 tx forward table entry on device %d: ,error :%s\n",
               device,
               switch_error_to_string(status));
+        return status;
+    }
+
+    status = switch_pd_l2_tx_ipv6_forward_table_entry(device, api_l2_info,
+                                                      NULL,  false);
+    if (status != SWITCH_STATUS_SUCCESS) {
+        krnlmon_log_error(
+            "switch_api_l2_ipv6_forward_create: Failed to delete platform "
+	    "dependent l2 tx forward table entry on device: %d,error: (%s)",
+            device,
+            switch_error_to_string(status));
         return status;
     }
 
