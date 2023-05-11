@@ -3,6 +3,32 @@
 # Copyright 2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
+option(TEST_COVERAGE OFF "Measure unit test code coverage")
+
+####################
+# set_test_options #
+####################
+
+function(set_test_options _TGT)
+    target_link_libraries(${_TGT} PUBLIC
+        GTest::gtest
+        GTest::gtest_main
+        PkgConfig::libnl3
+        target_sys
+    )
+
+    target_link_directories(${_TGT} PUBLIC ${DRIVER_SDK_DIRS})
+
+    target_include_directories(${_TGT} PRIVATE
+        ${SDE_INSTALL_DIR}/include/target-sys
+    )
+
+    if(TEST_COVERAGE)
+        target_compile_options(${_TGT} PRIVATE -fprofile-arcs -ftest-coverage)
+        target_link_libraries(${_TGT} PUBLIC gcov)
+    endif()
+endfunction()
+
 ########################
 # switchlink_link_test #
 ########################
@@ -13,18 +39,7 @@ add_executable(switchlink_link_test
     switchlink_link.h
 )
 
-target_link_libraries(switchlink_link_test PUBLIC
-    GTest::gtest
-    GTest::gtest_main
-    PkgConfig::libnl3
-    target_sys
-)
+set_test_options(switchlink_link_test)
 
-target_include_directories(switchlink_link_test PRIVATE
-    ${SDE_INSTALL_DIR}/include/target-sys
-)
-
-target_link_directories(switchlink_link_test PUBLIC ${DRIVER_SDK_DIRS})
-
-add_test(switchlink_link_test switchlink_link_test)
+add_test(NAME switchlink_link_test COMMAND switchlink_link_test)
 

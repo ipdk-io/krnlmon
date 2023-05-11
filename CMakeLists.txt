@@ -4,8 +4,10 @@
 # SPDX-License-Identifier: Apache 2.0
 #
 
-# TODO: Make Kernel Monitor a package.
-cmake_minimum_required(VERSION 3.5)
+# Version 3.15 is the baseline for P4 Control Plane.
+cmake_minimum_version(3.15)
+
+project(krnlmon LANGUAGES C CXX)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
