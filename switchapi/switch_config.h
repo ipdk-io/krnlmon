@@ -20,7 +20,7 @@
 
 #include "switch_base_types.h"
 #include "switch_handle.h"
-#include "switch_port.h"
+#include "switch_table.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,8 +34,6 @@ typedef struct switch_config_s {
   bool enable_ports;
 
   bool program_smac;
-
-  switch_port_speed_t default_port_speed;
 
   switch_char_t cpu_interface[SWITCH_HOSTIF_NAME_SIZE];
 

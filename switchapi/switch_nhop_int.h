@@ -16,8 +16,13 @@
  */
 
 #include "switch_types_int.h"
-#include "switch_pd_routing.h"
 #include "switch_nhop.h"
+
+#if defined(DPDK_TARGET)
+  #include "dpdk/switch_pd_routing.h"
+#elif defined(ES2K_TARGET)
+  #include "es2k/switch_pd_routing.h"
+#endif
 
 #ifndef __SWITCH_NHOP_INT_H__
 #define __SWITCH_NHOP_INT_H__
@@ -114,16 +119,6 @@ extern "C" {
                   &api_nhop_info->ip_addr,                                \
                   sizeof(switch_ip_addr_t));                              \
   } while (0);
-
-typedef enum switch_nhop_pd_action_s {
-  SWITCH_NHOP_PD_ACTION_NON_TUNNEL = 0x1,
-  SWITCH_NHOP_PD_ACTION_TUNNEL = 0x2,
-  SWITCH_NHOP_PD_ACTION_MGID_TUNNEL = 0x3,
-  SWITCH_NHOP_PD_ACTION_FLOOD = 0x4,
-  SWITCH_NHOP_PD_ACTION_GLEAN = 0x5,
-  SWITCH_NHOP_PD_ACTION_DROP = 0x6,
-  SWITCH_NHOP_PD_ACTION_MAX
-} switch_nhop_pd_action_t;
 
 static inline char *switch_nhop_type_to_string(switch_nhop_type_t nhop_type) {
   switch (nhop_type) {

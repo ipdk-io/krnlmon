@@ -1,17 +1,17 @@
 # CMake build file for krnlmon/switchlink
 #
-# Copyright 2022 Intel Corporation
+# Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 cmake_minimum_required(VERSION 3.5)
 
 add_library(switchlink_sai_o OBJECT
-   switchlink_handle_link.c
-   switchlink_handle_tunnel.c
-   switchlink_handle_neigh.c
-   switchlink_handle_route.c
-   switchlink_handle_nexthop.c
    switchlink_handle_ecmp.c
+   switchlink_handle_link.c
+   switchlink_handle_neigh.c
+   switchlink_handle_nexthop.c
+   switchlink_handle_route.c
+   switchlink_handle_tunnel.c
    switchlink_init_sai.c
    switchlink_init_sai.h
 )

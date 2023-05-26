@@ -78,14 +78,17 @@ int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
   if (status != SAI_STATUS_SUCCESS) {
     return -1;
   }
-
+#if defined(DPDK_TARGET)
   memset(attr_list, 0x0, sizeof(attr_list));
   attr_list[0].id = SAI_NEXT_HOP_GROUP_MEMBER_ATTR_NEXT_HOP_ID;
   attr_list[0].value.oid = nexthop_info->nhop_h;
   status = sai_nhop_group_api->create_next_hop_group_member(
            &(nexthop_info->nhop_member_h), 0, 1, attr_list);
-
-  return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
+  if (status != SAI_STATUS_SUCCESS) {
+    return -1;
+  }
+#endif
+  return status;
 }
 
 /*

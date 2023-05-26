@@ -165,12 +165,19 @@ static int create_neighbor(const switchlink_db_neigh_info_t *neigh_info) {
     neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
     neighbor_entry.ip_address.addr.ip4 =
         htonl(neigh_info->ip_addr.ip.v4addr.s_addr);
+    krnlmon_log_info("Create a neighbor entry: 0x%x",
+		      neigh_info->ip_addr.ip.v4addr.s_addr);
   } else {
     krnlmon_assert(neigh_info->ip_addr.family == AF_INET6);
     neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
     memcpy(neighbor_entry.ip_address.addr.ip6,
            &(neigh_info->ip_addr.ip.v6addr),
            sizeof(sai_ip6_t));
+    krnlmon_log_info("Create a neighbor entry: 0x%x:0x%x:0x%x:0x%x",
+		      neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[0],
+		      neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[1],
+		      neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[2],
+		      neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[3]);
   }
 
   status = sai_neigh_api->create_neighbor_entry(&neighbor_entry, 1, attr_list);
@@ -327,7 +334,6 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
     return;
   }
 
-  krnlmon_log_info("Create a neighbor entry: 0x%x", ipaddr->ip.v4addr.s_addr);
   if (create_neighbor(&neigh_info) == -1) {
     if (!nhop_available) {
         switchlink_delete_nexthop(nexthop_info.nhop_h);
@@ -344,8 +350,10 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
     switchlink_db_update_nexthop_using_by(&nexthop_info);
   }
 
+#if defined(DPDK_TARGET)
   // add a host route
   switchlink_create_route(g_default_vrf_h, ipaddr, ipaddr, 0, intf_h);
+#endif
 }
 
 /*
@@ -401,6 +409,8 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
       }
   }
 
+#if defined(DPDK_TARGET)
   // delete the host route
   switchlink_delete_route(g_default_vrf_h, ipaddr);
+#endif
 }

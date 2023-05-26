@@ -46,7 +46,7 @@ sai_ip_addr_to_switch_ip_addr(const _In_ sai_ip_address_t *sai_ip_addr,
         ip_addr->prefix_len = 32;
     } else if (sai_ip_addr->addr_family == SAI_IP_ADDR_FAMILY_IPV6) {
         ip_addr->type = SWITCH_API_IP_ADDR_V6;
-        memcpy(&ip_addr->ip.v6addr, &sai_ip_addr->addr.ip6, 16);
+        memcpy(&ip_addr->ip.v6addr.u.addr8, &sai_ip_addr->addr.ip6, sizeof(sai_ip6_t));
         ip_addr->prefix_len = 128;
     }
     return SAI_STATUS_SUCCESS;

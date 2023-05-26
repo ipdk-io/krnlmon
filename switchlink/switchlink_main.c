@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2023 Intel Corporation.
+ *
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,7 +61,6 @@ enum {
 } switchlink_msg_t;
 
 // Currently we don't want to dump any existing kernel data when target is DPDK
-#ifdef NL_SYNC_STATE
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
@@ -137,7 +137,6 @@ static void nl_sync_state(void) {
     msg_idx++;
   }
 }
-#endif
 
 /*
  * Routine Description:
@@ -157,35 +156,35 @@ static void nl_process_message(struct nlmsghdr *nlmsg) {
   switch (nlmsg->nlmsg_type) {
     case RTM_NEWLINK:
       krnlmon_log_debug("Switchlink Notification RTM_NEWLINK\n");
-      process_link_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELLINK:
       krnlmon_log_debug("Switchlink Notification RTM_DELLINK\n");
-      process_link_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWADDR:
       krnlmon_log_debug("Switchlink Notification RTM_NEWADDR\n");
-      process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELADDR:
       krnlmon_log_debug("Switchlink Notification RTM_DELADDR\n");
-      process_address_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWROUTE:
       krnlmon_log_debug("Switchlink Notification RTM_NEWROUTE\n");
-      process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELROUTE:
       krnlmon_log_debug("Switchlink Notification RTM_DELROUTE\n");
-      process_route_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNEIGH:
       krnlmon_log_debug("Switchlink Notification RTM_NEWNEIGH\n");
-      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_DELNEIGH:
       krnlmon_log_debug("Switchlink Notification RTM_DELNEIGH\n");
-      process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
+      switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
       break;
     case RTM_NEWNETCONF:
     case RTM_GETMDB:
@@ -252,9 +251,9 @@ static void switchlink_nl_sock_intf_init(void) {
   nl_socket_add_memberships(g_nlsk, RTNLGRP_NEIGH, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_IFADDR, 0);
   nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV4_ROUTE, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
+  nl_socket_add_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV4_RULE, 0);
-  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_IFADDR, 0);
-  //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_ROUTE, 0);
   //nl_add_socket_memberships(g_nlsk, RTNLGRP_IPV6_RULE, 0);
 
   // set socket to be non-blocking
@@ -272,7 +271,7 @@ static void switchlink_nl_sock_intf_init(void) {
   }
 
   // start building state from the kernel
-  // P4-OVS comment nl_sync_state();
+  nl_sync_state();
 }
 
 static void nl_process_event_loop(void) {

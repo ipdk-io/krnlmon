@@ -109,7 +109,10 @@ static int create_interface(
     ac++;
     attr_list[ac].id = SAI_ROUTER_INTERFACE_ATTR_TYPE;
     attr_list[ac].value.oid = 0;
-    if (intf_h) {
+    if (!(intf_h)) {
+	krnlmon_log_error("Interface handle is NULL");
+	return -1;
+    } else {	
         attr_list[ac].value.oid = *intf_h;
     }
     ac++;

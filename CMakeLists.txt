@@ -4,8 +4,10 @@
 # SPDX-License-Identifier: Apache 2.0
 #
 
-# TODO: Make Kernel Monitor a package.
-cmake_minimum_required(VERSION 3.5)
+# Version 3.15 is the baseline for P4 Control Plane.
+cmake_minimum_required(VERSION 3.15)
+
+project(krnlmon LANGUAGES C CXX)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -20,10 +22,11 @@ add_subdirectory(switchutils)
 
 add_library(krnlmon SHARED
     $<TARGET_OBJECTS:switchapi_o>
+    $<TARGET_OBJECTS:switchapi_target_o>
     $<TARGET_OBJECTS:switchlink_o>
+    $<TARGET_OBJECTS:switchlink_sai_o>
     $<TARGET_OBJECTS:switchsai_o>
     $<TARGET_OBJECTS:switchutils_o>
-    $<TARGET_OBJECTS:switchlink_sai_o>
     krnlmon_main.cc
     krnlmon_main.h
 )
@@ -39,5 +42,9 @@ configure_file(libkrnlmon.pc.in
 
 install(TARGETS krnlmon LIBRARY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.pc
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.pc
+    DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)

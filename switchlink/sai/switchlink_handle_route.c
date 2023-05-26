@@ -153,11 +153,22 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
     return;
   }
 
+  if (dst && IN6_IS_ADDR_LINKLOCAL(&dst->ip.v6addr)) {
+    krnlmon_log_debug("Ignoring Link Local destination address");
+    return;
+  }
+
+  if (gateway && IN6_IS_ADDR_LINKLOCAL(&gateway->ip.v6addr)) {
+    krnlmon_log_debug("Ignoring Link Local gateway address");
+    return;
+  }
+
   bool ecmp_valid = false;
   switchlink_handle_t nhop_h = g_cpu_rx_nhop_h;
   if (!ecmp_h) {
     // Ignore NULL gateway address, dont create a NHOP for that
-    if (gateway->ip.v4addr.s_addr) {
+    if ((gateway->family == AF_INET && gateway->ip.v4addr.s_addr) ||
+        (gateway->family == AF_INET6 && gateway->ip.v6addr.__in6_u.__u6_addr8[0])) {
       switchlink_db_nexthop_info_t nexthop_info;
       memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
       memcpy(&(nexthop_info.ip_addr), gateway, sizeof(switchlink_ip_addr_t));

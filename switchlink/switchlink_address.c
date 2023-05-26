@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,29 +33,25 @@
  *    void
  */
 
-void process_address_msg(struct nlmsghdr *nlmsg, int type) {
+void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   int hdrlen, attrlen;
   struct nlattr *attr;
   struct ifaddrmsg *addrmsg;
   bool addr_valid = false;
   switchlink_ip_addr_t addr;
 
-  krnlmon_assert((type == RTM_NEWADDR) || (type == RTM_DELADDR));
+  krnlmon_assert((msgtype == RTM_NEWADDR) || (msgtype == RTM_DELADDR));
   addrmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifaddrmsg);
   krnlmon_log_debug("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
        "scope = 0x%x ifindex = %d\n",
-       ((type == RTM_NEWADDR) ? "new" : "del"),
+       ((msgtype == RTM_NEWADDR) ? "new" : "del"),
        addrmsg->ifa_family,
        addrmsg->ifa_prefixlen,
        addrmsg->ifa_flags,
        addrmsg->ifa_scope,
        addrmsg->ifa_index);
 
-  if (addrmsg->ifa_family == AF_INET6) {
-    krnlmon_log_debug("Ignoring IPv6 addresses, as supported is not available");
-    return;
-  }
   if ((addrmsg->ifa_family != AF_INET) && (addrmsg->ifa_family != AF_INET6)) {
     // an address family that we are not interested in, skip
     return;
@@ -97,7 +95,7 @@ void process_address_msg(struct nlmsghdr *nlmsg, int type) {
     attr = nla_next(attr, &attrlen);
   }
 
-  if (type == RTM_NEWADDR) {
+  if (msgtype == RTM_NEWADDR) {
     if (addr_valid) {
       switchlink_ip_addr_t null_gateway;
       memset(&null_gateway, 0, sizeof(null_gateway));
