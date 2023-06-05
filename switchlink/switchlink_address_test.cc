@@ -36,6 +36,9 @@ struct test_results {
   int num_handler_calls;
 };
 
+// Value to return for the switch interface handle.
+const switchlink_handle_t TEST_INTF_H = 0x10001;
+
 vector<test_results> results(2);
 
 /*
@@ -47,7 +50,6 @@ vector<test_results> results(2);
  * this method with correct arguments. All the input params are stored
  * in the test results structure and validated against each test case.
  */
-
 void switchlink_create_route(switchlink_handle_t vrf_h,
                              const switchlink_ip_addr_t *addr,
                              const switchlink_ip_addr_t *gateway,
@@ -77,7 +79,6 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
  * this method with correct arguments. All the input params are stored
  * in the test results structure and validated against each test case.
  */
-
 void switchlink_delete_route(switchlink_handle_t vrf_h,
                              const switchlink_ip_addr_t *addr) {
   struct test_results temp = {};
@@ -94,14 +95,19 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
  * is invoked by switchlink_process_address_msg() for getting the intf
  * info from the database. Since this is a dummy method, we are passing
  * an ifindex 1 to this method and expects it to return an intf_info
- * successfully with ifhandle being 0x10001.
+ * successfully with ifhandle being 0x10001. The actual function can also
+ * return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND in case it is not able to
+ * find the interface in the database. That scenario is mocked by passing
+ * an ifindex of 2.
  */
-
 switchlink_db_status_t
 switchlink_db_get_interface_info(uint32_t ifindex,
                                  switchlink_db_interface_info_t *intf_info) {
   if (ifindex == 1) {
-    intf_info->intf_h = 0x10001;
+    intf_info->intf_h = TEST_INTF_H;
+  } else if (ifindex == 2) {
+    intf_info = nullptr;
+    return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
@@ -109,7 +115,6 @@ switchlink_db_get_interface_info(uint32_t ifindex,
 /*
  * Test fixture.
  */
-
 class SwitchlinkAddressTest : public ::testing::Test {
 protected:
   struct nl_msg *nlmsg_ = nullptr;
@@ -127,23 +132,23 @@ protected:
 
   void ResetVariables() {
     // result variables
-    memset(&results, 0, sizeof(results));
+    results.clear();
   }
 };
 
 /*
  * Creates an IPv4 route
  *
- * Validates the switchlink_process_address_msg(). It parses an
- * RTM_NEWADDR message which contains an IPv4 address and invokes
- * switchlink_create_route() with the correct attributes.
+ * Validates switchlink_process_address_msg(). It parses an
+ * RTM_NEWADDR message, which contains an IPv4 address, and
+ * invokes switchlink_create_route() with the correct attributes.
  *
- * We invoke the switchlink_create_route() 2 times, one with the
- * subnet mask derived from IFA_ADDRESS and another one with /32
- * prefix. Hence we expect 2 test_results here, and this is the
+ * We invoke switchlink_create_route() twice...
+ * ...once with the subnet mask...
+ * ...and once with a /32 prefix mask.
+ * Hence we expect 2 test_results here, and this is the
  * reason why test_results has been taken as a vector of size 2.
  */
-
 TEST_F(SwitchlinkAddressTest, addIpv4Address) {
   struct ifaddrmsg hdr = {
       .ifa_family = AF_INET,
@@ -151,7 +156,6 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
       .ifa_index = 1,
   };
 
-  int prefix_len = 0;
   const uint32_t ipv4_addr = IPV4_ADDR(10, 10, 10, 1);
 
   // Arrange
@@ -173,8 +177,8 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
     EXPECT_EQ(results[i].addr.family, AF_INET);
     EXPECT_EQ(results[i].addr.ip.v4addr.s_addr, ipv4_addr);
     EXPECT_EQ(results[i].gateway.family, AF_INET);
-    EXPECT_EQ(results[i].intf_h, 0x10001);
-    (i == 0) ? prefix_len = hdr.ifa_prefixlen : prefix_len = 32;
+    EXPECT_EQ(results[i].intf_h, TEST_INTF_H);
+    const int prefix_len = (i == 0) ? hdr.ifa_prefixlen : 32;
     EXPECT_EQ(results[i].addr.prefix_len, prefix_len);
   }
 }
@@ -182,16 +186,16 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
 /*
  * Deletes an IPv4 route
  *
- * Validates the switchlink_process_address_msg(). It parses an
- * RTM_DELADDR message which contains an IPv4 address and invokes
- * switchlink_delete_route() with the correct attributes.
+ * Validates switchlink_process_address_msg(). It parses an
+ * RTM_DELADDR message, which contains an IPv4 address, and
+ * invokes switchlink_delete_route() with the correct attributes.
  *
- * We invoke the switchlink_delete_route() 2 times, one with the
- * subnet mask derived from IFA_ADDRESS and another one with /32
- * prefix. Hence we expect 2 test_results here, and this is the
+ * We invoke switchlink_delete_route() twice...
+ * ...once with the subnet mask...
+ * ...and once with a /32 prefix mask.
+ * Hence we expect 2 test_results here, and this is the
  * reason why test_results has been taken as a vector of size 2.
  */
-
 TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
   struct ifaddrmsg hdr = {
       .ifa_family = AF_INET,
@@ -199,7 +203,6 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
       .ifa_index = 1,
   };
 
-  int prefix_len = 0;
   const uint32_t ipv4_addr = IPV4_ADDR(10, 10, 10, 1);
 
   // Arrange
@@ -220,7 +223,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET);
     EXPECT_EQ(results[i].addr.ip.v4addr.s_addr, ipv4_addr);
-    (i == 0) ? prefix_len = hdr.ifa_prefixlen : prefix_len = 32;
+    const int prefix_len = (i == 0) ? hdr.ifa_prefixlen : 32;
     EXPECT_EQ(results[i].addr.prefix_len, prefix_len);
   }
 }
@@ -228,16 +231,16 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
 /*
  * Creates an IPv6 route
  *
- * Validates the switchlink_process_address_msg(). It parses an
- * RTM_NEWADDR message which contains an IPv6 address and invokes
- * switchlink_create_route() with the correct attributes.
+ * Validates switchlink_process_address_msg(). It parses an
+ * RTM_NEWADDR message, which contains an IPv6 address, and
+ *  invokes switchlink_create_route() with the correct attributes.
  *
- * We invoke the switchlink_create_route() 2 times, one with the
- * subnet mask derived from IFA_ADDRESS and another one with /128
- * prefix. Hence we expect 2 test_results here, and this is the
+ * We invoke switchlink_create_route() twice...
+ * ...once with the subnet mask...
+ * ...and once with a /128 prefix mask.
+ * Hence we expect 2 test_results here, and this is the
  * reason why test_results has been taken as a vector of size 2.
  */
-
 TEST_F(SwitchlinkAddressTest, addIpv6Address) {
   struct ifaddrmsg hdr = {
       .ifa_family = AF_INET6,
@@ -245,9 +248,12 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
       .ifa_index = 1,
   };
 
-  int prefix_len = 0;
   struct in6_addr addr6;
   inet_pton(AF_INET6, "2001::1", &addr6);
+  // Word 0 of IPv6 address.
+  const uint16_t V6ADDR_0 = htons(0x2001);
+  // Word 7 of IPv6 address.
+  const uint16_t V6ADDR_7 = htons(0x0001);
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);
@@ -267,10 +273,10 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
     EXPECT_EQ(results[i].opType, ADD_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);
     EXPECT_EQ(results[i].gateway.family, AF_INET6);
-    EXPECT_EQ(results[i].intf_h, 0x10001);
-    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[0], 288);
-    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[7], 256);
-    (i == 0) ? prefix_len = hdr.ifa_prefixlen : prefix_len = 128;
+    EXPECT_EQ(results[i].intf_h, TEST_INTF_H);
+    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[0], V6ADDR_0);
+    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[7], V6ADDR_7);
+    const int prefix_len = (i == 0) ? hdr.ifa_prefixlen : 128;
     EXPECT_EQ(results[i].addr.prefix_len, prefix_len);
   }
 }
@@ -278,16 +284,16 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
 /*
  * Deletes an IPv6 route
  *
- * Validates the switchlink_process_address_msg(). It parses an
- * RTM_DELADDR message which contains an IPv6 address and invokes
- * switchlink_delete_route() with the correct attributes.
+ * Validates switchlink_process_address_msg(). It parses an
+ * RTM_DELADDR message, which contains an IPv6 address, and
+ * invokes switchlink_delete_route() with the correct attributes.
  *
- * We invoke the switchlink_delete_route() 2 times, one with the
- * subnet mask derived from IFA_ADDRESS and another one with /128
- * prefix. Hence we expect 2 test_results here, and this is the
+ * We invoke switchlink_delete_route() twice...
+ * ...once with the subnet mask...
+ * ...and once with a /128 prefix mask.
+ * Hence we expect 2 test_results here, and this is the
  * reason why test_results has been taken as a vector of size 2.
  */
-
 TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
   struct ifaddrmsg hdr = {
       .ifa_family = AF_INET6,
@@ -295,9 +301,12 @@ TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
       .ifa_index = 1,
   };
 
-  int prefix_len = 0;
   struct in6_addr addr6;
   inet_pton(AF_INET6, "2001::1", &addr6);
+  // Word 0 of IPv6 address.
+  const uint16_t V6ADDR_0 = htons(0x2001);
+  // Word 7 of IPv6 address.
+  const uint16_t V6ADDR_7 = htons(0x0001);
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);
@@ -316,9 +325,71 @@ TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);
-    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[0], 288);
-    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[7], 256);
-    (i == 0) ? prefix_len = hdr.ifa_prefixlen : prefix_len = 128;
+    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[0], V6ADDR_0);
+    EXPECT_EQ(results[i].addr.ip.v6addr.__in6_u.__u6_addr16[7], V6ADDR_7);
+    const int prefix_len = (i == 0) ? hdr.ifa_prefixlen : 128;
     EXPECT_EQ(results[i].addr.prefix_len, prefix_len);
   }
+}
+
+/*
+ * Validates switchlink_process_address_msg() in case wrong
+ * address family is passed in the address message header.
+ * The function will simply return if the address family
+ * doesn't belong to either AF_INET or AF_INET6. In that case,
+ * the test results size will be 0.
+ */
+TEST_F(SwitchlinkAddressTest, wrongAddressFamilyTest) {
+  struct ifaddrmsg hdr = {
+      .ifa_family = AF_UNIX,
+      .ifa_prefixlen = 24,
+      .ifa_index = 1,
+  };
+
+  const uint32_t ipv4_addr = IPV4_ADDR(10, 10, 10, 1);
+
+  // Arrange
+  nlmsg_ = nlmsg_alloc_size(1024);
+  ASSERT_NE(nlmsg_, nullptr);
+  nlmsg_put(nlmsg_, 0, 0, RTM_NEWADDR, 0, 0);
+  nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
+  nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
+
+  // Act
+  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
+
+  // Assert
+  EXPECT_EQ(results.size(), 0);
+}
+
+/*
+ * Validates switchlink_process_address_msg() in case
+ * switchlink_db_get_interface_info() is not able to
+ * successfully fetch the interface info from the database
+ * and returns SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND error.
+ * The test results vector size will be 0.
+ */
+TEST_F(SwitchlinkAddressTest, interfaceNotFoundTest) {
+  struct ifaddrmsg hdr = {
+      .ifa_family = AF_INET,
+      .ifa_prefixlen = 24,
+      .ifa_index = 2,
+  };
+
+  const uint32_t ipv4_addr = IPV4_ADDR(10, 10, 10, 1);
+
+  // Arrange
+  nlmsg_ = nlmsg_alloc_size(1024);
+  ASSERT_NE(nlmsg_, nullptr);
+  nlmsg_put(nlmsg_, 0, 0, RTM_NEWADDR, 0, 0);
+  nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
+  nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
+
+  // Act
+  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
+
+  // Assert
+  EXPECT_EQ(results.size(), 0);
 }
