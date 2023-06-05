@@ -1,6 +1,8 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
+ *
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +24,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_TABLE_ID_VALID(_table_id) \
         _table_id > SWITCH_TABLE_NONE &&_table_id < SWITCH_TABLE_MAX
@@ -187,7 +189,7 @@ typedef struct switch_table_s {
   switch_size_t table_size;
   switch_size_t num_entries;
   switch_direction_t direction;
-  switch_uint8_t table_name[SWITCH_MAX_STRING_SIZE];
+  char table_name[SWITCH_MAX_STRING_SIZE];
 } switch_table_t;
 
 switch_status_t switch_api_table_size_get(switch_device_t device,

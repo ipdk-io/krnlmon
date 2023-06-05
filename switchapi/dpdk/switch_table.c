@@ -279,12 +279,12 @@ static const char *switch_table_id_to_string(switch_table_id_t table_id) {
   }
 }
 
-static void set_table_name(char *dest, size_t destsize, const char *src) {
-  size_t nchars = strnlen(src, destsize);
-  if (nchars >= destsize)
-    nchars = destsize - 1;
-  strncpy(dest, src, nchars);
-  dest[nchars] = 0;
+// Ensures that dest is null-terminated if len(src) >= destsize.
+static void set_table_name(char* dest, size_t destsize, const char* src) {
+  if (destsize) {
+    strncpy(dest, src, destsize);
+    dest[destsize - 1] = 0;
+  }
 }
 
 switch_status_t switch_table_init(switch_device_t device,
