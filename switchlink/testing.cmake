@@ -43,3 +43,17 @@ set_test_options(switchlink_link_test)
 
 add_test(NAME switchlink_link_test COMMAND switchlink_link_test)
 
+############################
+# switchlink_neighbor_test #
+############################
+
+add_executable(switchlink_neighbor_test
+    switchlink_neigh_test.cc
+    switchlink_neigh.c
+    switchlink_neigh.h
+)
+
+set_test_options(switchlink_neighbor_test)
+
+add_test(NAME switchlink_neighbor_test COMMAND switchlink_neighbor_test)
+
