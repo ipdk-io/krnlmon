@@ -57,15 +57,9 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t intf_h) {
 
   struct test_results temp = {0};
-  if (mac_addr) {
-    memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
-  }
-  if (bridge_h) {
-    temp.bridge_h = bridge_h;
-  }
-  if (intf_h) {
-    temp.intf_h = intf_h;
-  }
+  memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
+  temp.bridge_h = bridge_h;
+  temp.intf_h = intf_h;
   temp.opType = CREATE_MAC;
   results.push_back(temp);
 }
