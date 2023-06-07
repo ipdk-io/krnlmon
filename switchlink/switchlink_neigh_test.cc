@@ -34,7 +34,6 @@ struct test_results {
   switchlink_handle_t vrf_h;
   // Handler tracking
   enum operation_type opType;
-  int num_handler_calls;
 };
 
 // Value to return for the switch interface and bridge handle.
@@ -48,16 +47,16 @@ vector<test_results> results(2);
  * invoked by switchlink_process_neigh_msg() when the msgtype is
  * RTM_NEWNEIGH. The actual method creates a MAC entry.
  *
- * Since this is dummy method, here the objective is to validate
+ * Since this is a dummy method, the objective is to validate
  * the invocation of this method with correct arguments. All the
  * input params are stored in the test results structure and
- * validated against each test case.
+ * validated by the test case.
  */
 void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t bridge_h,
                            switchlink_handle_t intf_h) {
 
-  struct test_results temp = {};
+  struct test_results temp = {0};
   if (mac_addr) {
     memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
   }
@@ -68,7 +67,6 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
     temp.intf_h = intf_h;
   }
   temp.opType = CREATE_MAC;
-  temp.num_handler_calls++;
   results.push_back(temp);
 }
 
@@ -78,27 +76,22 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
  * RTM_NEWNEIGH. The actual method creates neighbor, nexthop and
  * route entry.
  *
- * Since this is dummy method, here the objective is to validate
+ * Since this is a dummy method, the objective is to validate
  * the invocation of this method with correct arguments. All the
  * input params are stored in the test results structure and
- * validated against each test case.
+ * validated by the test case.
  */
 void switchlink_create_neigh(switchlink_handle_t vrf_h,
                              const switchlink_ip_addr_t *ipaddr,
                              switchlink_mac_addr_t mac_addr,
                              switchlink_handle_t intf_h) {
-  struct test_results temp = {};
+  struct test_results temp = {0};
   if (ipaddr) {
     temp.ipaddr = *ipaddr;
   }
-  if (mac_addr) {
-    memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
-  }
-  if (intf_h) {
-    temp.intf_h = intf_h;
-  }
+  memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
+  temp.intf_h = intf_h;
   temp.opType = CREATE_NEIGHBOR;
-  temp.num_handler_calls++;
   results.push_back(temp);
 }
 
@@ -108,51 +101,50 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
  * RTM_DELNEIGH. The actual method deletes neighbor, nexthop and
  * route entry.
  *
- * Since this is dummy method, here the objective is to validate
+ * Since this is a dummy method, the objective is to validate
  * the invocation of this method with correct arguments. All the
  * input params are stored in the test results structure and
- * validated against each test case.
+ * validated by the test case.
  */
 void switchlink_delete_neigh(switchlink_handle_t vrf_h,
                              const switchlink_ip_addr_t *addr,
                              switchlink_handle_t intf_h) {
-  struct test_results temp = {};
+  struct test_results temp = {0};
   if (addr) {
     temp.ipaddr = *addr;
   }
-  if (intf_h) {
-    temp.intf_h = intf_h;
-  }
+  temp.intf_h = intf_h;
   temp.opType = DELETE_NEIGHBOR;
-  temp.num_handler_calls++;
   results.push_back(temp);
 }
 
 /*
  * Dummy function for switchlink_db_get_interface_info(). This function
- * is invoked by switchlink_process_neigh_msg() for getting the intf
+ * is invoked by switchlink_process_neigh_msg() to get the intf
  * info from the database.
  *
  * Since this is a dummy method, we are passing an ifindex 1 to get L3
  * interface info and ifindex 2 to get L2 interface info from the db.
  *
  * The actual function can also return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND
- * in case it is not able to find the interface in the database.
- * That scenario is mocked by passing an ifindex of 3.
+ * if it is not able to find the interface in the database.
+ * That scenario is handled as the default case.
  */
 switchlink_db_status_t
 switchlink_db_get_interface_info(uint32_t ifindex,
                                  switchlink_db_interface_info_t *intf_info) {
-  if (ifindex == 1) {
-    intf_info->intf_h = TEST_INTF_H;
-    intf_info->intf_type = SWITCHLINK_INTF_TYPE_L3;
-  } else if (ifindex == 2) {
-    intf_info->intf_h = TEST_INTF_H;
-    intf_info->bridge_h = TEST_BRIDGE_H;
-    intf_info->intf_type = SWITCHLINK_INTF_TYPE_L2_ACCESS;
-  } else if (ifindex == 3) {
-    intf_info = nullptr;
-    return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+  switch (ifindex) {
+    case 1:
+      intf_info->intf_h = TEST_INTF_H;
+      intf_info->intf_type = SWITCHLINK_INTF_TYPE_L3;
+      break;
+    case 2:
+      intf_info->intf_h = TEST_INTF_H;
+      intf_info->bridge_h = TEST_BRIDGE_H;
+      intf_info->intf_type = SWITCHLINK_INTF_TYPE_L2_ACCESS;
+      break;
+    default:
+      return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
@@ -192,7 +184,7 @@ protected:
  * We invoke switchlink_create_mac()...
  * ...and switchlink_create_neigh()....
  * Hence we expect 2 test_results here, and this is the
- * reason why test_results has been taken as a vector of size 2.
+ * reason why test_results is a vector of size 2.
  */
 TEST_F(SwitchlinkNeighborTest, createIPv4Neighbor) {
   struct ndmsg hdr = {
@@ -219,18 +211,16 @@ TEST_F(SwitchlinkNeighborTest, createIPv4Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 2);
+  ASSERT_EQ(results.size(), 2);
 
   // Verify test results for MAC creation
   EXPECT_EQ(results[0].opType, CREATE_MAC);
-  EXPECT_EQ(results[0].num_handler_calls, 1);
   EXPECT_EQ(results[0].bridge_h, 0);
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
   EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
 
   // Verify test results for NEIGHBOR creation
   EXPECT_EQ(results[1].opType, CREATE_NEIGHBOR);
-  EXPECT_EQ(results[1].num_handler_calls, 1);
   EXPECT_EQ(results[1].vrf_h, 0);
   EXPECT_EQ(results[1].intf_h, TEST_INTF_H);
   EXPECT_EQ(results[1].ipaddr.family, AF_INET);
@@ -240,7 +230,7 @@ TEST_F(SwitchlinkNeighborTest, createIPv4Neighbor) {
 }
 
 /*
- * Verfies the behavior of switchlink_process_neigh_msg() when
+ * Verifies the behavior of switchlink_process_neigh_msg() when
  * invalid neighbor state (NUD_INCOMPLETE) is passed in the header.
  */
 TEST_F(SwitchlinkNeighborTest, verifyInvalidNeighborState) {
@@ -272,7 +262,7 @@ TEST_F(SwitchlinkNeighborTest, verifyInvalidNeighborState) {
 }
 
 /*
- * Verfies the behavior of switchlink_process_neigh_msg() when
+ * Verifies the behavior of switchlink_process_neigh_msg() when
  * switchlink_db_get_interface_info() isn't able to fetch valid
  * interface info from the database.
  */
@@ -338,11 +328,10 @@ TEST_F(SwitchlinkNeighborTest, createIPv4NeighborWithInvalidMac) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 1);
+  ASSERT_EQ(results.size(), 1);
 
   // Verify test results for NEIGHBOR deletion
   EXPECT_EQ(results[0].opType, DELETE_NEIGHBOR);
-  EXPECT_EQ(results[0].num_handler_calls, 1);
   EXPECT_EQ(results[0].vrf_h, 0);
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
   EXPECT_EQ(results[0].ipaddr.family, AF_INET);
@@ -361,7 +350,7 @@ TEST_F(SwitchlinkNeighborTest, createIPv4NeighborWithInvalidMac) {
  * We invoke switchlink_create_mac()...
  * ...and switchlink_create_neigh()....
  * Hence we expect 2 test_results here, and this is the
- * reason why test_results has been taken as a vector of size 2.
+ * reason why test_results is a vector of size 2.
  */
 TEST_F(SwitchlinkNeighborTest, createIPv6Neighbor) {
   struct ndmsg hdr = {
@@ -394,18 +383,16 @@ TEST_F(SwitchlinkNeighborTest, createIPv6Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 2);
+  ASSERT_EQ(results.size(), 2);
 
   // Verify test results for MAC creation
   EXPECT_EQ(results[0].opType, CREATE_MAC);
-  EXPECT_EQ(results[0].num_handler_calls, 1);
   EXPECT_EQ(results[0].bridge_h, TEST_BRIDGE_H);
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
   EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
 
   // Verify test results for NEIGHBOR creation
   EXPECT_EQ(results[1].opType, CREATE_NEIGHBOR);
-  EXPECT_EQ(results[1].num_handler_calls, 1);
   EXPECT_EQ(results[1].vrf_h, 0);
   EXPECT_EQ(results[1].intf_h, TEST_INTF_H);
   EXPECT_EQ(results[1].ipaddr.family, AF_INET6);
@@ -450,11 +437,10 @@ TEST_F(SwitchlinkNeighborTest, deleteIPv4Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 1);
+  ASSERT_EQ(results.size(), 1);
 
   // Verify test results for NEIGHBOR deletion
   EXPECT_EQ(results[0].opType, DELETE_NEIGHBOR);
-  EXPECT_EQ(results[0].num_handler_calls, 1);
   EXPECT_EQ(results[0].vrf_h, 0);
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
   EXPECT_EQ(results[0].ipaddr.family, AF_INET);
@@ -503,11 +489,10 @@ TEST_F(SwitchlinkNeighborTest, deleteIPv6Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 1);
+  ASSERT_EQ(results.size(), 1);
 
   // Verify test results for NEIGHBOR deletion
   EXPECT_EQ(results[0].opType, DELETE_NEIGHBOR);
-  EXPECT_EQ(results[0].num_handler_calls, 1);
   EXPECT_EQ(results[0].vrf_h, 0);
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
   EXPECT_EQ(results[0].ipaddr.family, AF_INET6);
