@@ -24,6 +24,9 @@
 #include "switchlink_neigh.h"
 #include "switchlink_handle.h"
 
+switchlink_handle_t g_default_vrf_h;
+switchlink_handle_t g_default_bridge_h;
+
 /*
  * Routine Description:
  *    Process neighbor netlink messages
@@ -105,7 +108,6 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         break;
       }
       default:
-        krnlmon_log_debug("neigh: skipping attr %d\n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);
