@@ -252,7 +252,7 @@ TEST_F(SwitchlinkNeighborTest, verifyInvalidNeighborState) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 0);
+  ASSERT_EQ(results.size(), 0);
 }
 
 /*
@@ -285,7 +285,7 @@ TEST_F(SwitchlinkNeighborTest, verifyInvalidInterfaceInfo) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.size(), 0);
+  ASSERT_EQ(results.size(), 0);
 }
 
 /*
