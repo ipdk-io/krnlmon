@@ -3,8 +3,6 @@
 # Copyright 2022 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-cmake_minimum_required(VERSION 3.5)
-
 add_library(switchsai_o OBJECT
    sai.c
    saifdb.c
