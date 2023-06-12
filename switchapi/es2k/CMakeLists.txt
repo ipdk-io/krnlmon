@@ -3,8 +3,6 @@
 # Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-cmake_minimum_required(VERSION 3.5)
-
 add_library(switchapi_target_o OBJECT
   switch_config.c
   switch_device.c
