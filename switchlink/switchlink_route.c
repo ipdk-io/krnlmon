@@ -229,7 +229,6 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         iif = nla_get_u32(attr);
         break;
       default:
-        krnlmon_log_debug("route: skipping attribute type %d \n", attr_type);
         break;
     }
     attr = nla_next(attr, &attrlen);
