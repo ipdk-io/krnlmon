@@ -13,6 +13,9 @@ extern "C" {
 
 using namespace std;
 
+switchlink_handle_t g_default_vrf_h = 0;
+switchlink_handle_t g_default_bridge_h = 0;
+
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
 
 // enum for diff operation types
