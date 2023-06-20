@@ -21,8 +21,6 @@
 #include "switchlink_int.h"
 #include "switchlink_handle.h"
 
-switchlink_handle_t g_default_vrf_h;
-
 /*
  * Routine Description:
  *    Process address netlink messages
