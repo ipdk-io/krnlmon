@@ -40,6 +40,7 @@ endfunction()
 
 add_executable(switchlink_link_test
     switchlink_link_test.cc
+    switchlink_globals.c
     switchlink_link.c
     switchlink_link.h
 )
@@ -53,6 +54,7 @@ define_switchlink_test(switchlink_link_test)
 add_executable(switchlink_address_test
     switchlink_address_test.cc
     switchlink_address.c
+    switchlink_globals.c
 )
 
 define_switchlink_test(switchlink_address_test)
@@ -63,6 +65,7 @@ define_switchlink_test(switchlink_address_test)
 
 add_executable(switchlink_neighbor_test
     switchlink_neigh_test.cc
+    switchlink_globals.c
     switchlink_neigh.c
     switchlink_neigh.h
 )
