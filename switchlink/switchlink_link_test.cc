@@ -5,6 +5,8 @@
 #include <memory.h>
 #include <netlink/msg.h>
 
+#include <vector>
+
 #include "gtest/gtest.h"
 #include "netlink/msg.h"
 
@@ -43,58 +45,66 @@ enum handler_type {
   DELETE_INTERFACE = 2,
   CREATE_TUNNEL_INTERFACE = 3,
   DELETE_TUNNEL_INTERFACE = 4,
+  CREATE_VRF = 5,
 };
 
 /**
  * Result variables.
  */
 struct test_results {
-  // Parameter values
-  switchlink_db_tunnel_interface_info_t tunnel_info;
-  switchlink_db_interface_info_t interface_info;
-  uint32_t ifindex;
+  union {
+    // Parameter values
+    switchlink_db_tunnel_interface_info_t tunnel_info;
+    switchlink_db_interface_info_t interface_info;
+    uint32_t ifindex;
+  };
   // Handler tracking
   enum handler_type handler;
-  int num_handler_calls;
 };
 
-static struct test_results results;
-
+std::vector<test_results> results(2);
 
 /**
  * Dummy functions.
  */
-void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
-  results.handler = CREATE_INTERFACE;
-  results.num_handler_calls += 1;
+void switchlink_create_interface(switchlink_db_interface_info_t* intf) {
+  struct test_results temp = {0};
+  temp.handler = CREATE_INTERFACE;
   if (intf) {
-    results.interface_info = *intf;
+    temp.interface_info = *intf;
   }
+  results.push_back(temp);
 }
 
 void switchlink_delete_interface(uint32_t ifindex) {
-  results.handler = DELETE_INTERFACE;
-  results.num_handler_calls += 1;
-  results.ifindex = ifindex;
+  struct test_results temp = {0};
+  temp.handler = DELETE_INTERFACE;
+  temp.ifindex = ifindex;
+  results.push_back(temp);
 }
 
 void switchlink_create_tunnel_interface(
-    switchlink_db_tunnel_interface_info_t *tnl_intf) {
-  results.handler = CREATE_TUNNEL_INTERFACE;
-  results.num_handler_calls += 1;
+    switchlink_db_tunnel_interface_info_t* tnl_intf) {
+  struct test_results temp = {0};
+  temp.handler = CREATE_TUNNEL_INTERFACE;
   if (tnl_intf) {
-    results.tunnel_info = *tnl_intf;
+    temp.tunnel_info = *tnl_intf;
   }
+  results.push_back(temp);
 }
 
 void switchlink_delete_tunnel_interface(uint32_t ifindex) {
-  results.handler = DELETE_TUNNEL_INTERFACE;
-  results.num_handler_calls += 1;
-  results.ifindex = ifindex;
+  struct test_results temp = {0};
+  temp.handler = DELETE_TUNNEL_INTERFACE;
+  temp.ifindex = ifindex;
+  results.push_back(temp);
 }
 
 // fulfills an external reference
-int switchlink_create_vrf(switchlink_handle_t *vrf_h) {
+int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
+  struct test_results temp = {0};
+  temp.handler = CREATE_VRF;
+  results.push_back(temp);
   return 0;
 }
 
@@ -103,12 +113,10 @@ int switchlink_create_vrf(switchlink_handle_t *vrf_h) {
  */
 class SwitchlinkTest : public ::testing::Test {
  protected:
-  struct nl_msg *nlmsg_ = nullptr;
+  struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
-  void SetUp() override {
-    ResetVariables();
-  }
+  void SetUp() override { ResetVariables(); }
 
   // Tears down the test fixture.
   void TearDown() override {
@@ -125,11 +133,11 @@ class SwitchlinkTest : public ::testing::Test {
     g_cpu_rx_nhop_h = 0;
 
     // result variables
-    memset(&results, 0, sizeof(results));
+    results.clear();
   }
 
 #ifdef DEBUG_CODE
-  const char *IntfTypeName(switchlink_intf_type_t intf_type) const {
+  const char* IntfTypeName(switchlink_intf_type_t intf_type) const {
     switch (intf_type) {
       case SWITCHLINK_INTF_TYPE_NONE:
         return "NONE";
@@ -144,7 +152,7 @@ class SwitchlinkTest : public ::testing::Test {
     }
   }
 
-  const char *LinkTypeName(switchlink_link_type_t link_type) const {
+  const char* LinkTypeName(switchlink_link_type_t link_type) const {
     switch (link_type) {
       case SWITCHLINK_LINK_TYPE_NONE:
         return "NONE";
@@ -165,22 +173,20 @@ class SwitchlinkTest : public ::testing::Test {
     }
   }
 
-  void DumpIpAddress(const char *prefix,
+  void DumpIpAddress(const char* prefix,
                      const switchlink_ip_addr_t addr) const {
     if (addr.family == AF_INET) {
-      printf("%s%u.%u.%u.%u/%u\n", prefix,
-             (addr.ip.v4addr.s_addr >> 24) & 0xff,
+      printf("%s%u.%u.%u.%u/%u\n", prefix, (addr.ip.v4addr.s_addr >> 24) & 0xff,
              (addr.ip.v4addr.s_addr >> 16) & 0xff,
              (addr.ip.v4addr.s_addr >> 8) & 0xff,
-             (addr.ip.v4addr.s_addr & 0xff),
-             addr.prefix_len);
+             (addr.ip.v4addr.s_addr & 0xff), addr.prefix_len);
     } else {
       printf("%sunsupported family (%d)\n", prefix, addr.family);
     }
   }
 
   // dumps interface
-  void DumpInterfaceInfo(const switchlink_db_interface_info_t &info) {
+  void DumpInterfaceInfo(const switchlink_db_interface_info_t& info) {
     printf("\n");
     printf("[switchlink_db_interface_info]\n");
     printf("  .ifname = %s\n", info.ifname);
@@ -200,7 +206,7 @@ class SwitchlinkTest : public ::testing::Test {
 
   // dumps tunnel interface
   void DumpTunnelInterfaceInfo(
-      const switchlink_db_tunnel_interface_info_t &info) const {
+      const switchlink_db_tunnel_interface_info_t& info) const {
     printf("\n");
     printf("[switchlink_db_tunnel_interface_info]\n");
     printf("  .ifname = %s\n", info.ifname);
@@ -215,7 +221,7 @@ class SwitchlinkTest : public ::testing::Test {
     printf("\n");
     fflush(stdout);
   }
-#endif // DEBUG_CODE
+#endif  // DEBUG_CODE
 };
 
 /**
@@ -254,17 +260,18 @@ TEST_F(SwitchlinkTest, can_create_generic_link) {
   g_default_vrf_h = vrf_h;
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 1);
-  EXPECT_EQ(results.handler, CREATE_INTERFACE);
-  EXPECT_STREQ(results.interface_info.ifname, ifname);
-  EXPECT_EQ(results.interface_info.ifindex, hdr.ifi_index);
-  EXPECT_EQ(results.interface_info.vrf_h, vrf_h);
-  EXPECT_EQ(memcmp(results.interface_info.mac_addr, mac_addr, sizeof(mac_addr)),
-            0);
+  ASSERT_EQ(results.size(), 1);
+  EXPECT_EQ(results[0].handler, CREATE_INTERFACE);
+  EXPECT_STREQ(results[0].interface_info.ifname, ifname);
+  EXPECT_EQ(results[0].interface_info.ifindex, hdr.ifi_index);
+  EXPECT_EQ(results[0].interface_info.vrf_h, vrf_h);
+  EXPECT_EQ(
+      memcmp(results[0].interface_info.mac_addr, mac_addr, sizeof(mac_addr)),
+      0);
 }
 
 /**
@@ -302,13 +309,13 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   nla_put(nlmsg_, IFLA_ADDRESS, sizeof(mac_addr), &mac_addr);
 
   // begin LINKINFO
-  struct nlattr *linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
+  struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
 
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
 
   // begin INFO_DATA
-  struct nlattr *infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
+  struct nlattr* infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
   ASSERT_NE(infodata, nullptr);
 
   nla_put_u32(nlmsg_, IFLA_VXLAN_ID, vxlan_id);
@@ -323,20 +330,20 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   nla_nest_end(nlmsg_, linkinfo);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 1);
-  EXPECT_EQ(results.handler, CREATE_TUNNEL_INTERFACE);
-  EXPECT_STREQ(results.tunnel_info.ifname, ifname);
-  EXPECT_EQ(results.tunnel_info.src_ip.ip.v4addr.s_addr, vxlan_local);
-  EXPECT_EQ(results.tunnel_info.dst_ip.ip.v4addr.s_addr, vxlan_group);
-  EXPECT_EQ(results.tunnel_info.link_type, SWITCHLINK_LINK_TYPE_VXLAN);
-  EXPECT_EQ(results.tunnel_info.ifindex, hdr.ifi_index);
-  EXPECT_EQ(results.tunnel_info.vni_id, vxlan_id);
-  EXPECT_EQ(results.tunnel_info.dst_port, vxlan_port);
-  EXPECT_EQ(results.tunnel_info.ttl, vxlan_ttl);
+  ASSERT_EQ(results.size(), 1);
+  EXPECT_EQ(results[0].handler, CREATE_TUNNEL_INTERFACE);
+  EXPECT_STREQ(results[0].tunnel_info.ifname, ifname);
+  EXPECT_EQ(results[0].tunnel_info.src_ip.ip.v4addr.s_addr, vxlan_local);
+  EXPECT_EQ(results[0].tunnel_info.dst_ip.ip.v4addr.s_addr, vxlan_group);
+  EXPECT_EQ(results[0].tunnel_info.link_type, SWITCHLINK_LINK_TYPE_VXLAN);
+  EXPECT_EQ(results[0].tunnel_info.ifindex, hdr.ifi_index);
+  EXPECT_EQ(results[0].tunnel_info.vni_id, vxlan_id);
+  EXPECT_EQ(results[0].tunnel_info.dst_port, vxlan_port);
+  EXPECT_EQ(results[0].tunnel_info.ttl, vxlan_ttl);
 }
 
 /**
@@ -369,12 +376,12 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   nla_put(nlmsg_, IFLA_ADDRESS, sizeof(mac_addr), &mac_addr);
 
   // LINKINFO
-  struct nlattr *linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
+  struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
 
   // INFO_DATA
-  struct nlattr *infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
+  struct nlattr* infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
   ASSERT_NE(infodata, nullptr);
   nla_put_u32(nlmsg_, IFLA_BR_FORWARD_DELAY, 0x200);
   nla_put_u32(nlmsg_, IFLA_BR_HELLO_TIME, 100);
@@ -387,12 +394,11 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   g_default_vrf_h = vrf_h;
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 0);
-  EXPECT_EQ(results.handler, 0);
+  ASSERT_EQ(results.size(), 0);
 }
 
 /**
@@ -422,19 +428,19 @@ TEST_F(SwitchlinkTest, can_delete_vxlan_link) {
   nlmsg_put(nlmsg_, 0, 0, RTM_DELLINK, 0, 0);
   nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
 
-  struct nlattr *linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
+  struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
   nla_nest_end(nlmsg_, linkinfo);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 1);
-  EXPECT_EQ(results.handler, DELETE_TUNNEL_INTERFACE);
-  EXPECT_EQ(results.ifindex, hdr.ifi_index);
+  ASSERT_EQ(results.size(), 1);
+  EXPECT_EQ(results[0].handler, DELETE_TUNNEL_INTERFACE);
+  EXPECT_EQ(results[0].ifindex, hdr.ifi_index);
 }
 
 /**
@@ -465,11 +471,11 @@ TEST_F(SwitchlinkTest, can_delete_tunnel_link) {
   nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
   nla_put_string(nlmsg_, IFLA_IFNAME, ifname);
 
-  struct nlattr *linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
+  struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
 
-  struct nlattr *infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
+  struct nlattr* infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
   ASSERT_NE(infodata, nullptr);
   nla_put_u8(nlmsg_, IFLA_VXLAN_LINK, 1);
   nla_put_u32(nlmsg_, IFLA_VXLAN_LOCAL, 0);
@@ -479,13 +485,13 @@ TEST_F(SwitchlinkTest, can_delete_tunnel_link) {
   nla_nest_end(nlmsg_, linkinfo);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 1);
-  EXPECT_EQ(results.handler, DELETE_INTERFACE);
-  EXPECT_EQ(results.ifindex, hdr.ifi_index);
+  ASSERT_EQ(results.size(), 1);
+  EXPECT_EQ(results[0].handler, DELETE_INTERFACE);
+  EXPECT_EQ(results[0].ifindex, hdr.ifi_index);
 }
 
 /**
@@ -520,9 +526,9 @@ TEST_F(SwitchlinkTest, does_not_delete_generic_link) {
   nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  EXPECT_EQ(results.num_handler_calls, 0);
+  ASSERT_EQ(results.size(), 0);
 }
