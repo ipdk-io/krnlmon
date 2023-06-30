@@ -26,9 +26,9 @@ extern "C" {
     to test the unit in isolation.
 
     Each dummy function stores the parameter with which it was called
-    in the results structure (below), sets results.handler to an enum
-    indicating which function was called, and increments
-    results.num_handler_calls so we know if more than one call was made.
+    in a results structure (below), sets the handler type to an enum
+    indicating which function was called, and appends the structure to
+    the list of results.
 
     The SetUp method in the Test Fixture resets the result variables
     at the beginning of each test case, and the test case inspects the
@@ -38,6 +38,9 @@ extern "C" {
     sequentially, not in parallel, or (2) each test case is run in a
     separate process. If that's not the case, we will need to come up
     with a more creative solution (such as thread-specific storage).
+
+    TODO: Look into using CMock instead of the clumsy methodology used
+    in this test.
 ******************************************************************************/
 
 enum handler_type {
@@ -231,8 +234,8 @@ class SwitchlinkTest : public ::testing::Test {
  * with (kind = None) and calls switchlink_create_interface() with the correct
  * attributes.
  *
- * A generic link is one that does not specify an IFLA_INFO_KIND. It is used
- * for vanilla ethernet interfaces.
+ * A generic link is one that does not specify an IFLA_INFO_KIND attribute.
+ * It is used for vanilla ethernet interfaces.
  *
  * When INFO_KIND is omitted, switchlink_process_link_msg() sets the
  * link_type to SWITCHLINK_LINK_TYPE_NONE.
