@@ -72,6 +72,18 @@ add_executable(switchlink_neighbor_test
 
 define_switchlink_test(switchlink_neighbor_test)
 
+#########################
+# switchlink_route_test #
+#########################
+
+add_executable(switchlink_route_test
+    switchlink_route_test.cc
+    switchlink_route.c
+    switchlink_route.h
+)
+
+define_switchlink_test(switchlink_route_test)
+
 ################
 # krnlmon-test #
 ################
@@ -89,6 +101,7 @@ add_custom_target(krnlmon-test
     switchlink_link_test
     switchlink_address_test
     switchlink_neighbor_test
+    switchlink_route_test
   WORKING_DIRECTORY
     ${CMAKE_BINARY_DIR}
 )
