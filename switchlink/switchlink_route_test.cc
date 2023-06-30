@@ -45,6 +45,22 @@ const switchlink_handle_t TEST_INTF_H1 = 0x10001;
 const switchlink_handle_t TEST_INTF_H2 = 0x20002;
 const switchlink_handle_t TEST_ECMP_H = 0x30003;
 
+const uint8_t v4_SRC_PREFIX_LEN = 24;
+const uint8_t v4_DST_PREFIX_LEN = 24;
+const uint8_t v6_SRC_PREFIX_LEN = 64;
+const uint8_t v6_DST_PREFIX_LEN = 64;
+
+const unsigned char RTM_TOS = 1;
+const unsigned char RTM_TABLE_ID = 1;
+const unsigned char RTM_PROTOCOL = 1;
+const unsigned char RTM_SCOPE = 1;
+const unsigned char RTM_TYPE = 1;
+const unsigned char RTM_FLAGS = 0x1;
+
+const unsigned short RTNH_LEN = 8;
+const unsigned char RTNH_HOPS = 2;
+const unsigned char RTNH_FLAGS = 0x2;
+
 vector<test_results> results(2);
 
 /*
@@ -129,11 +145,8 @@ switchlink_db_get_interface_info(uint32_t ifindex,
  * Dummy function for switchlink_create_nexthop(). Returns 0 on success
  * and -1 in case of error.
  */
-
 int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
-  if (nexthop_info->intf_h == TEST_INTF_H2)
-    return 0;
-  return -1;
+  return (nexthop_info->intf_h == TEST_INTF_H2) ? 0 : -1;
 }
 
 /*
@@ -243,14 +256,14 @@ protected:
 TEST_F(SwitchlinkRouteTest, createIPv4Route) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   const uint32_t src_addr = IPV4_ADDR(10, 10, 10, 10);
@@ -282,7 +295,7 @@ TEST_F(SwitchlinkRouteTest, createIPv4Route) {
   EXPECT_EQ(results[0].intf_h, TEST_INTF_H1);
   EXPECT_EQ(results[0].dst.family, AF_INET);
   EXPECT_EQ(results[0].dst.ip.v4addr.s_addr, dst_addr);
-  EXPECT_EQ(results[0].dst.prefix_len, 24);
+  EXPECT_EQ(results[0].dst.prefix_len, v4_DST_PREFIX_LEN);
   EXPECT_EQ(results[0].gateway.family, AF_INET);
   EXPECT_EQ(results[0].gateway.ip.v4addr.s_addr, gateway_addr);
   EXPECT_EQ(results[0].gateway.prefix_len, 32);
@@ -297,14 +310,14 @@ TEST_F(SwitchlinkRouteTest, createIPv4Route) {
 TEST_F(SwitchlinkRouteTest, invalidInterface) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   const uint32_t src_addr = IPV4_ADDR(10, 10, 10, 10);
@@ -345,13 +358,13 @@ TEST_F(SwitchlinkRouteTest, zeroDestPrefixLen) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
       .rtm_dst_len = 0,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   const uint32_t src_addr = IPV4_ADDR(10, 10, 10, 10);
@@ -398,14 +411,14 @@ TEST_F(SwitchlinkRouteTest, zeroDestPrefixLen) {
 TEST_F(SwitchlinkRouteTest, verifyUnspecifiedAddressFamily) {
   struct rtmsg hdr = {
       .rtm_family = AF_UNSPEC,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   const uint32_t src_addr = IPV4_ADDR(10, 10, 10, 10);
@@ -442,14 +455,14 @@ TEST_F(SwitchlinkRouteTest, verifyUnspecifiedAddressFamily) {
 TEST_F(SwitchlinkRouteTest, createIPv6Route) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET6,
-      .rtm_dst_len = 64,
-      .rtm_src_len = 64,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v6_DST_PREFIX_LEN,
+      .rtm_src_len = v6_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   struct in6_addr gateway_addr6;
@@ -495,7 +508,7 @@ TEST_F(SwitchlinkRouteTest, createIPv6Route) {
   EXPECT_EQ(results[0].dst.family, AF_INET6);
   EXPECT_EQ(results[0].dst.ip.v6addr.__in6_u.__u6_addr16[0], DST_V6ADDR_0);
   EXPECT_EQ(results[0].dst.ip.v6addr.__in6_u.__u6_addr16[7], DST_V6ADDR_7);
-  EXPECT_EQ(results[0].dst.prefix_len, 64);
+  EXPECT_EQ(results[0].dst.prefix_len, v6_DST_PREFIX_LEN);
   EXPECT_EQ(results[0].gateway.family, AF_INET6);
   EXPECT_EQ(results[0].gateway.ip.v6addr.__in6_u.__u6_addr16[0],
             GATEWAY_V6ADDR_0);
@@ -515,14 +528,14 @@ TEST_F(SwitchlinkRouteTest, createIPv6Route) {
 TEST_F(SwitchlinkRouteTest, deleteIPv4Route) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   const uint32_t src_addr = IPV4_ADDR(10, 10, 10, 10);
@@ -551,7 +564,7 @@ TEST_F(SwitchlinkRouteTest, deleteIPv4Route) {
   EXPECT_EQ(results[0].opType, DELETE_ROUTE);
   EXPECT_EQ(results[0].dst.family, AF_INET);
   EXPECT_EQ(results[0].dst.ip.v4addr.s_addr, dst_addr);
-  EXPECT_EQ(results[0].dst.prefix_len, 24);
+  EXPECT_EQ(results[0].dst.prefix_len, v4_DST_PREFIX_LEN);
 }
 
 /*
@@ -565,14 +578,14 @@ TEST_F(SwitchlinkRouteTest, deleteIPv4Route) {
 TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET6,
-      .rtm_dst_len = 64,
-      .rtm_src_len = 64,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v6_DST_PREFIX_LEN,
+      .rtm_src_len = v6_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   struct in6_addr gateway_addr6;
@@ -617,7 +630,7 @@ TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
   EXPECT_EQ(results[0].dst.family, AF_INET6);
   EXPECT_EQ(results[0].dst.ip.v6addr.__in6_u.__u6_addr16[0], DST_V6ADDR_0);
   EXPECT_EQ(results[0].dst.ip.v6addr.__in6_u.__u6_addr16[7], DST_V6ADDR_7);
-  EXPECT_EQ(results[0].dst.prefix_len, 64);
+  EXPECT_EQ(results[0].dst.prefix_len, v6_DST_PREFIX_LEN);
 }
 
 /*
@@ -634,20 +647,20 @@ TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
 TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   struct rtnexthop rt_nh = {
-      .rtnh_len = 8,
-      .rtnh_flags = 0x2,
-      .rtnh_hops = 2,
+      .rtnh_len = RTNH_LEN,
+      .rtnh_flags = RTNH_FLAGS,
+      .rtnh_hops = RTNH_HOPS,
       .rtnh_ifindex = 1,
   };
 
@@ -670,7 +683,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
   // Assert
   ASSERT_EQ(results.size(), 2);
   EXPECT_EQ(results[0].nexthop_info.intf_h, TEST_INTF_H1);
-  EXPECT_EQ(results[0].nexthop_info.vrf_h, 2);
+  EXPECT_EQ(results[0].nexthop_info.vrf_h, g_default_vrf_h);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.family, AF_INET);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.ip.v4addr.s_addr, gateway_addr1);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.prefix_len, 32);
@@ -692,20 +705,20 @@ TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
 TEST_F(SwitchlinkRouteTest, processEcmpCreatev4Nexthop) {
   struct rtmsg hdr = {
       .rtm_family = AF_INET,
-      .rtm_dst_len = 24,
-      .rtm_src_len = 24,
-      .rtm_tos = 1,
-      .rtm_table = 1,
-      .rtm_protocol = 1,
-      .rtm_scope = 1,
-      .rtm_type = 1,
-      .rtm_flags = 0x1,
+      .rtm_dst_len = v4_DST_PREFIX_LEN,
+      .rtm_src_len = v4_SRC_PREFIX_LEN,
+      .rtm_tos = RTM_TOS,
+      .rtm_table = RTM_TABLE_ID,
+      .rtm_protocol = RTM_PROTOCOL,
+      .rtm_scope = RTM_SCOPE,
+      .rtm_type = RTM_TYPE,
+      .rtm_flags = RTM_FLAGS,
   };
 
   struct rtnexthop rt_nh = {
-      .rtnh_len = 8,
-      .rtnh_flags = 0x2,
-      .rtnh_hops = 2,
+      .rtnh_len = RTNH_LEN,
+      .rtnh_flags = RTNH_FLAGS,
+      .rtnh_hops = RTNH_HOPS,
       .rtnh_ifindex = 2,
   };
 
@@ -728,7 +741,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpCreatev4Nexthop) {
   // Assert
   ASSERT_EQ(results.size(), 2);
   EXPECT_EQ(results[0].nexthop_info.intf_h, TEST_INTF_H2);
-  EXPECT_EQ(results[0].nexthop_info.vrf_h, 2);
+  EXPECT_EQ(results[0].nexthop_info.vrf_h, g_default_vrf_h);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.family, AF_INET);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.ip.v4addr.s_addr, gateway_addr1);
   EXPECT_EQ(results[0].nexthop_info.ip_addr.prefix_len, 32);
