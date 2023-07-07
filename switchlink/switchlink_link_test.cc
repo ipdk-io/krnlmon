@@ -46,7 +46,6 @@ enum handler_type {
   DELETE_INTERFACE = 2,           // switchlink_delete_interface
   CREATE_TUNNEL_INTERFACE = 3,    // switchlink_create_tunnel_interface
   DELETE_TUNNEL_INTERFACE = 4,    // switchlink_delete_tunnel_interface
-  CREATE_VRF = 5,                 // switchlink_create_vrf
 };
 
 /**
@@ -107,11 +106,10 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
   results.push_back(temp);
 }
 
-// fulfills an external reference
+// This function is not called by the UUT, but it is referenced by a
+// function in the same source file. We provide a definition to avoid
+// a link error.
 int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
-  struct test_results temp = {0};
-  temp.handler = CREATE_VRF;
-  results.push_back(temp);
   return 0;
 }
 
@@ -125,7 +123,7 @@ class SwitchlinkTest : public ::testing::Test {
   struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
-  void SetUp() override { ResetVariables(); }
+  void SetUp() override { InitializeGlobalState(); }
 
   // Tears down the test fixture.
   void TearDown() override {
@@ -135,9 +133,8 @@ class SwitchlinkTest : public ::testing::Test {
     }
   }
 
-  // Resets static state between test cases.
-  void ResetVariables() {
-    // global variables
+  void InitializeGlobalState() {
+    // switchlink variables
     g_default_vrf_h = 0;
     g_default_bridge_h = 0;
     g_cpu_rx_nhop_h = 0;
