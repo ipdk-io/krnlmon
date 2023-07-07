@@ -16,8 +16,6 @@ extern "C" {
 #include "switchlink/switchlink_link.h"
 }
 
-//#define DEBUG_CODE
-
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
 
 /******************************************************************************
@@ -44,15 +42,16 @@ extern "C" {
 ******************************************************************************/
 
 enum handler_type {
-  CREATE_INTERFACE = 1,
-  DELETE_INTERFACE = 2,
-  CREATE_TUNNEL_INTERFACE = 3,
-  DELETE_TUNNEL_INTERFACE = 4,
-  CREATE_VRF = 5,
+  CREATE_INTERFACE = 1,           // switchlink_create_interface
+  DELETE_INTERFACE = 2,           // switchlink_delete_interface
+  CREATE_TUNNEL_INTERFACE = 3,    // switchlink_create_tunnel_interface
+  DELETE_TUNNEL_INTERFACE = 4,    // switchlink_delete_tunnel_interface
+  CREATE_VRF = 5,                 // switchlink_create_vrf
 };
 
 /**
- * Result variables.
+ * Test results structure. Records the dummy function (handler) called and
+ * its parameter values.
  */
 struct test_results {
   union {
@@ -65,11 +64,16 @@ struct test_results {
   enum handler_type handler;
 };
 
+/**
+ * Test results vector. Contains one entry for each dummy function called
+ * by the UUT.
+ */
 std::vector<test_results> results(2);
 
-/**
- * Dummy functions.
- */
+//----------------------------------------------------------------------
+// Test doubles (dummy functions)
+//----------------------------------------------------------------------
+
 void switchlink_create_interface(switchlink_db_interface_info_t* intf) {
   struct test_results temp = {0};
   temp.handler = CREATE_INTERFACE;
@@ -111,11 +115,13 @@ int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
   return 0;
 }
 
-/**
- * Test fixture.
- */
+//----------------------------------------------------------------------
+// Test fixture
+//----------------------------------------------------------------------
+
 class SwitchlinkTest : public ::testing::Test {
  protected:
+  // Netlink message buffer.
   struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
@@ -129,103 +135,21 @@ class SwitchlinkTest : public ::testing::Test {
     }
   }
 
+  // Resets static state between test cases.
   void ResetVariables() {
     // global variables
     g_default_vrf_h = 0;
     g_default_bridge_h = 0;
     g_cpu_rx_nhop_h = 0;
 
-    // result variables
+    // results vector
     results.clear();
   }
-
-#ifdef DEBUG_CODE
-  const char* IntfTypeName(switchlink_intf_type_t intf_type) const {
-    switch (intf_type) {
-      case SWITCHLINK_INTF_TYPE_NONE:
-        return "NONE";
-      case SWITCHLINK_INTF_TYPE_L2_ACCESS:
-        return "L2_ACCESS";
-      case SWITCHLINK_INTF_TYPE_L3:
-        return "L3";
-      case SWITCHLINK_INTF_TYPE_L3VI:
-        return "L3VI";
-      default:
-        return "UNKNOWN";
-    }
-  }
-
-  const char* LinkTypeName(switchlink_link_type_t link_type) const {
-    switch (link_type) {
-      case SWITCHLINK_LINK_TYPE_NONE:
-        return "NONE";
-      case SWITCHLINK_LINK_TYPE_ETH:
-        return "ETH";
-      case SWITCHLINK_LINK_TYPE_TUN:
-        return "TUN";
-      case SWITCHLINK_LINK_TYPE_BRIDGE:
-        return "BRIDGE";
-      case SWITCHLINK_LINK_TYPE_VXLAN:
-        return "VXLAN";
-      case SWITCHLINK_LINK_TYPE_BOND:
-        return "BOND";
-      case SWITCHLINK_LINK_TYPE_RIF:
-        return "RIF";
-      default:
-        return "UNKNOWN";
-    }
-  }
-
-  void DumpIpAddress(const char* prefix,
-                     const switchlink_ip_addr_t addr) const {
-    if (addr.family == AF_INET) {
-      printf("%s%u.%u.%u.%u/%u\n", prefix, (addr.ip.v4addr.s_addr >> 24) & 0xff,
-             (addr.ip.v4addr.s_addr >> 16) & 0xff,
-             (addr.ip.v4addr.s_addr >> 8) & 0xff,
-             (addr.ip.v4addr.s_addr & 0xff), addr.prefix_len);
-    } else {
-      printf("%sunsupported family (%d)\n", prefix, addr.family);
-    }
-  }
-
-  // dumps interface
-  void DumpInterfaceInfo(const switchlink_db_interface_info_t& info) {
-    printf("\n");
-    printf("[switchlink_db_interface_info]\n");
-    printf("  .ifname = %s\n", info.ifname);
-    printf("  .ifindex = %u\n", info.ifindex);
-    printf("  .intf_type = %u <%s>\n", info.intf_type,
-           IntfTypeName(info.intf_type));
-    printf("  .link_type = %d <%s>\n", info.link_type,
-           LinkTypeName(info.link_type));
-    printf("  .vrf_h = 0x%lx\n", info.vrf_h);
-    printf("  .mac_addr =");
-    for (size_t i = 0; i < sizeof(info.mac_addr); ++i) {
-      printf(" %02x", info.mac_addr[i]);
-    }
-    printf("\n\n");
-    fflush(stdout);
-  }
-
-  // dumps tunnel interface
-  void DumpTunnelInterfaceInfo(
-      const switchlink_db_tunnel_interface_info_t& info) const {
-    printf("\n");
-    printf("[switchlink_db_tunnel_interface_info]\n");
-    printf("  .ifname = %s\n", info.ifname);
-    printf("  .ifindex = %u\n", info.ifindex);
-    DumpIpAddress("  .src_ip = ", info.src_ip);
-    DumpIpAddress("  .dst_ip = ", info.dst_ip);
-    printf("  .link_type = %d <%s>\n", info.link_type,
-           LinkTypeName(info.link_type));
-    printf("  .vni_id = %u\n", info.vni_id);
-    printf("  .dst_port = %u\n", info.dst_port);
-    printf("  .ttl = %u\n", info.ttl);
-    printf("\n");
-    fflush(stdout);
-  }
-#endif  // DEBUG_CODE
 };
+
+//----------------------------------------------------------------------
+// Test cases
+//----------------------------------------------------------------------
 
 /**
  * Creates a generic link.
@@ -252,7 +176,13 @@ TEST_F(SwitchlinkTest, can_create_generic_link) {
   const unsigned char mac_addr[6] = {0x00, 0xdd, 0xee, 0xaa, 0xdd, 0x00};
   const switchlink_handle_t vrf_h = 0xdeadbeefdeadbeefUL;
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: construct an RTM_NEWLINK message
+  // 1) Allocate a netlink message buffer
+  // 2) Add RTM_NEWLINK header
+  // 3) Add payload header
+  // 4) Add attributes
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_NEWLINK, 0, 0);
@@ -262,11 +192,15 @@ TEST_F(SwitchlinkTest, can_create_generic_link) {
 
   g_default_vrf_h = vrf_h;
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify test case results
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 1);
   EXPECT_EQ(results[0].handler, CREATE_INTERFACE);
   EXPECT_STREQ(results[0].interface_info.ifname, ifname);
@@ -301,7 +235,9 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   const uint8_t vxlan_ttl = 3;
   const uint16_t vxlan_port = 4789;
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: construct an RTM_NEWLINK message
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_NEWLINK, 0, 0);
@@ -311,13 +247,13 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   nla_put_u32(nlmsg_, IFLA_MTU, 1450);
   nla_put(nlmsg_, IFLA_ADDRESS, sizeof(mac_addr), &mac_addr);
 
-  // begin LINKINFO
+  // LINKINFO container
   struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
 
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
 
-  // begin INFO_DATA
+  // INFO_DATA container
   struct nlattr* infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
   ASSERT_NE(infodata, nullptr);
 
@@ -332,11 +268,15 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   // end LINKINFO
   nla_nest_end(nlmsg_, linkinfo);
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify test case results
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 1);
   EXPECT_EQ(results[0].handler, CREATE_TUNNEL_INTERFACE);
   EXPECT_STREQ(results[0].tunnel_info.ifname, ifname);
@@ -370,7 +310,9 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   const unsigned char mac_addr[6] = {0x52, 0x54, 0x00, 0xd9, 0x56, 0x95};
   const switchlink_handle_t vrf_h = 0xdeafbeadfadebadeUL;
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: construct an RTM_NEWLINK message
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_NEWLINK, 0, 0);
@@ -378,12 +320,12 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   nla_put_string(nlmsg_, IFLA_IFNAME, ifname);
   nla_put(nlmsg_, IFLA_ADDRESS, sizeof(mac_addr), &mac_addr);
 
-  // LINKINFO
+  // LINKINFO container
   struct nlattr* linkinfo = nla_nest_start(nlmsg_, IFLA_LINKINFO);
   ASSERT_NE(linkinfo, nullptr);
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
 
-  // INFO_DATA
+  // INFO_DATA container
   struct nlattr* infodata = nla_nest_start(nlmsg_, IFLA_INFO_DATA);
   ASSERT_NE(infodata, nullptr);
   nla_put_u32(nlmsg_, IFLA_BR_FORWARD_DELAY, 0x200);
@@ -396,11 +338,15 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
 
   g_default_vrf_h = vrf_h;
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify results of text case
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 0);
 }
 
@@ -425,7 +371,9 @@ TEST_F(SwitchlinkTest, can_delete_vxlan_link) {
   };
   const char kind[] = "vxlan";
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: create an RTM_DELLINK message
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_DELLINK, 0, 0);
@@ -436,11 +384,15 @@ TEST_F(SwitchlinkTest, can_delete_vxlan_link) {
   nla_put_string(nlmsg_, IFLA_INFO_KIND, kind);
   nla_nest_end(nlmsg_, linkinfo);
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify results of test case
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 1);
   EXPECT_EQ(results[0].handler, DELETE_TUNNEL_INTERFACE);
   EXPECT_EQ(results[0].ifindex, hdr.ifi_index);
@@ -467,7 +419,9 @@ TEST_F(SwitchlinkTest, can_delete_tunnel_link) {
   const char ifname[] = "virbr0-nic";
   const char kind[] = "tun";
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: create an RTM_DELLINK message
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_DELLINK, 0, 0);
@@ -487,11 +441,15 @@ TEST_F(SwitchlinkTest, can_delete_tunnel_link) {
 
   nla_nest_end(nlmsg_, linkinfo);
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify results of test case
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 1);
   EXPECT_EQ(results[0].handler, DELETE_INTERFACE);
   EXPECT_EQ(results[0].ifindex, hdr.ifi_index);
@@ -522,16 +480,22 @@ TEST_F(SwitchlinkTest, does_not_delete_generic_link) {
       .ifi_change = 0,
   };
 
-  // Arrange
+  //-------------------------------------------------------
+  // Arrange: create an RTM_DELLINK message
+  //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
   nlmsg_put(nlmsg_, 0, 0, RTM_DELLINK, 0, 0);
   nlmsg_append(nlmsg_, &hdr, sizeof(hdr), NLMSG_ALIGNTO);
 
-  // Act
+  //-------------------------------------------------------
+  // Act: call UUT with message
+  //-------------------------------------------------------
   const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_link_msg(nlmsg, nlmsg->nlmsg_type);
 
-  // Assert
+  //-------------------------------------------------------
+  // Assert: verify test case results
+  //-------------------------------------------------------
   ASSERT_EQ(results.size(), 0);
 }
