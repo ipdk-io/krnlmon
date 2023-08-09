@@ -31,6 +31,9 @@ add_library(krnlmon SHARED
     krnlmon_main.h
 )
 
+# Required for Ninja.
+set_target_properties(switchutils_o PROPERTIES LINKER_LANGUAGE "C")
+
 target_link_libraries(krnlmon nl-route-3 nl-3)
 
 # Version number for .pc file.
