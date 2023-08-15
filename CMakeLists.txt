@@ -9,6 +9,12 @@ cmake_minimum_required(VERSION 3.15)
 
 project(krnlmon LANGUAGES C CXX)
 
+include(FindPkgConfig)
+
+# Find netlink libraries
+pkg_check_modules(nl3 REQUIRED IMPORTED_TARGET libnl-3.0)
+pkg_check_modules(nl3-route REQUIRED IMPORTED_TARGET libnl-route-3.0)
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_compile_options(-Werror)
@@ -31,7 +37,7 @@ add_library(krnlmon SHARED
     krnlmon_main.h
 )
 
-target_link_libraries(krnlmon nl-route-3 nl-3)
+target_link_libraries(krnlmon PkgConfig::nl3 PkgConfig::nl3-route)
 
 # Version number for .pc file.
 set(VERSION 1.0)
