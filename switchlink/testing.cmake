@@ -13,7 +13,7 @@ function(define_switchlink_test test_name)
     target_link_libraries(${test_name} PUBLIC
         GTest::gtest
         GTest::gtest_main
-        PkgConfig::libnl3
+        PkgConfig::nl3
         target_sys
     )
 
