@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache 2.0
 
 include(FindGTest)
+mark_as_advanced(GTest_DIR)
 
 add_subdirectory(sai)
 
