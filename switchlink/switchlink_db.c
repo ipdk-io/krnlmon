@@ -34,6 +34,7 @@
 //#include "utils.h"
 
 #define SWITCHLINK_MAC_KEY_LEN 14
+#define SWITCHLINK_DB_INVALID_HANDLE 0x0
 
 static tommy_trie_inplace switchlink_db_handle_obj_map;
 static tommy_trie_inplace switchlink_db_tuntap_obj_map;
@@ -46,6 +47,8 @@ static tommy_list switchlink_db_neigh_obj_list;
 static tommy_list switchlink_db_nexthop_obj_list;
 static tommy_list switchlink_db_ecmp_obj_list;
 static tommy_list switchlink_db_route_obj_list;
+static tommy_list switchlink_db_lag_obj_list;
+static tommy_list switchlink_db_lag_member_obj_list;
 
 /*
  * Routine Description:
@@ -969,6 +972,215 @@ switchlink_db_status_t switchlink_db_get_route_info(
 
 /*
  * Routine Description:
+ *    Add lag to switchlink database
+ *
+ * Arguments:
+ *    [in] lag_info - switchlink database lag info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ */
+switchlink_db_status_t switchlink_db_add_lag(
+    switchlink_db_lag_info_t* lag_info) {
+  krnlmon_assert(lag_info != NULL);
+  switchlink_db_lag_obj_t* obj =
+      switchlink_malloc(sizeof(switchlink_db_lag_obj_t), 1);
+  krnlmon_assert(obj != NULL);
+  memcpy(&(obj->lag_info), lag_info, sizeof(switchlink_db_lag_info_t));
+  tommy_list_insert_tail(&switchlink_db_lag_obj_list, &obj->list_node, obj);
+  return SWITCHLINK_DB_STATUS_SUCCESS;
+}
+
+/*
+ * Routine Description:
+ *    Delete lag from switchlink database
+ *
+ * Arguments:
+ *    [in] lag_info - switchlink database lag info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_delete_lag(
+    switchlink_db_lag_info_t* lag_info) {
+  krnlmon_assert(lag_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_obj_list);
+  while (node) {
+    switchlink_db_lag_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((obj->lag_info.ifindex == lag_info->ifindex)) {
+      tommy_list_remove_existing(&switchlink_db_lag_obj_list, &obj->list_node);
+      switchlink_free(obj);
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/*
+ * Routine Description:
+ *    Get lag info from switchlink database
+ *
+ * Arguments:
+ *    [in/out] lag_info - switchlink database lag info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_get_lag_info(
+    switchlink_db_lag_info_t* lag_info) {
+  krnlmon_assert(lag_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_obj_list);
+  while (node) {
+    switchlink_db_lag_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if (obj->lag_info.ifindex == lag_info->ifindex) {
+      memcpy(lag_info, &(obj->lag_info), sizeof(switchlink_db_lag_info_t));
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/*
+ * Routine Description:
+ *    Update active slave lag info in switchlink database
+ *
+ * Arguments:
+ *    [in/out] lag_info - switchlink database lag info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_update_lag_active_slave(
+    switchlink_db_lag_info_t* lag_info) {
+  krnlmon_assert(lag_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_obj_list);
+  while (node) {
+    switchlink_db_lag_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((obj->lag_info.ifindex == lag_info->ifindex)) {
+      obj->lag_info.active_slave = lag_info->active_slave;
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/*
+ * Routine Description:
+ *    Get parent lag handle of a lag member
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address of LAG member
+ *    [out] lag_h - LAG handle of parent LAG object
+ *
+ * Return Values:
+ *    lag_h of parent LAG object on success
+ *    SWITCHLINK_DB_INVALID_HANDLE on failure
+ */
+switchlink_handle_t switchlink_db_get_lag_handle(
+    switchlink_mac_addr_t mac_addr) {
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_obj_list);
+  while (node) {
+    switchlink_db_lag_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if (memcmp(obj->lag_info.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t) == 0)) {
+      return obj->lag_info.lag_h;
+    }
+  }
+  return SWITCHLINK_DB_INVALID_HANDLE;
+}
+
+/*
+ * Routine Description:
+ *    Add lag member to switchlink database
+ *
+ * Arguments:
+ *    [in] lag_member_info - switchlink database lag member info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ */
+switchlink_db_status_t switchlink_db_add_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info) {
+  krnlmon_assert(lag_member_info != NULL);
+  switchlink_db_lag_member_obj_t* obj =
+      switchlink_malloc(sizeof(switchlink_db_lag_member_obj_t), 1);
+  krnlmon_assert(obj != NULL);
+  memcpy(&(obj->lag_member_info), lag_member_info,
+         sizeof(switchlink_db_lag_member_info_t));
+  tommy_list_insert_tail(&switchlink_db_lag_member_obj_list, &obj->list_node,
+                         obj);
+  return SWITCHLINK_DB_STATUS_SUCCESS;
+}
+
+/*
+ * Routine Description:
+ *    Delete lag member from switchlink database
+ *
+ * Arguments:
+ *    [in] lag_member_info - switchlink database lag member info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_delete_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info) {
+  krnlmon_assert(lag_member_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_member_obj_list);
+  while (node) {
+    switchlink_db_lag_member_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+      tommy_list_remove_existing(&switchlink_db_lag_member_obj_list,
+                                 &obj->list_node);
+      switchlink_free(obj);
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/*
+ * Routine Description:
+ *    Get lag member info from switchlink database
+ *
+ * Arguments:
+ *    [in/out] lag_member_info - switchlink database lag member info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_get_lag_member_info(
+    switchlink_db_lag_member_info_t* lag_member_info) {
+  krnlmon_assert(lag_member_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_member_obj_list);
+  while (node) {
+    switchlink_db_lag_member_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+      memcpy(lag_member_info, &(obj->lag_member_info),
+             sizeof(switchlink_db_lag_member_info_t));
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/*
+ * Routine Description:
  *    Initialize switchlink database
  *
  * Arguments:
@@ -989,4 +1201,6 @@ void switchlink_init_db(void) {
   tommy_list_init(&switchlink_db_neigh_obj_list);
   tommy_list_init(&switchlink_db_ecmp_obj_list);
   tommy_list_init(&switchlink_db_route_obj_list);
+  tommy_list_init(&switchlink_db_lag_obj_list);
+  tommy_list_init(&switchlink_db_lag_member_obj_list);
 }

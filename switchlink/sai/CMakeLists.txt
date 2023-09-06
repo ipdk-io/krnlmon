@@ -12,6 +12,7 @@ add_library(switchlink_sai_o OBJECT
    switchlink_handle_tunnel.c
    switchlink_init_sai.c
    switchlink_init_sai.h
+   switchlink_handle_lag.c
 )
 
 target_include_directories(switchlink_sai_o PRIVATE

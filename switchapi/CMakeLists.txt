@@ -23,6 +23,7 @@ add_library(switchapi_o OBJECT
   switch_internal.h
   switch_l3.h
   switch_l3_int.h
+  switch_lag.h
   switch_neighbor.h
   switch_neighbor_int.h
   switch_nhop.h

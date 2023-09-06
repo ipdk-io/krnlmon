@@ -211,6 +211,29 @@ extern "C" {
  * check LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH */
 #define LNW_ECMP_PER_GROUP_HASH_SIZE 8
 
+/* LAG_HASH_TABLE */
+#define LNW_LAG_HASH_TABLE \
+        "linux_networking_control.lag_hash_table"
+
+#define LNW_LAG_HASH_TABLE_KEY_LAG_ID \
+        "user_meta.cmeta.flex[15:0]"
+#define LNW_LAG_HASH_TABLE_KEY_META_COMMON_HASH \
+        "vmeta.common.hash[2:0]"
+#define LNW_LAG_HASH_TABLE_KEY_USER_META_BIT32_ZEROS \
+        "user_meta.cmeta.bit32_zeros[15:3]"
+
+#define LNW_LAG_HASH_TABLE_ACTION_SEND_TO_LAG_MEMBER \
+        "linux_networking_control.send_to_lag_member"
+
+#define LNW_ACTION_SEND_TO_LAG_MEMBER_PARAM_PORT_ID \
+        "port"
+
+#define LNW_LAG_HASH_SIZE 65536
+
+/* Only 3 bits is allocated for hash size per group in LNW.p4
+ * check LNW_LAG_HASH_TABLE_KEY_META_COMMON_HASH */
+#define LNW_LAG_PER_GROUP_HASH_SIZE 8
+
 /* IPV4_TABLE */
 #define LNW_IPV4_TABLE \
         "linux_networking_control.ipv4_table"

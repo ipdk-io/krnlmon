@@ -10,6 +10,7 @@ add_library(switchapi_target_o OBJECT
   switch_handle.c
   switch_id.c
   switch_l3.c
+  switch_lag.c
   switch_neighbor.c
   switch_nhop.c
   switch_pd_fdb.c
@@ -19,6 +20,8 @@ add_library(switchapi_target_o OBJECT
   switch_pd_tunnel.c
   switch_pd_utils.c
   switch_pd_utils.h
+  switch_pd_lag.h
+  switch_pd_lag.c
   switch_rif.c
   switch_rmac.c
   switch_table.c

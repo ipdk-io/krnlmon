@@ -445,6 +445,7 @@ sai_status_t sai_initialize(void) {
   sai_virtual_router_initialize(&sai_api_service);
   sai_neighbor_initialize(&sai_api_service);
   sai_tunnel_initialize(&sai_api_service);
+  sai_lag_initialize(&sai_api_service);
 
   return SAI_STATUS_SUCCESS;
 }

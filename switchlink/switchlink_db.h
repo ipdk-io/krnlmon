@@ -122,6 +122,27 @@ typedef struct switchlink_db_tunnel_interface_info_ {
   uint8_t ttl;
 } switchlink_db_tunnel_interface_info_t;
 
+/*** LAG structures ***/
+typedef struct switchlink_db_lag_info_ {
+  char ifname[SWITCHLINK_INTERFACE_NAME_LEN_MAX];
+  uint8_t bond_mode;
+  uint8_t oper_state;
+  uint32_t ifindex;
+  uint32_t active_slave;
+  switchlink_handle_t lag_h;
+  switchlink_mac_addr_t mac_addr;
+} switchlink_db_lag_info_t;
+
+typedef struct switchlink_db_lag_member_info_ {
+  char ifname[SWITCHLINK_INTERFACE_NAME_LEN_MAX];
+  uint32_t ifindex;
+  uint8_t oper_state;
+  uint8_t slave_state;
+  switchlink_handle_t lag_member_h;
+  switchlink_handle_t lag_h;
+  switchlink_mac_addr_t mac_addr;
+} switchlink_db_lag_member_info_t;
+
 /*** interface ***/
 extern switchlink_db_status_t switchlink_db_add_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
@@ -223,5 +244,29 @@ extern switchlink_db_status_t switchlink_db_add_tuntap(
 extern switchlink_db_status_t switchlink_db_get_tuntap_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info);
 
+/*** lag ***/
+extern switchlink_db_status_t switchlink_db_add_lag(
+    switchlink_db_lag_info_t* lag_info);
+
+extern switchlink_db_status_t switchlink_db_delete_lag(
+    switchlink_db_lag_info_t* lag_info);
+
+extern switchlink_db_status_t switchlink_db_get_lag_info(
+    switchlink_db_lag_info_t* lag_info);
+
+extern switchlink_db_status_t switchlink_db_update_lag_active_slave(
+    switchlink_db_lag_info_t* lag_info);
+
+extern switchlink_handle_t switchlink_db_get_lag_handle(
+    switchlink_mac_addr_t mac_addr);
+
+extern switchlink_db_status_t switchlink_db_add_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
+
+extern switchlink_db_status_t switchlink_db_delete_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
+
+extern switchlink_db_status_t switchlink_db_get_lag_member_info(
+    switchlink_db_lag_member_info_t* lag_member_info);
 
 #endif /* __SWITCHLINK_DB_H__ */

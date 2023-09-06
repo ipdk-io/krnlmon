@@ -15,6 +15,7 @@ add_library(switchsai_o OBJECT
    saitunnel.c
    saiutils.c
    saivirtualrouter.c
+   sailag.c
 )
 
 target_include_directories(switchsai_o PRIVATE
