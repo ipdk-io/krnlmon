@@ -117,6 +117,9 @@ set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 add_custom_target(krnlmon-coverage
     lcov --capture --directory ${CMAKE_BINARY_DIR}
     --output-file krnlmon.info
+    --exclude '/opt/deps/*'
+    --exclude '/usr/include/*'
+    --exclude '9/**'
   COMMAND
     genhtml krnlmon.info --output-directory coverage
   WORKING_DIRECTORY
