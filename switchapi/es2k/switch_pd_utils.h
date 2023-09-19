@@ -18,6 +18,7 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
+#include "switchapi/switch_lag.h"
 
 #include "bf_pal/bf_pal_port_intf.h"
 #include "bf_rt/bf_rt_common.h"
@@ -67,6 +68,7 @@ bf_status_t switch_pd_deallocate_handle_session(bf_rt_table_key_hdl *key_hdl_t,
                                                 bool entry_type);
 
 void switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info);
+void switch_pd_to_get_lag_port_id(switch_api_lag_info_t *port_lag_info);
 
 tdi_status_t tdi_switch_pd_deallocate_resources(tdi_flags_hdl *flags_hdl,
                                                 tdi_target_hdl *target_hdl,

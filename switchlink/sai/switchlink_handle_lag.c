@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
+#include "bf_pal/bf_pal_port_intf.h"
+#include "bf_rt/bf_rt_common.h"
+#include "bf_types.h"
+#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchlink_init_sai.h"
+
+#define SWITCH_PD_MAC_STR_LENGTH 18
+#define SWITCH_PD_TARGET_VPORT_OFFSET 16
 
 static sai_lag_api_t* sai_lag_api = NULL;
 
@@ -47,12 +54,30 @@ sai_status_t sai_init_lag_api() {
  *    0 on success
  *   -1 in case of error
  */
-static int create_lag(const switchlink_db_lag_info_t* lag_intf,
+static int create_lag(const switchlink_db_interface_info_t* lag_intf,
                       switchlink_handle_t* lag_h) {
-  int ac = 0;
-  sai_attribute_t attr_list[5];
-  memset(attr_list, 0, sizeof(attr_list));
-  return sai_lag_api->create_lag(lag_h, 0, ac, attr_list);
+  sai_status_t status = SAI_STATUS_SUCCESS;
+
+  if (lag_intf->link_type == SWITCHLINK_LINK_TYPE_BOND) {
+    sai_attribute_t attr_list[5];
+    int ac = 0;
+    memset(attr_list, 0, sizeof(attr_list));
+    attr_list[ac].id = SAI_LAG_ATTR_CUSTOM_RANGE_START;
+    memcpy(attr_list[ac].value.mac, lag_intf->mac_addr, sizeof(sai_mac_t));
+    ac++;
+
+    attr_list[ac].id = SAI_LAG_ATTR_INGRESS_ACL;
+    attr_list[ac].value.oid = 0;
+    if (!(lag_h)) {
+      krnlmon_log_error("LAG handle is NULL");
+      return -1;
+    } else {
+      attr_list[ac].value.oid = *lag_h;
+    }
+    ac++;
+    status = sai_lag_api->create_lag(lag_h, 0, ac, attr_list);
+  }
+  return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
 /*
@@ -67,10 +92,12 @@ static int create_lag(const switchlink_db_lag_info_t* lag_intf,
  *    0 on success
  *   -1 in case of error
  */
-static int delete_lag(const switchlink_db_lag_info_t* lag,
+static int delete_lag(const switchlink_db_interface_info_t* lag,
                       switchlink_handle_t lag_h) {
   sai_status_t status = SAI_STATUS_SUCCESS;
-  status = sai_lag_api->remove_lag(lag_h);
+  if (lag->link_type == SWITCHLINK_LINK_TYPE_BOND) {
+    status = sai_lag_api->remove_lag(lag_h);
+  }
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
@@ -86,7 +113,7 @@ static int delete_lag(const switchlink_db_lag_info_t* lag,
  *    0 on success
  *   -1 in case of error
  */
-static int set_lag_attribute(const switchlink_db_lag_info_t* lag_info,
+static int set_lag_attribute(const switchlink_db_interface_info_t* lag_info,
                              switchlink_handle_t lag_member_h) {
   sai_attribute_t attr;
   memset(&attr, 0, sizeof(attr));
@@ -113,10 +140,36 @@ static int create_lag_member(
     switchlink_handle_t* lag_member_h) {
   sai_attribute_t attr_list[5];
   int ac = 0;
+  bf_status_t bf_status;
+  uint32_t port_id = 0;
+  bf_dev_id_t bf_dev_id = 0;
+  static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
+
+  snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
+           lag_member_intf->mac_addr[0], lag_member_intf->mac_addr[1],
+           lag_member_intf->mac_addr[2], lag_member_intf->mac_addr[3],
+           lag_member_intf->mac_addr[4], lag_member_intf->mac_addr[5]);
+  mac_str[SWITCH_PD_MAC_STR_LENGTH - 1] = '\0';
+
+  bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
+  if (bf_status != BF_SUCCESS) {
+    port_id = lag_member_intf->mac_addr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
+    krnlmon_log_error(
+        "Failed to get the port ID, error: %d, Deriving "
+        "port ID from second byte of MAC address: "
+        "%s",
+        bf_status, mac_str);
+  }
+
   memset(attr_list, 0, sizeof(attr_list));
   attr_list[ac].id = SAI_LAG_MEMBER_ATTR_LAG_ID;
   attr_list[ac].value.oid = lag_member_intf->lag_h;
   ac++;
+
+  attr_list[ac].id = SAI_LAG_MEMBER_ATTR_PORT_ID;
+  attr_list[ac].value.u32 = port_id;
+  ac++;
+
   return sai_lag_api->create_lag_member(lag_member_h, 0, ac, attr_list);
 }
 
@@ -149,27 +202,24 @@ static int delete_lag_member(const switchlink_db_lag_member_info_t* lag_member,
  * Return Values:
  *    void
  */
-void switchlink_create_lag(switchlink_db_lag_info_t* lag_intf) {
+void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
   switchlink_db_status_t status;
-  switchlink_db_lag_info_t lag_info;
+  switchlink_db_interface_info_t lag_info;
 
-  memset(&lag_info, 0, sizeof(switchlink_db_lag_info_t));
-  lag_info.ifindex = lag_intf->ifindex;
-
-  status = switchlink_db_get_lag_info(&lag_info);
+  status = switchlink_db_get_interface_info(lag_intf->ifindex, &lag_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     // create the lag
-    krnlmon_log_debug("Switchlink LAG Create: %s", lag_intf->ifname);
+    krnlmon_log_debug("Switchlink LAG Interface Create: %s", lag_intf->ifname);
 
     status = create_lag(lag_intf, &(lag_intf->lag_h));
     if (status) {
       krnlmon_log_error(
-          "newlink: Failed to create switchlink lag: %s, error: %d\n",
+          "newlink: Failed to create switchlink lag interface: %s, error: %d\n",
           lag_intf->ifname, status);
       return;
     }
     // add the mapping to the db
-    switchlink_db_add_lag(lag_intf);
+    switchlink_db_add_interface(lag_intf->ifindex, lag_intf);
     return;
   } else {
     krnlmon_log_debug("Switchlink DB already has LAG config: %s",
@@ -191,10 +241,28 @@ void switchlink_create_lag(switchlink_db_lag_info_t* lag_intf) {
           return;
         }
       }
+      lag_info.active_slave = lag_intf->active_slave;
     }
-    // update the db structure
-    switchlink_db_update_lag_active_slave(lag_intf);
-    return;
+
+    if (memcmp(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+               sizeof(switchlink_mac_addr_t))) {
+      memcpy(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+             sizeof(switchlink_mac_addr_t));
+
+      // Delete if RMAC is configured previously, and create this new RMAC.
+      status = create_lag(&lag_info, &lag_info.lag_h);
+      if (status) {
+        krnlmon_log_error(
+            "newlink: Failed to create switchlink lag interface,"
+            " error: %d\n",
+            status);
+        return;
+      }
+    }
+
+    // update the LAG db structure
+    switchlink_db_update_interface(lag_intf->ifindex, &lag_info);
+    lag_intf->lag_h = lag_info.lag_h;
   }
   return;
 }
@@ -210,17 +278,15 @@ void switchlink_create_lag(switchlink_db_lag_info_t* lag_intf) {
  *    void
  */
 void switchlink_delete_lag(uint32_t ifindex) {
-  switchlink_db_lag_info_t lag_info;
-  memset(&lag_info, 0, sizeof(switchlink_db_lag_info_t));
-  lag_info.ifindex = ifindex;
-  if (switchlink_db_get_lag_info(&lag_info) ==
+  switchlink_db_interface_info_t lag_intf;
+  if (switchlink_db_get_interface_info(ifindex, &lag_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     return;
   }
 
   // delete the lag from backend and DB
-  delete_lag(&lag_info, lag_info.lag_h);
-  switchlink_db_delete_lag(&lag_info);
+  delete_lag(&lag_intf, lag_intf.lag_h);
+  switchlink_db_delete_interface(lag_intf.ifindex);
 }
 
 /*
@@ -244,8 +310,9 @@ void switchlink_create_lag_member(
   status = switchlink_db_get_lag_member_info(&lag_member_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     // find the parent lag handle
-    lag_member_intf->lag_h =
-        switchlink_db_get_lag_handle(lag_member_intf->mac_addr);
+    // TODO:
+    // lag_member_intf->lag_h =
+    // switchlink_db_get_lag_handle(lag_member_intf->mac_addr);
     if (lag_member_intf->lag_h == SWITCH_API_INVALID_HANDLE) {
       krnlmon_log_debug("Not able to find parent lag handle");
     }
@@ -265,6 +332,8 @@ void switchlink_create_lag_member(
     switchlink_db_add_lag_member(lag_member_intf);
     return;
   }
+
+  lag_member_intf->lag_member_h = lag_member_info.lag_member_h;
   // lag member has already been created
   krnlmon_log_debug("Switchlink DB already has LAG config: %s",
                     lag_member_intf->ifname);

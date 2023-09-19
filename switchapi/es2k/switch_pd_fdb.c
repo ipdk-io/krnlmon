@@ -317,6 +317,52 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
                       LNW_L2_FWD_TX_TABLE, status);
             goto dealloc_resources;
         }
+    } else if (entry_add && SWITCH_LAG_HANDLE(api_l2_tx_info->rif_handle)) {
+        krnlmon_log_info("Populate l2_fwd_lag action in %s ", LNW_L2_FWD_TX_TABLE);
+
+        status = tdi_action_name_to_id(table_info_hdl,
+                                       LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD_LAG,
+                                       &action_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                     LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD_LAG, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_action_data_allocate(table_hdl, action_id,
+                                                &data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                     "error: %d", action_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_L2_FWD_LAG_PARAM_LAG_ID,
+                                                   action_id, &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_L2_FWD_LAG_PARAM_LAG_ID, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          (api_l2_tx_info->rif_handle &
+                                          ~(SWITCH_HANDLE_TYPE_LAG <<
+                                          SWITCH_HANDLE_TYPE_SHIFT)));
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to add %s entry, error: %d",
+                      LNW_L2_FWD_TX_TABLE, status);
+            goto dealloc_resources;
+        }
     } else {
         /* Delete an entry from target */
         status = tdi_table_entry_del(table_hdl, session, target_hdl, 
@@ -485,6 +531,55 @@ switch_status_t switch_pd_l2_tx_ipv6_forward_table_entry(
 
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_l2_tx_info->port_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to add %s entry, error: %d",
+                      LNW_L2_FWD_TX_IPV6_TABLE, status);
+            goto dealloc_resources;
+        }
+    } else if (entry_add && SWITCH_LAG_HANDLE(api_l2_tx_info->rif_handle)) {
+
+        krnlmon_log_info("Populate l2_fwd_lag action in %s ",
+                  LNW_L2_FWD_TX_IPV6_TABLE);
+
+        status = tdi_action_name_to_id(table_info_hdl,
+                                       LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD_LAG,
+                                       &action_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                     LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD_LAG, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_action_data_allocate(table_hdl, action_id,
+                                                &data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                     "error: %d", action_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_L2_FWD_LAG_PARAM_LAG_ID,
+                                                   action_id,
+                                                   &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_L2_FWD_LAG_PARAM_LAG_ID, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          (api_l2_tx_info->rif_handle &
+                                          ~(SWITCH_HANDLE_TYPE_LAG <<
+                                          SWITCH_HANDLE_TYPE_SHIFT)));
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
@@ -784,7 +879,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
         goto dealloc_resources;
     }
 
-    if (entry_add) {
+    if (entry_add && SWITCH_RIF_HANDLE(api_l2_rx_info->rif_handle)) {
         /* Add an entry to target */
         krnlmon_log_info("Populate l2_fwd action in %s for rif handle "
                   "%x ", LNW_L2_FWD_RX_TABLE,
@@ -841,6 +936,56 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                                      flags_hdl, key_hdl, data_hdl);
         if (status != TDI_SUCCESS) {
           krnlmon_log_error("Unable to add %s table entry, error: %d", 
+                   LNW_L2_FWD_RX_TABLE, status);
+            goto dealloc_resources;
+        }
+    } else if (entry_add && SWITCH_LAG_HANDLE(api_l2_rx_info->rif_handle)) {
+       /* Add an entry to target */
+        krnlmon_log_info("Populate l2_fwd_rx_lag action in %s for lag handle "
+                  "%x ", LNW_L2_FWD_RX_TABLE,
+                  (unsigned int) api_l2_rx_info->rif_handle);
+
+        status = tdi_action_name_to_id(table_info_hdl,
+                                       LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG,
+                                       &action_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                     LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_action_data_allocate(table_hdl, action_id,
+                                                &data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                     "error: %d", action_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_RX_L2_FWD_LAG_PARAM_LAG_ID,
+                                                   action_id,
+                                                   &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_RX_L2_FWD_LAG_PARAM_LAG_ID, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          (api_l2_rx_info->rif_handle &
+                                          ~(SWITCH_HANDLE_TYPE_LAG <<
+                                          SWITCH_HANDLE_TYPE_SHIFT)));
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+          krnlmon_log_error("Unable to add %s table entry, error: %d",
                    LNW_L2_FWD_RX_TABLE, status);
             goto dealloc_resources;
         }

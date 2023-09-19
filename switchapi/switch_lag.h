@@ -61,9 +61,13 @@ typedef struct switch_api_lag_info_s {
   uint32_t lag_ifindex;
   uint32_t lag_mode;
   uint32_t active_slave;
+  switch_handle_t rmac_handle; /**< rmac group id */
+  switch_port_t port_id;
+  switch_port_t phy_port_id;
 } switch_api_lag_info_t;
 
 typedef struct switch_lag_info_s {
+  switch_mac_addr_t dst_mac;
   switch_api_lag_info_t api_lag_info;
   switch_list_t lag_members;
   switch_handle_t lag_handle;
@@ -74,6 +78,7 @@ typedef struct switch_lag_info_s {
 typedef struct switch_api_lag_member_info_s {
   uint32_t lag_member_ifindex;
   uint8_t slave_state;
+  uint32_t port_id;
 } switch_api_lag_member_info_t;
 
 typedef struct switch_lag_member_info_s {
@@ -96,12 +101,16 @@ switch_status_t switch_api_lag_member_create(
 switch_status_t switch_api_lag_member_delete(switch_device_t device,
                                              switch_handle_t lag_member_handle);
 
-switch_status_t switch_api_lag_update(
+switch_status_t switch_api_lag_update(const switch_device_t device,
+                                      const switch_handle_t lag_handle,
+                                      const switch_handle_t lag_member_handle);
+
+switch_status_t switch_api_lag_attribute_get(
     const switch_device_t device, const switch_handle_t lag_handle,
-    const switch_handle_t lag_member_handle);
+    const switch_uint64_t lag_flags, switch_api_lag_info_t* api_lag_info);
 
 switch_status_t switch_api_program_lag_hw(switch_handle_t lag_handle,
-		switch_handle_t lag_member_handle);
+                                          switch_handle_t lag_member_handle);
 
 #ifdef __cplusplus
 }

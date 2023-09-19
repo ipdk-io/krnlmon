@@ -176,6 +176,11 @@ static void process_info_lag_member_data_attr(const struct nlattr* infoslavedata
       attrs->slave_state = nla_get_u8(infoslavedata);
       krnlmon_log_debug("IFLA Bond Slave State: %d\n", attrs->slave_state);
       break;
+    case IFLA_BOND_SLAVE_PERM_HWADDR:
+      if (nla_len(infoslavedata) == sizeof(switchlink_mac_addr_t)) {
+        memcpy(&attrs->mac_addr, nla_data(infoslavedata), nla_len(infoslavedata));
+      }
+      break;
     default:
       break;
   }
@@ -203,7 +208,6 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   switchlink_db_interface_info_t intf_info = {0};
   switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
-  switchlink_db_lag_info_t lag_info = {0};
   switchlink_db_lag_member_info_t lag_member_info = {0};
   bool create_lag_member = false;
 
@@ -273,7 +277,6 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         // IFLA_ADDRESS for kind "sit" is 4 octets
         if (nla_len(attr) == sizeof(switchlink_mac_addr_t)) {
           memcpy(&intf_info.mac_addr, nla_data(attr), nla_len(attr));
-          memcpy(&attrs.mac_addr, nla_data(attr), nla_len(attr));
 
           krnlmon_log_debug(
               "Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -296,17 +299,18 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         krnlmon_log_debug("LAG via teaming driver isn't supported\n");
         break;
       case SWITCHLINK_LINK_TYPE_BOND:
-        snprintf(lag_info.ifname, sizeof(lag_info.ifname), "%s", attrs.ifname);
-        lag_info.ifindex = ifmsg->ifi_index;
-        lag_info.bond_mode = attrs.bond_mode;
-        lag_info.oper_state = attrs.oper_state;
-        lag_info.active_slave = attrs.active_slave;
-	memcpy(&(lag_info.mac_addr), &(attrs.mac_addr), sizeof(switchlink_mac_addr_t));
-        if (lag_info.bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP) {
-          switchlink_create_lag(&lag_info);
+        snprintf(intf_info.ifname, sizeof(intf_info.ifname), "%s", attrs.ifname);
+        intf_info.ifindex = ifmsg->ifi_index;
+        intf_info.bond_mode = attrs.bond_mode;
+        intf_info.oper_state = attrs.oper_state;
+        intf_info.active_slave = attrs.active_slave;
+	intf_info.link_type = SWITCHLINK_LINK_TYPE_BOND;
+        intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
+        if (intf_info.bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP) {
+          switchlink_create_lag(&intf_info);
         } else {
           krnlmon_log_debug("bond mode:%d isn't supported\n",
-                            lag_info.bond_mode);
+                            intf_info.bond_mode);
         }
         break;
       case SWITCHLINK_LINK_TYPE_ETH:
@@ -343,6 +347,7 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         intf_info.ifindex = ifmsg->ifi_index;
         intf_info.vrf_h = g_default_vrf_h;
         intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
+	intf_info.link_type = SWITCHLINK_LINK_TYPE_RIF;
 
         switchlink_create_interface(&intf_info);
         break;

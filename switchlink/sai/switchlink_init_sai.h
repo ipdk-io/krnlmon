@@ -46,7 +46,7 @@ void switchlink_create_tunnel_interface(
 void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_BOND handlers
-void switchlink_create_lag(switchlink_db_lag_info_t* lag_info);
+void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf);
 void switchlink_delete_lag(uint32_t ifindex);
 void switchlink_create_lag_member(switchlink_db_lag_member_info_t* lag_member_info);
 void switchlink_delete_lag_member(uint32_t ifindex);

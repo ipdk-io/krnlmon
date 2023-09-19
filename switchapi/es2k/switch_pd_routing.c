@@ -180,17 +180,17 @@ switch_status_t switch_pd_nexthop_table_entry(
         goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id,
+    status = tdi_key_field_set_value_and_mask(key_hdl, field_id,
                                      (api_nexthop_pd_info->nexthop_handle &
                                      ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                     SWITCH_HANDLE_TYPE_SHIFT)));
+                                     SWITCH_HANDLE_TYPE_SHIFT)), 0xFFFF);
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for nexthop_table,"
                           " error: %d", field_id, status);
         goto dealloc_resources;
     }
 
-    if (entry_add) {
+    if (entry_add && SWITCH_RIF_HANDLE(api_nexthop_pd_info->rif_handle)) {
         /* Add an entry to target */
         krnlmon_log_info("Populate set_nexthop action with neighbor id: 0x%x in"
                           " nexthop_table for nexthop_id 0x%x",
@@ -269,6 +269,99 @@ switch_status_t switch_pd_nexthop_table_entry(
 
         status = tdi_data_field_set_value(data_hdl, data_field_id,
                                           api_nexthop_pd_info->port_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_entry_add(table_hdl, session, target_hdl,
+                                     flags_hdl, key_hdl, data_hdl);
+        if (status != TDI_SUCCESS) {
+          krnlmon_log_error("Unable to add %s entry, error: %d", 
+                   LNW_NEXTHOP_TABLE, status);
+            goto dealloc_resources;
+        }
+    } else if (entry_add && SWITCH_LAG_HANDLE(api_nexthop_pd_info->rif_handle)) {
+
+        /* Add an entry to target */
+        krnlmon_log_info("Populate set_nexthop_lag action with neighbor id: 0x%x in"
+                          " nexthop_table for nexthop_id 0x%x",
+                          (unsigned int) api_nexthop_pd_info->neighbor_handle,
+                          (unsigned int) api_nexthop_pd_info->nexthop_handle);
+
+        status = tdi_action_name_to_id(table_info_hdl,
+                                       LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG,
+                                       &action_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator ID for: %s, "
+			      "error: %d",
+                               LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_table_action_data_allocate(table_hdl, action_id,
+			                        &data_hdl);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get action allocator for ID: %d, "
+                     "error: %d", action_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(
+                            table_info_hdl,
+                            LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF,
+                            action_id, &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, "
+                              "error: %d",
+                               LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF, status);
+            goto dealloc_resources;
+        }
+
+	// For ES2K we need to program RIF_id action in Big endian
+        network_byte_order_rif_id = api_nexthop_pd_info->rif_handle &
+                                     ~(SWITCH_HANDLE_TYPE_LAG <<
+                                     SWITCH_HANDLE_TYPE_SHIFT);
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          network_byte_order_rif_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID,
+                                                   action_id, &data_field_id);
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                     LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          (api_nexthop_pd_info->neighbor_handle &
+                                          ~(SWITCH_HANDLE_TYPE_NEIGHBOR <<
+                                          SWITCH_HANDLE_TYPE_SHIFT)));
+        if (status != TDI_SUCCESS) {
+            krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                     data_field_id, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                                   LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID,
+                                                   action_id, &data_field_id);
+        if (status != TDI_SUCCESS) {
+          krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                   LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID, status);
+            goto dealloc_resources;
+        }
+
+        status = tdi_data_field_set_value(data_hdl, data_field_id,
+                                          network_byte_order_rif_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
                      data_field_id, status);

@@ -44,6 +44,7 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   bool mac_addr_valid = false;
   bool ipaddr_valid = false;
   switchlink_ip_addr_t ipaddr;
+  switchlink_handle_t intf_h = 0x0; 
 
   krnlmon_assert((msgtype == RTM_NEWNEIGH) || (msgtype == RTM_DELNEIGH));
   nbh = nlmsg_data(nlmsg);
@@ -110,7 +111,11 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     attr = nla_next(attr, &attrlen);
   }
 
-  switchlink_handle_t intf_h = ifinfo.intf_h;
+  if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+    intf_h = ifinfo.lag_h;
+  } else {
+    intf_h = ifinfo.intf_h;
+  }
   switchlink_handle_t bridge_h = g_default_bridge_h;
   if (ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L2_ACCESS) {
     bridge_h = ifinfo.bridge_h;

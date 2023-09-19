@@ -251,6 +251,59 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
     return;
 }
 
+void
+switch_pd_to_get_lag_port_id(switch_api_lag_info_t *port_lag_info)
+{
+    switch_handle_t rmac_handle = SWITCH_API_INVALID_HANDLE;
+    switch_status_t status = SWITCH_STATUS_SUCCESS;
+    switch_rmac_info_t *rmac_info = NULL;
+    switch_rmac_entry_t *rmac_entry = NULL;
+    switch_node_t *node = NULL;
+    bf_dev_id_t bf_dev_id = 0;
+    static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
+    bf_status_t bf_status;
+    uint32_t port_id = 0;
+
+    /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
+    rmac_handle = port_lag_info->rmac_handle;
+    status = switch_rmac_get(bf_dev_id, rmac_handle, &rmac_info);
+    if (status != SWITCH_STATUS_SUCCESS) {
+        krnlmon_log_error("Cannot get rmac info for handle 0x%x, error: %d",
+                  rmac_handle, status);
+        return;
+    }
+
+    SWITCH_LIST_GET_HEAD(rmac_info->rmac_list, node);
+    rmac_entry = (switch_rmac_entry_t *)node->data;
+
+    if (!rmac_entry) {
+        krnlmon_log_error("Cannot get rmac_entry for handle 0x%x", rmac_handle);
+        return;
+    }
+
+    snprintf(mac_str, sizeof(mac_str),
+             "%02x:%02x:%02x:%02x:%02x:%02x", rmac_entry->mac.mac_addr[0],
+                                              rmac_entry->mac.mac_addr[1],
+                                              rmac_entry->mac.mac_addr[2],
+                                              rmac_entry->mac.mac_addr[3],
+                                              rmac_entry->mac.mac_addr[4],
+                                              rmac_entry->mac.mac_addr[5]);
+    mac_str[SWITCH_PD_MAC_STR_LENGTH-1] = '\0';
+
+    bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
+    if (bf_status != BF_SUCCESS) {
+        port_id = rmac_entry->mac.mac_addr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
+        krnlmon_log_error("Failed to get the port ID, error: %d, Deriving "
+                          "port ID from second byte of MAC address: "
+                          "%s", bf_status, mac_str);
+    }
+
+    port_lag_info->port_id = port_id;
+
+    krnlmon_log_debug("Found port ID: %d for MAC: %s", port_id, mac_str);
+    return;
+}
+
 tdi_status_t tdi_switch_pd_deallocate_resources(tdi_flags_hdl *flags_hdl,
                                                 tdi_target_hdl *target_hdl,
                                                 tdi_table_key_hdl *key_hdl,

@@ -25,6 +25,7 @@
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rmac_int.h"
+#include "switchapi/switch_lag.h"
 #include "switch_pd_utils.h"
 
 switch_status_t switch_neighbor_init(switch_device_t device) {
@@ -106,6 +107,7 @@ switch_status_t switch_api_neighbor_create(
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_pd_routing_info_t pd_neighbor_info;
   switch_rif_info_t *rif_info = NULL;
+  switch_lag_info_t *lag_info = NULL;
   switch_handle_t rmac_handle = SWITCH_API_INVALID_HANDLE;
   switch_rmac_info_t *rmac_info = NULL;
   switch_rmac_entry_t *rmac_entry = NULL;
@@ -175,28 +177,54 @@ switch_status_t switch_api_neighbor_create(
 
       /*get rif_info to access port_id */
       pd_neighbor_info.rif_handle = api_neighbor_info->rif_handle;
-      status = switch_rif_get(device, pd_neighbor_info.rif_handle, &rif_info);
-      CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
-      status = switch_pd_get_physical_port_id(device,
-                                              rif_info->api_rif_info.port_id,
-                                              &pd_neighbor_info.port_id);
-      CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+      if(SWITCH_RIF_HANDLE(api_neighbor_info->rif_handle)) {
+        status = switch_rif_get(device, pd_neighbor_info.rif_handle, &rif_info);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+        status = switch_pd_get_physical_port_id(device,
+                                                rif_info->api_rif_info.port_id,
+                                                &pd_neighbor_info.port_id);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-      SWITCH_MEMCPY(&pd_neighbor_info.dst_mac_addr,
-                    &api_neighbor_info->mac_addr, sizeof(switch_mac_addr_t));
+        SWITCH_MEMCPY(&pd_neighbor_info.dst_mac_addr,
+                      &api_neighbor_info->mac_addr, sizeof(switch_mac_addr_t));
 
-      status = switch_routing_table_entry(device, &pd_neighbor_info, true);
-      if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("routing tables update failed \n");
-        return status;
+        status = switch_routing_table_entry(device, &pd_neighbor_info, true);
+        if (status != SWITCH_STATUS_SUCCESS) {
+          krnlmon_log_error("routing tables update failed \n");
+          return status;
+        }
+
+        /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
+        rmac_handle = rif_info->api_rif_info.rmac_handle;
+        status = switch_rmac_get(device, rmac_handle, &rmac_info);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+        SWITCH_LIST_GET_HEAD(rmac_info->rmac_list, node);
+        rmac_entry = (switch_rmac_entry_t *)node->data;
+      } else if (SWITCH_LAG_HANDLE(api_neighbor_info->rif_handle)) {
+        status = switch_lag_get(device, pd_neighbor_info.rif_handle, &lag_info);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+        status = switch_pd_get_physical_port_id(device,
+                                                lag_info->api_lag_info.port_id,
+                                                &pd_neighbor_info.port_id);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+        SWITCH_MEMCPY(&pd_neighbor_info.dst_mac_addr,
+                      &api_neighbor_info->mac_addr, sizeof(switch_mac_addr_t));
+
+        status = switch_routing_table_entry(device, &pd_neighbor_info, true);
+        if (status != SWITCH_STATUS_SUCCESS) {
+          krnlmon_log_error("routing tables update failed \n");
+          return status;
+        }
+
+        /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
+        rmac_handle = lag_info->api_lag_info.rmac_handle;
+        status = switch_rmac_get(device, rmac_handle, &rmac_info);
+        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+        SWITCH_LIST_GET_HEAD(rmac_info->rmac_list, node);
+        rmac_entry = (switch_rmac_entry_t *)node->data;
       }
-
-      /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
-      rmac_handle = rif_info->api_rif_info.rmac_handle;
-      status = switch_rmac_get(device, rmac_handle, &rmac_info);
-      CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
-      SWITCH_LIST_GET_HEAD(rmac_info->rmac_list, node);
-      rmac_entry = (switch_rmac_entry_t *)node->data;
 
       /* SRC MAC is picked from RMAC of RIF entry. This needs to be programmed
        * only once, even though many neighbors learnt on same RIF. */

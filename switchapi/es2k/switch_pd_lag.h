@@ -21,16 +21,20 @@
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_lag.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-switch_status_t switch_pd_lag_entry(switch_device_t device,
-    const switch_lag_info_t *lag_info, bool entry_add);
+switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
+                                             const switch_lag_info_t* lag_info,
+                                             bool entry_add);
 
-#ifdef  __cplusplus
+switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
+                                             const switch_lag_info_t* lag_info,
+                                             bool entry_add);
+
+#ifdef __cplusplus
 }
 #endif
 
 #endif
-
