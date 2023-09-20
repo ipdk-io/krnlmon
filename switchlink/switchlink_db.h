@@ -24,6 +24,7 @@
 
 #define SWITCHLINK_INTERFACE_NAME_LEN_MAX 32
 #define SWITCHLINK_ECMP_NUM_MEMBERS_MAX 16
+#define SWITCHLINK_DB_INVALID_HANDLE 0x0
 
 typedef enum {
   SWITCHLINK_DB_STATUS_SUCCESS,
@@ -65,7 +66,7 @@ typedef struct switchlink_db_interface_info_ {
     uint8_t ipv4_urpf_mode;
     uint8_t ipv6_urpf_mode;
   } flags;
-  // lag attributes
+  // LAG attributes
   uint8_t bond_mode;
   uint8_t oper_state;
   uint32_t active_slave;
@@ -238,7 +239,7 @@ extern switchlink_db_status_t switchlink_db_add_tuntap(
 extern switchlink_db_status_t switchlink_db_get_tuntap_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info);
 
-/*** lag ***/
+/*** LAG ***/
 extern switchlink_handle_t switchlink_db_get_lag_handle(
     switchlink_mac_addr_t mac_addr);
 

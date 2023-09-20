@@ -77,6 +77,7 @@ typedef struct switchlink_db_route_obj_ {
   switchlink_db_route_info_t route_info;
 } switchlink_db_route_obj_t;
 
+// LAG member object
 typedef struct switchlink_db_lag_member_obj_ {
   tommy_node list_node;
   switchlink_db_lag_member_info_t lag_member_info;

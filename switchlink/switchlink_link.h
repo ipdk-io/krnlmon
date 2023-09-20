@@ -36,6 +36,7 @@ typedef enum {
   SWITCHLINK_LINK_TYPE_TEAM,
 } switchlink_link_type_t;
 
+// Different modes of LAG
 typedef enum {
   SWITCHLINK_BOND_MODE_BALANCE_RR,
   SWITCHLINK_BOND_MODE_ACTIVE_BACKUP,

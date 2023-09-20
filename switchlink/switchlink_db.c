@@ -34,7 +34,6 @@
 //#include "utils.h"
 
 #define SWITCHLINK_MAC_KEY_LEN 14
-#define SWITCHLINK_DB_INVALID_HANDLE 0x0
 
 static tommy_trie_inplace switchlink_db_handle_obj_map;
 static tommy_trie_inplace switchlink_db_tuntap_obj_map;

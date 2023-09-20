@@ -25,10 +25,12 @@
 extern "C" {
 #endif
 
+// Method to program the tx_lag_table on Tx side
 switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
                                              const switch_lag_info_t* lag_info,
                                              bool entry_add);
 
+// Method to program the rx_lag_table on Rx side
 switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
                                              const switch_lag_info_t* lag_info,
                                              bool entry_add);

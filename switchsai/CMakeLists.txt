@@ -7,6 +7,7 @@ add_library(switchsai_o OBJECT
    sai.c
    saifdb.c
    saiinternal.h
+   sailag.c
    saineighbor.c
    sainexthop.c
    sainexthopgroup.c
@@ -15,7 +16,6 @@ add_library(switchsai_o OBJECT
    saitunnel.c
    saiutils.c
    saivirtualrouter.c
-   sailag.c
 )
 
 target_include_directories(switchsai_o PRIVATE

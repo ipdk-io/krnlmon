@@ -19,13 +19,12 @@
 
 #include "switch_base_types.h"
 #include "switch_types_int.h"
+
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
-#define SWITCH_LAG_MAX 4
-
-/** lag handle wrappers */
+/** LAG handle wrappers */
 #define switch_lag_handle_create(_device)               \
   switch_handle_create(_device, SWITCH_HANDLE_TYPE_LAG, \
                        sizeof(switch_lag_info_t))
@@ -61,7 +60,7 @@ typedef struct switch_api_lag_info_s {
   uint32_t lag_ifindex;
   uint32_t lag_mode;
   uint32_t active_slave;
-  switch_handle_t rmac_handle; /**< rmac group id */
+  switch_handle_t rmac_handle;
   switch_port_t port_id;
   switch_port_t phy_port_id;
 } switch_api_lag_info_t;
@@ -87,28 +86,35 @@ typedef struct switch_lag_member_info_s {
   switch_node_t node;
 } switch_lag_member_info_t;
 
+// Switchapi method to create LAG
 switch_status_t switch_api_lag_create(switch_device_t device,
                                       switch_api_lag_info_t* api_lag_info,
                                       switch_handle_t* lag_handle);
 
+// Switchapi method to delete LAG
 switch_status_t switch_api_lag_delete(switch_device_t device,
                                       switch_handle_t lag_handle);
 
+// Switchapi method to create LAG member
 switch_status_t switch_api_lag_member_create(
     switch_device_t device, switch_api_lag_member_info_t* api_lag_member_info,
     switch_handle_t* lag_member_handle);
 
+// Switchapi method to delete LAG member
 switch_status_t switch_api_lag_member_delete(switch_device_t device,
                                              switch_handle_t lag_member_handle);
 
+// Switchapi method to update LAG structure
 switch_status_t switch_api_lag_update(const switch_device_t device,
                                       const switch_handle_t lag_handle,
                                       const switch_handle_t lag_member_handle);
 
+// Switchapi method to get LAG attributes
 switch_status_t switch_api_lag_attribute_get(
     const switch_device_t device, const switch_handle_t lag_handle,
     const switch_uint64_t lag_flags, switch_api_lag_info_t* api_lag_info);
 
+// Switchapi method to program LAG tables in HW
 switch_status_t switch_api_program_lag_hw(switch_handle_t lag_handle,
                                           switch_handle_t lag_member_handle);
 
@@ -116,4 +122,4 @@ switch_status_t switch_api_program_lag_hw(switch_handle_t lag_handle,
 }
 #endif
 
-#endif /* __SWITCH_LAG_H__ */
+#endif

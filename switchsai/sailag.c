@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include "sailag.h"
-
 #include "saiinternal.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_lag.h"

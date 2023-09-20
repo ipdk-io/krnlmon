@@ -126,10 +126,10 @@ extern "C" {
 
 #define LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD \
         "linux_networking_control.l2_fwd"
-#define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG \
-        "linux_networking_control.rx_l2_fwd_lag"
 #define LNW_ACTION_L2_FWD_PARAM_PORT \
         "port"
+#define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG \
+        "linux_networking_control.rx_l2_fwd_lag"
 #define LNW_ACTION_RX_L2_FWD_LAG_PARAM_LAG_ID \
         "lag_group_id"
 
@@ -227,6 +227,7 @@ extern "C" {
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID \
         "lag_group_id"
 
+
 /* ECMP_HASH_TABLE */
 #define LNW_ECMP_HASH_TABLE \
         "linux_networking_control.ecmp_hash_table"
@@ -247,6 +248,7 @@ extern "C" {
  * check LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH */
 #define LNW_ECMP_PER_GROUP_HASH_SIZE 8
 
+
 /* TX_LAG_TABLE */
 #define LNW_TX_LAG_TABLE \
         "linux_networking_control.tx_lag_table"
@@ -258,14 +260,13 @@ extern "C" {
 
 #define LNW_TX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
         "linux_networking_control.set_egress_port"
-#define LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT \
-        "egress_port"
 
 #define LNW_LAG_HASH_SIZE 65536
 
 /* Only 3 bits is allocated for hash size per group in LNW.p4
- * check LNW_LAG_HASH_TABLE_KEY_META_COMMON_HASH */
+ * check LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH */
 #define LNW_LAG_PER_GROUP_HASH_SIZE 8
+
 
 /* IPV4_TABLE */
 #define LNW_IPV4_TABLE \
