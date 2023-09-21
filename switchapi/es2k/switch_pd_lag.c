@@ -21,13 +21,27 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
 
+/*
+ * Routine Description:
+ *   @brief Program tx_lag_table in MEV-TS
+ *
+ * Arguments:
+ *   @param[in] device - device
+ *   @param[in] lag_info - LAG info
+ *   @param[in] entry_add - true for entry add, false
+ *                          for entry delete
+ *
+ * Return Values:
+ *    @return  TDI_SUCCESS on success
+ *             Failure status code on error
+ */
 switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
                                              const switch_lag_info_t* lag_info,
                                              bool entry_add) {
   tdi_status_t status;
 
   tdi_id_t field_id_lag_id = 0;
-  tdi_id_t field_id_meta_common_hash = 0;
+  tdi_id_t field_id_hash = 0;
   tdi_id_t action_id = 0;
   tdi_id_t data_field_id = 0;
 
@@ -51,8 +65,8 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
 
   switch_node_t* node = NULL;
   switch_lag_member_info_t* lag_member = NULL;
-  switch_handle_t lag_handle = SWITCH_API_INVALID_HANDLE;
-  switch_handle_t lag_member_handle = SWITCH_API_INVALID_HANDLE;
+  switch_handle_t lag_h = SWITCH_API_INVALID_HANDLE;
+  switch_handle_t lag_member_h = SWITCH_API_INVALID_HANDLE;
 
   krnlmon_log_debug("%s", __func__);
 
@@ -114,9 +128,8 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
     goto dealloc_resources;
   }
 
-  status = tdi_key_field_id_get(table_info_hdl,
-                                LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH,
-                                &field_id_meta_common_hash);
+  status = tdi_key_field_id_get(
+      table_info_hdl, LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH, &field_id_hash);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
                       LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH, status);
@@ -149,15 +162,15 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
     goto dealloc_resources;
   }
 
-  lag_handle = lag_info->lag_handle;
-  lag_member_handle = lag_info->active_lag_member;
+  lag_h = lag_info->lag_handle;
+  lag_member_h = lag_info->active_lag_member;
 
-  status = switch_lag_member_get(device, lag_member_handle, &lag_member);
+  status = switch_lag_member_get(device, lag_member_h, &lag_member);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
   status = switch_pd_get_physical_port_id(
       device, lag_member->api_lag_member_info.port_id, &egress_port);
 
-  lag_id = lag_handle & ~(SWITCH_HANDLE_TYPE_LAG << SWITCH_HANDLE_TYPE_SHIFT);
+  lag_id = lag_h & ~(SWITCH_HANDLE_TYPE_LAG << SWITCH_HANDLE_TYPE_SHIFT);
 
   while ((total_lag_list < LNW_LAG_HASH_SIZE) &&
          (lag_list < LNW_LAG_PER_GROUP_HASH_SIZE)) {
@@ -166,19 +179,19 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
     status = tdi_key_field_set_value(key_hdl, field_id_lag_id, lag_id);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
-          "Unable to set value for key ID: %d for lag_hash_table"
+          "Unable to set value for key ID: %d for tx_lag_table"
           ", error: %d",
           field_id_lag_id, status);
       goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id_meta_common_hash,
-                                     lag_list + port_count);
+    status =
+        tdi_key_field_set_value(key_hdl, field_id_hash, lag_list + port_count);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
-          "Unable to set value for key ID: %d for lag_hash_table"
+          "Unable to set value for key ID: %d for tx_lag_table"
           ", error: %d",
-          field_id_meta_common_hash, status);
+          field_id_hash, status);
       goto dealloc_resources;
     }
 
@@ -200,7 +213,7 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
       total_lag_list++;
     } else {
       /* Delete an entry from target */
-      krnlmon_log_info("Delete lag_hash_table entry");
+      krnlmon_log_info("Delete tx_lag_table entry");
       status = tdi_table_entry_del(table_hdl, session, target_hdl, flags_hdl,
                                    key_hdl);
       if (status != TDI_SUCCESS) {
@@ -221,6 +234,20 @@ dealloc_resources:
   return switch_pd_tdi_status_to_status(status);
 }
 
+/*
+ * Routine Description:
+ *   @brief Program rx_lag_table in MEV-TS
+ *
+ * Arguments:
+ *   @param[in] device - device
+ *   @param[in] lag_info - LAG info
+ *   @param[in] entry_add - true for entry add, false
+ *                          for entry delete
+ *
+ * Return Values:
+ *    @return  TDI_SUCCESS on success
+ *             Failure status code on error
+ */
 switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
                                              const switch_lag_info_t* lag_info,
                                              bool entry_add) {
@@ -242,10 +269,11 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
   tdi_table_data_hdl* data_hdl = NULL;
   const tdi_table_hdl* table_hdl = NULL;
   const tdi_table_info_hdl* table_info_hdl = NULL;
+
   switch_list_t lag_members;
   switch_node_t* node = NULL;
   switch_lag_member_info_t* lag_member = NULL;
-  switch_handle_t lag_member_handle = SWITCH_API_INVALID_HANDLE;
+  switch_handle_t lag_member_h = SWITCH_API_INVALID_HANDLE;
   uint8_t egress_port = -1;
 
   krnlmon_log_debug("%s", __func__);
@@ -320,7 +348,7 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
   lag_members = (switch_list_t)lag_info->lag_members;
   FOR_EACH_IN_LIST(lag_members, node) {
     lag_member = (switch_lag_member_info_t*)node->data;
-    lag_member_handle = lag_member->lag_member_handle;
+    lag_member_h = lag_member->lag_member_handle;
 
     status = tdi_key_field_set_value(
         key_hdl, field_id_lag_id,
@@ -328,7 +356,7 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
          ~(SWITCH_HANDLE_TYPE_LAG << SWITCH_HANDLE_TYPE_SHIFT)));
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
-          "Unable to set value for key ID: %d for lag_hash_table"
+          "Unable to set value for key ID: %d for rx_lag_table"
           ", error: %d",
           field_id_lag_id, status);
       goto dealloc_resources;
@@ -336,7 +364,7 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
 
     uint32_t port_id = 0;
     switch_lag_member_info_t* lag_member_info = NULL;
-    status = switch_lag_member_get(device, lag_member_handle, &lag_member_info);
+    status = switch_lag_member_get(device, lag_member_h, &lag_member_info);
     CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
     status = switch_pd_get_physical_port_id(
@@ -345,7 +373,7 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
     status = tdi_key_field_set_value(key_hdl, field_id_port_id, egress_port);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
-          "Unable to set value for key ID: %d for lag_hash_table"
+          "Unable to set value for key ID: %d for rx_lag_table"
           ", error: %d",
           field_id_port_id, status);
       goto dealloc_resources;
@@ -375,7 +403,7 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
       }
     } else {
       /* Delete an entry from target */
-      krnlmon_log_info("Delete lag_hash_table entry");
+      krnlmon_log_info("Delete rx_lag_table entry");
       status = tdi_table_entry_del(table_hdl, session, target_hdl, flags_hdl,
                                    key_hdl);
       if (status != TDI_SUCCESS) {

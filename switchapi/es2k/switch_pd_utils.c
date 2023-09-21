@@ -264,7 +264,6 @@ switch_pd_to_get_lag_port_id(switch_api_lag_info_t *port_lag_info)
     bf_status_t bf_status;
     uint32_t port_id = 0;
 
-    /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
     rmac_handle = port_lag_info->rmac_handle;
     status = switch_rmac_get(bf_dev_id, rmac_handle, &rmac_info);
     if (status != SWITCH_STATUS_SUCCESS) {

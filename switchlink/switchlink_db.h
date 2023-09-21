@@ -127,7 +127,7 @@ typedef struct switchlink_db_tunnel_interface_info_ {
   uint8_t ttl;
 } switchlink_db_tunnel_interface_info_t;
 
-/*** LAG structures ***/
+/*** LAG member structure ***/
 typedef struct switchlink_db_lag_member_info_ {
   char ifname[SWITCHLINK_INTERFACE_NAME_LEN_MAX];
   uint32_t ifindex;

@@ -302,6 +302,7 @@ void switchlink_delete_lag(uint32_t ifindex) {
 void switchlink_create_lag_member(
     switchlink_db_lag_member_info_t* lag_member_intf) {
   switchlink_db_status_t status;
+  switchlink_handle_t lag_h;
   switchlink_db_lag_member_info_t lag_member_info;
 
   memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
@@ -309,10 +310,7 @@ void switchlink_create_lag_member(
 
   status = switchlink_db_get_lag_member_info(&lag_member_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    // find the parent lag handle
-    // TODO:
-    // lag_member_intf->lag_h =
-    // switchlink_db_get_lag_handle(lag_member_intf->mac_addr);
+    // TODO : find the parent lag handle
     if (lag_member_intf->lag_h == SWITCH_API_INVALID_HANDLE) {
       krnlmon_log_debug("Not able to find parent lag handle");
     }

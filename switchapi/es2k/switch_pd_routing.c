@@ -115,6 +115,7 @@ switch_status_t switch_pd_nexthop_table_entry(
     const tdi_table_hdl *table_hdl = NULL;
     const tdi_table_info_hdl *table_info_hdl = NULL;
     uint16_t network_byte_order_rif_id = 0;
+    uint16_t lag_id = 0;
 
     krnlmon_log_debug("%s", __func__);
 
@@ -282,11 +283,12 @@ switch_status_t switch_pd_nexthop_table_entry(
                    LNW_NEXTHOP_TABLE, status);
             goto dealloc_resources;
         }
-    } else if (entry_add && SWITCH_LAG_HANDLE(api_nexthop_pd_info->rif_handle)) {
+    } else if (entry_add &&
+               SWITCH_LAG_HANDLE(api_nexthop_pd_info->rif_handle)) {
 
         /* Add an entry to target */
-        krnlmon_log_info("Populate set_nexthop_lag action with neighbor id: 0x%x in"
-                          " nexthop_table for nexthop_id 0x%x",
+        krnlmon_log_info("Populate set_nexthop_lag with neighbor id: 0x%x"
+                          " in nexthop_table for nexthop_id 0x%x",
                           (unsigned int) api_nexthop_pd_info->neighbor_handle,
                           (unsigned int) api_nexthop_pd_info->nexthop_handle);
 
@@ -308,10 +310,9 @@ switch_status_t switch_pd_nexthop_table_entry(
             goto dealloc_resources;
         }
 
-        status = tdi_data_field_id_with_action_get(
-                            table_info_hdl,
-                            LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF,
-                            action_id, &data_field_id);
+        status = tdi_data_field_id_with_action_get( table_info_hdl,
+                     LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF, action_id,
+                     &data_field_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to get data field id param for: %s, "
                               "error: %d",
@@ -319,13 +320,11 @@ switch_status_t switch_pd_nexthop_table_entry(
             goto dealloc_resources;
         }
 
-	// For ES2K we need to program RIF_id action in Big endian
-        network_byte_order_rif_id = api_nexthop_pd_info->rif_handle &
-                                     ~(SWITCH_HANDLE_TYPE_LAG <<
-                                     SWITCH_HANDLE_TYPE_SHIFT);
+        lag_id = api_nexthop_pd_info->rif_handle &
+            ~(SWITCH_HANDLE_TYPE_LAG << SWITCH_HANDLE_TYPE_SHIFT);
 
         status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                          network_byte_order_rif_id);
+                                          lag_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                      data_field_id, status);
@@ -333,8 +332,9 @@ switch_status_t switch_pd_nexthop_table_entry(
         }
 
         status = tdi_data_field_id_with_action_get(table_info_hdl,
-                                                   LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID,
-                                                   action_id, &data_field_id);
+                     LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID,
+                     action_id, &data_field_id);
+
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                      LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID, status);
@@ -352,8 +352,8 @@ switch_status_t switch_pd_nexthop_table_entry(
         }
 
         status = tdi_data_field_id_with_action_get(table_info_hdl,
-                                                   LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID,
-                                                   action_id, &data_field_id);
+                     LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID,
+                     action_id, &data_field_id);
         if (status != TDI_SUCCESS) {
           krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                    LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID, status);
@@ -361,7 +361,7 @@ switch_status_t switch_pd_nexthop_table_entry(
         }
 
         status = tdi_data_field_set_value(data_hdl, data_field_id,
-                                          network_byte_order_rif_id);
+                                          lag_id);
         if (status != TDI_SUCCESS) {
             krnlmon_log_error("Unable to set action value for ID: %d, error: %d", 
                      data_field_id, status);

@@ -268,8 +268,9 @@ switch_status_t switch_pd_l2_tx_forward_table_entry(
         }
 
     } else if (entry_add &&
-               api_l2_tx_info->learn_from ==
-               SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) {
+               (api_l2_tx_info->learn_from ==
+               SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) &&
+	       SWITCH_RIF_HANDLE(api_l2_tx_info->rif_handle)) {
 
         krnlmon_log_info("Populate l2_fwd action in %s "
                   "for physical port: %d",
@@ -495,8 +496,9 @@ switch_status_t switch_pd_l2_tx_ipv6_forward_table_entry(
     }
 
     if (entry_add &&
-               api_l2_tx_info->learn_from ==
-               SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) {
+        (api_l2_tx_info->learn_from ==
+        SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE) &&
+	SWITCH_RIF_HANDLE(api_l2_tx_info->rif_handle)) {
 
         krnlmon_log_info("Populate l2_fwd action in %s "
                   "for physical port: %d",

@@ -44,7 +44,7 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   bool mac_addr_valid = false;
   bool ipaddr_valid = false;
   switchlink_ip_addr_t ipaddr;
-  switchlink_handle_t intf_h = 0x0; 
+  switchlink_handle_t intf_h = SWITCH_LINK_INVALID_HANDLE;
 
   krnlmon_assert((msgtype == RTM_NEWNEIGH) || (msgtype == RTM_DELNEIGH));
   nbh = nlmsg_data(nlmsg);
