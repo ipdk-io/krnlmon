@@ -336,7 +336,7 @@ static sai_status_t sai_set_lag_attribute(_In_ sai_object_id_t lag_id,
   sai_status_t status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
   switch_handle_t lag_h = lag_id;
-  switch_handle_t active_lag_member_h = attr->value.objlist.list[0];
+  switch_handle_t active_lag_member_h = attr->value.oid;
 
   switch_status = switch_api_program_lag_hw(0, lag_h, active_lag_member_h);
   status = sai_switch_status_to_sai_status(switch_status);

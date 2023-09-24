@@ -345,6 +345,32 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
     goto dealloc_resources;
   }
 
+  status = tdi_action_name_to_id(
+      table_info_hdl, LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT, &action_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                      LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error(
+        "Unable to get action allocator for ID: %d, "
+        "error: %d",
+        action_id, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_data_field_id_with_action_get(
+      table_info_hdl, LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, action_id,
+      &data_field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                      LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
+    goto dealloc_resources;
+  }
+
   lag_members = (switch_list_t)lag_info->lag_members;
   FOR_EACH_IN_LIST(lag_members, node) {
     lag_member = (switch_lag_member_info_t*)node->data;

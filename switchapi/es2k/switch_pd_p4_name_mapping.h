@@ -256,7 +256,7 @@ extern "C" {
 #define LNW_TX_LAG_TABLE_KEY_LAG_ID \
         "user_meta.cmeta.lag_group_id"
 #define LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH \
-        "vmeta.common.hash[2:0]"
+        "hash"
 
 #define LNW_TX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
         "linux_networking_control.set_egress_port"

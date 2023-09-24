@@ -26,6 +26,7 @@
 #include "switchapi/switch_rmac_int.h"
 #include "switchapi/switch_table.h"
 #include "switchapi/switch_vrf.h"
+#include "switchapi/switch_lag.h"
 
 #undef __MODULE__
 #define __MODULE__ SWITCH_API_TYPE_DEVICE
@@ -135,7 +136,9 @@ switch_status_t switch_device_api_init(switch_device_t device) {
         status = switch_rmac_init(device);
         break;
       case SWITCH_API_TYPE_INTERFACE:
+        break;
       case SWITCH_API_TYPE_LAG:
+        status = switch_lag_init(device);
         break;
       case SWITCH_API_TYPE_NHOP:
         status = switch_nhop_init(device);
@@ -247,6 +250,7 @@ switch_status_t switch_device_api_free(switch_device_t device) {
       case SWITCH_API_TYPE_INTERFACE:
         break;
       case SWITCH_API_TYPE_LAG:
+        status = switch_lag_free(device);
         break;
       case SWITCH_API_TYPE_NHOP:
         status = switch_nhop_free(device);

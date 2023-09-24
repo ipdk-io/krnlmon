@@ -118,8 +118,8 @@ static int set_lag_attribute(const switchlink_db_interface_info_t* lag_info,
   sai_attribute_t attr;
   memset(&attr, 0, sizeof(attr));
 
-  attr.id = SAI_LAG_ATTR_PORT_LIST;
-  attr.value.objlist.list[0] = lag_member_h;
+  attr.id = SAI_LAG_ATTR_EGRESS_ACL;
+  attr.value.oid = lag_member_h;
   return sai_lag_api->set_lag_attribute(lag_info->lag_h, &attr);
 }
 
@@ -233,7 +233,7 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
       lag_member_info.ifindex = lag_intf->active_slave;
       status = switchlink_db_get_lag_member_info(&lag_member_info);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-        status = set_lag_attribute(lag_intf, lag_member_info.lag_member_h);
+        status = set_lag_attribute(&lag_info, lag_member_info.lag_member_h);
         if (status) {
           krnlmon_log_error(
               "newlink: Failed to update switchlink lag: %s, error: %d\n",

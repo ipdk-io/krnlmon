@@ -24,6 +24,8 @@
 extern "C" {
 #endif
 
+#define SWITCH_LAG_MAX 16384
+
 /** LAG handle wrappers */
 #define switch_lag_handle_create(_device)               \
   switch_handle_create(_device, SWITCH_HANDLE_TYPE_LAG, \
@@ -66,7 +68,7 @@ typedef struct switch_api_lag_info_s {
 } switch_api_lag_info_t;
 
 typedef struct switch_lag_info_s {
-  switch_mac_addr_t dst_mac;
+ // switch_mac_addr_t dst_mac;
   switch_api_lag_info_t api_lag_info;
   switch_list_t lag_members;
   switch_handle_t lag_handle;
@@ -85,6 +87,12 @@ typedef struct switch_lag_member_info_s {
   switch_handle_t lag_member_handle;
   switch_node_t node;
 } switch_lag_member_info_t;
+
+// Switchapi method to allocate LAG handles
+switch_status_t switch_lag_init(switch_device_t device);
+
+// Switchapi method to de-allocate LAG handles
+switch_status_t switch_lag_free(switch_device_t device);
 
 // Switchapi method to create LAG
 switch_status_t switch_api_lag_create(switch_device_t device,
