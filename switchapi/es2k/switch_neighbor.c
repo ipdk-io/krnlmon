@@ -191,10 +191,6 @@ switch_status_t switch_api_neighbor_create(
 
         status = switch_lag_get(device, pd_neighbor_info.rif_handle, &lag_info);
         CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
-        status = switch_pd_get_physical_port_id(device,
-                                                lag_info->api_lag_info.port_id,
-                                                &pd_neighbor_info.port_id);
-        CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
         rmac_handle = lag_info->api_lag_info.rmac_handle;
       }
 

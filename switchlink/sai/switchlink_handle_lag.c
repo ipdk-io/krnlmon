@@ -19,6 +19,7 @@
 #include "bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchlink_init_sai.h"
+#include <linux/if.h>
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16
@@ -225,15 +226,28 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
     krnlmon_log_debug("Switchlink DB already has LAG config: %s",
                       lag_intf->ifname);
     // check if active_slave attribute is updated.
-    if (lag_intf->active_slave != lag_info.active_slave) {
+    if ((lag_intf->active_slave != lag_info.active_slave) ||
+        (lag_intf->oper_state != lag_info.oper_state)) {
       // need to program MEV-TS with new active_slave info
       // get the lag member handle with ifindex = active_slave
-      switchlink_db_lag_member_info_t lag_member_info;
-      memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
-      lag_member_info.ifindex = lag_intf->active_slave;
-      status = switchlink_db_get_lag_member_info(&lag_member_info);
-      if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-        status = set_lag_attribute(&lag_info, lag_member_info.lag_member_h);
+      if ((lag_intf->active_slave != 0) &&
+          (lag_intf->oper_state == IF_OPER_UP)) {
+        switchlink_db_lag_member_info_t lag_member_info;
+        memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
+        lag_member_info.ifindex = lag_intf->active_slave;
+        status = switchlink_db_get_lag_member_info(&lag_member_info);
+        if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
+          status = set_lag_attribute(&lag_info, lag_member_info.lag_member_h);
+          if (status) {
+            krnlmon_log_error(
+                "newlink: Failed to update switchlink lag: %s, error: %d\n",
+                lag_intf->ifname, status);
+            return;
+          }
+        }
+      } else if ((lag_intf->active_slave == 0) ||
+                 (lag_intf->oper_state == IF_OPER_DOWN)) {
+        status = set_lag_attribute(&lag_info, 0);
         if (status) {
           krnlmon_log_error(
               "newlink: Failed to update switchlink lag: %s, error: %d\n",
@@ -241,6 +255,8 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
           return;
         }
       }
+
+      lag_info.oper_state = lag_intf->oper_state;
       lag_info.active_slave = lag_intf->active_slave;
     }
 

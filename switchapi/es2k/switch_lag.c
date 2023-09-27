@@ -388,7 +388,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
   status = switch_lag_get(device, lag_h, &lag_info);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  if ((lag_info->active_lag_member == 0) && active_lag_member_h != 0) {
+  if ((lag_info->active_lag_member == 0) && (active_lag_member_h != 0)) {
     lag_info->active_lag_member = active_lag_member_h;
 
     //--------------------- Tx Path ----------------------//
@@ -410,7 +410,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
           device, switch_error_to_string(status));
       return status;
     }
-  } else if ((lag_info->active_lag_member != 0) &&
+  } else if ((lag_info->active_lag_member != 0) && (active_lag_member_h != 0) &&
              (lag_info->active_lag_member != active_lag_member_h)) {
     // Delete case
     status = switch_pd_tx_lag_table_entry(device, lag_info, false);
@@ -447,6 +447,25 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
           "Failed to create rx lag table entry on device %d: "
+          ",error: %s\n",
+          device, switch_error_to_string(status));
+      return status;
+    }
+  } else if ((lag_info->active_lag_member != 0) && (active_lag_member_h == 0)) {
+    // Delete case
+    status = switch_pd_tx_lag_table_entry(device, lag_info, false);
+    if (status != SWITCH_STATUS_SUCCESS) {
+      krnlmon_log_error(
+          "Failed to delete tx lag table entry on device %d: "
+          ",error: %s\n",
+          device, switch_error_to_string(status));
+      return status;
+    }
+
+    status = switch_pd_rx_lag_table_entry(device, lag_info, false);
+    if (status != SWITCH_STATUS_SUCCESS) {
+      krnlmon_log_error(
+          "Failed to delete rx lag table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;

@@ -1050,32 +1050,6 @@ switchlink_db_status_t switchlink_db_get_lag_member_info(
 
 /*
  * Routine Description:
- *    Get parent lag handle of a lag member
- *
- * Arguments:
- *    [in] mac_addr - MAC address of LAG member
- *    [out] lag_h - LAG handle of parent LAG object
- *
- * Return Values:
- *    lag_h of parent LAG object on success
- *    SWITCHLINK_DB_INVALID_HANDLE on failure
- */
-
-#if 0
-switchlink_handle_t switchlink_db_get_lag_handle(
-    switchlink_mac_addr_t mac_addr) {
-  krnlmon_assert(intf_info != NULL);
-  switchlink_db_intf_obj_t *obj;
-  obj = tommy_trie_inplace_search(&switchlink_db_interface_obj_map, mac_addr);
-  if (!obj) {
-    return SWITCHLINK_DB_INVALID_HANDLE;
-  }
-  return obj->intf_info.lag_h;
-}
-#endif
-
-/*
- * Routine Description:
  *    Initialize switchlink database
  *
  * Arguments:

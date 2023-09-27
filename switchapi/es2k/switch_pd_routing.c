@@ -641,10 +641,18 @@ switch_status_t switch_pd_rif_mod_start_entry(
         goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id,
-                                     (rif_handle &
-                                     ~(SWITCH_HANDLE_TYPE_RIF <<
-                                     SWITCH_HANDLE_TYPE_SHIFT)));
+    if (SWITCH_RIF_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_RIF <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    } else if (SWITCH_LAG_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_LAG <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    }
+
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_start",
                  field_id);
@@ -800,10 +808,17 @@ switch_status_t switch_pd_rif_mod_mid_entry(
         goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id,
-                                     (rif_handle &
-                                     ~(SWITCH_HANDLE_TYPE_RIF <<
-                                     SWITCH_HANDLE_TYPE_SHIFT)));
+    if (SWITCH_RIF_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_RIF <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    } else if (SWITCH_LAG_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_LAG <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    }
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_mid",
                  field_id);
@@ -959,10 +974,18 @@ switch_status_t switch_pd_rif_mod_last_entry(
         goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id,
-                                     (rif_handle &
-                                     ~(SWITCH_HANDLE_TYPE_RIF <<
-                                     SWITCH_HANDLE_TYPE_SHIFT)));
+    if (SWITCH_RIF_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_RIF <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    } else if (SWITCH_LAG_HANDLE(rif_handle)) {
+      status = tdi_key_field_set_value(key_hdl, field_id,
+                                       (rif_handle &
+                                       ~(SWITCH_HANDLE_TYPE_LAG <<
+                                       SWITCH_HANDLE_TYPE_SHIFT)));
+    }
+
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_last",
                  field_id);

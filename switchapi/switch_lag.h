@@ -68,7 +68,6 @@ typedef struct switch_api_lag_info_s {
 } switch_api_lag_info_t;
 
 typedef struct switch_lag_info_s {
- // switch_mac_addr_t dst_mac;
   switch_api_lag_info_t api_lag_info;
   switch_list_t lag_members;
   switch_handle_t lag_handle;
