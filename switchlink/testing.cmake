@@ -14,7 +14,7 @@ function(define_switchlink_test test_name)
         GTest::gtest
         GTest::gtest_main
         PkgConfig::nl3
-        target_sys
+        sde::target_sys
     )
 
     target_link_directories(${test_name} PUBLIC ${DRIVER_SDK_DIRS})
