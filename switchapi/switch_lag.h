@@ -63,8 +63,6 @@ typedef struct switch_api_lag_info_s {
   uint32_t lag_mode;
   uint32_t active_slave;
   switch_handle_t rmac_handle;
-  switch_port_t port_id;
-  switch_port_t phy_port_id;
 } switch_api_lag_info_t;
 
 typedef struct switch_lag_info_s {

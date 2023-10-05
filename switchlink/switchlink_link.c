@@ -49,6 +49,7 @@ struct link_attrs {
   uint32_t active_slave;
   uint8_t oper_state;
   switchlink_mac_addr_t mac_addr;
+  switchlink_mac_addr_t perm_hwaddr;
   // lag member attributes
   uint8_t slave_state;
 };
@@ -178,7 +179,7 @@ static void process_info_lag_member_data_attr(const struct nlattr* infoslavedata
       break;
     case IFLA_BOND_SLAVE_PERM_HWADDR:
       if (nla_len(infoslavedata) == sizeof(switchlink_mac_addr_t)) {
-        memcpy(&attrs->mac_addr, nla_data(infoslavedata), nla_len(infoslavedata));
+        memcpy(&attrs->perm_hwaddr, nla_data(infoslavedata), nla_len(infoslavedata));
       }
       break;
     default:
@@ -277,6 +278,7 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         // IFLA_ADDRESS for kind "sit" is 4 octets
         if (nla_len(attr) == sizeof(switchlink_mac_addr_t)) {
           memcpy(&intf_info.mac_addr, nla_data(attr), nla_len(attr));
+          memcpy(&attrs.mac_addr, nla_data(attr), nla_len(attr));
 
           krnlmon_log_debug(
               "Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -361,6 +363,7 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
 	lag_member_info.oper_state = attrs.oper_state;
 	lag_member_info.slave_state = attrs.slave_state;
 	memcpy(&(lag_member_info.mac_addr), &(attrs.mac_addr), sizeof(switchlink_mac_addr_t));
+	memcpy(&(lag_member_info.perm_hwaddr), &(attrs.perm_hwaddr), sizeof(switchlink_mac_addr_t));
         if (create_lag_member) {
           switchlink_create_lag_member(&lag_member_info);
         }

@@ -147,15 +147,15 @@ static int create_lag_member(
   static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
 
   snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
-           lag_member_intf->mac_addr[0], lag_member_intf->mac_addr[1],
-           lag_member_intf->mac_addr[2], lag_member_intf->mac_addr[3],
-           lag_member_intf->mac_addr[4], lag_member_intf->mac_addr[5]);
+           lag_member_intf->perm_hwaddr[0], lag_member_intf->perm_hwaddr[1],
+           lag_member_intf->perm_hwaddr[2], lag_member_intf->perm_hwaddr[3],
+           lag_member_intf->perm_hwaddr[4], lag_member_intf->perm_hwaddr[5]);
   mac_str[SWITCH_PD_MAC_STR_LENGTH - 1] = '\0';
 
   bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
   if (bf_status != BF_SUCCESS) {
-    port_id = lag_member_intf->mac_addr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
-    krnlmon_log_error(
+    port_id = lag_member_intf->perm_hwaddr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
+    krnlmon_log_debug(
         "Failed to get the port ID, error: %d, Deriving "
         "port ID from second byte of MAC address: "
         "%s",
@@ -221,6 +221,7 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
     }
     // add the mapping to the db
     switchlink_db_add_interface(lag_intf->ifindex, lag_intf);
+    switchlink_db_add_mac_lag(lag_intf->mac_addr, lag_intf->lag_h);
     return;
   } else {
     krnlmon_log_debug("Switchlink DB already has LAG config: %s",
@@ -274,6 +275,7 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
             status);
         return;
       }
+      switchlink_db_add_mac_lag(lag_intf->mac_addr, lag_info.lag_h);
     }
 
     // update the LAG db structure
@@ -303,6 +305,7 @@ void switchlink_delete_lag(uint32_t ifindex) {
   // delete the lag from backend and DB
   delete_lag(&lag_intf, lag_intf.lag_h);
   switchlink_db_delete_interface(lag_intf.ifindex);
+  switchlink_db_delete_mac_lag(lag_intf.mac_addr);
 }
 
 /*
@@ -326,9 +329,10 @@ void switchlink_create_lag_member(
 
   status = switchlink_db_get_lag_member_info(&lag_member_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    // TODO : find the parent lag handle
-    if (lag_member_intf->lag_h == SWITCH_API_INVALID_HANDLE) {
-      krnlmon_log_debug("Not able to find parent lag handle");
+    status = switchlink_db_get_mac_lag_handle(lag_member_intf->mac_addr, &lag_h);
+    if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
+      lag_member_intf->lag_h = lag_h;
+      krnlmon_log_debug("Parent LAG handle is: 0x%lx", lag_h);
     }
 
     // create the lag member
@@ -338,7 +342,7 @@ void switchlink_create_lag_member(
         create_lag_member(lag_member_intf, &(lag_member_intf->lag_member_h));
     if (status) {
       krnlmon_log_error(
-          "newlink: Failed to create switchlink lag member: %s, error: %d\n",
+          "newlink: Failed to create switchlink LAG member: %s, error: %d\n",
           lag_member_intf->ifname, status);
       return;
     }
@@ -349,7 +353,7 @@ void switchlink_create_lag_member(
 
   lag_member_intf->lag_member_h = lag_member_info.lag_member_h;
   // lag member has already been created
-  krnlmon_log_debug("Switchlink DB already has LAG config: %s",
+  krnlmon_log_debug("Switchlink DB already has LAG Member config: %s",
                     lag_member_intf->ifname);
   return;
 }

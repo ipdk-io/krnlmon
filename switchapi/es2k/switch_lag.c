@@ -116,10 +116,6 @@ switch_status_t switch_api_lag_create(switch_device_t device,
   status = switch_lag_get(device, *lag_h, &lag_info);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  api_lag_info->port_id = -1;
-  api_lag_info->phy_port_id = -1;
-  switch_pd_to_get_lag_port_id(api_lag_info);
-
   lag_info->lag_handle = *lag_h;
 
   status = SWITCH_LIST_INIT(&(lag_info->lag_members));

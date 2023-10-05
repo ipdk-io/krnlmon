@@ -136,6 +136,7 @@ typedef struct switchlink_db_lag_member_info_ {
   switchlink_handle_t lag_member_h;
   switchlink_handle_t lag_h;
   switchlink_mac_addr_t mac_addr;
+  switchlink_mac_addr_t perm_hwaddr;
 } switchlink_db_lag_member_info_t;
 
 /*** interface ***/
@@ -176,6 +177,18 @@ extern switchlink_db_status_t switchlink_db_get_mac_intf(
 
 extern switchlink_db_status_t switchlink_db_delete_mac(
     switchlink_mac_addr_t mac_addr, switchlink_handle_t bridge_h);
+
+/*** lag mac ***/
+extern switchlink_db_status_t switchlink_db_add_mac_lag(
+    switchlink_mac_addr_t mac_addr,
+    switchlink_handle_t lag_h);
+
+extern switchlink_db_status_t switchlink_db_get_mac_lag_handle(
+    switchlink_mac_addr_t mac_addr,
+    switchlink_handle_t *lag_h);
+
+extern switchlink_db_status_t switchlink_db_delete_mac_lag(
+    switchlink_mac_addr_t mac_addr);
 
 /*** neighbor ***/
 extern switchlink_db_status_t switchlink_db_add_neighbor(

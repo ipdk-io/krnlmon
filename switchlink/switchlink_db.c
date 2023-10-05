@@ -47,6 +47,8 @@ static tommy_list switchlink_db_nexthop_obj_list;
 static tommy_list switchlink_db_ecmp_obj_list;
 static tommy_list switchlink_db_route_obj_list;
 static tommy_list switchlink_db_lag_member_obj_list;
+static tommy_hashlin switchlink_db_mac_lag_obj_hash;
+static tommy_list switchlink_db_mac_lag_obj_list;
 
 /*
  * Routine Description:
@@ -352,6 +354,28 @@ static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
 
 /*
  * Routine Description:
+ *    Get the hash for lag mac address
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address
+ *   [out] key - key used for hashing
+ *   [out] hash - hash computed from the key
+ *
+ * Return Values:
+ *    void
+ */
+static inline void switchlink_db_hash_mac_lag_key(switchlink_mac_addr_t mac_addr,
+                                              uint8_t *key,
+                                              uint32_t *hash) {
+  memset(key, 0, SWITCHLINK_MAC_KEY_LEN);
+  memcpy(&key[8], mac_addr, 6);
+  if (hash) {
+    *hash = XXH32(key, SWITCHLINK_MAC_KEY_LEN, 0x98761234);
+  }
+}
+
+/*
+ * Routine Description:
  *    Compare the mac address with the one in database 
  *
  * Arguments:
@@ -371,6 +395,29 @@ static inline int switchlink_db_cmp_mac(const void *key1, const void *arg) {
   uint8_t key2[SWITCHLINK_MAC_KEY_LEN];
 
   switchlink_db_hash_mac_key(obj->addr, obj->bridge_h, key2, NULL);
+  return (memcmp(key1, key2, SWITCHLINK_MAC_KEY_LEN));
+}
+
+/*
+ * Routine Description:
+ *    Compare the lag mac address with the one in database
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address
+ *   [out] key - key used for hashing
+ *   [out] hash - hash computed from the key
+ *
+ * Return Values:
+ *    0 if mac address matches
+ *    > 1 if key1 is greater than key2
+ *    < 1 if key1 is smaller than key2
+ */
+
+static inline int switchlink_db_cmp_lag_mac(const void *key1, const void *arg) {
+  switchlink_db_mac_obj_t *obj = (switchlink_db_mac_obj_t *)arg;
+  uint8_t key2[SWITCHLINK_MAC_KEY_LEN];
+
+  switchlink_db_hash_mac_lag_key(obj->addr, key2, NULL);
   return (memcmp(key1, key2, SWITCHLINK_MAC_KEY_LEN));
 }
 
@@ -402,6 +449,35 @@ switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
   switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
   tommy_hashlin_insert(&switchlink_db_mac_obj_hash, &obj->hash_node, obj, hash);
   tommy_list_insert_tail(&switchlink_db_mac_obj_list, &obj->list_node, obj);
+  return SWITCHLINK_DB_STATUS_SUCCESS;
+}
+
+/*
+ * Routine Description:
+ *    Add mac entry to switchlink database
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address
+ *    [in] bridge_h - bridge handle
+ *    [in] intf_h - interface handle
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ */
+
+switchlink_db_status_t switchlink_db_add_mac_lag(switchlink_mac_addr_t mac_addr,
+                                             switchlink_handle_t lag_h) {
+  switchlink_db_mac_lag_obj_t *obj =
+      switchlink_malloc(sizeof(switchlink_db_mac_lag_obj_t), 1);
+  krnlmon_assert(obj != NULL);
+  memcpy(obj->addr, mac_addr, sizeof(switchlink_mac_addr_t));
+  obj->lag_h = lag_h;
+
+  uint32_t hash;
+  uint8_t key[SWITCHLINK_MAC_KEY_LEN];
+  switchlink_db_hash_mac_lag_key(mac_addr, key, &hash);
+  tommy_hashlin_insert(&switchlink_db_mac_lag_obj_hash, &obj->hash_node, obj, hash);
+  tommy_list_insert_tail(&switchlink_db_mac_lag_obj_list, &obj->list_node, obj);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -439,6 +515,35 @@ switchlink_db_status_t switchlink_db_get_mac_intf(
 
 /*
  * Routine Description:
+ *    Get LAG handle for mac address from database
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address
+ *   [out] lag_h - lag handle
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_get_mac_lag_handle(
+    switchlink_mac_addr_t mac_addr,
+    switchlink_handle_t *lag_h) {
+  switchlink_db_mac_lag_obj_t *obj;
+  uint32_t hash;
+  uint8_t key[SWITCHLINK_MAC_KEY_LEN];
+  switchlink_db_hash_mac_lag_key(mac_addr, key, &hash);
+
+  obj = tommy_hashlin_search(
+      &switchlink_db_mac_lag_obj_hash, switchlink_db_cmp_lag_mac, key, hash);
+  if (!obj) {
+    return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+  }
+  *lag_h = obj->lag_h;
+  return SWITCHLINK_DB_STATUS_SUCCESS;
+}
+
+/*
+ * Routine Description:
  *    Delete mac entry from switchlink database
  *
  * Arguments:
@@ -463,6 +568,34 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
   }
   tommy_hashlin_remove_existing(&switchlink_db_mac_obj_hash, &obj->hash_node);
   tommy_list_remove_existing(&switchlink_db_mac_obj_list, &obj->list_node);
+  switchlink_free(obj);
+  return SWITCHLINK_DB_STATUS_SUCCESS;
+}
+
+/*
+ * Routine Description:
+ *    Delete lag mac entry from switchlink database
+ *
+ * Arguments:
+ *    [in] mac_addr - MAC address of LAG
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_delete_mac_lag(switchlink_mac_addr_t mac_addr) {
+  switchlink_db_mac_obj_t *obj;
+  uint32_t hash;
+  uint8_t key[SWITCHLINK_MAC_KEY_LEN];
+  switchlink_db_hash_mac_lag_key(mac_addr, key, &hash);
+
+  obj = tommy_hashlin_search(
+      &switchlink_db_mac_lag_obj_hash, switchlink_db_cmp_lag_mac, key, hash);
+  if (!obj) {
+    return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+  }
+  tommy_hashlin_remove_existing(&switchlink_db_mac_lag_obj_hash, &obj->hash_node);
+  tommy_list_remove_existing(&switchlink_db_mac_lag_obj_list, &obj->list_node);
   switchlink_free(obj);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
@@ -1071,4 +1204,5 @@ void switchlink_init_db(void) {
   tommy_list_init(&switchlink_db_ecmp_obj_list);
   tommy_list_init(&switchlink_db_route_obj_list);
   tommy_list_init(&switchlink_db_lag_member_obj_list);
+  tommy_hashlin_init(&switchlink_db_mac_lag_obj_hash);
 }
