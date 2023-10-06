@@ -7,6 +7,8 @@ if(ES2K_TARGET)
   add_subdirectory(es2k)
 elseif(DPDK_TARGET)
   add_subdirectory(dpdk)
+else()
+  message(FATAL_ERROR "TDI target not defined!")
 endif()
 
 add_library(switchapi_o OBJECT

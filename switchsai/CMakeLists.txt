@@ -18,7 +18,7 @@ add_library(switchsai_o OBJECT
 )
 
 target_include_directories(switchsai_o PRIVATE
-    ${SAI_SOURCE_DIR}/inc
+    ${SAI_INCLUDE_DIR}
     ${SDE_INSTALL_DIR}/include
     ${SDE_INSTALL_DIR}/include/bf_types
     ${SDE_INSTALL_DIR}/include/target-utils # id

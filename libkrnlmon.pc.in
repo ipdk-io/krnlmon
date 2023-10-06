@@ -5,5 +5,5 @@ includedir=${prefix}/include
 
 Name: libkrnlmon
 Description: RFC 3594 kernel monitor
-Version: @VERSION@
+Version: @PROJECT_VERSION@
 Libs: -L${libdir} -lkrnlmon

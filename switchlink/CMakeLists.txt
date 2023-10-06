@@ -43,7 +43,7 @@ target_include_directories(switchlink_o PRIVATE
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash
     ${SDE_INSTALL_DIR}/include/target-sys
-    ${SAI_SOURCE_DIR}/inc
+    ${SAI_INCLUDE_DIR}
 )
 
 if(BUILD_TESTING)
