@@ -1,0 +1,28 @@
+# switchlink/BUILD.bazel
+
+# Copyright 2023 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "switchlink_main",
+    srcs = ["switchlink_main.c"],
+    hdrs = [
+        "switchlink.h",
+        "switchlink_int.h",
+        "switchlink_main.h",
+    ],
+)
+
+cc_library(
+    name = "switchlink_address",
+    srcs = ["switchlink_address.c"],
+    hdrs = [
+        "switchlink_handle.h",
+        "switchlink_int.h",
+        "switchlink_route.h",
+    ],
+)

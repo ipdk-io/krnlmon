@@ -1,0 +1,16 @@
+# BUILD.bazel
+
+# Copyright 2023 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "krnlmon_main",
+    srcs = ["krnlmon_main.cc"],
+    hdrs = ["krnlmon_main.h"],
+    deps = [
+        "//switchlink:switchlink_main",
+        "@com_google_absl//absl/synchronization",
+    ],
+)
