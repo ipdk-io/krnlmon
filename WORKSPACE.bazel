@@ -25,3 +25,16 @@ http_archive(
     strip_prefix = "abseil-cpp-20220623.0",
     sha256 = "4208129b49006089ba1d6710845a45e31c59b0ab6bff9e5788a87f55c5abd602",
 )
+
+http_archive(
+    name = "bazel_pkg_config",
+    strip_prefix = "bazel_pkg_config-master",
+    urls = ["https://github.com/cherrry/bazel_pkg_config/archive/master.zip"],
+)
+
+load("@bazel_pkg_config//:pkg_config.bzl", "pkg_config")
+
+#pkg_config(
+#    name = "library_to_load",
+#    # See pkg_config.bzl for more available options.
+#)
