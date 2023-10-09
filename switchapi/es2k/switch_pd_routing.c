@@ -180,10 +180,10 @@ switch_status_t switch_pd_nexthop_table_entry(
         goto dealloc_resources;
     }
 
-    status = tdi_key_field_set_value(key_hdl, field_id,
+    status = tdi_key_field_set_value_and_mask(key_hdl, field_id,
                                      (api_nexthop_pd_info->nexthop_handle &
                                      ~(SWITCH_HANDLE_TYPE_NHOP <<
-                                     SWITCH_HANDLE_TYPE_SHIFT)));
+                                     SWITCH_HANDLE_TYPE_SHIFT)), 0xFFFF);
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for nexthop_table,"
                           " error: %d", field_id, status);
