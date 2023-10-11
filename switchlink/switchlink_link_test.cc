@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "netlink/msg.h"
 
 extern "C" {
 #include "switchlink/switchlink_handle.h"
@@ -42,10 +41,10 @@ extern "C" {
 ******************************************************************************/
 
 enum handler_type {
-  CREATE_INTERFACE = 1,           // switchlink_create_interface
-  DELETE_INTERFACE = 2,           // switchlink_delete_interface
-  CREATE_TUNNEL_INTERFACE = 3,    // switchlink_create_tunnel_interface
-  DELETE_TUNNEL_INTERFACE = 4,    // switchlink_delete_tunnel_interface
+  CREATE_INTERFACE = 1,         // switchlink_create_interface
+  DELETE_INTERFACE = 2,         // switchlink_delete_interface
+  CREATE_TUNNEL_INTERFACE = 3,  // switchlink_create_tunnel_interface
+  DELETE_TUNNEL_INTERFACE = 4,  // switchlink_delete_tunnel_interface
 };
 
 /**
@@ -109,9 +108,7 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
 // This function is not called by the UUT, but it is referenced by a
 // function in the same source file. We provide a definition to avoid
 // a link error.
-int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
-  return 0;
-}
+int switchlink_create_vrf(switchlink_handle_t* vrf_h) { return 0; }
 
 //----------------------------------------------------------------------
 // Test fixture
