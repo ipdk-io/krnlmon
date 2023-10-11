@@ -25,6 +25,9 @@
 
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 
+// Table match type definitions.
+#define NEXTHOP_TABLE_TERNARY_MATCH 1
+
 switch_status_t switch_routing_table_entry (
         switch_device_t device,
         const switch_pd_routing_info_t *api_routing_info,
@@ -180,10 +183,20 @@ switch_status_t switch_pd_nexthop_table_entry(
         goto dealloc_resources;
     }
 
+#if NEXTHOP_TABLE_TERNARY_MATCH
+    // When Nexthop table is of type ternary Match
     status = tdi_key_field_set_value_and_mask(key_hdl, field_id,
                                      (api_nexthop_pd_info->nexthop_handle &
                                      ~(SWITCH_HANDLE_TYPE_NHOP <<
                                      SWITCH_HANDLE_TYPE_SHIFT)), 0xFFFF);
+#else
+    // When Nexthop table is of type exact Match
+    status = tdi_key_field_set_value(key_hdl, field_id,
+                                     (api_nexthop_pd_info->nexthop_handle &
+                                     ~(SWITCH_HANDLE_TYPE_NHOP <<
+                                     SWITCH_HANDLE_TYPE_SHIFT)));
+#endif
+
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for nexthop_table,"
                           " error: %d", field_id, status);
