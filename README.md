@@ -3,13 +3,6 @@ The Kernel Monitor receives RFC 3549 messages from the Linux Kernel over a Netli
 
 ## Breaking changes
 
-Since there is a change in p4 program, where nexthop table has been moved to
-WCM block from SEM block (exact match). TDI provides seperate API's for each
-block. Since Ternary/WCM needs a MASK to be populated we need to use a newer
-API which can take mask as a parameter. Changes with a MACRO has been
-introduced in `switchapi/es2k/switch_pd_routing.c`, which defines ternary match
-MACRO enablement. If user wants to pick older p4 program, then user need to
-modify this MACRO value to 0 and re-build infrap4d to be compatible with
-older Exact match type for nexthop table.
+### 11 Oct 2023
 
-PR: https://github.com/ipdk-io/krnlmon/pull/59 introduces this breakage changes.
+- https://github.com/ipdk-io/krnlmon/pull/59: The NextHop table in the P4 program has been moved from the SEM block (exact match) to the WCM block (ternary block). The Kernel Monitor must use a different API to write the entry to the WCM block. krnlmon is no longer compatible with older versions of the P4 program.
