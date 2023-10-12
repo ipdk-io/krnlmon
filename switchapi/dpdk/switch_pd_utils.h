@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+#ifndef __SWITCH_PD_UTILS_H__
+#define __SWITCH_PD_UTILS_H__
+
 #include "bf_pal/bf_pal_port_intf.h"
 #include "bf_rt/bf_rt_common.h"
 #include "bf_types.h"
@@ -22,15 +25,17 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
+
+// clang-format off
+// tdi_info.h does not include the header files it depends on,
+// so we force tdi_defs.h to precede it.
+#include "tdi/common/tdi_defs.h"
 #include "tdi/common/c_frontend/tdi_info.h"
 #include "tdi/common/c_frontend/tdi_init.h"
 #include "tdi/common/c_frontend/tdi_session.h"
 #include "tdi/common/c_frontend/tdi_table.h"
 #include "tdi/common/c_frontend/tdi_table_info.h"
-#include "tdi/common/tdi_defs.h"
-
-#ifndef __SWITCH_PD_UTILS_H__
-#define __SWITCH_PD_UTILS_H__
+// clang-format on
 
 #ifdef __cplusplus
 extern "C" {

@@ -19,6 +19,10 @@
 
 #include "switchlink_route.h"
 
+#include <netlink/attr.h>
+#include <netlink/msg.h>
+#include <netlink/netlink.h>
+
 /*
  * Routine Description:
  *    Process ecmp netlink messages
