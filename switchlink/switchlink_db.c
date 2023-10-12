@@ -28,11 +28,7 @@
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_route.h"
-#include "tommyds/tommyhashlin.h"
-#include "tommyds/tommylist.h"
-#include "tommyds/tommytrieinp.h"
 #include "xxHash/xxhash.h"
-//#include "utils.h"
 
 #define SWITCHLINK_MAC_KEY_LEN 14
 

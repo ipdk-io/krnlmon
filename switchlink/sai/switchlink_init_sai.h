@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_ANALYZE_H__
-#define __SWITCHLINK_ANALYZE_H__
+#ifndef __SWITCHLINK_INIT_SAI_H__
+#define __SWITCHLINK_INIT_SAI_H__
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -84,4 +84,5 @@ int switchlink_create_vrf(switchlink_handle_t* vrf_h);
 // General utility function
 bool validate_delete_nexthop(uint32_t using_by,
                              switchlink_nhop_using_by_e type);
-#endif /* __SWITCHLINK_ANALYZE_H__ */
+
+#endif /* __SWITCHLINK_INIT_SAI_H__ */

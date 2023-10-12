@@ -23,6 +23,9 @@
 #include <linux/if.h>
 #include <linux/if_bridge.h>
 #include <linux/version.h>
+#include <netlink/attr.h>
+#include <netlink/msg.h>
+#include <netlink/netlink.h>
 #include <unistd.h>
 
 #include "switchlink.h"

@@ -21,6 +21,7 @@
 
 #include <linux/if_ether.h>
 #include <net/if.h>
+#include <netlink/msg.h>
 
 #include "switchlink.h"
 #include "switchlink_handle.h"

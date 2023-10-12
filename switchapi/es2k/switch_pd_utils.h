@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,16 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
+// clang-format off
+// tdi_info.h does not include all the header files it depends on,
+// so we force tdi_defs.h to precede it.
+#include "tdi/common/tdi_defs.h"
 #include "tdi/common/c_frontend/tdi_info.h"
+// clang-format on
 #include "tdi/common/c_frontend/tdi_init.h"
 #include "tdi/common/c_frontend/tdi_session.h"
 #include "tdi/common/c_frontend/tdi_table.h"
 #include "tdi/common/c_frontend/tdi_table_info.h"
-#include "tdi/common/tdi_defs.h"
 
 #ifndef __SWITCH_PD_UTILS_H__
 #define __SWITCH_PD_UTILS_H__
