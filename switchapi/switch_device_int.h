@@ -17,10 +17,10 @@
 
 #ifndef __SWITCH_DEVICE_INT_H__
 #define __SWITCH_DEVICE_INT_H__
-#include "switch_id.h"
-#include "switch_types_int.h"
-#include "switch_table.h"
 #include "switch_device.h"
+#include "switch_id.h"
+#include "switch_table.h"
+#include "switch_types_int.h"
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -33,7 +33,7 @@ extern "C" {
 
 #define SWITCH_MAX_DEVICE 256
 
-typedef void *switch_api_mutex_t;
+typedef void* switch_api_mutex_t;
 
 typedef switch_status_t (*switch_device_stats_poll_interval_set_fn)(
     switch_device_t device, switch_uint32_t interval);
@@ -58,13 +58,13 @@ typedef struct switch_device_context_s {
   switch_api_device_info_t device_info;
 
   /** device context for every module */
-  void *context[SWITCH_API_TYPE_MAX];
+  void* context[SWITCH_API_TYPE_MAX];
 
   /** flag to indicate if module is initialized */
   bool api_inited[SWITCH_API_TYPE_MAX];
 
   /** ifindex allocator */
-  switch_id_allocator_t *ifindex_allocator;
+  switch_id_allocator_t* ifindex_allocator;
 
   /** maximum pipes */
   switch_uint32_t max_pipes;
@@ -78,7 +78,7 @@ typedef struct switch_device_context_s {
 } switch_device_context_t;
 
 switch_status_t switch_device_init(switch_device_t device,
-                                   switch_size_t *table_sizes);
+                                   switch_size_t* table_sizes);
 switch_status_t switch_device_deinit(switch_device_t device);
 
 switch_status_t switch_device_free(switch_device_t device);
@@ -88,30 +88,30 @@ switch_status_t switch_device_api_init(switch_device_t device);
 switch_status_t switch_device_api_free(switch_device_t device);
 
 switch_status_t switch_device_table_get(switch_device_t device,
-                                        switch_table_t **table_info);
+                                        switch_table_t** table_info);
 
 switch_status_t switch_device_api_context_get(switch_device_t device,
                                               switch_api_type_t api_type,
-                                              void **context);
+                                              void** context);
 
 switch_status_t switch_device_api_context_set(switch_device_t device,
                                               switch_api_type_t api_type,
-                                              void *context);
+                                              void* context);
 
 switch_status_t switch_device_context_get(
-    switch_device_t device, switch_device_context_t **context_get);
+    switch_device_t device, switch_device_context_t** context_get);
 
 switch_status_t switch_device_ifindex_allocate(switch_device_t device,
-                                               switch_ifindex_t *ifindex);
+                                               switch_ifindex_t* ifindex);
 
 switch_status_t switch_device_ifindex_deallocate(switch_device_t device,
                                                  switch_ifindex_t ifindex);
 
 switch_status_t switch_api_device_vrf_max_get(switch_device_t device,
-                                              switch_uint16_t *max_vrf);
+                                              switch_uint16_t* max_vrf);
 
 switch_status_t switch_device_max_pipes_get(switch_device_t device,
-                                            switch_int32_t *max_pipes);
+                                            switch_int32_t* max_pipes);
 
 #ifdef __cplusplus
 }

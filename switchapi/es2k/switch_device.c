@@ -50,25 +50,22 @@ switch_status_t switch_api_init(switch_device_t device) {
 
   status = switch_config_init(&api_config);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("switch api init failed on device %d: %s\n",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("switch api init failed on device %d: %s\n", device,
+                      switch_error_to_string(status));
   }
 
   status = switch_api_device_add(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("switch api init failed on device %d: %s\n",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("switch api init failed on device %d: %s\n", device,
+                      switch_error_to_string(status));
     return status;
   }
 
 #ifdef THRIFT_ENABLED
   status = start_switch_api_rpc_server();
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("start_switch_api_rpc_server on device %d",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("start_switch_api_rpc_server on device %d", device,
+                      switch_error_to_string(status));
     return status;
   }
 #endif  // THRIFT_ENABLED
@@ -77,7 +74,7 @@ switch_status_t switch_api_init(switch_device_t device) {
 }
 
 switch_status_t switch_device_context_get(
-    switch_device_t device, switch_device_context_t **device_ctx) {
+    switch_device_t device, switch_device_context_t** device_ctx) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_config_device_context_get(device, device_ctx);
@@ -85,8 +82,7 @@ switch_status_t switch_device_context_get(
     krnlmon_log_error(
         "device context get failed on device %d: "
         "device config context get failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -94,7 +90,7 @@ switch_status_t switch_device_context_get(
 }
 
 switch_status_t switch_device_api_init(switch_device_t device) {
-  switch_device_context_t *device_ctx = NULL;
+  switch_device_context_t* device_ctx = NULL;
   switch_api_type_t api_type = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_status_t tmp_status = SWITCH_STATUS_SUCCESS;
@@ -104,8 +100,7 @@ switch_status_t switch_device_api_init(switch_device_t device) {
     krnlmon_log_error(
         "device api init failed on device %d: "
         "device context get failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -186,9 +181,7 @@ switch_status_t switch_device_api_init(switch_device_t device) {
       krnlmon_log_error(
           "device init failed on device %d "
           "for api type %d %s: (%s)",
-          device,
-          api_type,
-          switch_api_type_to_string(api_type),
+          device, api_type, switch_api_type_to_string(api_type),
           switch_error_to_string(status));
       goto cleanup;
     }
@@ -207,15 +200,14 @@ cleanup:
 }
 
 switch_status_t switch_device_api_free(switch_device_t device) {
-  switch_device_context_t *device_ctx = NULL;
+  switch_device_context_t* device_ctx = NULL;
   switch_api_type_t api_type = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device init failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device init failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -299,8 +291,7 @@ switch_status_t switch_device_api_free(switch_device_t device) {
       krnlmon_log_error(
           "device free failed on device %d "
           "for api type %s: (%s)",
-          device,
-          switch_api_type_to_string(api_type),
+          device, switch_api_type_to_string(api_type),
           switch_error_to_string(status));
       continue;
     }
@@ -312,8 +303,8 @@ switch_status_t switch_device_api_free(switch_device_t device) {
 }
 
 switch_status_t switch_device_init(switch_device_t device,
-                                   switch_size_t *table_sizes) {
-  switch_device_context_t *device_ctx = NULL;
+                                   switch_size_t* table_sizes) {
+  switch_device_context_t* device_ctx = NULL;
   switch_api_type_t api_type = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -322,8 +313,7 @@ switch_status_t switch_device_init(switch_device_t device,
     krnlmon_log_error(
         "device init failed on device %d: "
         "device context get failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -332,8 +322,7 @@ switch_status_t switch_device_init(switch_device_t device,
     krnlmon_log_error(
         "device init failed on device %d: "
         "table init failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -341,14 +330,13 @@ switch_status_t switch_device_init(switch_device_t device,
     device_ctx->api_inited[api_type] = false;
   }
 
-  status = switch_api_id_allocator_new(
-      device, SWITCH_IFINDEX_SIZE, FALSE, &device_ctx->ifindex_allocator);
+  status = switch_api_id_allocator_new(device, SWITCH_IFINDEX_SIZE, FALSE,
+                                       &device_ctx->ifindex_allocator);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "device init failed on device %d: "
         "ifindex allocator init failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -357,8 +345,7 @@ switch_status_t switch_device_init(switch_device_t device,
     krnlmon_log_error(
         "device init failed on device %d: "
         "device api init failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -368,19 +355,17 @@ switch_status_t switch_device_init(switch_device_t device,
     krnlmon_log_error(
         "device init failed on device %d: "
         "rmac group create failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  status = switch_api_create_nhop_group(
-      device, &device_ctx->device_info.group_handle);
+  status = switch_api_create_nhop_group(device,
+                                        &device_ctx->device_info.group_handle);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "device init failed on device %d: "
         "nhop group create failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -390,7 +375,7 @@ switch_status_t switch_device_init(switch_device_t device,
 }
 
 switch_status_t switch_device_free(switch_device_t device) {
-  switch_device_context_t *device_ctx = NULL;
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_device_context_get(device, &device_ctx);
@@ -398,8 +383,7 @@ switch_status_t switch_device_free(switch_device_t device) {
     krnlmon_log_error(
         "device free failed on device %d: "
         "device context get failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -408,8 +392,7 @@ switch_status_t switch_device_free(switch_device_t device) {
     krnlmon_log_error(
         "device free failed on device %d: "
         "table free failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -418,8 +401,7 @@ switch_status_t switch_device_free(switch_device_t device) {
     krnlmon_log_error(
         "device free failed on device %d: "
         "device api free failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -429,8 +411,7 @@ switch_status_t switch_device_free(switch_device_t device) {
     krnlmon_log_error(
         "device free failed on device %d: "
         "ifindex allocator free failed(%s)",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
 
   krnlmon_log_debug("device free done on device %d", device);
@@ -439,17 +420,16 @@ switch_status_t switch_device_free(switch_device_t device) {
 }
 
 switch_status_t switch_device_table_get(switch_device_t device,
-                                        switch_table_t **table_info) {
-  switch_device_context_t *device_ctx = NULL;
+                                        switch_table_t** table_info) {
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(table_info != NULL);
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -459,15 +439,14 @@ switch_status_t switch_device_table_get(switch_device_t device,
 
 switch_status_t switch_device_api_context_set(switch_device_t device,
                                               switch_api_type_t api_type,
-                                              void *context) {
-  switch_device_context_t *device_ctx = NULL;
+                                              void* context) {
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -478,17 +457,16 @@ switch_status_t switch_device_api_context_set(switch_device_t device,
 
 switch_status_t switch_device_api_context_get(switch_device_t device,
                                               switch_api_type_t api_type,
-                                              void **context) {
-  switch_device_context_t *device_ctx = NULL;
+                                              void** context) {
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(context != NULL);
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -497,7 +475,7 @@ switch_status_t switch_device_api_context_get(switch_device_t device,
 }
 
 switch_status_t switch_api_device_add(switch_device_t device) {
-  switch_device_context_t *device_ctx = NULL;
+  switch_device_context_t* device_ctx = NULL;
   switch_size_t table_sizes[SWITCH_TABLE_MAX];
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   char cpuif_netdev_name[IFNAMSIZ] = "";
@@ -506,18 +484,16 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   if (SWITCH_CONFIG_DEVICE_INITED(device)) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    krnlmon_log_error("device add failed for device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed for device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
   device_ctx = SWITCH_MALLOC(device, sizeof(switch_device_context_t), 0x1);
   if (!device_ctx) {
     status = SWITCH_STATUS_NO_MEMORY;
-    krnlmon_log_error("device add failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -530,17 +506,15 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   status = switch_config_table_sizes_get(device, table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device add failed for device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed for device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device add failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -550,40 +524,37 @@ switch_status_t switch_api_device_add(switch_device_t device) {
 
   status = switch_device_init(device, table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device add failed for device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed for device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
   return status;
 }
 
-static switch_status_t switch_api_device_remove_internal(switch_device_t device) {
-  switch_device_context_t *device_ctx = NULL;
+static switch_status_t switch_api_device_remove_internal(
+    switch_device_t device) {
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_CONFIG_DEVICE_INITED(device)) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    krnlmon_log_error("device add failed for device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device add failed for device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
   status = switch_device_free(device);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -596,15 +567,14 @@ static switch_status_t switch_api_device_remove_internal(switch_device_t device)
 }
 
 switch_status_t switch_api_device_default_rmac_handle_get(
-    switch_device_t device, switch_handle_t *rmac_handle) {
-  switch_device_context_t *device_ctx = NULL;
+    switch_device_t device, switch_handle_t* rmac_handle) {
+  switch_device_context_t* device_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("device context get failed on device %d: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("device context get failed on device %d: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -613,23 +583,21 @@ switch_status_t switch_api_device_default_rmac_handle_get(
   return status;
 }
 
-switch_status_t switch_api_device_tunnel_dmac_get(
-    switch_device_t device, switch_mac_addr_t *mac_addr) {
+switch_status_t switch_api_device_tunnel_dmac_get(switch_device_t device,
+                                                  switch_mac_addr_t* mac_addr) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_device_context_t *device_ctx = NULL;
+  switch_device_context_t* device_ctx = NULL;
 
   status = switch_device_context_get(device, &device_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "device tunnel dmac get failed: "
         "device context get failed on device %d: %s",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  SWITCH_MEMCPY(mac_addr,
-                &device_ctx->device_info.tunnel_dmac,
+  SWITCH_MEMCPY(mac_addr, &device_ctx->device_info.tunnel_dmac,
                 sizeof(switch_mac_addr_t));
 
   return status;
@@ -637,7 +605,6 @@ switch_status_t switch_api_device_tunnel_dmac_get(
 #ifdef __cplusplus
 }
 #endif
-
 
 switch_status_t switch_api_device_remove(switch_device_t device) {
   return switch_api_device_remove_internal(device);

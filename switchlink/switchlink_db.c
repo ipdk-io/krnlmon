@@ -15,22 +15,23 @@
  * limitations under the License.
  */
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
-#include <netinet/in.h>
+#include "switchlink_db.h"
 
-#include "tommyds/tommytrieinp.h"
-#include "tommyds/tommyhashlin.h"
-#include "tommyds/tommylist.h"
-#include "xxHash/xxhash.h"
+#include <netinet/in.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+
 #include "switchlink.h"
+#include "switchlink_db_int.h"
+#include "switchlink_int.h"
 #include "switchlink_link.h"
 #include "switchlink_neigh.h"
 #include "switchlink_route.h"
-#include "switchlink_db.h"
-#include "switchlink_db_int.h"
-#include "switchlink_int.h"
+#include "tommyds/tommyhashlin.h"
+#include "tommyds/tommylist.h"
+#include "tommyds/tommytrieinp.h"
+#include "xxHash/xxhash.h"
 //#include "utils.h"
 
 #define SWITCHLINK_MAC_KEY_LEN 14
@@ -58,8 +59,8 @@ static tommy_list switchlink_db_route_obj_list;
  *    Object from the database matching the handle h
  */
 
-static void *switchlink_db_get_handle_obj(switchlink_handle_t h) {
-  void *obj;
+static void* switchlink_db_get_handle_obj(switchlink_handle_t h) {
+  void* obj;
   obj = tommy_trie_inplace_search(&switchlink_db_handle_obj_map, h);
   return obj;
 }
@@ -76,19 +77,17 @@ static void *switchlink_db_get_handle_obj(switchlink_handle_t h) {
  */
 
 switchlink_db_status_t switchlink_db_add_interface(
-    uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
   krnlmon_assert(intf_info != NULL);
-  switchlink_db_intf_obj_t *obj =
+  switchlink_db_intf_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_intf_obj_t), 1);
   krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->intf_info), intf_info, sizeof(switchlink_db_interface_info_t));
-  tommy_trie_inplace_insert(
-      &switchlink_db_interface_obj_map, &obj->ifindex_node, obj, obj->ifindex);
-  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map,
-                            &obj->handle_node,
-                            obj,
-                            obj->intf_info.intf_h);
+  tommy_trie_inplace_insert(&switchlink_db_interface_obj_map,
+                            &obj->ifindex_node, obj, obj->ifindex);
+  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map, &obj->handle_node,
+                            obj, obj->intf_info.intf_h);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -105,19 +104,17 @@ switchlink_db_status_t switchlink_db_add_interface(
  */
 
 switchlink_db_status_t switchlink_db_add_tuntap(
-    uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
+    uint32_t ifindex, switchlink_db_tuntap_info_t* tunp_info) {
   krnlmon_assert(tunp_info != NULL);
-  switchlink_db_tuntap_obj_t *obj =
+  switchlink_db_tuntap_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_tuntap_obj_t), 1);
   krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->tunp_info), tunp_info, sizeof(switchlink_db_tuntap_info_t));
-  tommy_trie_inplace_insert(
-      &switchlink_db_tuntap_obj_map, &obj->ifindex_node, obj, obj->ifindex);
-  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map,
-                            &obj->handle_node,
-                            obj,
-                            obj->tunp_info.tunp_h);
+  tommy_trie_inplace_insert(&switchlink_db_tuntap_obj_map, &obj->ifindex_node,
+                            obj, obj->ifindex);
+  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map, &obj->handle_node,
+                            obj, obj->tunp_info.tunp_h);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -135,9 +132,9 @@ switchlink_db_status_t switchlink_db_add_tuntap(
  */
 
 switchlink_db_status_t switchlink_db_get_tuntap_info(
-    uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info) {
+    uint32_t ifindex, switchlink_db_tuntap_info_t* tunp_info) {
   krnlmon_assert(tunp_info != NULL);
-  switchlink_db_tuntap_obj_t *obj;
+  switchlink_db_tuntap_obj_t* obj;
   obj = tommy_trie_inplace_search(&switchlink_db_tuntap_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -160,9 +157,9 @@ switchlink_db_status_t switchlink_db_get_tuntap_info(
  */
 
 switchlink_db_status_t switchlink_db_get_interface_info(
-    uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
   krnlmon_assert(intf_info != NULL);
-  switchlink_db_intf_obj_t *obj;
+  switchlink_db_intf_obj_t* obj;
   obj = tommy_trie_inplace_search(&switchlink_db_interface_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -185,8 +182,8 @@ switchlink_db_status_t switchlink_db_get_interface_info(
  */
 
 switchlink_db_status_t switchlink_db_get_interface_ifindex(
-    switchlink_handle_t intf_h, uint32_t *ifindex) {
-  switchlink_db_intf_obj_t *obj;
+    switchlink_handle_t intf_h, uint32_t* ifindex) {
+  switchlink_db_intf_obj_t* obj;
   obj = switchlink_db_get_handle_obj(intf_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -210,8 +207,8 @@ switchlink_db_status_t switchlink_db_get_interface_ifindex(
  */
 
 switchlink_db_status_t switchlink_db_update_interface(
-    uint32_t ifindex, switchlink_db_interface_info_t *intf_info) {
-  switchlink_db_intf_obj_t *obj;
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
+  switchlink_db_intf_obj_t* obj;
   obj = tommy_trie_inplace_search(&switchlink_db_interface_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -233,7 +230,7 @@ switchlink_db_status_t switchlink_db_update_interface(
  */
 
 switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex) {
-  switchlink_db_intf_obj_t *obj;
+  switchlink_db_intf_obj_t* obj;
   obj = tommy_trie_inplace_remove(&switchlink_db_interface_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -257,20 +254,18 @@ switchlink_db_status_t switchlink_db_delete_interface(uint32_t ifindex) {
  */
 
 switchlink_db_status_t switchlink_db_add_tunnel_interface(
-    uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tnl_intf_info) {
+    uint32_t ifindex, switchlink_db_tunnel_interface_info_t* tnl_intf_info) {
   krnlmon_assert(tnl_intf_info != NULL);
-  switchlink_db_tunnel_intf_obj_t *obj =
+  switchlink_db_tunnel_intf_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_tunnel_intf_obj_t), 1);
   krnlmon_assert(obj != NULL);
   obj->ifindex = ifindex;
   memcpy(&(obj->tnl_intf_info), tnl_intf_info,
          sizeof(switchlink_db_tunnel_interface_info_t));
-  tommy_trie_inplace_insert(
-      &switchlink_db_tunnel_obj_map, &obj->ifindex_node, obj, obj->ifindex);
-  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map,
-                            &obj->handle_node,
-                            obj,
-                            obj->tnl_intf_info.urif_h);
+  tommy_trie_inplace_insert(&switchlink_db_tunnel_obj_map, &obj->ifindex_node,
+                            obj, obj->ifindex);
+  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map, &obj->handle_node,
+                            obj, obj->tnl_intf_info.urif_h);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -288,8 +283,8 @@ switchlink_db_status_t switchlink_db_add_tunnel_interface(
  */
 
 switchlink_db_status_t switchlink_db_get_tunnel_interface_info(
-    uint32_t ifindex, switchlink_db_tunnel_interface_info_t *tunnel_intf_info) {
-  switchlink_db_tunnel_intf_obj_t *obj;
+    uint32_t ifindex, switchlink_db_tunnel_interface_info_t* tunnel_intf_info) {
+  switchlink_db_tunnel_intf_obj_t* obj;
   obj = tommy_trie_inplace_search(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -312,7 +307,7 @@ switchlink_db_status_t switchlink_db_get_tunnel_interface_info(
  */
 
 switchlink_db_status_t switchlink_db_delete_tunnel_interface(uint32_t ifindex) {
-  switchlink_db_tunnel_intf_obj_t *obj;
+  switchlink_db_tunnel_intf_obj_t* obj;
   obj = tommy_trie_inplace_remove(&switchlink_db_tunnel_obj_map, ifindex);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -325,7 +320,7 @@ switchlink_db_status_t switchlink_db_delete_tunnel_interface(uint32_t ifindex) {
 
 /*
  * Routine Description:
- *    Get the hash for mac address 
+ *    Get the hash for mac address
  *
  * Arguments:
  *    [in] mac_addr - MAC address
@@ -339,8 +334,7 @@ switchlink_db_status_t switchlink_db_delete_tunnel_interface(uint32_t ifindex) {
 
 static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
                                               switchlink_handle_t bridge_h,
-                                              uint8_t *key,
-                                              uint32_t *hash) {
+                                              uint8_t* key, uint32_t* hash) {
   memset(key, 0, SWITCHLINK_MAC_KEY_LEN);
   memcpy(&key[0], &bridge_h, min(sizeof(bridge_h), (uint32_t)8));
   memcpy(&key[8], mac_addr, 6);
@@ -351,7 +345,7 @@ static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
 
 /*
  * Routine Description:
- *    Compare the mac address with the one in database 
+ *    Compare the mac address with the one in database
  *
  * Arguments:
  *    [in] mac_addr - MAC address
@@ -365,8 +359,8 @@ static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
  *    < 1 if key1 is smaller than key2
  */
 
-static inline int switchlink_db_cmp_mac(const void *key1, const void *arg) {
-  switchlink_db_mac_obj_t *obj = (switchlink_db_mac_obj_t *)arg;
+static inline int switchlink_db_cmp_mac(const void* key1, const void* arg) {
+  switchlink_db_mac_obj_t* obj = (switchlink_db_mac_obj_t*)arg;
   uint8_t key2[SWITCHLINK_MAC_KEY_LEN];
 
   switchlink_db_hash_mac_key(obj->addr, obj->bridge_h, key2, NULL);
@@ -389,7 +383,7 @@ static inline int switchlink_db_cmp_mac(const void *key1, const void *arg) {
 switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
                                              switchlink_handle_t bridge_h,
                                              switchlink_handle_t intf_h) {
-  switchlink_db_mac_obj_t *obj =
+  switchlink_db_mac_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_mac_obj_t), 1);
   krnlmon_assert(obj != NULL);
   memcpy(obj->addr, mac_addr, sizeof(switchlink_mac_addr_t));
@@ -419,16 +413,15 @@ switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
  */
 
 switchlink_db_status_t switchlink_db_get_mac_intf(
-    switchlink_mac_addr_t mac_addr,
-    switchlink_handle_t bridge_h,
-    switchlink_handle_t *intf_h) {
-  switchlink_db_mac_obj_t *obj;
+    switchlink_mac_addr_t mac_addr, switchlink_handle_t bridge_h,
+    switchlink_handle_t* intf_h) {
+  switchlink_db_mac_obj_t* obj;
   uint32_t hash;
   uint8_t key[SWITCHLINK_MAC_KEY_LEN];
   switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
 
-  obj = tommy_hashlin_search(
-      &switchlink_db_mac_obj_hash, switchlink_db_cmp_mac, key, hash);
+  obj = tommy_hashlin_search(&switchlink_db_mac_obj_hash, switchlink_db_cmp_mac,
+                             key, hash);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -450,13 +443,13 @@ switchlink_db_status_t switchlink_db_get_mac_intf(
 
 switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
                                                 switchlink_handle_t bridge_h) {
-  switchlink_db_mac_obj_t *obj;
+  switchlink_db_mac_obj_t* obj;
   uint32_t hash;
   uint8_t key[SWITCHLINK_MAC_KEY_LEN];
   switchlink_db_hash_mac_key(mac_addr, bridge_h, key, &hash);
 
-  obj = tommy_hashlin_search(
-      &switchlink_db_mac_obj_hash, switchlink_db_cmp_mac, key, hash);
+  obj = tommy_hashlin_search(&switchlink_db_mac_obj_hash, switchlink_db_cmp_mac,
+                             key, hash);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
@@ -479,9 +472,9 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
  */
 
 switchlink_db_status_t switchlink_db_add_neighbor(
-    switchlink_db_neigh_info_t *neigh_info) {
+    switchlink_db_neigh_info_t* neigh_info) {
   krnlmon_assert(neigh_info != NULL);
-  switchlink_db_neigh_obj_t *obj =
+  switchlink_db_neigh_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_neigh_obj_t), 1);
   krnlmon_assert(obj != NULL);
   memcpy(&(obj->neigh_info), neigh_info, sizeof(switchlink_db_neigh_info_t));
@@ -502,20 +495,19 @@ switchlink_db_status_t switchlink_db_add_neighbor(
  */
 
 switchlink_db_status_t switchlink_db_get_neighbor_info(
-    switchlink_db_neigh_info_t *neigh_info) {
+    switchlink_db_neigh_info_t* neigh_info) {
   krnlmon_assert(neigh_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
-    switchlink_db_neigh_obj_t *obj = node->data;
+    switchlink_db_neigh_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((memcmp(&(neigh_info->ip_addr),
-                &(obj->neigh_info.ip_addr),
+    if ((memcmp(&(neigh_info->ip_addr), &(obj->neigh_info.ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (neigh_info->vrf_h == obj->neigh_info.vrf_h) &&
         (neigh_info->intf_h == obj->neigh_info.intf_h)) {
-      memcpy(
-          neigh_info, &(obj->neigh_info), sizeof(switchlink_db_neigh_info_t));
+      memcpy(neigh_info, &(obj->neigh_info),
+             sizeof(switchlink_db_neigh_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
@@ -535,15 +527,14 @@ switchlink_db_status_t switchlink_db_get_neighbor_info(
  */
 
 switchlink_db_status_t switchlink_db_delete_neighbor(
-    switchlink_db_neigh_info_t *neigh_info) {
+    switchlink_db_neigh_info_t* neigh_info) {
   krnlmon_assert(neigh_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_neigh_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_neigh_obj_list);
   while (node) {
-    switchlink_db_neigh_obj_t *obj = node->data;
+    switchlink_db_neigh_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((memcmp(&(neigh_info->ip_addr),
-                &(obj->neigh_info.ip_addr),
+    if ((memcmp(&(neigh_info->ip_addr), &(obj->neigh_info.ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (neigh_info->intf_h == obj->neigh_info.intf_h)) {
       tommy_list_remove_existing(&switchlink_db_neigh_obj_list,
@@ -568,9 +559,9 @@ switchlink_db_status_t switchlink_db_delete_neighbor(
  */
 
 switchlink_db_status_t switchlink_db_add_nexthop(
-    switchlink_db_nexthop_info_t *nexthop_info) {
+    switchlink_db_nexthop_info_t* nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
-  switchlink_db_nexthop_obj_t *obj =
+  switchlink_db_nexthop_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_nexthop_obj_t), 1);
   krnlmon_assert(obj != NULL);
   memcpy(&(obj->nexthop_info), nexthop_info,
@@ -592,20 +583,19 @@ switchlink_db_status_t switchlink_db_add_nexthop(
  */
 
 switchlink_db_status_t switchlink_db_get_nexthop_info(
-    switchlink_db_nexthop_info_t *nexthop_info) {
+    switchlink_db_nexthop_info_t* nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
-    switchlink_db_nexthop_obj_t *obj = node->data;
+    switchlink_db_nexthop_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((memcmp(&(nexthop_info->ip_addr),
-                &(obj->nexthop_info.ip_addr),
+    if ((memcmp(&(nexthop_info->ip_addr), &(obj->nexthop_info.ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (nexthop_info->vrf_h == obj->nexthop_info.vrf_h) &&
         (nexthop_info->intf_h == obj->nexthop_info.intf_h)) {
-        memcpy(nexthop_info, &(obj->nexthop_info),
-               sizeof(switchlink_db_nexthop_info_t));
+      memcpy(nexthop_info, &(obj->nexthop_info),
+             sizeof(switchlink_db_nexthop_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
@@ -624,19 +614,18 @@ switchlink_db_status_t switchlink_db_get_nexthop_info(
  *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
  */
 switchlink_db_status_t switchlink_db_update_nexthop_using_by(
-    switchlink_db_nexthop_info_t *nexthop_info) {
+    switchlink_db_nexthop_info_t* nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
-    switchlink_db_nexthop_obj_t *obj = node->data;
+    switchlink_db_nexthop_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((memcmp(&(nexthop_info->ip_addr),
-                &(obj->nexthop_info.ip_addr),
+    if ((memcmp(&(nexthop_info->ip_addr), &(obj->nexthop_info.ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (nexthop_info->vrf_h == obj->nexthop_info.vrf_h) &&
         (nexthop_info->intf_h == obj->nexthop_info.intf_h)) {
-        obj->nexthop_info.using_by = nexthop_info->using_by;
+      obj->nexthop_info.using_by = nexthop_info->using_by;
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }
@@ -658,10 +647,10 @@ switchlink_db_status_t switchlink_db_update_nexthop_using_by(
  */
 
 switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
-    switchlink_handle_t nhop_h, switchlink_db_nexthop_info_t *nexthop_info) {
-  tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
+    switchlink_handle_t nhop_h, switchlink_db_nexthop_info_t* nexthop_info) {
+  tommy_node* node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
-    switchlink_db_nexthop_obj_t *obj = node->data;
+    switchlink_db_nexthop_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
     if (nhop_h == obj->nexthop_info.nhop_h) {
@@ -688,15 +677,14 @@ switchlink_db_status_t switchlink_db_get_nexthop_handle_info(
  */
 
 switchlink_db_status_t switchlink_db_delete_nexthop(
-    switchlink_db_nexthop_info_t *nexthop_info) {
+    switchlink_db_nexthop_info_t* nexthop_info) {
   krnlmon_assert(nexthop_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_nexthop_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_nexthop_obj_list);
   while (node) {
-    switchlink_db_nexthop_obj_t *obj = node->data;
+    switchlink_db_nexthop_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((memcmp(&(nexthop_info->ip_addr),
-                &(obj->nexthop_info.ip_addr),
+    if ((memcmp(&(nexthop_info->ip_addr), &(obj->nexthop_info.ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0) &&
         (nexthop_info->intf_h == obj->nexthop_info.intf_h)) {
       tommy_list_remove_existing(&switchlink_db_nexthop_obj_list,
@@ -707,7 +695,6 @@ switchlink_db_status_t switchlink_db_delete_nexthop(
   }
   return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
 }
-
 
 /*
  * Routine Description:
@@ -721,19 +708,17 @@ switchlink_db_status_t switchlink_db_delete_nexthop(
  */
 
 switchlink_db_status_t switchlink_db_add_ecmp(
-    switchlink_db_ecmp_info_t *ecmp_info) {
+    switchlink_db_ecmp_info_t* ecmp_info) {
   krnlmon_assert(ecmp_info != NULL);
   krnlmon_assert(ecmp_info->num_nhops < SWITCHLINK_ECMP_NUM_MEMBERS_MAX);
-  switchlink_db_ecmp_obj_t *obj =
+  switchlink_db_ecmp_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_ecmp_obj_t), 1);
   krnlmon_assert(obj != NULL);
   memcpy(&(obj->ecmp_info), ecmp_info, sizeof(switchlink_db_ecmp_info_t));
   obj->ref_count = 0;
   tommy_list_insert_tail(&switchlink_db_ecmp_obj_list, &obj->list_node, obj);
-  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map,
-                            &obj->handle_node,
-                            obj,
-                            obj->ecmp_info.ecmp_h);
+  tommy_trie_inplace_insert(&switchlink_db_handle_obj_map, &obj->handle_node,
+                            obj, obj->ecmp_info.ecmp_h);
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -750,11 +735,11 @@ switchlink_db_status_t switchlink_db_add_ecmp(
  */
 
 switchlink_db_status_t switchlink_db_get_ecmp_info(
-    switchlink_db_ecmp_info_t *ecmp_info) {
+    switchlink_db_ecmp_info_t* ecmp_info) {
   krnlmon_assert(ecmp_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_ecmp_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_ecmp_obj_list);
   while (node) {
-    switchlink_db_ecmp_obj_t *obj = node->data;
+    switchlink_db_ecmp_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
     if (obj->ecmp_info.num_nhops == ecmp_info->num_nhops) {
@@ -792,9 +777,9 @@ switchlink_db_status_t switchlink_db_get_ecmp_info(
  */
 
 switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
-    switchlink_handle_t ecmp_h, switchlink_db_ecmp_info_t *ecmp_info) {
+    switchlink_handle_t ecmp_h, switchlink_db_ecmp_info_t* ecmp_info) {
   krnlmon_assert(ecmp_info != NULL);
-  switchlink_db_ecmp_obj_t *obj;
+  switchlink_db_ecmp_obj_t* obj;
   obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -816,7 +801,7 @@ switchlink_db_status_t switchlink_db_ecmp_handle_get_info(
  */
 
 switchlink_db_status_t switchlink_db_inc_ecmp_ref(switchlink_handle_t ecmp_h) {
-  switchlink_db_ecmp_obj_t *obj;
+  switchlink_db_ecmp_obj_t* obj;
   obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -840,8 +825,8 @@ switchlink_db_status_t switchlink_db_inc_ecmp_ref(switchlink_handle_t ecmp_h) {
  */
 
 switchlink_db_status_t switchlink_db_dec_ecmp_ref(switchlink_handle_t ecmp_h,
-                                                  int *ref_count) {
-  switchlink_db_ecmp_obj_t *obj;
+                                                  int* ref_count) {
+  switchlink_db_ecmp_obj_t* obj;
   obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -867,7 +852,7 @@ switchlink_db_status_t switchlink_db_dec_ecmp_ref(switchlink_handle_t ecmp_h,
  */
 
 switchlink_db_status_t switchlink_db_delete_ecmp(switchlink_handle_t ecmp_h) {
-  switchlink_db_ecmp_obj_t *obj;
+  switchlink_db_ecmp_obj_t* obj;
   obj = switchlink_db_get_handle_obj(ecmp_h);
   if (!obj) {
     return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
@@ -892,9 +877,9 @@ switchlink_db_status_t switchlink_db_delete_ecmp(switchlink_handle_t ecmp_h) {
  */
 
 switchlink_db_status_t switchlink_db_add_route(
-    switchlink_db_route_info_t *route_info) {
+    switchlink_db_route_info_t* route_info) {
   krnlmon_assert(route_info != NULL);
-  switchlink_db_route_obj_t *obj =
+  switchlink_db_route_obj_t* obj =
       switchlink_malloc(sizeof(switchlink_db_route_obj_t), 1);
   krnlmon_assert(obj != NULL);
   memcpy(&(obj->route_info), route_info, sizeof(switchlink_db_route_info_t));
@@ -915,16 +900,15 @@ switchlink_db_status_t switchlink_db_add_route(
  */
 
 switchlink_db_status_t switchlink_db_delete_route(
-    switchlink_db_route_info_t *route_info) {
+    switchlink_db_route_info_t* route_info) {
   krnlmon_assert(route_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {
-    switchlink_db_route_obj_t *obj = node->data;
+    switchlink_db_route_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
     if ((obj->route_info.vrf_h == route_info->vrf_h) &&
-        (memcmp(&(obj->route_info.ip_addr),
-                &(route_info->ip_addr),
+        (memcmp(&(obj->route_info.ip_addr), &(route_info->ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0)) {
       tommy_list_remove_existing(&switchlink_db_route_obj_list,
                                  &obj->list_node);
@@ -948,19 +932,18 @@ switchlink_db_status_t switchlink_db_delete_route(
  */
 
 switchlink_db_status_t switchlink_db_get_route_info(
-    switchlink_db_route_info_t *route_info) {
+    switchlink_db_route_info_t* route_info) {
   krnlmon_assert(route_info != NULL);
-  tommy_node *node = tommy_list_head(&switchlink_db_route_obj_list);
+  tommy_node* node = tommy_list_head(&switchlink_db_route_obj_list);
   while (node) {
-    switchlink_db_route_obj_t *obj = node->data;
+    switchlink_db_route_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
     if ((obj->route_info.vrf_h == route_info->vrf_h) &&
-        (memcmp(&(obj->route_info.ip_addr),
-                &(route_info->ip_addr),
+        (memcmp(&(obj->route_info.ip_addr), &(route_info->ip_addr),
                 sizeof(switchlink_ip_addr_t)) == 0)) {
-      memcpy(
-          route_info, &(obj->route_info), sizeof(switchlink_db_route_info_t));
+      memcpy(route_info, &(obj->route_info),
+             sizeof(switchlink_db_route_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
   }

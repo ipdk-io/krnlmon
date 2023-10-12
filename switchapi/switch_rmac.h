@@ -63,9 +63,8 @@ typedef enum switch_rmac_type_s {
  * returned.
  */
 switch_status_t switch_api_router_mac_group_create(
-    const switch_device_t device,
-    const switch_rmac_type_t rmac_type,
-    switch_handle_t *rmac_handle);
+    const switch_device_t device, const switch_rmac_type_t rmac_type,
+    switch_handle_t* rmac_handle);
 
 /**
  * @brief Delete a router mac group
@@ -93,10 +92,8 @@ switch_status_t switch_api_router_mac_group_delete(
  * returned.
  */
 switch_status_t switch_api_router_mac_group_create_with_macs(
-    const switch_device_t device,
-    const switch_size_t num_macs,
-    const switch_mac_addr_t *mac,
-    switch_handle_t *rmac_handle);
+    const switch_device_t device, const switch_size_t num_macs,
+    const switch_mac_addr_t* mac, switch_handle_t* rmac_handle);
 
 /**
  * @brief Add a router mac to rmac group
@@ -115,7 +112,7 @@ switch_status_t switch_api_router_mac_group_create_with_macs(
 */
 switch_status_t switch_api_vrrp_rmac_add(const switch_device_t device,
                                          const switch_handle_t rmac_handle,
-                                         const switch_mac_addr_t *vrrp_mac);
+                                         const switch_mac_addr_t* vrrp_mac);
 
 /**
  * @brief Delete a router mac from rmac group
@@ -130,11 +127,11 @@ switch_status_t switch_api_vrrp_rmac_add(const switch_device_t device,
 switch_status_t switch_api_router_mac_delete(const switch_device_t device,
                                              const switch_handle_t rif_handle,
                                              const switch_handle_t rmac_handle,
-                                             const switch_mac_addr_t *mac);
+                                             const switch_mac_addr_t* mac);
 
 switch_status_t switch_api_vrrp_rmac_delete(const switch_device_t device,
                                             const switch_handle_t rmac_handle,
-                                            const switch_mac_addr_t *vrrp_mac);
+                                            const switch_mac_addr_t* vrrp_mac);
 
 /**
  * @brief Returns all router macs belonging to a router mac group
@@ -149,8 +146,8 @@ switch_status_t switch_api_vrrp_rmac_delete(const switch_device_t device,
  */
 switch_status_t switch_api_rmac_macs_get(const switch_device_t device,
                                          const switch_handle_t rmac_handle,
-                                         switch_uint16_t *num_entries,
-                                         switch_mac_addr_t **macs);
+                                         switch_uint16_t* num_entries,
+                                         switch_mac_addr_t** macs);
 
 /**
  * @brief Dumps router mac info using clish context
@@ -164,7 +161,7 @@ switch_status_t switch_api_rmac_macs_get(const switch_device_t device,
  */
 switch_status_t switch_api_rmac_handle_dump(const switch_device_t device,
                                             const switch_handle_t rmac_handle,
-                                            const void *cli_ctx);
+                                            const void* cli_ctx);
 
 /**
  * @brief Add a tunnel dmac to rmac group
@@ -176,10 +173,9 @@ switch_status_t switch_api_rmac_handle_dump(const switch_device_t device,
  * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
  * returned.
  */
-switch_status_t switch_api_router_mac_add(
-    const switch_device_t device,
-    const switch_handle_t rmac_handle,
-    const switch_mac_addr_t *mac);
+switch_status_t switch_api_router_mac_add(const switch_device_t device,
+                                          const switch_handle_t rmac_handle,
+                                          const switch_mac_addr_t* mac);
 
 /** @} */  // end of Router MAC API
 

@@ -18,10 +18,9 @@
 #ifndef __SWITCHLINK_UTILS_H__
 #define __SWITCHLINK_UTILS_H__
 
-
-#include <stdint.h>
-#include <stdbool.h>
 #include <netinet/in.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "switchutils/switch_utils.h"
 

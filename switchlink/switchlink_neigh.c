@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
+#include "switchlink_neigh.h"
+
 #include <linux/if_ether.h>
 #include <net/if.h>
 
 #include "switchlink.h"
-#include "switchlink_neigh.h"
 #include "switchlink_handle.h"
 
 /*
@@ -36,10 +37,10 @@
  *    void
  */
 
-void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
+void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
-  struct nlattr *attr;
-  struct ndmsg *nbh;
+  struct nlattr* attr;
+  struct ndmsg* nbh;
   switchlink_mac_addr_t mac_addr;
   bool mac_addr_valid = false;
   bool ipaddr_valid = false;
@@ -49,26 +50,26 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   nbh = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ndmsg);
 
-  krnlmon_log_debug("%sneigh: family = %d, ifindex = %d, state = 0x%x, \
+  krnlmon_log_debug(
+      "%sneigh: family = %d, ifindex = %d, state = 0x%x, \
        flags = 0x%x, type = %u\n",
-       ((msgtype == RTM_NEWNEIGH) ? "new" : "del"),
-       nbh->ndm_family,
-       nbh->ndm_ifindex,
-       nbh->ndm_state,
-       nbh->ndm_flags,
-       nbh->ndm_type);
+      ((msgtype == RTM_NEWNEIGH) ? "new" : "del"), nbh->ndm_family,
+      nbh->ndm_ifindex, nbh->ndm_state, nbh->ndm_flags, nbh->ndm_type);
 
   switchlink_db_interface_info_t ifinfo;
   if (switchlink_db_get_interface_info(nbh->ndm_ifindex, &ifinfo) !=
       SWITCHLINK_DB_STATUS_SUCCESS) {
     char intf_name[16] = {0};
     if (!if_indextoname(nbh->ndm_ifindex, intf_name)) {
-        krnlmon_log_error("Failed to get ifname for the index: %d", nbh->ndm_ifindex);
-        return;
+      krnlmon_log_error("Failed to get ifname for the index: %d",
+                        nbh->ndm_ifindex);
+      return;
     }
     if_indextoname(nbh->ndm_ifindex, intf_name);
-    krnlmon_log_debug("neigh: Failed to get switchlink database interface info "
-             "for :%s\n", intf_name);
+    krnlmon_log_debug(
+        "neigh: Failed to get switchlink database interface info "
+        "for :%s\n",
+        intf_name);
     return;
   }
 
@@ -81,21 +82,22 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
       case NDA_DST:
         if ((nbh->ndm_state == NUD_REACHABLE) ||
             (nbh->ndm_state == NUD_PERMANENT) ||
-            (nbh->ndm_state == NUD_STALE) ||
-            (nbh->ndm_state == NUD_FAILED)) {
-            ipaddr_valid = true;
-            ipaddr.family = nbh->ndm_family;
-            if (nbh->ndm_family == AF_INET) {
-              ipaddr.ip.v4addr.s_addr = ntohl(nla_get_u32(attr));
-              ipaddr.prefix_len = 32;
-            } else {
-              memcpy(&(ipaddr.ip.v6addr), nla_data(attr), nla_len(attr));
-              ipaddr.prefix_len = 128;
-            }
+            (nbh->ndm_state == NUD_STALE) || (nbh->ndm_state == NUD_FAILED)) {
+          ipaddr_valid = true;
+          ipaddr.family = nbh->ndm_family;
+          if (nbh->ndm_family == AF_INET) {
+            ipaddr.ip.v4addr.s_addr = ntohl(nla_get_u32(attr));
+            ipaddr.prefix_len = 32;
+          } else {
+            memcpy(&(ipaddr.ip.v6addr), nla_data(attr), nla_len(attr));
+            ipaddr.prefix_len = 128;
+          }
         } else {
-            krnlmon_log_debug("Ignoring unused neighbor states for attribute "
-                        "type %d\n", attr_type);
-            return;
+          krnlmon_log_debug(
+              "Ignoring unused neighbor states for attribute "
+              "type %d\n",
+              attr_type);
+          return;
         }
         break;
       case NDA_LLADDR: {
@@ -120,7 +122,7 @@ void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   if (msgtype == RTM_NEWNEIGH) {
     if (bridge_h && mac_addr_valid) {
       switchlink_create_mac(mac_addr, bridge_h, intf_h);
-    } else if(mac_addr_valid && ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L3) {
+    } else if (mac_addr_valid && ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L3) {
       /* Here we are creating FDB entry from neighbor table, check for
        * type as SWITCHLINK_INTF_TYPE_L3 */
       switchlink_create_mac(mac_addr, bridge_h, intf_h);

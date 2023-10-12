@@ -27,8 +27,7 @@ extern "C" {
 #endif
 
 #define SWITCH_TABLE_ID_VALID(_table_id) \
-        _table_id > SWITCH_TABLE_NONE &&_table_id < SWITCH_TABLE_MAX
-
+  _table_id > SWITCH_TABLE_NONE&& _table_id < SWITCH_TABLE_MAX
 
 typedef enum switch_table_id_ {
 
@@ -194,26 +193,26 @@ typedef struct switch_table_s {
 
 switch_status_t switch_api_table_size_get(switch_device_t device,
                                           switch_table_id_t table_id,
-                                          switch_size_t *table_size);
+                                          switch_size_t* table_size);
 
 switch_status_t switch_api_table_all_get(switch_device_t device,
-                                         switch_size_t *num_entries,
-                                         switch_table_t *api_table_info);
+                                         switch_size_t* num_entries,
+                                         switch_table_t* api_table_info);
 
 switch_status_t switch_api_table_entry_count_get(switch_device_t device,
                                                  switch_table_id_t table_id,
-                                                 switch_uint32_t *num_entries);
+                                                 switch_uint32_t* num_entries);
 
 switch_status_t switch_table_init(switch_device_t device,
-                                  switch_size_t *table_sizes);
+                                  switch_size_t* table_sizes);
 
 switch_status_t switch_table_free(switch_device_t device);
 
 switch_status_t switch_api_table_size_get_internal(switch_device_t device,
                                                    switch_table_id_t table_id,
-                                                   switch_size_t *table_size);
+                                                   switch_size_t* table_size);
 
-switch_status_t switch_table_default_sizes_get(switch_size_t *table_sizes);
+switch_status_t switch_table_default_sizes_get(switch_size_t* table_sizes);
 
 #ifdef __cplusplus
 }

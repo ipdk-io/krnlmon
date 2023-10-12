@@ -17,23 +17,24 @@
  * limitations under the License.
  */
 
+#include "switchlink_link.h"
+
 #include <fcntl.h>
-#include <unistd.h>
-#include <linux/if_bridge.h>
 #include <linux/if.h>
+#include <linux/if_bridge.h>
 #include <linux/version.h>
+#include <unistd.h>
 
 #include "switchlink.h"
-#include "switchlink_int.h"
-#include "switchlink_link.h"
 #include "switchlink_handle.h"
+#include "switchlink_int.h"
 
 #if defined(ES2K_TARGET)
-  // ES2K creates netdevs from idpf driver/SR-IOVs.
-  // These netdevs won't have any Link type.
-  #define DEFAULT_SWITCHLINK_LINK_TYPE SWITCHLINK_LINK_TYPE_RIF
+// ES2K creates netdevs from idpf driver/SR-IOVs.
+// These netdevs won't have any Link type.
+#define DEFAULT_SWITCHLINK_LINK_TYPE SWITCHLINK_LINK_TYPE_RIF
 #else
-  #define DEFAULT_SWITCHLINK_LINK_TYPE SWITCHLINK_LINK_TYPE_ETH
+#define DEFAULT_SWITCHLINK_LINK_TYPE SWITCHLINK_LINK_TYPE_ETH
 #endif
 
 struct link_attrs {
@@ -58,7 +59,7 @@ static const switchlink_mac_addr_t null_mac = {0, 0, 0, 0, 0, 0};
  * Return Values:
  *    link type
  */
-static switchlink_link_type_t get_link_type(const char *info_kind) {
+static switchlink_link_type_t get_link_type(const char* info_kind) {
   switchlink_link_type_t link_type = DEFAULT_SWITCHLINK_LINK_TYPE;
 
   if (!strcmp(info_kind, "bridge")) {
@@ -85,8 +86,8 @@ static switchlink_link_type_t get_link_type(const char *info_kind) {
  * Return Values:
  *    void
  */
-static void process_info_data_attr(const struct nlattr *infodata,
-                                   struct link_attrs *attrs) {
+static void process_info_data_attr(const struct nlattr* infodata,
+                                   struct link_attrs* attrs) {
   int infodata_attr_type = nla_type(infodata);
   switch (infodata_attr_type) {
     case IFLA_VXLAN_ID:
@@ -131,10 +132,10 @@ static void process_info_data_attr(const struct nlattr *infodata,
  * Return Values:
  *    void
  */
-void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
+void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
   const struct nlattr *attr, *linkinfo, *infodata;
-  const struct ifinfomsg *ifmsg;
+  const struct ifinfomsg* ifmsg;
   switchlink_link_type_t link_type = SWITCHLINK_LINK_TYPE_NONE;
   int linkinfo_attr_type;
 
@@ -148,9 +149,9 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
 
   krnlmon_log_debug(
       "%slink: family = %d, type = %d, ifindex = %d, flags = 0x%x, "
-      "change = 0x%x\n", ((msgtype == RTM_NEWLINK) ? "new" : "del"),
-      ifmsg->ifi_family, ifmsg->ifi_type, ifmsg->ifi_index,
-      ifmsg->ifi_flags, ifmsg->ifi_change);
+      "change = 0x%x\n",
+      ((msgtype == RTM_NEWLINK) ? "new" : "del"), ifmsg->ifi_family,
+      ifmsg->ifi_type, ifmsg->ifi_index, ifmsg->ifi_flags, ifmsg->ifi_change);
 
   attrlen = nlmsg_attrlen(nlmsg, hdrlen);
   attr = nlmsg_attrdata(nlmsg, hdrlen);
@@ -189,11 +190,10 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         if (nla_len(attr) == sizeof(switchlink_mac_addr_t)) {
           memcpy(&intf_info.mac_addr, nla_data(attr), nla_len(attr));
 
-          krnlmon_log_debug(
-              "Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
-              intf_info.mac_addr[0], intf_info.mac_addr[1],
-              intf_info.mac_addr[2], intf_info.mac_addr[3],
-              intf_info.mac_addr[4], intf_info.mac_addr[5]);
+          krnlmon_log_debug("Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
+                            intf_info.mac_addr[0], intf_info.mac_addr[1],
+                            intf_info.mac_addr[2], intf_info.mac_addr[3],
+                            intf_info.mac_addr[4], intf_info.mac_addr[5]);
         }
         break;
       default:

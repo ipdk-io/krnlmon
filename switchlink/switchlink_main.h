@@ -11,10 +11,10 @@ extern "C" {
 int switchlink_main(void);
 int switchlink_stop(void);
 
-void *switchlink_start(void *arg);
+void* switchlink_start(void* arg);
 
 #ifdef __cplusplus
-} // extern "C"
+}  // extern "C"
 #endif
 
 #endif /* _SWITCHLINK_MAIN_H_ */
