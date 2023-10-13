@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,13 @@
 #ifndef __SWITCH_ID_H__
 #define __SWITCH_ID_H__
 
-#include "switch_base_types.h"
+#include <stdbool.h>  // for bool
+
+#include "switch_base_types.h"  // for switch_device_t, switch_status_t, swi...
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /** ID allocator */
 typedef struct switch_id_allocator_t_ {

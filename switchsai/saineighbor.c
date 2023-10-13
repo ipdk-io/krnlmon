@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
 
 #include "saineighbor.h"
 
-#include <arpa/inet.h>
+#include <inttypes.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "saiinternal.h"
-#include "switchapi/switch_l3.h"
+#include "saistatus.h"
+#include "saitypes.h"
+#include "switchapi/switch_base_types.h"
 #include "switchapi/switch_neighbor.h"
 #include "switchapi/switch_nhop.h"
-#include "switchapi/switch_rif.h"
+#include "switchapi/switch_status.h"
+#include "switchutils/switch_log.h"
 
 static void sai_neighbor_entry_to_string(
     _In_ const sai_neighbor_entry_t* neighbor_entry, _Out_ char* entry_string) {

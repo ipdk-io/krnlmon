@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,19 @@
 
 #include "switchapi/switch_l3.h"
 
-#include "switch_pd_routing.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_nhop_int.h"
+#include <string.h>  // for NULL, memset
+
+#include "switch_pd_routing.h"            // for switch_pd_ecmp_hash_table_e...
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_han...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle.h"      // for switch_handle_type_get, SWI...
+#include "switchapi/switch_handle_int.h"  // for switch_handle_type_free
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_l3_int.h"      // for switch_route_entry_t, switc...
+#include "switchapi/switch_nhop.h"        // for switch_nhop_group_info_t
+#include "switchapi/switch_nhop_int.h"    // for switch_nhop_get_group
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 switch_status_t switch_route_table_entry_key_init(void* args,
                                                   switch_uint8_t* key,

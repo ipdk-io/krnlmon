@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCH_PD_ROUTING_H__
-#define __SWITCH_PD_ROUTING_H__
+#ifndef __ES2K_SWITCH_PD_ROUTING_H__
+#define __ES2K_SWITCH_PD_ROUTING_H__
+
+#include <stdbool.h>  // for bool
+#include <stdint.h>   // for uint8_t
 
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
@@ -28,9 +31,8 @@
 extern "C" {
 #endif
 
-/** enum to decide the proper key and action based on ecmp or nhop
- * */
-typedef enum switch_ip_table_action_s {
+/** enum to decide the proper key and action based on ecmp or nhop */
+typedef enum switch_ip_table_action {
   SWITCH_ACTION_NHOP = 0,
   SWITCH_ACTION_NHOP_GROUP = 1,
   SWITCH_ACTION_NONE = 2
@@ -39,8 +41,9 @@ typedef enum switch_ip_table_action_s {
 /**
  * create pd_routing structure to hold
  * the data to be sent to
- * the backend to update the table */
-typedef struct switch_pd_routing_info_s {
+ * the backend to update the table
+ */
+typedef struct switch_pd_routing_info {
   switch_handle_t neighbor_handle;
 
   switch_handle_t nexthop_handle;

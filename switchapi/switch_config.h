@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@
 #ifndef _switch_config_h
 #define _switch_config_h
 
-#include "switch_base_types.h"
-#include "switch_handle.h"
-#include "switch_table.h"
+#include <stdbool.h>            // for bool
+
+#include "switch_base_types.h"  // for switch_status_t, SWITCH_HOSTIF_NAME_SIZE
+#include "switch_table.h"       // for SWITCH_TABLE_MAX, switch_table_t
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 typedef struct switch_config_s {
   bool use_pcie;
@@ -51,5 +52,6 @@ switch_status_t switch_config_free(void);
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
+
 #endif /* _switch_config_h */

@@ -19,18 +19,26 @@
 
 #include "switchlink_link.h"
 
-#include <fcntl.h>
-#include <linux/if.h>
-#include <linux/if_bridge.h>
-#include <linux/version.h>
-#include <netlink/attr.h>
-#include <netlink/msg.h>
-#include <netlink/netlink.h>
-#include <unistd.h>
+#include <linux/if.h>         // for IFNAMSIZ
+#include <linux/if_link.h>    // for IFLA_ADDRESS, IFLA_IFNAME, IFL...
+#include <linux/rtnetlink.h>  // for ifinfomsg, RTM_NEWLINK
+#include <netinet/in.h>       // for in_addr, ntohl, ntohs
+#include <netlink/attr.h>     // for nla_get_u32, nla_type, nla_get...
+#include <netlink/msg.h>      // for nlmsg_attrdata, nlmsg_attrlen
+#include <stdint.h>           // for uint8_t, uint32_t
+#include <stdio.h>            // for snprintf
+#include <string.h>           // for strcmp, memcmp, memcpy
+#include <sys/socket.h>       // for AF_INET
 
-#include "switchlink.h"
-#include "switchlink_handle.h"
-#include "switchlink_int.h"
+#include "switchlink.h"                // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchlink_handle.h"         // for switchlink_create_interface
+#include "switchlink_int.h"            // for switchlink_init_link, switchli...
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug, krnlmon_log...
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+
+struct nlattr;
+struct nlmsghdr;
 
 #if defined(ES2K_TARGET)
 // ES2K creates netdevs from idpf driver/SR-IOVs.

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,24 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
-#include "switchlink_init_sai.h"
+#include <netinet/in.h>                    // for in_addr, htonl, in6_addr
+#include <stdbool.h>                       // for false, bool, true
+#include <stdint.h>                        // for uint8_t
+#include <string.h>                        // for memcpy, memset, NULL
+#include <sys/socket.h>                    // for AF_INET, AF_INET6
+
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_route
+#include "switchlink_init_sai.h"           // for switchlink_delete_ecmp
+#include "sai.h"                           // for sai_api_query, SAI_API_ROUTE
+#include "sairoute.h"                      // for sai_route_entry_t, sai_rou...
+#include "saistatus.h"                     // for SAI_STATUS_SUCCESS
+#include "saiswitch.h"                     // for SAI_PACKET_ACTION_TRAP
+#include "saitypes.h"                      // for sai_ip_prefix_t, sai_attri...
+#include "switchlink/switchlink.h"         // for switchlink_ip_addr_t, swit...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_route_info_t
+#include "switchlink/switchlink_utils.h"   // for ipv4_prefix_len_to_mask
+#include "switchutils/switch_log.h"        // for krnlmon_log_debug, krnlmon...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
 
 static sai_route_api_t* sai_route_api = NULL;
 

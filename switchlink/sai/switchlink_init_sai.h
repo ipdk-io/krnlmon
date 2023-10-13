@@ -18,14 +18,12 @@
 #ifndef __SWITCHLINK_INIT_SAI_H__
 #define __SWITCHLINK_INIT_SAI_H__
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <stdbool.h>                   // for bool
+#include <stdint.h>                    // for uint32_t
 
-#include "sai.h"
-#include "switchlink/switchlink.h"
-#include "switchlink/switchlink_db.h"
-#include "switchlink/switchlink_utils.h"
-#include "switchsai/saiinternal.h"
+#include "switchlink/switchlink.h"     // for switchlink_handle_t, switchlin...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_ecmp_info_t, swi...
+#include "saitypes.h"                  // for sai_status_t
 
 // Init SAI API
 void switchlink_init_api(void);

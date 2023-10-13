@@ -15,26 +15,17 @@
  * limitations under the License.
  */
 
-#include "bf_pal/bf_pal_port_intf.h"
-#include "bf_rt/bf_rt_common.h"
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_handle.h"
-#include "switchapi/switch_rif.h"
-// clang-format off
-// tdi_info.h does not include all the header files it depends on,
-// so we force tdi_defs.h to precede it.
-#include "tdi/common/tdi_defs.h"
-#include "tdi/common/c_frontend/tdi_info.h"
-// clang-format on
-#include "tdi/common/c_frontend/tdi_init.h"
-#include "tdi/common/c_frontend/tdi_session.h"
-#include "tdi/common/c_frontend/tdi_table.h"
-#include "tdi/common/c_frontend/tdi_table_info.h"
+#ifndef __ES2K_SWITCH_PD_UTILS_H__
+#define __ES2K_SWITCH_PD_UTILS_H__
 
-#ifndef __SWITCH_PD_UTILS_H__
-#define __SWITCH_PD_UTILS_H__
+#include <stdbool.h>  // for bool
+#include <stdint.h>   // for uint32_t, uint8_t
+
+#include "bf_rt/bf_rt_common.h"           // for bf_rt_session_hdl, bf_rt_in...
+#include "bf_types.h"                     // for bf_status_t, bf_dev_id_t
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t
+#include "tdi/common/tdi_defs.h"          // for tdi_status_t, tdi_flags_hdl
 
 #ifdef __cplusplus
 extern "C" {

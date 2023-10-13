@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
 
 #include "switchapi/switch_nhop.h"
 
-#include "switch_pd_routing.h"
+#include <string.h>  // for NULL, memset
+
+#include "judy-1.0.5/src/Judy.h"          // for JLD, JLI, PJERR, PWord_t
+#include "switch_pd_routing.h"            // for switch_pd_routing_info_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, switch_sta...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_NHOP
 #include "switchapi/switch_handle_int.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_neighbor_int.h"
-#include "switchapi/switch_nhop_int.h"
-#include "switchapi/switch_rif.h"
-#include "switchapi/switch_rif_int.h"
+#include "switchapi/switch_nhop_int.h"   // for switch_nhop_info_t, switch_...
+#include "switchapi/switch_status.h"     // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_types_int.h"  // for switch_node_t, switch_hasht...
+#include "switchutils/switch_log.h"      // for krnlmon_log_error, krnlmon_...
 
 // add corresponding delete functions
 

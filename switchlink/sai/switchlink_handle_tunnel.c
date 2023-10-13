@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,21 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
-#include "switchlink_init_sai.h"
+#include <netinet/in.h>                    // for htonl, in_addr
+#include <stdint.h>                        // for uint32_t
+#include <string.h>                        // for memset, NULL
+#include <sys/socket.h>                    // for AF_INET
+
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_tunnel_i...
+#include "switchlink_init_sai.h"           // for sai_init_tunnel_api, switc...
+#include "sai.h"                           // for sai_api_query, SAI_API_TUNNEL
+#include "saistatus.h"                     // for SAI_STATUS_SUCCESS
+#include "saitunnel.h"                     // for sai_tunnel_api_t, SAI_TUNN...
+#include "saitypes.h"                      // for sai_attribute_t, sai_attri...
+#include "switchlink/switchlink.h"         // for switchlink_ip_addr_t, swit...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_tunnel_inter...
+#include "switchutils/switch_log.h"        // for krnlmon_log_error, krnlmon...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
 
 static sai_tunnel_api_t* sai_tunnel_intf_api = NULL;
 

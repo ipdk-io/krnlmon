@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,19 @@
 
 #include "switchapi/switch_fdb.h"
 
-#include "switch_pd_fdb.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_rif_int.h"
-#include "switchapi/switch_status.h"
+#include <stdbool.h>  // for false, true
+
+#include "switch_pd_fdb.h"                // for switch_pd_l2_rx_forward_tab...
+#include "switch_pd_utils.h"              // for switch_pd_to_get_port_id
+#include "switchapi/switch_base_types.h"  // for switch_mac_addr_t, switch_s...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_L2_FWD_RX
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t
+#include "switchapi/switch_rif_int.h"     // for switch_rif_info_t, switch_r...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_tunnel.h"      // for switch_tunnel_info_t, switc...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 switch_status_t switch_l2_hash_key_init(void* args, switch_uint8_t* key,
                                         switch_uint32_t* len) {

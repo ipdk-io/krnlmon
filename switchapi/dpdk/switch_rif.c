@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-#include <net/if.h>
+#include <stddef.h>                       // for NULL
 
-/* Local header includes */
-#include "bf_types.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_rif.h"
-#include "switchapi/switch_rif_int.h"
-#include "switchapi/switch_status.h"
+#include "switch_pd_utils.h"              // for switch_pd_to_get_port_id
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_internal.h"    // for CHECK_RET, switch_error_to_...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t, swit...
+#include "switchapi/switch_rif_int.h"     // for switch_rif_info_t, switch_r...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_RIF
+#include "switchutils/switch_log.h"       // for krnlmon_log_debug, krnlmon_...
 
 /*
  * Routine Description:

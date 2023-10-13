@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,23 @@
 
 #include "switchapi/switch_neighbor.h"
 
-#include "switch_pd_fdb.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_fdb.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_neighbor_int.h"
-#include "switchapi/switch_nhop.h"
-#include "switchapi/switch_nhop_int.h"
-#include "switchapi/switch_rif_int.h"
-#include "switchapi/switch_rmac_int.h"
+#include <stdbool.h>  // for true, false
+#include <string.h>   // for NULL, memset
+
+#include "switch_pd_fdb.h"                  // for switch_pd_l2_rx_forward_t...
+#include "switch_pd_utils.h"                // for switch_pd_get_physical_po...
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_h...
+#include "switchapi/switch_device_int.h"    // for switch_device_api_context...
+#include "switchapi/switch_fdb.h"           // for switch_api_l2_info_t
+#include "switchapi/switch_handle.h"        // for SWITCH_HANDLE_TYPE_NEIGHBOR
+#include "switchapi/switch_handle_int.h"    // for switch_handle_type_free
+#include "switchapi/switch_internal.h"      // for switch_error_to_string
+#include "switchapi/switch_neighbor_int.h"  // for switch_neighbor_context_t
+#include "switchapi/switch_nhop_int.h"      // for switch_nhop_info_t, switc...
+#include "switchapi/switch_rif_int.h"       // for switch_rif_info_t, switch...
+#include "switchapi/switch_rmac_int.h"      // for switch_rmac_entry_t, swit...
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"         // for krnlmon_log_error, krnlmo...
 
 switch_status_t switch_neighbor_init(switch_device_t device) {
   switch_neighbor_context_t* neighbor_ctx = NULL;

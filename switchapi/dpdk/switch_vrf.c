@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@
 
 #include "switchapi/switch_vrf.h"
 
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_status.h"
+#include "switchapi/switch_base_types.h"  // for switch_status_t, SWITCH_API...
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_VRF
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 switch_status_t switch_vrf_init(switch_device_t device) {
   switch_vrf_context_t* vrf_ctx = NULL;

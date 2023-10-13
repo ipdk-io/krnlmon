@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,17 @@
 
 #include "saitunnel.h"
 
-#include "saiinternal.h"
+#include <netinet/in.h>
+#include <string.h>
+
+#include "saistatus.h"
+#include "saiswitch.h"
+#include "saitypes.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_status.h"
 #include "switchapi/switch_tunnel.h"
+#include "switchsai/saiinternal.h"
+#include "switchutils/switch_log.h"
 
 char* sai_status_to_string(_In_ const sai_status_t status) {
   switch (status) {

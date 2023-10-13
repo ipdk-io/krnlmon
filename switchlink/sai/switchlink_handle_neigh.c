@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,24 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
-#include "switchlink_init_sai.h"
+#include <netinet/in.h>                    // for in6_addr, in6_addr::(anony...
+#include <stdbool.h>                       // for bool, false, true
+#include <stdint.h>                        // for uint8_t, uint32_t
+#include <string.h>                        // for memset, memcpy, memcmp, NULL
+#include <sys/socket.h>                    // for AF_INET, AF_INET6
+
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_mac, swi...
+#include "switchlink_init_sai.h"           // for switchlink_delete_nexthop
+#include "sai.h"                           // for sai_api_query, SAI_API_FDB
+#include "saifdb.h"                        // for sai_fdb_entry_t, sai_fdb_a...
+#include "saineighbor.h"                   // for sai_neighbor_entry_t, sai_...
+#include "saistatus.h"                     // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                      // for sai_attribute_t, sai_status_t
+#include "switchlink/switchlink.h"         // for switchlink_ip_addr_t, swit...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_neigh_info_t
+#include "switchsai/saiinternal.h"         // for SAI_L2_FWD_LEARN_PHYSICAL_...
+#include "switchutils/switch_log.h"        // for krnlmon_log_info, krnlmon_...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
 
 static sai_neighbor_api_t* sai_neigh_api = NULL;
 static sai_fdb_api_t* sai_fdb_api = NULL;

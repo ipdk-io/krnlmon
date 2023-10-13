@@ -19,12 +19,22 @@
 
 #include "switchlink_neigh.h"
 
-#include <linux/if_ether.h>
-#include <net/if.h>
-#include <netlink/msg.h>
+#include <linux/neighbour.h>  // for ndmsg, NDA_DST, NDA_LLADDR
+#include <linux/rtnetlink.h>  // for RTM_NEWNEIGH
+#include <net/if.h>           // for if_indextoname
+#include <netinet/in.h>       // for in_addr, ntohl
+#include <netlink/attr.h>     // for nla_data, nla_len, nla_get_u32
+#include <netlink/msg.h>      // for nlmsg_attrdata, nlmsg_attrlen
+#include <stdbool.h>          // for bool, false, true
+#include <string.h>           // for memcpy, memset
+#include <sys/socket.h>       // for AF_INET
 
-#include "switchlink.h"
-#include "switchlink_handle.h"
+#include "switchlink.h"                  // for switchlink_ip_addr_t, g_defa...
+#include "switchlink/switchlink_db.h"    // for switchlink_db_interface_info_t
+#include "switchlink/switchlink_link.h"  // for SWITCHLINK_INTF_TYPE_L2_ACCESS
+#include "switchlink_handle.h"           // for switchlink_create_mac, switc...
+#include "switchutils/switch_log.h"      // for krnlmon_log_debug, krnlmon_l...
+#include "switchutils/switch_utils.h"    // for krnlmon_assert
 
 /*
  * Routine Description:

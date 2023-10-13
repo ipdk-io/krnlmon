@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,11 @@
 #ifndef __SWITCH_HANDLE_H__
 #define __SWITCH_HANDLE_H__
 
-#include "switch_base_types.h"
-#include "switch_id.h"
-#include "switch_status.h"
+#include "switch_base_types.h"  // for switch_handle_t
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /***************************************************************************
  * DEFINES

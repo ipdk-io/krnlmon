@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,38 @@
  * limitations under the License.
  */
 
-#include <linux/if.h>
+#include <linux/if.h>  // for IFNAMSIZ
+#include <stdbool.h>   // for false, true
+#include <stddef.h>    // for NULL
 
 /* Local header includes */
-#include "switchapi/switch_config_int.h"
-#include "switchapi/switch_fdb.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_neighbor_int.h"
-#include "switchapi/switch_nhop_int.h"
-#include "switchapi/switch_rmac_int.h"
-#include "switchapi/switch_table.h"
-#include "switchapi/switch_vrf.h"
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_d...
+#include "switchapi/switch_config.h"        // for switch_config_init, switc...
+#include "switchapi/switch_config_int.h"    // for switch_config_device_cont...
+#include "switchapi/switch_device.h"        // for switch_api_device_info_t
+#include "switchapi/switch_device_int.h"    // for switch_device_context_t
+#include "switchapi/switch_fdb.h"           // for switch_l2_free, switch_l2...
+#include "switchapi/switch_id.h"            // for switch_api_id_allocator_d...
+#include "switchapi/switch_internal.h"      // for switch_error_to_string
+#include "switchapi/switch_l3_int.h"        // for switch_l3_init
+#include "switchapi/switch_neighbor_int.h"  // for switch_neighbor_free, swi...
+#include "switchapi/switch_nhop.h"          // for switch_api_create_nhop_group
+#include "switchapi/switch_nhop_int.h"      // for switch_nhop_free, switch_...
+#include "switchapi/switch_rif.h"           // for switch_rif_free, switch_r...
+#include "switchapi/switch_rmac.h"          // for switch_api_router_mac_gro...
+#include "switchapi/switch_rmac_int.h"      // for switch_rmac_free, switch_...
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_table.h"         // for switch_table_free, switch...
+#include "switchapi/switch_tunnel.h"        // for switch_tunnel_free, switc...
+#include "switchapi/switch_vrf.h"           // for switch_vrf_free, switch_v...
+#include "switchutils/switch_log.h"         // for krnlmon_log_error, krnlmo...
 
 #undef __MODULE__
 #define __MODULE__ SWITCH_API_TYPE_DEVICE
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_DEVICE
 

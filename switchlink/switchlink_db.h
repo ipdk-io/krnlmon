@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@
 #ifndef __SWITCHLINK_DB_H__
 #define __SWITCHLINK_DB_H__
 
-#include <stdbool.h>
+#include <stdbool.h>  // for bool
+#include <stdint.h>   // for uint32_t, uint8_t, uint16_t
 
-#include "switchlink.h"
-#include "switchlink_link.h"
+#include "switchlink.h"       // for switchlink_handle_t, switchlink_mac_addr_t
+#include "switchlink_link.h"  // for switchlink_link_type_t, switchlink_intf...
 
 #define SWITCHLINK_INTERFACE_NAME_LEN_MAX 32
 #define SWITCHLINK_ECMP_NUM_MEMBERS_MAX 16

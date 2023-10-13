@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022-2023 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 
-#include "saiinternal.h"
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+
+#include "saistatus.h"
+#include "saitypes.h"
 #include "switchapi/switch_base_types.h"
+#include "switchsai/saiinternal.h"
 
 sai_status_t sai_ipv4_prefix_length(_In_ sai_ip4_t ip4,
                                     _Out_ uint32_t* prefix_length) {

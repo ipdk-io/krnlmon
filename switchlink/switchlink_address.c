@@ -17,11 +17,23 @@
  * limitations under the License.
  */
 
-#include <netlink/msg.h>
+#include <linux/if_addr.h>    // for ifaddrmsg, IFA_ADDRESS
+#include <linux/rtnetlink.h>  // for RTM_NEWADDR
+#include <netinet/in.h>       // for in_addr, ntohl
+#include <netlink/attr.h>     // for nla_data, nla_get_u32, nla_len
+#include <netlink/msg.h>      // for nlmsg_attrdata, nlmsg_attrlen
+#include <stdbool.h>          // for bool, false, true
+#include <string.h>           // for memset, memcpy
+#include <sys/socket.h>       // for AF_INET, AF_INET6
 
-#include "switchlink_handle.h"
-#include "switchlink_int.h"
-#include "switchlink_route.h"
+#include "switchlink/switchlink.h"     // for switchlink_ip_addr_t, g_defaul...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_get_interface_info
+#include "switchlink_handle.h"         // for switchlink_create_route, switc...
+#include "switchlink_int.h"            // for switchlink_process_address_msg
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+
+struct nlmsghdr;
 
 /*
  * Routine Description:

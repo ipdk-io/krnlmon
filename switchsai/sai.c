@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,22 @@
  * limitations under the License.
  */
 
-#include "saiinternal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_handle.h"
-#include "switchapi/switch_nhop.h"
+#include <stddef.h>                       // for NULL
+
+#include "sai.h"                          // for SAI_API_MAX, SAI_API_ACL
+#include "saiinternal.h"                  // for sai_api_service_t, sai_fdb_...
+#include "switchapi/switch_base_types.h"  // for switch_api_init, _In_, _Out_
+#include "switchapi/switch_handle.h"      // for switch_handle_type_get, SWI...
+#include "switchapi/switch_nhop.h"        // for switch_api_nhop_id_type_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for SAI_OBJECT_TYPE_NEXT_HOP_GROUP
 
 static sai_api_service_t sai_api_service;
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 static const char* module[SAI_API_MAX] = {"SAI_API_UNSPECIFIED",
                                           "SAI_API_SWITCH",
@@ -450,4 +456,4 @@ sai_status_t sai_initialize(void) {
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif

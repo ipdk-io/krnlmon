@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,23 @@
 
 #include "switchapi/switch_handle.h"
 
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_nhop_int.h"
-#include "switchapi/switch_status.h"
+#include <stdbool.h>                      // for bool, false
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t
+
+#include "id/id.h"                        // for bf_id_allocator_destroy
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_info_t, SWITC...
+#include "switchapi/switch_id.h"          // for switch_api_id_allocator_des...
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_types_int.h"   // for switch_array_t
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_HANDLE
 

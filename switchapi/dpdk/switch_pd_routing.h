@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCH_PD_ROUTING_H__
-#define __SWITCH_PD_ROUTING_H__
+#ifndef __DPDK_SWITCH_PD_ROUTING_H__
+#define __DPDK_SWITCH_PD_ROUTING_H__
 
-#include "switchapi/switch_base_types.h"
+#include <stdbool.h>                      // for bool
+
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
 #include "switchapi/switch_handle.h"
-#include "switchapi/switch_l3.h"
-#include "switchapi/switch_nhop.h"
-#include "switchapi/switch_rmac_int.h"
+#include "switchapi/switch_l3.h"          // for switch_api_route_entry_t
+#include "switchapi/switch_nhop.h"        // for switch_nhop_group_info_t
+#include "switchapi/switch_rmac_int.h"    // for switch_rmac_entry_t
 
 #ifdef __cplusplus
 extern "C" {

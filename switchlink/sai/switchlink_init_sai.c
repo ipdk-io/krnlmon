@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 
 #include "switchlink_init_sai.h"
 
-#include "sai.h"
+#include "saistatus.h"                 // for SAI_STATUS_SUCCESS
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
 
 extern sai_status_t sai_initialize(void);
 

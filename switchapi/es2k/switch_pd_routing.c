@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,28 @@
 
 #include "switch_pd_routing.h"
 
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_nhop_int.h"
+#include <netinet/in.h>  // for ntohl
+#include <stddef.h>      // for NULL
+
+#include "switch_pd_p4_name_mapping.h"    // for LNW_ACTION_SET_NEX...
+#include "switch_pd_utils.h"              // for switch_pd_tdi_stat...
+#include "switchapi/switch_base_types.h"  // for switch_status_t
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE...
+#include "switchapi/switch_internal.h"    // for FOR_EACH_IN_LIST
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"   // for switch_list_t, swi...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+// clang-format off
+#include "tdi/common/tdi_defs.h"                   // for TDI_SUCCESS, tdi_id_t
+#include "tdi/common/c_frontend/tdi_info.h"        // for tdi_table_from_nam...
+#include "tdi/common/c_frontend/tdi_init.h"        // for tdi_device_get
+#include "tdi/common/c_frontend/tdi_session.h"     // for tdi_session_create
+#include "tdi/common/c_frontend/tdi_table.h"       // for tdi_table_action_d...
+#include "tdi/common/c_frontend/tdi_table_data.h"  // for tdi_data_field_set...
+#include "tdi/common/c_frontend/tdi_table_info.h"  // for tdi_data_field_id_...
+#include "tdi/common/c_frontend/tdi_table_key.h"   // for tdi_key_field_set_...
+// clang-format on
 
 switch_status_t switch_routing_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
@@ -157,10 +173,8 @@ switch_status_t switch_pd_nexthop_table_entry(
 
   status = tdi_table_info_get(table_hdl, &table_info_hdl);
   if (status != TDI_SUCCESS) {
-    krnlmon_log_error(
-        "Unable to get table info handle for table, "
-        "error: %d",
-        status);
+    krnlmon_log_error("Unable to get table info handle for table, error: %d",
+                      status);
     goto dealloc_resources;
   }
 
@@ -195,10 +209,8 @@ switch_status_t switch_pd_nexthop_table_entry(
     status = tdi_action_name_to_id(
         table_info_hdl, LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP, &action_id);
     if (status != TDI_SUCCESS) {
-      krnlmon_log_error(
-          "Unable to get action allocator ID for: %s, "
-          "error: %d",
-          LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP, status);
+      krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                        LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP, status);
       goto dealloc_resources;
     }
 
@@ -215,10 +227,8 @@ switch_status_t switch_pd_nexthop_table_entry(
                                                LNW_ACTION_SET_NEXTHOP_PARAM_RIF,
                                                action_id, &data_field_id);
     if (status != TDI_SUCCESS) {
-      krnlmon_log_error(
-          "Unable to get data field id param for: %s, "
-          "error: %d",
-          LNW_ACTION_SET_NEXTHOP_PARAM_RIF, status);
+      krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                        LNW_ACTION_SET_NEXTHOP_PARAM_RIF, status);
       goto dealloc_resources;
     }
 

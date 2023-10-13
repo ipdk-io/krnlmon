@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2013-2021 Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2013-2021 Barefoot Networks, Inc.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCH_PD_P4_NAME_MAPPING__
-#define __SWITCH_PD_P4_NAME_MAPPING__
+#ifndef __ES2K_SWITCH_PD_P4_NAME_MAPPING__
+#define __ES2K_SWITCH_PD_P4_NAME_MAPPING__
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /* List of tables and corresponding actions */
 
@@ -228,4 +228,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __SWITCH_PD_P4_NAME_MAPPING__ */
+#endif /* __ES2K_SWITCH_PD_P4_NAME_MAPPING__ */

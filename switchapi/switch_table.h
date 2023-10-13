@@ -20,7 +20,9 @@
 #ifndef __SWITCH_TABLE_H__
 #define __SWITCH_TABLE_H__
 
-#include "switch_base_types.h"
+#include <stdbool.h>  // for bool
+
+#include "switch_base_types.h"  // for switch_size_t, switch_status_t, switc...
 
 #ifdef __cplusplus
 extern "C" {

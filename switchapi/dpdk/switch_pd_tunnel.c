@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,25 @@
 
 #include "switch_pd_tunnel.h"
 
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_tunnel.h"
+#include <netinet/in.h>                            // for ntohl, ntohs
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint32_t, uint8_t
+
+#include "switch_pd_p4_name_mapping.h"             // for LNW_IPV4_TUNNEL_TE...
+#include "switch_pd_utils.h"                       // for switch_pd_tdi_stat...
+#include "switchapi/switch_tunnel.h"               // for switch_api_tunnel_...
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+
+// clang-format off
+#include "tdi/common/tdi_defs.h"                   // for TDI_SUCCESS, tdi_id_t
+#include "tdi/common/c_frontend/tdi_info.h"        // for tdi_table_from_nam...
+#include "tdi/common/c_frontend/tdi_init.h"        // for tdi_device_get
+#include "tdi/common/c_frontend/tdi_session.h"     // for tdi_session_create
+#include "tdi/common/c_frontend/tdi_table.h"       // for tdi_table_action_d...
+#include "tdi/common/c_frontend/tdi_table_data.h"  // for tdi_data_field_set...
+#include "tdi/common/c_frontend/tdi_table_info.h"  // for tdi_data_field_id_...
+#include "tdi/common/c_frontend/tdi_table_key.h"   // for tdi_key_field_set_...
+// clang-format on
 
 switch_status_t switch_pd_tunnel_entry(
     switch_device_t device, const switch_api_tunnel_info_t* api_tunnel_info_t,

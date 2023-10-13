@@ -17,18 +17,19 @@
 
 #include "switchlink_db.h"
 
-#include <netinet/in.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
+#include <stdbool.h>  // for bool, false, true
+#include <stdint.h>   // for uint32_t, uint8_t
+#include <string.h>   // for memcpy, memcmp, memset, NULL
 
-#include "switchlink.h"
-#include "switchlink_db_int.h"
-#include "switchlink_int.h"
-#include "switchlink_link.h"
-#include "switchlink_neigh.h"
-#include "switchlink_route.h"
-#include "xxHash/xxhash.h"
+#include "switchlink.h"                // for switchlink_handle_t, switchlin...
+#include "switchlink_db_int.h"         // for switchlink_db_ecmp_obj_t, swit...
+#include "switchlink_int.h"            // for switchlink_init_db
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+#include "tommyds/tommyhashlin.h"      // for tommy_hashlin_search, tommy_ha...
+#include "tommyds/tommylist.h"         // for tommy_list_head, tommy_list_in...
+#include "tommyds/tommytrieinp.h"      // for tommy_trie_inplace_insert, tom...
+#include "tommyds/tommytypes.h"        // for tommy_node
+#include "xxHash/xxhash.h"             // for XXH32
 
 #define SWITCHLINK_MAC_KEY_LEN 14
 

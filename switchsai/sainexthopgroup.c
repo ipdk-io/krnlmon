@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,16 @@
 
 #include "sainexthopgroup.h"
 
-#include "saiinternal.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_nhop.h"
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#if defined(DPDK_TARGET)
+#include "switchapi/switch_device.h"      // for switch_api_get_default_nhop_group
+#endif
+#include "switchapi/switch_nhop.h"        // for switch_api_add_nhop_member
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
 
 /*
  * Routine Description:

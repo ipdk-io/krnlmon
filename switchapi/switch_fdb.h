@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,18 @@
 #ifndef __SWITCH_FDB_H__
 #define __SWITCH_FDB_H__
 
-#include "switch_base_types.h"
-#include "switch_handle.h"
-#include "switch_interface.h"
+#include <stddef.h>                      // for NULL
+#include <stdint.h>                      // for uint8_t
+
+#include "switch_base_types.h"           // for switch_status_t, switch_devi...
+#include "switch_handle.h"               // for SWITCH_HANDLE_TYPE_L2_FWD_RX
+#include "switchapi/switch_handle_int.h" // for switch_handle_create, switc...
+#include "switchapi/switch_internal.h"   // for switch_handle_create, switch...
+#include "switchapi/switch_types_int.h"  // for switch_hashnode_t, switch_ha...
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_L2_HASH_SEED 0x12345678
 

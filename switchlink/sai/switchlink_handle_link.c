@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,22 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
-#include "switchlink_init_sai.h"
+#include <stdbool.h>                       // for true
+#include <stdint.h>                        // for uint32_t
+#include <string.h>                        // for memcpy, memset, memcmp, NULL
+
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_interface
+#include "switchlink_init_sai.h"           // for sai_init_rintf_api, sai_in...
+#include "sai.h"                           // for sai_api_query, SAI_API_ROU...
+#include "sairouterinterface.h"            // for sai_router_interface_api_t
+#include "saistatus.h"                     // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                      // for sai_attribute_t, sai_attri...
+#include "saivirtualrouter.h"              // for sai_virtual_router_api_t
+#include "switchlink/switchlink.h"         // for switchlink_handle_t, switc...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_interface_in...
+#include "switchlink/switchlink_link.h"    // for SWITCHLINK_INTF_TYPE_L3
+#include "switchutils/switch_log.h"        // for krnlmon_log_error, krnlmon...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
 
 static sai_virtual_router_api_t* sai_vrf_api = NULL;
 static sai_router_interface_api_t* sai_rintf_api = NULL;

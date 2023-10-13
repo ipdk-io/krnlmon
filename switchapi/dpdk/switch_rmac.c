@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,19 @@
 
 #include "switchapi/switch_rmac.h"
 
-#include "switch_pd_routing.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_rmac_int.h"
+#include <stdbool.h>                      // for false, bool
+#include <stddef.h>                       // for NULL
+
+#include "switch_pd_routing.h"            // for switch_pd_rmac_table_entry
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, FOR...
+#include "switchapi/switch_rmac_int.h"    // for switch_rmac_entry_t, switch...
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_mac...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_set
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_RMAC
+#include "switchapi/switch_handle_int.h"  // for SWITCH_RMAC_HANDLE, switch_...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_types_int.h"   // for switch_macaddress_to_string
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 /*
  * Routine Description:

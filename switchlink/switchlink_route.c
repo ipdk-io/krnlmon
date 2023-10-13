@@ -19,9 +19,23 @@
 
 #include "switchlink_route.h"
 
-#include <netlink/attr.h>
-#include <netlink/msg.h>
-#include <netlink/netlink.h>
+#include <linux/rtnetlink.h>  // for rtmsg, RTA_GATEWAY, RTM_NE...
+#include <netinet/in.h>       // for in_addr, ntohl
+#include <netlink/attr.h>     // for nla_get_u32, nla_data, nla...
+#include <netlink/msg.h>      // for nlmsg_attrdata, nlmsg_attrlen
+#include <stdbool.h>          // for true, bool, false
+#include <stdint.h>           // for uint32_t, uint8_t
+#include <string.h>           // for memset, memcpy, NULL
+#include <sys/socket.h>       // for AF_INET, AF_INET6, AF_MAX
+
+#include "switchlink/switchlink.h"         // for switchlink_ip_addr_t, swit...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_ecmp
+#include "switchutils/switch_log.h"        // for krnlmon_log_debug, krnlmon...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
+
+struct nlattr;
+struct nlmsghdr;
 
 /*
  * Routine Description:
