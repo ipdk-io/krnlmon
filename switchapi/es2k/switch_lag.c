@@ -24,7 +24,7 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_status.h"
 
-/*
+/**
  * Routine Description:
  *   @brief Create allocated LAG handles
  *
@@ -51,7 +51,7 @@ switch_status_t switch_lag_init(switch_device_t device) {
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Free allocated LAG handles
  *
@@ -76,7 +76,7 @@ switch_status_t switch_lag_free(switch_device_t device) {
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Create LAG
  *
@@ -135,7 +135,7 @@ switch_status_t switch_api_lag_create(switch_device_t device,
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Delete LAG
  *
@@ -181,7 +181,7 @@ switch_status_t switch_api_lag_delete(switch_device_t device,
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Create LAG member
  *
@@ -224,7 +224,7 @@ switch_status_t switch_api_lag_member_create(
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Delete LAG member
  *
@@ -250,7 +250,7 @@ switch_status_t switch_api_lag_member_delete(switch_device_t device,
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief On creation of a LAG member, update the
  *   structure of parent LAG indicating new member
@@ -331,7 +331,7 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Get LAG attributes
  *
@@ -368,7 +368,7 @@ switch_status_t switch_api_lag_attribute_get(
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Program the Tx and Rx LAG tables
  *

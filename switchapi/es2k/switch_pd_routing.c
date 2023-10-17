@@ -822,7 +822,12 @@ switch_status_t switch_pd_rif_mod_mid_entry(
                                        (rif_handle &
                                        ~(SWITCH_HANDLE_TYPE_LAG <<
                                        SWITCH_HANDLE_TYPE_SHIFT)));
+    } else {
+      krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_mid",
+               field_id);
+      goto dealloc_resources;
     }
+
     if (status != TDI_SUCCESS) {
         krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_mid",
                  field_id);
@@ -988,6 +993,10 @@ switch_status_t switch_pd_rif_mod_last_entry(
                                        (rif_handle &
                                        ~(SWITCH_HANDLE_TYPE_LAG <<
                                        SWITCH_HANDLE_TYPE_SHIFT)));
+    } else {
+      krnlmon_log_error("Unable to set value for key ID: %d for rif_mod_table_last",
+               field_id);
+      goto dealloc_resources;
     }
 
     if (status != TDI_SUCCESS) {

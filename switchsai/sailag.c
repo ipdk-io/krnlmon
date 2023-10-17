@@ -20,7 +20,7 @@
 #include "switchapi/switch_rmac.h"
 #include "switchapi/switch_status.h"
 
-/*
+/**
  * Routine Description:
  *    Create RMAC for LAG interface.
  *
@@ -75,7 +75,7 @@ static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
   return sai_status;
 }
 
-/*
+/**
  * Routine Description:
  *    Delete RMAC for LAG interface.
  *
@@ -106,7 +106,7 @@ static sai_status_t sai_delete_rmac_internal(switch_handle_t lag_h,
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *    Create LAG
  *
@@ -199,7 +199,7 @@ static sai_status_t sai_create_lag(_Out_ sai_object_id_t* lag_id,
   return (sai_status_t)status;
 }
 
-/*
+/**
  * Routine Description:
  *    Remove LAG
  *
@@ -224,7 +224,7 @@ static sai_status_t sai_remove_lag(_In_ sai_object_id_t lag_id) {
   return (sai_status_t)status;
 }
 
-/*
+/**
  * Routine Description:
  *    Create LAG member
  *
@@ -292,7 +292,7 @@ static sai_status_t sai_create_lag_member(
   return (sai_status_t)status;
 }
 
-/*
+/**
  * Routine Description:
  *    Remove LAG member
  *
@@ -318,7 +318,7 @@ static sai_status_t sai_remove_lag_member(_In_ sai_object_id_t lag_member_id) {
   return (sai_status_t)status;
 }
 
-/*
+/**
  * Routine Description:
  *    Set LAG attribute.
  *
@@ -348,7 +348,7 @@ static sai_status_t sai_set_lag_attribute(_In_ sai_object_id_t lag_id,
   return (sai_status_t)status;
 }
 
-/*
+/**
  *  LAG methods table retrieved with sai_api_query()
  */
 sai_lag_api_t lag_api = {

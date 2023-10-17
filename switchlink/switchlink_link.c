@@ -130,7 +130,7 @@ static void process_info_data_attr(const struct nlattr *infodata,
   }
 }
 
-/*
+/**
  * Routine Description:
  *    Processes a nested INFO_DATA attribute for LAG.
  *
@@ -158,7 +158,7 @@ static void process_info_lag_data_attr(const struct nlattr* infodata,
   }
 }
 
-/*
+/**
  * Routine Description:
  *    Processes a nested INFO_SLAVE_DATA attribute for LAG member.
  *

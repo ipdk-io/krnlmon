@@ -21,7 +21,7 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
 
-/*
+/**
  * Routine Description:
  *   @brief Program tx_lag_table in MEV-TS
  *
@@ -234,7 +234,7 @@ dealloc_resources:
   return switch_pd_tdi_status_to_status(status);
 }
 
-/*
+/**
  * Routine Description:
  *   @brief Program rx_lag_table in MEV-TS
  *

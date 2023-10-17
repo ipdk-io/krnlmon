@@ -26,7 +26,7 @@
 
 static sai_lag_api_t* sai_lag_api = NULL;
 
-/*
+/**
  * Routine Description:
  *    Initialize LAG SAI API
  *
@@ -43,7 +43,7 @@ sai_status_t sai_init_lag_api() {
   return status;
 }
 
-/*
+/**
  * Routine Description:
  *    SAI call to create lag
  *
@@ -81,7 +81,7 @@ static int create_lag(const switchlink_db_interface_info_t* lag_intf,
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
-/*
+/**
  * Routine Description:
  *    SAI call to delete lag
  *
@@ -102,7 +102,7 @@ static int delete_lag(const switchlink_db_interface_info_t* lag,
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
-/*
+/**
  * Routine Description:
  *    SAI call to set lag attribute
  *
@@ -124,7 +124,7 @@ static int set_lag_attribute(const switchlink_db_interface_info_t* lag_info,
   return sai_lag_api->set_lag_attribute(lag_info->lag_h, &attr);
 }
 
-/*
+/**
  * Routine Description:
  *    SAI call to create lag member
  *
@@ -174,7 +174,7 @@ static int create_lag_member(
   return sai_lag_api->create_lag_member(lag_member_h, 0, ac, attr_list);
 }
 
-/*
+/**
  * Routine Description:
  *    SAI call to delete lag member
  *
@@ -193,7 +193,7 @@ static int delete_lag_member(const switchlink_db_lag_member_info_t* lag_member,
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
 
-/*
+/**
  * Routine Description:
  *    Wrapper function to create lag
  *
@@ -285,7 +285,7 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
   return;
 }
 
-/*
+/**
  * Routine Description:
  *    Wrapper function to delete lag
  *
@@ -308,7 +308,7 @@ void switchlink_delete_lag(uint32_t ifindex) {
   switchlink_db_delete_mac_lag(lag_intf.mac_addr);
 }
 
-/*
+/**
  * Routine Description:
  *    Wrapper function to create lag member
  *
@@ -358,7 +358,7 @@ void switchlink_create_lag_member(
   return;
 }
 
-/*
+/**
  * Routine Description:
  *    Wrapper function to delete lag member
  *

@@ -352,7 +352,7 @@ static inline void switchlink_db_hash_mac_key(switchlink_mac_addr_t mac_addr,
   }
 }
 
-/*
+/**
  * Routine Description:
  *    Get the hash for lag mac address
  *
@@ -398,7 +398,7 @@ static inline int switchlink_db_cmp_mac(const void *key1, const void *arg) {
   return (memcmp(key1, key2, SWITCHLINK_MAC_KEY_LEN));
 }
 
-/*
+/**
  * Routine Description:
  *    Compare the lag mac address with the one in database
  *
@@ -452,7 +452,7 @@ switchlink_db_status_t switchlink_db_add_mac(switchlink_mac_addr_t mac_addr,
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
-/*
+/**
  * Routine Description:
  *    Add mac entry to switchlink database
  *
@@ -513,7 +513,7 @@ switchlink_db_status_t switchlink_db_get_mac_intf(
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
-/*
+/**
  * Routine Description:
  *    Get LAG handle for mac address from database
  *
@@ -572,7 +572,7 @@ switchlink_db_status_t switchlink_db_delete_mac(switchlink_mac_addr_t mac_addr,
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
-/*
+/**
  * Routine Description:
  *    Delete lag mac entry from switchlink database
  *
@@ -1101,7 +1101,7 @@ switchlink_db_status_t switchlink_db_get_route_info(
   return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
 }
 
-/*
+/**
  * Routine Description:
  *    Add lag member to switchlink database
  *
@@ -1124,7 +1124,7 @@ switchlink_db_status_t switchlink_db_add_lag_member(
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
-/*
+/**
  * Routine Description:
  *    Delete lag member from switchlink database
  *
@@ -1153,7 +1153,7 @@ switchlink_db_status_t switchlink_db_delete_lag_member(
   return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
 }
 
-/*
+/**
  * Routine Description:
  *    Get lag member info from switchlink database
  *
