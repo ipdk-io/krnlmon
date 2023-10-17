@@ -1,8 +1,9 @@
 #include <arpa/inet.h>
 #include <memory.h>
+#include <netlink/msg.h>
+
 #include <vector>
 
-#include "netlink/msg.h"
 #include "gtest/gtest.h"
 
 extern "C" {
@@ -75,8 +76,8 @@ vector<test_results> results(2);
  * validated by the test case.
  */
 void switchlink_create_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst,
-                             const switchlink_ip_addr_t *gateway,
+                             const switchlink_ip_addr_t* dst,
+                             const switchlink_ip_addr_t* gateway,
                              switchlink_handle_t ecmp_h,
                              switchlink_handle_t intf_h) {
   struct test_results temp = {0};
@@ -104,7 +105,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
  * validated by the test case.
  */
 void switchlink_delete_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst) {
+                             const switchlink_ip_addr_t* dst) {
   struct test_results temp = {0};
   if (dst) {
     temp.dst = *dst;
@@ -125,18 +126,17 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
  * if it is not able to find the interface in the database.
  * That scenario is mocked by passing an ifindex of 2.
  */
-switchlink_db_status_t
-switchlink_db_get_interface_info(uint32_t ifindex,
-                                 switchlink_db_interface_info_t *intf_info) {
+switchlink_db_status_t switchlink_db_get_interface_info(
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
   switch (ifindex) {
-  case 1:
-    intf_info->intf_h = TEST_INTF_H1;
-    break;
-  case 2:
-    intf_info->intf_h = TEST_INTF_H2;
-    break;
-  default:
-    return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+    case 1:
+      intf_info->intf_h = TEST_INTF_H1;
+      break;
+    case 2:
+      intf_info->intf_h = TEST_INTF_H2;
+      break;
+    default:
+      return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
   }
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
@@ -145,22 +145,20 @@ switchlink_db_get_interface_info(uint32_t ifindex,
  * Dummy function for switchlink_create_nexthop(). Returns 0 on success
  * and -1 in case of error.
  */
-int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
+int switchlink_create_nexthop(switchlink_db_nexthop_info_t* nexthop_info) {
   return (nexthop_info->intf_h == TEST_INTF_H2) ? 0 : -1;
 }
 
 /*
  * Dummy function for switchlink_create_ecmp().
  */
-int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
-  return 0; 
-}
+int switchlink_create_ecmp(switchlink_db_ecmp_info_t* ecmp_info) { return 0; }
 
 /*
  * Dummy function for switchlink_db_add_ecmp().
  */
-switchlink_db_status_t
-switchlink_db_add_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
+switchlink_db_status_t switchlink_db_add_ecmp(
+    switchlink_db_ecmp_info_t* ecmp_info) {
   return SWITCHLINK_DB_STATUS_SUCCESS;
 }
 
@@ -168,7 +166,7 @@ switchlink_db_add_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
  * Dummy function for switchlink_db_update_nexthop_using_by().
  */
 switchlink_db_status_t switchlink_db_update_nexthop_using_by(
-    switchlink_db_nexthop_info_t *nexthop_info) {
+    switchlink_db_nexthop_info_t* nexthop_info) {
   struct test_results temp = {0};
   if (nexthop_info) {
     temp.nexthop_info = *nexthop_info;
@@ -180,8 +178,8 @@ switchlink_db_status_t switchlink_db_update_nexthop_using_by(
 /*
  * Dummy function for switchlink_db_add_nexthop().
  */
-switchlink_db_status_t
-switchlink_db_add_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
+switchlink_db_status_t switchlink_db_add_nexthop(
+    switchlink_db_nexthop_info_t* nexthop_info) {
   struct test_results temp = {0};
   if (nexthop_info) {
     temp.nexthop_info = *nexthop_info;
@@ -193,8 +191,8 @@ switchlink_db_add_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
 /*
  * Dummy function for switchlink_db_get_ecmp_info().
  */
-switchlink_db_status_t
-switchlink_db_get_ecmp_info(switchlink_db_ecmp_info_t *ecmp_info) {
+switchlink_db_status_t switchlink_db_get_ecmp_info(
+    switchlink_db_ecmp_info_t* ecmp_info) {
   ecmp_info->ecmp_h = TEST_ECMP_H;
   if (ecmp_info) {
     results[0].ecmp_info = *ecmp_info;
@@ -207,9 +205,8 @@ switchlink_db_get_ecmp_info(switchlink_db_ecmp_info_t *ecmp_info) {
  * Returns success for intf handle: TEST_INTF_H1
  * Returns failure for intf handle: TEST_INTF_H2
  */
-switchlink_db_status_t
-switchlink_db_get_nexthop_info(switchlink_db_nexthop_info_t *nexthop_info) {
-
+switchlink_db_status_t switchlink_db_get_nexthop_info(
+    switchlink_db_nexthop_info_t* nexthop_info) {
   if (nexthop_info->intf_h == TEST_INTF_H1) {
     nexthop_info->nhop_h = 1;
     return SWITCHLINK_DB_STATUS_SUCCESS;
@@ -225,8 +222,8 @@ switchlink_db_get_nexthop_info(switchlink_db_nexthop_info_t *nexthop_info) {
  * Test fixture.
  */
 class SwitchlinkRouteTest : public ::testing::Test {
-protected:
-  struct nl_msg *nlmsg_ = nullptr;
+ protected:
+  struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
   void SetUp() override { ResetVariables(); }
@@ -284,7 +281,7 @@ TEST_F(SwitchlinkRouteTest, createIPv4Route) {
   nla_put_u32(nlmsg_, RTA_IIF, iifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -338,7 +335,7 @@ TEST_F(SwitchlinkRouteTest, invalidInterface) {
   nla_put_u32(nlmsg_, RTA_IIF, iifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -385,7 +382,7 @@ TEST_F(SwitchlinkRouteTest, zeroDestPrefixLen) {
   nla_put_u32(nlmsg_, RTA_IIF, iifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -437,7 +434,7 @@ TEST_F(SwitchlinkRouteTest, verifyUnspecifiedAddressFamily) {
   nla_put_u32(nlmsg_, RTA_OIF, oifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -496,7 +493,7 @@ TEST_F(SwitchlinkRouteTest, createIPv6Route) {
   nla_put_u32(nlmsg_, RTA_OIF, oifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -554,7 +551,7 @@ TEST_F(SwitchlinkRouteTest, deleteIPv4Route) {
   nla_put_u32(nlmsg_, RTA_OIF, oifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -619,7 +616,7 @@ TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
   nla_put_u32(nlmsg_, RTA_OIF, oifindex);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -677,7 +674,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
   nla_put_u32(nlmsg_, RTA_GATEWAY, htonl(gateway_addr1));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -735,7 +732,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpCreatev4Nexthop) {
   nla_put_u32(nlmsg_, RTA_GATEWAY, htonl(gateway_addr1));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_route_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert

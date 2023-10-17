@@ -36,8 +36,7 @@ target_include_directories(switchapi_target_o PRIVATE
   ${SDE_INSTALL_DIR}/include/target-sys
 )
 
-find_library(TDI tdi)
-find_library(TDI_JSON_PARSER tdi_json_parser)
-
 target_link_libraries(switchapi_target_o PRIVATE
-  ${TDI} ${TDI_JSON_PARSER})
+  sde::tdi
+  sde::tdi_json_parser
+)
