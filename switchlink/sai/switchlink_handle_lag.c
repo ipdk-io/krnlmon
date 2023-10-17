@@ -155,7 +155,7 @@ static int create_lag_member(
   bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
   if (bf_status != BF_SUCCESS) {
     port_id = lag_member_intf->perm_hwaddr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
-    krnlmon_log_debug(
+    krnlmon_log_info(
         "Failed to get the port ID, error: %d, Deriving "
         "port ID from second byte of MAC address: "
         "%s",

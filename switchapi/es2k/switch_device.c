@@ -21,12 +21,12 @@
 #include "switchapi/switch_config_int.h"
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_lag.h"
 #include "switchapi/switch_neighbor_int.h"
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rmac_int.h"
 #include "switchapi/switch_table.h"
 #include "switchapi/switch_vrf.h"
-#include "switchapi/switch_lag.h"
 
 #undef __MODULE__
 #define __MODULE__ SWITCH_API_TYPE_DEVICE

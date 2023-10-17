@@ -117,7 +117,7 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
 // Switchapi method to get LAG attributes
 switch_status_t switch_api_lag_attribute_get(
     const switch_device_t device, const switch_handle_t lag_handle,
-    const switch_uint64_t lag_flags, switch_api_lag_info_t* api_lag_info);
+    switch_api_lag_info_t* api_lag_info);
 
 // Switchapi method to program LAG tables in HW
 switch_status_t switch_api_program_lag_hw(const switch_device_t device,

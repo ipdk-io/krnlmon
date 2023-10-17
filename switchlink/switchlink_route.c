@@ -247,12 +247,14 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     if (oif_valid) {
       switchlink_db_status_t status;
       status = switchlink_db_get_interface_info(oif, &ifinfo);
-      if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
-        intf_h = ifinfo.lag_h;
-      } else {
-        intf_h = ifinfo.intf_h;
-      }
-      if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
+      if(status == SWITCHLINK_DB_STATUS_SUCCESS) {
+        krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
+        if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+          intf_h = ifinfo.lag_h;
+        } else {
+          intf_h = ifinfo.intf_h;
+        }
+      } else if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
         krnlmon_log_error("route: Failed to get switchlink DB interface info, "
                  "error: %d \n", status);
         return;

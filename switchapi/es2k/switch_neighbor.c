@@ -21,11 +21,11 @@
 
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_lag.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rmac_int.h"
-#include "switchapi/switch_lag.h"
 #include "switch_pd_utils.h"
 
 switch_status_t switch_neighbor_init(switch_device_t device) {

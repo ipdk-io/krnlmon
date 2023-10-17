@@ -298,7 +298,7 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
       case SWITCHLINK_LINK_TYPE_BRIDGE:
         break;
       case SWITCHLINK_LINK_TYPE_TEAM:
-        krnlmon_log_debug("LAG via teaming driver isn't supported\n");
+        krnlmon_log_info("LAG via teaming driver isn't supported\n");
         break;
       case SWITCHLINK_LINK_TYPE_BOND:
         snprintf(intf_info.ifname, sizeof(intf_info.ifname), "%s", attrs.ifname);

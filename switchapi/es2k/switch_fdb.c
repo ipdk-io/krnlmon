@@ -298,8 +298,11 @@ switch_status_t switch_api_l2_forward_create(
         api_tunnel_info = &tunnel_info->api_tunnel_info;
     }
 
+    // When the learn is from physical interafce and we have corresponding
+    // RIF handle. Second check is to avoid getting physical port id if it
+    // is learnt over LAG interface.
     if (api_l2_info->learn_from == SWITCH_L2_FWD_LEARN_PHYSICAL_INTERFACE
-        && (SWITCH_RIF_HANDLE(api_l2_info->rif_handle))) {
+        && SWITCH_RIF_HANDLE(api_l2_info->rif_handle)) {
         switch_rif_info_t *rif_info = NULL;
 
         status = switch_rif_get(device, api_l2_info->rif_handle, &rif_info);

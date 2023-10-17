@@ -151,8 +151,7 @@ static sai_status_t sai_create_lag(_Out_ sai_object_id_t* lag_id,
 
   // This means lag interface already created, adding RMAC now
   if (lag_h) {
-    switch_api_lag_attribute_get(switch_id, lag_h, (switch_uint64_t)UINT64_MAX,
-                                 &api_lag_info);
+    switch_api_lag_attribute_get(switch_id, lag_h, &api_lag_info);
     if ((status = sai_switch_status_to_sai_status(switch_status)) !=
         SAI_STATUS_SUCCESS) {
       krnlmon_log_error("Failed to get router interface, error: %s",

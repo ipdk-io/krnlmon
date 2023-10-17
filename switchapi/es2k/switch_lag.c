@@ -46,7 +46,7 @@ switch_status_t switch_lag_init(switch_device_t device) {
                                    SWITCH_LAG_MAX);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  krnlmon_log_debug("lag init successful on device %d\n", device);
+  krnlmon_log_debug("LAG init successful on device %d\n", device);
 
   return status;
 }
@@ -104,7 +104,7 @@ switch_status_t switch_api_lag_create(switch_device_t device,
   if (!SWITCH_RMAC_HANDLE(api_lag_info->rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
     krnlmon_log_error(
-        "lag create: Invalid rmac handle on device %d: "
+        "LAG create: Invalid rmac handle on device %d: "
         "error: %s\n",
         device, switch_error_to_string(status));
     return status;
@@ -114,7 +114,15 @@ switch_status_t switch_api_lag_create(switch_device_t device,
   CHECK_RET(*lag_h == SWITCH_API_INVALID_HANDLE, SWITCH_STATUS_NO_MEMORY);
 
   status = switch_lag_get(device, *lag_h, &lag_info);
-  CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+  if (status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error(
+        "LAG create: Failed to get LAG on device %d: "
+        "error: %s\n",
+        device, switch_error_to_string(status));
+    status = switch_lag_handle_delete(device, *lag_h);
+    CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+    return status;
+  }
 
   lag_info->lag_handle = *lag_h;
 
@@ -151,7 +159,7 @@ switch_status_t switch_api_lag_delete(switch_device_t device,
   status = switch_pd_tx_lag_table_entry(device, lag_info, false);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
-        "Failed to delete tx lag table entry on device %d: "
+        "Failed to delete tx_lag_table entry on device %d: "
         ",error: %s\n",
         device, switch_error_to_string(status));
     return status;
@@ -161,7 +169,7 @@ switch_status_t switch_api_lag_delete(switch_device_t device,
   status = switch_pd_rx_lag_table_entry(device, lag_info, false);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
-        "Failed to delete rx lag table entry on device %d: "
+        "Failed to delete rx_lag_table entry on device %d: "
         ",error: %s\n",
         device, switch_error_to_string(status));
     return status;
@@ -198,6 +206,15 @@ switch_status_t switch_api_lag_member_create(
 
   status = switch_lag_member_get(device, *lag_member_h, &lag_member_info);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+  if (status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error(
+        "LAG member create: Failed to get LAG member on device %d: "
+        "error: %s\n",
+        device, switch_error_to_string(status));
+    status = switch_lag_member_handle_delete(device, *lag_member_h);
+    CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+    return status;
+  }
 
   lag_member_info->lag_member_handle = *lag_member_h;
 
@@ -258,8 +275,8 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
   if (!SWITCH_LAG_HANDLE(lag_h)) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error(
-        "lag get: Invalid lag handle on device %d, "
-        "lag handle 0x%lx: "
+        "LAG get: Invalid LAG handle on device %d, "
+        "LAG handle 0x%lx: "
         "error: %s\n",
         device, lag_h, switch_error_to_string(status));
     return status;
@@ -270,8 +287,8 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
   if (!SWITCH_LAG_MEMBER_HANDLE(lag_member_h)) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error(
-        "lag get: Invalid lag member handle on device %d, "
-        "lag member handle 0x%lx: "
+        "LAG get: Invalid LAG member handle on device %d, "
+        "LAG member handle 0x%lx: "
         "error: %s\n",
         device, lag_member_h, switch_error_to_string(status));
     return status;
@@ -284,7 +301,7 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to delete rx lag table entry on device %d: "
+          "Failed to delete rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -299,7 +316,7 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to create rx lag table entry on device %d: "
+          "Failed to create rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -321,7 +338,6 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
  * Arguments:
  *   @param[in] device - device
  *   @param[in] lag_h - LAG handle
- *   @param[in] lag_flags - LAG flags
  *   @param[out] api_lag_info - LAG info struct
  *
  * Return Values:
@@ -330,15 +346,15 @@ switch_status_t switch_api_lag_update(const switch_device_t device,
  */
 switch_status_t switch_api_lag_attribute_get(
     const switch_device_t device, const switch_handle_t lag_h,
-    const switch_uint64_t lag_flags, switch_api_lag_info_t* api_lag_info) {
+    switch_api_lag_info_t* api_lag_info) {
   switch_lag_info_t* lag_info = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_LAG_HANDLE(lag_h)) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error(
-        "lag attribute get: Invalid lag handle on device %d, "
-        "lag handle 0x%lx: "
+        "LAG attribute get: Invalid LAG handle on device %d, "
+        "LAG handle 0x%lx: "
         "error: %s\n",
         device, lag_h, switch_error_to_string(status));
     return status;
@@ -357,6 +373,7 @@ switch_status_t switch_api_lag_attribute_get(
  *   @brief Program the Tx and Rx LAG tables
  *
  * Arguments:
+ *   @param[in] device : device
  *   @param[in] lag_h : LAG handle
  *   @param[in] active_lag_member_h : Active
  *              LAG member handle
@@ -374,8 +391,8 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
   if (!SWITCH_LAG_HANDLE(lag_h)) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error(
-        "lag get: Invalid lag handle on device %d, "
-        "lag handle 0x%lx: "
+        "LAG get: Invalid LAG handle on device %d, "
+        "LAG handle 0x%lx: "
         "error: %s\n",
         device, lag_h, switch_error_to_string(status));
     return status;
@@ -391,7 +408,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_tx_lag_table_entry(device, lag_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to create tx lag table entry on device %d: "
+          "Failed to create tx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -401,7 +418,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to create rx lag table entry on device %d: "
+          "Failed to create rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -412,7 +429,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_tx_lag_table_entry(device, lag_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to delete tx lag table entry on device %d: "
+          "Failed to delete tx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -421,7 +438,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to delete rx lag table entry on device %d: "
+          "Failed to delete rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -433,7 +450,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_tx_lag_table_entry(device, lag_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to create tx lag table entry on device %d: "
+          "Failed to create tx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -442,7 +459,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, true);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to create rx lag table entry on device %d: "
+          "Failed to create rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -452,7 +469,7 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_tx_lag_table_entry(device, lag_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to delete tx lag table entry on device %d: "
+          "Failed to delete tx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
@@ -461,11 +478,12 @@ switch_status_t switch_api_program_lag_hw(const switch_device_t device,
     status = switch_pd_rx_lag_table_entry(device, lag_info, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-          "Failed to delete rx lag table entry on device %d: "
+          "Failed to delete rx_lag_table entry on device %d: "
           ",error: %s\n",
           device, switch_error_to_string(status));
       return status;
     }
+    lag_info->active_lag_member = active_lag_member_h;
   }
 
   return status;

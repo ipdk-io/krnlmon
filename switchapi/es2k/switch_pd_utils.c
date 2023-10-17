@@ -240,7 +240,7 @@ switch_pd_to_get_port_id(switch_api_rif_info_t *port_rif_info)
         // Example: If MAC address of an IPDF interface is 00:11:22:33:44:55,
         //          then VSI_ID/Port ID is 0x11 for that interface.
         port_id = rmac_entry->mac.mac_addr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
-        krnlmon_log_error("Failed to get the port ID, error: %d, Deriving "
+        krnlmon_log_info("Failed to get the port ID, error: %d, Deriving "
                           "port ID from second byte of MAC address: "
                           "%s", bf_status, mac_str);
     }
