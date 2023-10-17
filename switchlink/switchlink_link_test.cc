@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "netlink/msg.h"
 
 extern "C" {
 #include "switchlink/switchlink_handle.h"
@@ -42,10 +41,10 @@ extern "C" {
 ******************************************************************************/
 
 enum handler_type {
-  CREATE_INTERFACE = 1,           // switchlink_create_interface
-  DELETE_INTERFACE = 2,           // switchlink_delete_interface
-  CREATE_TUNNEL_INTERFACE = 3,    // switchlink_create_tunnel_interface
-  DELETE_TUNNEL_INTERFACE = 4,    // switchlink_delete_tunnel_interface
+  CREATE_INTERFACE = 1,         // switchlink_create_interface
+  DELETE_INTERFACE = 2,         // switchlink_delete_interface
+  CREATE_TUNNEL_INTERFACE = 3,  // switchlink_create_tunnel_interface
+  DELETE_TUNNEL_INTERFACE = 4,  // switchlink_delete_tunnel_interface
 };
 
 /**
@@ -114,9 +113,7 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
 // This function is not called by the UUT, but it is referenced by a
 // function in the same source file. We provide a definition to avoid
 // a link error.
-int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
-  return 0;
-}
+int switchlink_create_vrf(switchlink_handle_t* vrf_h) { return 0; }
 
 //----------------------------------------------------------------------
 // Test fixture
@@ -179,8 +176,10 @@ TEST_F(SwitchlinkTest, can_create_generic_link) {
   const switchlink_handle_t vrf_h = 0xdeadbeefdeadbeefUL;
 
   //-------------------------------------------------------
-  // Arrange: construct an RTM_NEWLINK message
-  // 1) Allocate a netlink message buffer
+  // Arrange: construct an RTM_NEWLINK message that does
+  // not specify a Kind attribute.
+  //
+  // 1) Allocate netlink message buffer
   // 2) Add RTM_NEWLINK header
   // 3) Add payload header
   // 4) Add attributes
@@ -238,7 +237,8 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   const uint16_t vxlan_port = 4789;
 
   //-------------------------------------------------------
-  // Arrange: construct an RTM_NEWLINK message
+  // Arrange: construct an RTM_NEWLINK message that defines
+  // a VxLAN interface
   //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
@@ -313,7 +313,8 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   const switchlink_handle_t vrf_h = 0xdeafbeadfadebadeUL;
 
   //-------------------------------------------------------
-  // Arrange: construct an RTM_NEWLINK message
+  // Arrange: construct an RTM_NEWLINK message that defines
+  // a Bridge interface
   //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
@@ -374,7 +375,8 @@ TEST_F(SwitchlinkTest, can_delete_vxlan_link) {
   const char kind[] = "vxlan";
 
   //-------------------------------------------------------
-  // Arrange: create an RTM_DELLINK message
+  // Arrange: create an RTM_DELLINK message for a VxLAN
+  // interface
   //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
@@ -422,7 +424,8 @@ TEST_F(SwitchlinkTest, can_delete_tunnel_link) {
   const char kind[] = "tun";
 
   //-------------------------------------------------------
-  // Arrange: create an RTM_DELLINK message
+  // Arrange: create an RTM_DELLINK message for a tunnel
+  // interface
   //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);
@@ -483,7 +486,8 @@ TEST_F(SwitchlinkTest, does_not_delete_generic_link) {
   };
 
   //-------------------------------------------------------
-  // Arrange: create an RTM_DELLINK message
+  // Arrange: create an RTM_DELLINK message that does not
+  // specify a Kind attribute
   //-------------------------------------------------------
   nlmsg_ = nlmsg_alloc_size(1024);
   ASSERT_NE(nlmsg_, nullptr);

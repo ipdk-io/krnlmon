@@ -2,9 +2,9 @@
 #include <linux/if_arp.h>
 #include <memory.h>
 #include <netlink/msg.h>
+
 #include <vector>
 
-#include "netlink/msg.h"
 #include "gtest/gtest.h"
 
 extern "C" {
@@ -51,8 +51,8 @@ vector<test_results> results(2);
  * in the test results structure and validated against each test case.
  */
 void switchlink_create_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *addr,
-                             const switchlink_ip_addr_t *gateway,
+                             const switchlink_ip_addr_t* addr,
+                             const switchlink_ip_addr_t* gateway,
                              switchlink_handle_t ecmp_h,
                              switchlink_handle_t intf_h) {
   struct test_results temp = {};
@@ -80,7 +80,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
  * in the test results structure and validated against each test case.
  */
 void switchlink_delete_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *addr) {
+                             const switchlink_ip_addr_t* addr) {
   struct test_results temp = {};
   if (addr) {
     temp.addr = *addr;
@@ -100,9 +100,8 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
  * find the interface in the database. That scenario is mocked by passing
  * an ifindex of 2.
  */
-switchlink_db_status_t
-switchlink_db_get_interface_info(uint32_t ifindex,
-                                 switchlink_db_interface_info_t *intf_info) {
+switchlink_db_status_t switchlink_db_get_interface_info(
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
   if (ifindex == 1) {
     intf_info->intf_h = TEST_INTF_H;
   } else if (ifindex == 2) {
@@ -116,8 +115,8 @@ switchlink_db_get_interface_info(uint32_t ifindex,
  * Test fixture.
  */
 class SwitchlinkAddressTest : public ::testing::Test {
-protected:
-  struct nl_msg *nlmsg_ = nullptr;
+ protected:
+  struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
   void SetUp() override { ResetVariables(); }
@@ -166,7 +165,7 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
   nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -213,7 +212,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
   nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -263,7 +262,7 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
   nla_put(nlmsg_, IFA_ADDRESS, sizeof(addr6), &addr6);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -316,7 +315,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
   nla_put(nlmsg_, IFA_ADDRESS, sizeof(addr6), &addr6);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -356,7 +355,7 @@ TEST_F(SwitchlinkAddressTest, wrongAddressFamilyTest) {
   nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -387,7 +386,7 @@ TEST_F(SwitchlinkAddressTest, interfaceNotFoundTest) {
   nla_put_u32(nlmsg_, IFA_ADDRESS, htonl(ipv4_addr));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_address_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert

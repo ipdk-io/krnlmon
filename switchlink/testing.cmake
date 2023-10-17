@@ -13,8 +13,8 @@ function(define_switchlink_test test_name)
     target_link_libraries(${test_name} PUBLIC
         GTest::gtest
         GTest::gtest_main
-        PkgConfig::libnl3
-        target_sys
+        PkgConfig::nl3
+        sde::target_sys
     )
 
     target_link_directories(${test_name} PUBLIC ${DRIVER_SDK_DIRS})
@@ -117,6 +117,9 @@ set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 add_custom_target(krnlmon-coverage
     lcov --capture --directory ${CMAKE_BINARY_DIR}
     --output-file krnlmon.info
+    --exclude '/opt/deps/*'
+    --exclude '/usr/include/*'
+    --exclude '9/**'
   COMMAND
     genhtml krnlmon.info --output-directory coverage
   WORKING_DIRECTORY

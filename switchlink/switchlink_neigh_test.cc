@@ -1,8 +1,9 @@
 #include <arpa/inet.h>
 #include <memory.h>
+#include <netlink/msg.h>
+
 #include <vector>
 
-#include "netlink/msg.h"
 #include "gtest/gtest.h"
 
 extern "C" {
@@ -55,7 +56,6 @@ vector<test_results> results(2);
 void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t bridge_h,
                            switchlink_handle_t intf_h) {
-
   struct test_results temp = {0};
   memcpy(temp.mac_addr, mac_addr, sizeof(switchlink_mac_addr_t));
   temp.bridge_h = bridge_h;
@@ -76,7 +76,7 @@ void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
  * validated by the test case.
  */
 void switchlink_create_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *ipaddr,
+                             const switchlink_ip_addr_t* ipaddr,
                              switchlink_mac_addr_t mac_addr,
                              switchlink_handle_t intf_h) {
   struct test_results temp = {0};
@@ -101,7 +101,7 @@ void switchlink_create_neigh(switchlink_handle_t vrf_h,
  * validated by the test case.
  */
 void switchlink_delete_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *addr,
+                             const switchlink_ip_addr_t* addr,
                              switchlink_handle_t intf_h) {
   struct test_results temp = {0};
   if (addr) {
@@ -124,9 +124,8 @@ void switchlink_delete_neigh(switchlink_handle_t vrf_h,
  * if it is not able to find the interface in the database.
  * That scenario is handled as the default case.
  */
-switchlink_db_status_t
-switchlink_db_get_interface_info(uint32_t ifindex,
-                                 switchlink_db_interface_info_t *intf_info) {
+switchlink_db_status_t switchlink_db_get_interface_info(
+    uint32_t ifindex, switchlink_db_interface_info_t* intf_info) {
   switch (ifindex) {
     case 1:
       intf_info->intf_h = TEST_INTF_H;
@@ -147,8 +146,8 @@ switchlink_db_get_interface_info(uint32_t ifindex,
  * Test fixture.
  */
 class SwitchlinkNeighborTest : public ::testing::Test {
-protected:
-  struct nl_msg *nlmsg_ = nullptr;
+ protected:
+  struct nl_msg* nlmsg_ = nullptr;
 
   // Sets up the test fixture.
   void SetUp() override { ResetVariables(); }
@@ -201,7 +200,7 @@ TEST_F(SwitchlinkNeighborTest, createIPv4Neighbor) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -248,7 +247,7 @@ TEST_F(SwitchlinkNeighborTest, verifyInvalidNeighborState) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -281,7 +280,7 @@ TEST_F(SwitchlinkNeighborTest, verifyInvalidInterfaceInfo) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -318,7 +317,7 @@ TEST_F(SwitchlinkNeighborTest, createIPv4NeighborWithInvalidMac) {
   nla_put_u32(nlmsg_, NDA_DST, htonl(ipv4_addr));
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -373,7 +372,7 @@ TEST_F(SwitchlinkNeighborTest, createIPv6Neighbor) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -427,7 +426,7 @@ TEST_F(SwitchlinkNeighborTest, deleteIPv4Neighbor) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
@@ -479,7 +478,7 @@ TEST_F(SwitchlinkNeighborTest, deleteIPv6Neighbor) {
   nla_put(nlmsg_, NDA_LLADDR, sizeof(mac_addr), &mac_addr);
 
   // Act
-  const struct nlmsghdr *nlmsg = nlmsg_hdr(nlmsg_);
+  const struct nlmsghdr* nlmsg = nlmsg_hdr(nlmsg_);
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert

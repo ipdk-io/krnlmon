@@ -4,10 +4,7 @@
 # SPDX-License-Identifier: Apache 2.0
 
 include(FindGTest)
-include(FindPkgConfig)
-
-# Find netlink libraries
-pkg_check_modules(libnl3 REQUIRED IMPORTED_TARGET libnl-3.0 libnl-route-3.0)
+mark_as_advanced(GTest_DIR)
 
 add_subdirectory(sai)
 
@@ -39,7 +36,7 @@ if(WITH_OVSP4RT)
     target_compile_definitions(switchlink_o PRIVATE OVSP4RT_SUPPORT)
 endif()
 
-target_link_libraries(switchlink_o PkgConfig::libnl3)
+target_link_libraries(switchlink_o PkgConfig::nl3)
 
 target_include_directories(switchlink_o PRIVATE
     ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
