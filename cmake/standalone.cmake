@@ -3,8 +3,14 @@
 # Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 #
-# Initialization for standalone krnlmon build.
+# Initializes for a standalone krnlmon build.
 #
+# Ensures that CMAKE_BUILD_TYPE, DEPEND_INSTALL_DIR, SDE_INSTALL_DIR,
+# and the TDI target variables are defined.
+#
+# Imports the P4 SDE and Abseil libraries.
+#
+# Sets recommended compiler options.
 
 include(CTest)
 include(GNUInstallDirs)
@@ -55,7 +61,7 @@ elseif(TOFINO_TARGET)
 endif()
 
 #-----------------------------------------------------------------------
-# Search paths
+# Stratum dependencies (Abseil)
 #-----------------------------------------------------------------------
 if(CMAKE_CROSSCOMPILING)
   list(APPEND CMAKE_FIND_ROOT_PATH ${DEPEND_INSTALL_DIR})
@@ -75,4 +81,10 @@ if(absl_VERSION VERSION_GREATER_EQUAL "20230125")
   add_compile_definitions(ABSL_LEGACY_THREAD_ANNOTATIONS)
 endif()
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#-----------------------------------------------------------------------
+# Compiler settings
+#-----------------------------------------------------------------------
+include(CompilerSettings)
+set_basic_compiler_options()
+set_legacy_security_options()
+#set_extended_security_options()
