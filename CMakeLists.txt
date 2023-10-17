@@ -10,6 +10,7 @@ cmake_minimum_required(VERSION 3.15)
 project(krnlmon LANGUAGES C CXX)
 
 include(FindPkgConfig)
+include(cmake/iwyu.cmake)
 
 # Find netlink libraries
 pkg_check_modules(nl3 REQUIRED IMPORTED_TARGET libnl-3.0)
