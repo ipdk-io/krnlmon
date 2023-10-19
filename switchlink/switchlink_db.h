@@ -65,6 +65,10 @@ typedef struct switchlink_db_interface_info_ {
     uint8_t ipv4_urpf_mode;
     uint8_t ipv6_urpf_mode;
   } flags;
+  // LAG attributes
+  uint8_t bond_mode;
+  uint8_t oper_state;
+  uint32_t active_slave;
 } switchlink_db_interface_info_t;
 
 typedef struct switchlink_db_bridge_info_ {
@@ -122,6 +126,18 @@ typedef struct switchlink_db_tunnel_interface_info_ {
   uint8_t ttl;
 } switchlink_db_tunnel_interface_info_t;
 
+/*** LAG member structure ***/
+typedef struct switchlink_db_lag_member_info_ {
+  char ifname[SWITCHLINK_INTERFACE_NAME_LEN_MAX];
+  uint32_t ifindex;
+  uint8_t oper_state;
+  uint8_t slave_state;
+  switchlink_handle_t lag_member_h;
+  switchlink_handle_t lag_h;
+  switchlink_mac_addr_t mac_addr;
+  switchlink_mac_addr_t perm_hwaddr;
+} switchlink_db_lag_member_info_t;
+
 /*** interface ***/
 extern switchlink_db_status_t switchlink_db_add_interface(
     uint32_t ifindex, switchlink_db_interface_info_t *intf_info);
@@ -160,6 +176,18 @@ extern switchlink_db_status_t switchlink_db_get_mac_intf(
 
 extern switchlink_db_status_t switchlink_db_delete_mac(
     switchlink_mac_addr_t mac_addr, switchlink_handle_t bridge_h);
+
+/*** lag mac ***/
+extern switchlink_db_status_t switchlink_db_add_mac_lag(
+    switchlink_mac_addr_t mac_addr,
+    switchlink_handle_t lag_h);
+
+extern switchlink_db_status_t switchlink_db_get_mac_lag_handle(
+    switchlink_mac_addr_t mac_addr,
+    switchlink_handle_t *lag_h);
+
+extern switchlink_db_status_t switchlink_db_delete_mac_lag(
+    switchlink_mac_addr_t mac_addr);
 
 /*** neighbor ***/
 extern switchlink_db_status_t switchlink_db_add_neighbor(
@@ -223,5 +251,17 @@ extern switchlink_db_status_t switchlink_db_add_tuntap(
 extern switchlink_db_status_t switchlink_db_get_tuntap_info(
     uint32_t ifindex, switchlink_db_tuntap_info_t *tunp_info);
 
+/*** LAG ***/
+extern switchlink_handle_t switchlink_db_get_lag_handle(
+    switchlink_mac_addr_t mac_addr);
+
+extern switchlink_db_status_t switchlink_db_add_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
+
+extern switchlink_db_status_t switchlink_db_delete_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
+
+extern switchlink_db_status_t switchlink_db_get_lag_member_info(
+    switchlink_db_lag_member_info_t* lag_member_info);
 
 #endif /* __SWITCHLINK_DB_H__ */

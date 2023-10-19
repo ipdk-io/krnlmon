@@ -31,6 +31,8 @@
 #define SWITCHLINK_LOG_INFO 3
 #define SWITCHLINK_LOG_DEBUG 4
 
+#define SWITCH_LINK_INVALID_HANDLE 0x0
+
 typedef uint64_t switchlink_handle_t;
 typedef uint8_t switchlink_mac_addr_t[6];
 typedef struct switchlink_ip_addr_ {

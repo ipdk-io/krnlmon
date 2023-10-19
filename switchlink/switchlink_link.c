@@ -44,6 +44,14 @@ struct link_attrs {
   uint32_t vxlan_dst_port;
   uint32_t vni_id;
   uint8_t ttl;
+  // lag attributes
+  uint8_t bond_mode;
+  uint32_t active_slave;
+  uint8_t oper_state;
+  switchlink_mac_addr_t mac_addr;
+  switchlink_mac_addr_t perm_hwaddr;
+  // lag member attributes
+  uint8_t slave_state;
 };
 
 static const switchlink_mac_addr_t null_mac = {0, 0, 0, 0, 0, 0};
@@ -69,6 +77,8 @@ static switchlink_link_type_t get_link_type(const char *info_kind) {
     link_type = SWITCHLINK_LINK_TYPE_BOND;
   } else if (!strcmp(info_kind, "tun")) {
     link_type = SWITCHLINK_LINK_TYPE_TUN;
+  } else if (!strcmp(info_kind, "team")) {
+    link_type = SWITCHLINK_LINK_TYPE_TEAM;
   }
 
   return link_type;
@@ -120,6 +130,63 @@ static void process_info_data_attr(const struct nlattr *infodata,
   }
 }
 
+/**
+ * Routine Description:
+ *    Processes a nested INFO_DATA attribute for LAG.
+ *
+ * Arguments:
+ *    [in] infodata - netlink infodata attribute
+ *    [inout] attrs - link attributes
+ *
+ * Return Values:
+ *    void
+ */
+static void process_info_lag_data_attr(const struct nlattr* infodata,
+                                       struct link_attrs* attrs) {
+  int infodata_attr_type = nla_type(infodata);
+  switch (infodata_attr_type) {
+    case IFLA_BOND_MODE:
+      attrs->bond_mode = nla_get_u8(infodata);
+      krnlmon_log_debug("IFLA Bond Mode: %d\n", attrs->bond_mode);
+      break;
+    case IFLA_BOND_ACTIVE_SLAVE:
+      attrs->active_slave = nla_get_u32(infodata);
+      krnlmon_log_debug("IFLA Active Slave: %d\n", attrs->active_slave);
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ * Routine Description:
+ *    Processes a nested INFO_SLAVE_DATA attribute for LAG member.
+ *
+ * Arguments:
+ *    [in] infoslavedata - netlink infoslavedata attribute
+ *    [inout] attrs - link attributes
+ *
+ * Return Values:
+ *    void
+ */
+static void process_info_lag_member_data_attr(const struct nlattr* infoslavedata,
+                                              struct link_attrs* attrs) {
+  int infodata_attr_type = nla_type(infoslavedata);
+  switch (infodata_attr_type) {
+    case IFLA_BOND_SLAVE_STATE:
+      attrs->slave_state = nla_get_u8(infoslavedata);
+      krnlmon_log_debug("IFLA Bond Slave State: %d\n", attrs->slave_state);
+      break;
+    case IFLA_BOND_SLAVE_PERM_HWADDR:
+      if (nla_len(infoslavedata) == sizeof(switchlink_mac_addr_t)) {
+        memcpy(&attrs->perm_hwaddr, nla_data(infoslavedata), nla_len(infoslavedata));
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 /*
  * Routine Description:
  *    Processes netlink link messages.
@@ -133,14 +200,17 @@ static void process_info_data_attr(const struct nlattr *infodata,
  */
 void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   int hdrlen, attrlen;
-  const struct nlattr *attr, *linkinfo, *infodata;
+  const struct nlattr *attr, *linkinfo, *infodata, *infoslavedata;
   const struct ifinfomsg *ifmsg;
   switchlink_link_type_t link_type = SWITCHLINK_LINK_TYPE_NONE;
+  switchlink_link_type_t slave_link_type = SWITCHLINK_LINK_TYPE_NONE;
   int linkinfo_attr_type;
 
   switchlink_db_interface_info_t intf_info = {0};
   switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
+  switchlink_db_lag_member_info_t lag_member_info = {0};
+  bool create_lag_member = false;
 
   krnlmon_assert((msgtype == RTM_NEWLINK) || (msgtype == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
@@ -163,6 +233,10 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
                  nla_get_string(attr));
         krnlmon_log_debug("Interface name is %s\n", attrs.ifname);
         break;
+      case IFLA_OPERSTATE:
+        attrs.oper_state = nla_get_u8(attr);
+        krnlmon_log_debug("IFLA Operstate: %d\n", attrs.oper_state);
+        break;
       case IFLA_LINKINFO:
         // IFLA_LINKINFO is a container type
         nla_for_each_nested(linkinfo, attr, attrlen) {
@@ -178,7 +252,23 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
                   process_info_data_attr(infodata, &attrs);
                 }
               }
+              if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
+                nla_for_each_nested(infodata, linkinfo, attrlen) {
+                  process_info_lag_data_attr(infodata, &attrs);
+                }
+              }
               break;
+            case IFLA_INFO_SLAVE_KIND:
+              slave_link_type = get_link_type(nla_get_string(linkinfo));
+              break;
+	    case IFLA_INFO_SLAVE_DATA:
+	      if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
+                create_lag_member = true;
+	        nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
+		  process_info_lag_member_data_attr(infoslavedata, &attrs);
+		}
+	      }
+	      break;
             default:
               break;
           }
@@ -188,6 +278,7 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         // IFLA_ADDRESS for kind "sit" is 4 octets
         if (nla_len(attr) == sizeof(switchlink_mac_addr_t)) {
           memcpy(&intf_info.mac_addr, nla_data(attr), nla_len(attr));
+          memcpy(&attrs.mac_addr, nla_data(attr), nla_len(attr));
 
           krnlmon_log_debug(
               "Interface Mac: %02x:%02x:%02x:%02x:%02x:%02x\n",
@@ -205,7 +296,25 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   if (msgtype == RTM_NEWLINK) {
     switch (link_type) {
       case SWITCHLINK_LINK_TYPE_BRIDGE:
+        break;
+      case SWITCHLINK_LINK_TYPE_TEAM:
+        krnlmon_log_info("LAG via teaming driver isn't supported\n");
+        break;
       case SWITCHLINK_LINK_TYPE_BOND:
+        snprintf(intf_info.ifname, sizeof(intf_info.ifname), "%s", attrs.ifname);
+        intf_info.ifindex = ifmsg->ifi_index;
+        intf_info.bond_mode = attrs.bond_mode;
+        intf_info.oper_state = attrs.oper_state;
+        intf_info.active_slave = attrs.active_slave;
+	intf_info.link_type = SWITCHLINK_LINK_TYPE_BOND;
+        intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
+        if (intf_info.bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP) {
+          switchlink_create_lag(&intf_info);
+        } else {
+          krnlmon_log_debug("bond mode:%d isn't supported\n",
+                            intf_info.bond_mode);
+        }
+        break;
       case SWITCHLINK_LINK_TYPE_ETH:
         break;
 
@@ -240,11 +349,27 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         intf_info.ifindex = ifmsg->ifi_index;
         intf_info.vrf_h = g_default_vrf_h;
         intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
+	intf_info.link_type = SWITCHLINK_LINK_TYPE_RIF;
 
         switchlink_create_interface(&intf_info);
         break;
       default:
         break;
+    }
+    switch (slave_link_type) {
+      case SWITCHLINK_LINK_TYPE_BOND:
+        snprintf(lag_member_info.ifname, sizeof(lag_member_info.ifname), "%s", attrs.ifname);
+	lag_member_info.ifindex = ifmsg->ifi_index;
+	lag_member_info.oper_state = attrs.oper_state;
+	lag_member_info.slave_state = attrs.slave_state;
+	memcpy(&(lag_member_info.mac_addr), &(attrs.mac_addr), sizeof(switchlink_mac_addr_t));
+	memcpy(&(lag_member_info.perm_hwaddr), &(attrs.perm_hwaddr), sizeof(switchlink_mac_addr_t));
+        if (create_lag_member) {
+          switchlink_create_lag_member(&lag_member_info);
+        }
+        break;
+      default:
+	break;
     }
   } else {
     krnlmon_assert(msgtype == RTM_DELLINK);
@@ -261,6 +386,16 @@ void switchlink_process_link_msg(const struct nlmsghdr *nlmsg, int msgtype) {
       switchlink_delete_interface(ifmsg->ifi_index);
     } else {
       krnlmon_log_debug("Unhandled link type");
+    }
+
+    if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
+      switchlink_delete_lag(ifmsg->ifi_index);
+      return;
+    }
+
+    if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
+      switchlink_delete_lag_member(ifmsg->ifi_index);
+      return;
     }
   }
   return;

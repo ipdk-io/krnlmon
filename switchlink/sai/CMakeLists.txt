@@ -5,6 +5,7 @@
 
 add_library(switchlink_sai_o OBJECT
    switchlink_handle_ecmp.c
+   switchlink_handle_lag.c
    switchlink_handle_link.c
    switchlink_handle_neigh.c
    switchlink_handle_nexthop.c
@@ -15,6 +16,9 @@ add_library(switchlink_sai_o OBJECT
 )
 
 target_include_directories(switchlink_sai_o PRIVATE
+    ${SDE_INSTALL_DIR}/include
+    ${SDE_INSTALL_DIR}/include/bf_types
+    ${SDE_INSTALL_DIR}/include/bf_pal
     ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash

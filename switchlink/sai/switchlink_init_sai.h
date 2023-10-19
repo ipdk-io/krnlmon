@@ -38,11 +38,18 @@ sai_status_t sai_init_neigh_api();
 sai_status_t sai_init_route_api();
 sai_status_t sai_init_nhop_api();
 sai_status_t sai_init_nhop_group_api();
+sai_status_t sai_init_lag_api();
 
 // SWITCHLINK_LINK_TYPE_VXLAN handlers
 void switchlink_create_tunnel_interface(
          switchlink_db_tunnel_interface_info_t *tnl_intf);
 void switchlink_delete_tunnel_interface(uint32_t ifindex);
+
+// SWITCHLINK_LINK_TYPE_BOND handlers
+void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf);
+void switchlink_delete_lag(uint32_t ifindex);
+void switchlink_create_lag_member(switchlink_db_lag_member_info_t* lag_member_info);
+void switchlink_delete_lag_member(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_TUN handlers
 void switchlink_create_interface(switchlink_db_interface_info_t *intf);

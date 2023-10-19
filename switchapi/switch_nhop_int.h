@@ -100,7 +100,8 @@ extern "C" {
   do {                                                                    \
     SWITCH_MEMSET(&_nhop_key, 0x0, sizeof(switch_nhop_key_t));            \
     if (_api_nhop_info->nhop_type == SWITCH_NHOP_TYPE_IP) {               \
-      SWITCH_ASSERT(SWITCH_RIF_HANDLE(_api_nhop_info->rif_handle));       \
+      SWITCH_ASSERT(SWITCH_RIF_HANDLE(_api_nhop_info->rif_handle) ||      \
+		    SWITCH_LAG_HANDLE(_api_nhop_info->rif_handle));       \
       _nhop_key.handle = _api_nhop_info->rif_handle;                      \
     } else if (_api_nhop_info->nhop_type == SWITCH_NHOP_TYPE_TUNNEL) {    \
       SWITCH_ASSERT(SWITCH_TUNNEL_HANDLE(_api_nhop_info->tunnel_handle)); \

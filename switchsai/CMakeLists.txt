@@ -7,6 +7,7 @@ add_library(switchsai_o OBJECT
    sai.c
    saifdb.c
    saiinternal.h
+   sailag.c
    saineighbor.c
    sainexthop.c
    sainexthopgroup.c

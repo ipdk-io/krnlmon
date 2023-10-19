@@ -131,6 +131,7 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   bool dst_valid = false;
   bool gateway_valid = false;
   switchlink_handle_t ecmp_h = 0;
+  switchlink_handle_t intf_h = 0;
   switchlink_ip_addr_t src_addr;
   switchlink_ip_addr_t dst_addr;
   switchlink_ip_addr_t gateway_addr;
@@ -246,7 +247,14 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     if (oif_valid) {
       switchlink_db_status_t status;
       status = switchlink_db_get_interface_info(oif, &ifinfo);
-      if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
+      if(status == SWITCHLINK_DB_STATUS_SUCCESS) {
+        krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
+        if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+          intf_h = ifinfo.lag_h;
+        } else {
+          intf_h = ifinfo.intf_h;
+        }
+      } else if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
         krnlmon_log_error("route: Failed to get switchlink DB interface info, "
                  "error: %d \n", status);
         return;
@@ -260,7 +268,7 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
                             (dst_valid ? &dst_addr : NULL),
                             (gateway_valid ? &gateway_addr : NULL),
                             ecmp_h,
-                            ifinfo.intf_h);
+                            intf_h);
   } else {
     krnlmon_log_info("Delete route with addr: 0x%x", dst_valid ?
                                              dst_addr.ip.v4addr.s_addr : 0);

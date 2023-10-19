@@ -53,5 +53,7 @@ void switchlink_init_api(void) {
   krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_init_nhop_group_api();
   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_init_lag_api();
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
   return;
 }

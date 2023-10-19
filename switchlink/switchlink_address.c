@@ -64,7 +64,11 @@ void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   status = switchlink_db_get_interface_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
-    intf_h = ifinfo.intf_h;
+    if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+      intf_h = ifinfo.lag_h;
+    } else {
+      intf_h = ifinfo.intf_h;
+    }
   } else {
     // TODO P4-OVS, for now we ignore these notifications.
     // Needed when, we get address add before port create notification

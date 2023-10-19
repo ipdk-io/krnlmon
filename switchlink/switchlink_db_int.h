@@ -54,6 +54,13 @@ typedef struct switchlink_db_mac_obj_ {
   switchlink_handle_t intf_h;
 } switchlink_db_mac_obj_t;
 
+typedef struct switchlink_db_mac_lag_obj_ {
+  tommy_node hash_node;
+  tommy_node list_node;
+  switchlink_mac_addr_t addr;
+  switchlink_handle_t lag_h;
+} switchlink_db_mac_lag_obj_t;
+
 typedef struct switchlink_db_neigh_obj_ {
   tommy_node list_node;
   switchlink_db_neigh_info_t neigh_info;
@@ -76,5 +83,11 @@ typedef struct switchlink_db_route_obj_ {
   tommy_node list_node;
   switchlink_db_route_info_t route_info;
 } switchlink_db_route_obj_t;
+
+// LAG member object
+typedef struct switchlink_db_lag_member_obj_ {
+  tommy_node list_node;
+  switchlink_db_lag_member_info_t lag_member_info;
+} switchlink_db_lag_member_obj_t;
 
 #endif /* __SWITCHLINK_DB_INT_H__ */
