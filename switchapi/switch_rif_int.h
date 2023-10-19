@@ -39,18 +39,19 @@ typedef struct switch_rif_info_s {
 
 } switch_rif_info_t;
 
-#define switch_rif_handle_create(_device) \
-  switch_handle_create(                   \
-      _device, SWITCH_HANDLE_TYPE_RIF, sizeof(switch_rif_info_t))
+#define switch_rif_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_RIF, \
+                       sizeof(switch_rif_info_t))
 
 #define switch_rif_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_RIF, _handle)
 
-#define switch_rif_get(_device, _handle, _info)                                  \
-  ({                                                                             \
-    switch_rif_info_t *_tmp_rif_info = NULL;                                     \
-    (void)(_tmp_rif_info == *_info);                                             \
-    switch_handle_get(_device, SWITCH_HANDLE_TYPE_RIF, _handle, (void **)_info); \
+#define switch_rif_get(_device, _handle, _info)                 \
+  ({                                                            \
+    switch_rif_info_t* _tmp_rif_info = NULL;                    \
+    (void)(_tmp_rif_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_RIF, _handle, \
+                      (void**)_info);                           \
   })
 
 #define SWITCH_RIF_TYPE(_rif_info) _rif_info->api_rif_info.rif_type

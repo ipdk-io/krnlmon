@@ -150,8 +150,8 @@ extern "C" {
 #define SWITCH_STATUS_INVALID_HANDLE 0x000000018L
 
 /*
-*  RESOURCE is in use
-*/
+ *  RESOURCE is in use
+ */
 #define SWITCH_STATUS_RESOURCE_IN_USE 0x00000019L
 
 /*

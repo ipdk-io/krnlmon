@@ -18,8 +18,8 @@
 #ifndef __SWITCHLINK_H__
 #define __SWITCHLINK_H__
 
-#include <stdlib.h>
 #include <netinet/in.h>
+#include <stdlib.h>
 
 #include "switchutils/switch_utils.h"
 
@@ -49,20 +49,19 @@ extern switchlink_handle_t g_default_vrf_h;
 extern switchlink_handle_t g_default_bridge_h;
 extern switchlink_handle_t g_cpu_rx_nhop_h;
 
-struct nl_sock *switchlink_get_nl_sock(void);
+struct nl_sock* switchlink_get_nl_sock(void);
 
 typedef enum switchlink_entry_type {
   SWITCHLINK_FDB_NONE = 0,
   SWITCHLINK_FDB_ADD = 1,
   SWITCHLINK_FDB_DEL = 2,
   SWITCHLINK_FDB_MAX = 3,
-}switchlink_entry_type_e;
+} switchlink_entry_type_e;
 
 typedef enum switchlink_nhop_using_by {
   SWITCHLINK_NHOP_FROM_NONE = 0,
   SWITCHLINK_NHOP_FROM_NEIGHBOR = 1 << 0,
   SWITCHLINK_NHOP_FROM_ROUTE = 1 << 1,
-}switchlink_nhop_using_by_e;
-
+} switchlink_nhop_using_by_e;
 
 #endif /* __SWITCHLINK_H__ */

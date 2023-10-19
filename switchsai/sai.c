@@ -16,9 +16,9 @@
  */
 
 #include "saiinternal.h"
+#include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_nhop.h"
-#include "switchapi/switch_base_types.h"
 
 static sai_api_service_t sai_api_service;
 
@@ -26,7 +26,7 @@ static sai_api_service_t sai_api_service;
 extern "C" {
 #endif /* __cplusplus */
 
-static const char *module[SAI_API_MAX] = {"SAI_API_UNSPECIFIED",
+static const char* module[SAI_API_MAX] = {"SAI_API_UNSPECIFIED",
                                           "SAI_API_SWITCH",
                                           "SAI_API_PORT",
                                           "SAI_API_FDB",
@@ -68,7 +68,7 @@ static const char *module[SAI_API_MAX] = {"SAI_API_UNSPECIFIED",
                                           "SAI_API_ISOLATION_GROUP"};
 
 sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
-                           _Out_ void **api_method_table) {
+                           _Out_ void** api_method_table) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   if (!api_method_table) {
@@ -229,7 +229,7 @@ sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
     krnlmon_log_error("api query failed, invalid api id: %d\n", sai_api_id);
   } else {
     krnlmon_log_error("api query failed, api %s not implemented\n",
-                  module[sai_api_id]);
+                      module[sai_api_id]);
   }
 
   return status;
@@ -272,8 +272,7 @@ sai_object_type_t sai_object_type_query(_In_ sai_object_id_t sai_object_id) {
       object_type = SAI_OBJECT_TYPE_VIRTUAL_ROUTER;
       break;
     case SWITCH_HANDLE_TYPE_NHOP:
-      switch_api_nhop_id_type_get(0, sai_object_id,
-                                  &nhop_type);
+      switch_api_nhop_id_type_get(0, sai_object_id, &nhop_type);
       if (nhop_type == SWITCH_NHOP_ID_TYPE_ONE_PATH) {
         object_type = SAI_OBJECT_TYPE_NEXT_HOP;
       } else if (nhop_type == SWITCH_NHOP_ID_TYPE_ECMP) {

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_internal.h"
 #include "switchapi/switch_table.h"
+
+#include "switchapi/switch_internal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,7 +25,7 @@ extern "C" {
 
 #define __FILE_ID__ SWITCH_TABLE
 
-static char *switch_table_id_to_string(switch_table_id_t table_id) {
+static char* switch_table_id_to_string(switch_table_id_t table_id) {
   switch (table_id) {
     case SWITCH_TABLE_INGRESS_PORT_MAPPING:
       return "ingress port mapping";
@@ -101,33 +102,33 @@ static char *switch_table_id_to_string(switch_table_id_t table_id) {
     case SWITCH_TABLE_TUNNEL_MPLS:
       return "mpls";
     case SWITCH_TABLE_IPV4_VTEP:
-          return "ipv4 vtep";
+      return "ipv4 vtep";
     case SWITCH_TABLE_IPV6_VTEP:
-          return "ipv4 vtep";
+      return "ipv4 vtep";
     case SWITCH_TABLE_TUNNEL_TERM:
-          return "tunnel term";
+      return "tunnel term";
     case SWITCH_TABLE_EGRESS_IPV4_ACL:
-          return "egress ipv4 acl";
+      return "egress ipv4 acl";
     case SWITCH_TABLE_EGRESS_IPV6_ACL:
-          return "egress ipv6 acl";
+      return "egress ipv6 acl";
     case SWITCH_TABLE_ECN_ACL:
-          return "ecn acl";
+      return "ecn acl";
     case SWITCH_TABLE_PFC_ACL:
-          return "pfc acl";
+      return "pfc acl";
     case SWITCH_TABLE_EGRESS_PFC_ACL:
-          return "egress pfc acl";
+      return "egress pfc acl";
     case SWITCH_TABLE_MAX_ACL:
-          return "max acl";
+      return "max acl";
     case SWITCH_TABLE_INGRESS_QOS_MAP:
-          return "ingress qos map";
+      return "ingress qos map";
     case SWITCH_TABLE_WRED:
-          return "wred";
+      return "wred";
     case SWITCH_TABLE_NEIGHBOR:
-          return "neighbor";
+      return "neighbor";
     case SWITCH_TABLE_TUNNEL_SIP_REWRITE:
-          return "tunnel sip rewrite";
+      return "tunnel sip rewrite";
     case SWITCH_TABLE_MAX:
-          return "none";
+      return "none";
     /* BD */
     case SWITCH_TABLE_PORT_VLAN_TO_BD_MAPPING:
       return "port vlan bd mapping";
@@ -280,17 +281,16 @@ static char *switch_table_id_to_string(switch_table_id_t table_id) {
 }
 
 switch_status_t switch_table_init(switch_device_t device,
-                                  switch_size_t *table_sizes) {
-  switch_table_t *table_info = NULL;
+                                  switch_size_t* table_sizes) {
+  switch_table_t* table_info = NULL;
   switch_uint32_t index = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_char_t *table_str = NULL;
+  switch_char_t* table_str = NULL;
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("table init: Failed to get table info on device %d:%s",
-              device,
-              switch_error_to_string(status));
+                      device, switch_error_to_string(status));
     return status;
   }
 
@@ -301,8 +301,8 @@ switch_status_t switch_table_init(switch_device_t device,
     if (table_sizes[index]) {
       table_info[index].valid = TRUE;
       table_str = switch_table_id_to_string(index);
-      SWITCH_MEMCPY(
-          &table_info[index].table_name, table_str, strlen(table_str));
+      SWITCH_MEMCPY(&table_info[index].table_name, table_str,
+                    strlen(table_str));
     }
   }
 
@@ -310,14 +310,13 @@ switch_status_t switch_table_init(switch_device_t device,
 }
 
 switch_status_t switch_table_free(switch_device_t device) {
-  switch_table_t *table_info = NULL;
+  switch_table_t* table_info = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("table free: Failed to get table info on device %d:%s",
-             device,
-             switch_error_to_string(status));
+                      device, switch_error_to_string(status));
     return status;
   }
 
@@ -327,8 +326,8 @@ switch_status_t switch_table_free(switch_device_t device) {
 
 switch_status_t switch_api_table_size_get_internal(switch_device_t device,
                                                    switch_table_id_t table_id,
-                                                   switch_size_t *table_size) {
-  switch_table_t *table_info = NULL;
+                                                   switch_size_t* table_size) {
+  switch_table_t* table_info = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(SWITCH_TABLE_ID_VALID(table_id));
@@ -336,9 +335,9 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("get table size: Failed to get table info on device %d, error: %s",
-             device,
-             switch_error_to_string(status));
+    krnlmon_log_error(
+        "get table size: Failed to get table info on device %d, error: %s",
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -347,14 +346,14 @@ switch_status_t switch_api_table_size_get_internal(switch_device_t device,
   return status;
 }
 
-switch_status_t switch_table_default_sizes_get(switch_size_t *table_sizes) {
+switch_status_t switch_table_default_sizes_get(switch_size_t* table_sizes) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_uint16_t index = 0;
 
   if (!table_sizes) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("Failed to get table default size, error: %s",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -792,13 +791,12 @@ switch_status_t switch_table_default_sizes_get(switch_size_t *table_sizes) {
   return status;
 }
 
-
 #ifdef __cplusplus
 }
 #endif
 
 switch_status_t switch_api_table_size_get(switch_device_t device,
                                           switch_table_id_t table_id,
-                                          switch_size_t *table_size) {
-    return switch_api_table_size_get_internal(device, table_id, table_size);
+                                          switch_size_t* table_size) {
+  return switch_api_table_size_get_internal(device, table_id, table_size);
 }

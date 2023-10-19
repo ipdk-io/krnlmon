@@ -97,9 +97,8 @@ typedef struct switch_api_interface_info_s {
  @param intf_info - interface information specific to type
  */
 switch_status_t switch_api_interface_create(
-    switch_device_t device,
-    switch_api_interface_info_t *intf_info,
-    switch_handle_t *intf_handle);
+    switch_device_t device, switch_api_interface_info_t* intf_info,
+    switch_handle_t* intf_handle);
 
 /**
  Interface delete
@@ -111,77 +110,61 @@ switch_status_t switch_api_interface_delete(switch_device_t device,
 
 switch_status_t switch_api_interface_handle_get(switch_device_t device,
                                                 switch_handle_t intf_handle,
-                                                switch_handle_t *port_handle);
+                                                switch_handle_t* port_handle);
 
 switch_status_t switch_api_interface_by_type_get(
-    switch_device_t device,
-    switch_handle_t handle,
-    switch_interface_type_t intf_type,
-    switch_handle_t *intf_handle);
+    switch_device_t device, switch_handle_t handle,
+    switch_interface_type_t intf_type, switch_handle_t* intf_handle);
 
 switch_status_t switch_api_interface_native_vlan_set(
-    switch_device_t device,
-    switch_handle_t intf_handle,
-    switch_handle_t vlan_handle,
-    switch_handle_t *member_handle);
+    switch_device_t device, switch_handle_t intf_handle,
+    switch_handle_t vlan_handle, switch_handle_t* member_handle);
 
 switch_status_t switch_api_interface_native_vlan_get(
-    switch_device_t device,
-    switch_handle_t intf_handle,
-    switch_handle_t *vlan_handle);
+    switch_device_t device, switch_handle_t intf_handle,
+    switch_handle_t* vlan_handle);
 
 switch_status_t switch_api_interface_native_vlan_id_set(
-    switch_device_t device,
-    switch_handle_t intf_handle,
-    switch_vlan_t vlan_id,
-    switch_handle_t *member_handle);
+    switch_device_t device, switch_handle_t intf_handle, switch_vlan_t vlan_id,
+    switch_handle_t* member_handle);
 
 switch_status_t switch_api_interface_native_vlan_id_get(
-    switch_device_t device,
-    switch_handle_t intf_handle,
-    switch_vlan_t *vlan_id);
+    switch_device_t device, switch_handle_t intf_handle,
+    switch_vlan_t* vlan_id);
 
 switch_status_t switch_api_interface_attribute_set(
-    const switch_device_t device,
-    const switch_handle_t intf_handle,
+    const switch_device_t device, const switch_handle_t intf_handle,
     const switch_uint64_t intf_flags,
-    const switch_api_interface_info_t *api_intf_info);
+    const switch_api_interface_info_t* api_intf_info);
 
 switch_status_t switch_api_interface_attribute_get(
-    const switch_device_t device,
-    const switch_handle_t intf_handle,
+    const switch_device_t device, const switch_handle_t intf_handle,
     const switch_uint64_t intf_flags,
-    switch_api_interface_info_t *api_intf_info);
+    switch_api_interface_info_t* api_intf_info);
 
 switch_status_t switch_api_interface_handle_dump(
-    const switch_device_t device,
-    const switch_handle_t intf_handle,
-    const void *cli_ctx);
+    const switch_device_t device, const switch_handle_t intf_handle,
+    const void* cli_ctx);
 
 switch_status_t switch_api_interface_ifindex_get(
-    switch_device_t device,
-    switch_handle_t interface_handle,
-    switch_ifindex_t *ifindex);
+    switch_device_t device, switch_handle_t interface_handle,
+    switch_ifindex_t* ifindex);
 
 switch_status_t switch_api_interface_handle_from_handle_get(
-    switch_device_t device,
-    switch_handle_t handle,
-    switch_handle_t *intf_handle);
+    switch_device_t device, switch_handle_t handle,
+    switch_handle_t* intf_handle);
 
 switch_status_t switch_api_interface_ln_handle_get(switch_device_t device,
                                                    switch_handle_t intf_handle,
-                                                   switch_handle_t *ln_handle);
+                                                   switch_handle_t* ln_handle);
 switch_status_t switch_api_interface_stats_get(
-    switch_device_t device,
-    switch_handle_t intf_handle,
-    switch_uint16_t num_entries,
-    switch_interface_counter_id_t *counter_id,
-    switch_counter_t *counters);
+    switch_device_t device, switch_handle_t intf_handle,
+    switch_uint16_t num_entries, switch_interface_counter_id_t* counter_id,
+    switch_counter_t* counters);
 
 switch_status_t switch_api_interface_port_lag_ifindex_get(
-    const switch_device_t device,
-    const switch_handle_t handle,
-    switch_ifindex_t *ifindex);
+    const switch_device_t device, const switch_handle_t handle,
+    switch_ifindex_t* ifindex);
 
 /** @} */  // end of interface
 

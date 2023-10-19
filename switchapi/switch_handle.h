@@ -19,8 +19,8 @@
 #define __SWITCH_HANDLE_H__
 
 #include "switch_base_types.h"
-#include "switch_status.h"
 #include "switch_id.h"
+#include "switch_status.h"
 
 #ifdef __cplusplus
 extern "C" {

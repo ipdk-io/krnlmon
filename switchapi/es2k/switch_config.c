@@ -25,12 +25,13 @@ extern "C" {
 #define __FILE_ID__ SWITCH_CONFIG
 switch_config_info_t config_info;
 
-switch_status_t switch_config_init(switch_config_t *switch_config) {
+switch_status_t switch_config_init(switch_config_t* switch_config) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (config_info.config_inited) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    krnlmon_log_error("config init failed, error: %s", switch_error_to_string(status));
+    krnlmon_log_error("config init failed, error: %s",
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -68,14 +69,13 @@ switch_status_t switch_config_free(void) {
 }
 
 switch_status_t switch_config_device_context_set(
-    switch_device_t device, switch_device_context_t *device_ctx) {
+    switch_device_t device, switch_device_context_t* device_ctx) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (device_ctx && config_info.device_inited[device]) {
     status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-    krnlmon_log_error("config free failed for device %d, error: %s",
-                     device,
-                     switch_error_to_string(status));
+    krnlmon_log_error("config free failed for device %d, error: %s", device,
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -91,14 +91,13 @@ switch_status_t switch_config_device_context_set(
 }
 
 switch_status_t switch_config_device_context_get(
-    switch_device_t device, switch_device_context_t **device_ctx) {
+    switch_device_t device, switch_device_context_t** device_ctx) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!config_info.device_inited[device]) {
     status = SWITCH_STATUS_UNINITIALIZED;
     krnlmon_log_error("Failed to get device context for device %d, error: %s\n",
-              device,
-              switch_error_to_string(status));
+                      device, switch_error_to_string(status));
     return status;
   }
 
@@ -108,14 +107,14 @@ switch_status_t switch_config_device_context_get(
 }
 
 switch_status_t switch_config_table_sizes_get(switch_device_t device,
-                                              switch_size_t *table_sizes) {
+                                              switch_size_t* table_sizes) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   status = switch_table_default_sizes_get(table_sizes);
   if (status != SWITCH_STATUS_SUCCESS) {
-    krnlmon_log_error("Failed to get config table sizes for device %d, error: %s\n",
-              device,
-              switch_error_to_string(status));
+    krnlmon_log_error(
+        "Failed to get config table sizes for device %d, error: %s\n", device,
+        switch_error_to_string(status));
     return status;
   }
 

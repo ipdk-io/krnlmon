@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <syslog.h>
-#include <string.h>
 #include <arpa/inet.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <syslog.h>
 
-#include "saitypes.h"
 #include "sai.h"
+#include "saitypes.h"
 #include "switchapi/switch_base_types.h"
 #include "switchutils/switch_utils.h"
 
@@ -47,26 +47,20 @@
 #define SAI_MEMCPY memcpy
 #define SAI_MEMCMP memcmp
 
-typedef enum sai_l2_learn_from_t
-{
-    SAI_L2_FWD_LEARN_NONE,
-    SAI_L2_FWD_LEARN_TUNNEL_INTERFACE,
-    SAI_L2_FWD_LEARN_VLAN_INTERFACE,
-    SAI_L2_FWD_LEARN_PHYSICAL_INTERFACE,
-    SAI_L2_FWD_LEARN_MAX
-}sai_l2_learn_from_t;
+typedef enum sai_l2_learn_from_t {
+  SAI_L2_FWD_LEARN_NONE,
+  SAI_L2_FWD_LEARN_TUNNEL_INTERFACE,
+  SAI_L2_FWD_LEARN_VLAN_INTERFACE,
+  SAI_L2_FWD_LEARN_PHYSICAL_INTERFACE,
+  SAI_L2_FWD_LEARN_MAX
+} sai_l2_learn_from_t;
 
-void sai_log(int level, sai_api_t api, char *fmt, ...);
+void sai_log(int level, sai_api_t api, char* fmt, ...);
 
-#define SAI_LOG(level, api_id, fmt, arg...) \
-  do {                                      \
-    sai_log(level,                          \
-            api_id,                         \
-            "[F:%s L:%d Func:%s] " fmt,     \
-            __FILE__,                       \
-            __LINE__,                       \
-            __func__,                       \
-            ##arg);                         \
+#define SAI_LOG(level, api_id, fmt, arg...)                                \
+  do {                                                                     \
+    sai_log(level, api_id, "[F:%s L:%d Func:%s] " fmt, __FILE__, __LINE__, \
+            __func__, ##arg);                                              \
   } while (0);
 
 // L2 learn timeout in milliseconds
@@ -115,78 +109,76 @@ typedef struct _sai_switch_notification_t {
 
 extern sai_switch_notification_t sai_switch_notifications;
 
-sai_status_t sai_acl_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_buffer_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_fdb_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_hash_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_hostif_initialize(sai_api_service_t *sai_api_service);
+sai_status_t sai_acl_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_buffer_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_fdb_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_hash_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_hostif_initialize(sai_api_service_t* sai_api_service);
 sai_status_t sai_initialize(void);
-sai_status_t sai_ipmc_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_l2mc_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_lag_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_mirror_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_neighbor_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_next_hop_group_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_next_hop_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_policer_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_port_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_qos_map_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_bridge_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_route_initialize(sai_api_service_t *sai_api_service);
+sai_status_t sai_ipmc_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_l2mc_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_lag_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_mirror_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_neighbor_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_next_hop_group_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_next_hop_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_policer_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_port_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_qos_map_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_bridge_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_route_initialize(sai_api_service_t* sai_api_service);
 sai_status_t sai_router_interface_initialize(
-    sai_api_service_t *sai_api_service);
-sai_status_t sai_scheduler_group_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_scheduler_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_stp_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_switch_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_udf_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_virtual_router_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_vlan_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_queue_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_dtel_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_wred_initialize(sai_api_service_t *sai_api_service);
-sai_status_t sai_tunnel_initialize(sai_api_service_t *sai_api_service);
+    sai_api_service_t* sai_api_service);
+sai_status_t sai_scheduler_group_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_scheduler_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_stp_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_switch_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_udf_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_virtual_router_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_vlan_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_queue_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_dtel_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_wred_initialize(sai_api_service_t* sai_api_service);
+sai_status_t sai_tunnel_initialize(sai_api_service_t* sai_api_service);
 
-char *sai_status_to_string(_In_ const sai_status_t status);
+char* sai_status_to_string(_In_ const sai_status_t status);
 
-char *sai_object_type_to_string(_In_ sai_object_type_t object_type);
+char* sai_object_type_to_string(_In_ sai_object_type_t object_type);
 
 sai_status_t sai_ipv4_prefix_length(_In_ sai_ip4_t ip4,
-                                    _Out_ uint32_t *prefix_length);
+                                    _Out_ uint32_t* prefix_length);
 
 sai_status_t sai_ipv6_prefix_length(_In_ const sai_ip6_t ip6,
-                                    _Out_ uint32_t *prefix_length);
+                                    _Out_ uint32_t* prefix_length);
 
-sai_status_t sai_ipv4_to_string(_In_ sai_ip4_t ip4,
-                                _In_ uint32_t max_length,
-                                _Out_ char *entry_string,
-                                _Out_ int *entry_length);
+sai_status_t sai_ipv4_to_string(_In_ sai_ip4_t ip4, _In_ uint32_t max_length,
+                                _Out_ char* entry_string,
+                                _Out_ int* entry_length);
 
-sai_status_t sai_ipv6_to_string(_In_ sai_ip6_t ip6,
-                                _In_ uint32_t max_length,
-                                _Out_ char *entry_string,
-                                _Out_ int *entry_length);
+sai_status_t sai_ipv6_to_string(_In_ sai_ip6_t ip6, _In_ uint32_t max_length,
+                                _Out_ char* entry_string,
+                                _Out_ int* entry_length);
 
 sai_status_t sai_ipaddress_to_string(_In_ sai_ip_address_t ip_addr,
                                      _In_ uint32_t max_length,
-                                     _Out_ char *entry_string,
-                                     _Out_ int *entry_length);
+                                     _Out_ char* entry_string,
+                                     _Out_ int* entry_length);
 
 sai_status_t sai_ipprefix_to_string(_In_ sai_ip_prefix_t ip_prefix,
                                     _In_ uint32_t max_length,
-                                    _Out_ char *entry_string,
-                                    _Out_ int *entry_length);
+                                    _Out_ char* entry_string,
+                                    _Out_ int* entry_length);
 
 sai_status_t sai_ip_prefix_to_switch_ip_addr(
-    const _In_ sai_ip_prefix_t *sai_ip_prefix, _Out_ switch_ip_addr_t *ip_addr);
+    const _In_ sai_ip_prefix_t* sai_ip_prefix, _Out_ switch_ip_addr_t* ip_addr);
 
 sai_status_t sai_ip_addr_to_switch_ip_addr(
-    const _In_ sai_ip_address_t *sai_ip_addr, _Out_ switch_ip_addr_t *ip_addr);
+    const _In_ sai_ip_address_t* sai_ip_addr, _Out_ switch_ip_addr_t* ip_addr);
 
 sai_status_t sai_switch_status_to_sai_status(_In_ const switch_status_t status);
 
-const sai_attribute_t *get_attr_from_list(_In_ sai_attr_id_t attr_id,
-                                          _In_ const sai_attribute_t *attr_list,
+const sai_attribute_t* get_attr_from_list(_In_ sai_attr_id_t attr_id,
+                                          _In_ const sai_attribute_t* attr_list,
                                           _In_ uint32_t attr_count);
 
 sai_object_id_t sai_id_to_oid(_In_ uint32_t type, _In_ uint32_t id);
@@ -197,21 +189,20 @@ typedef unsigned int switch_uint32_t;
 typedef switch_uint32_t switch_size_t;
 
 typedef struct sai_array_ {
-  void *array;
+  void* array;
   switch_size_t num_entries;
 } sai_array_t;
 
-sai_status_t sai_array_init(sai_array_t *array);
+sai_status_t sai_array_init(sai_array_t* array);
 
-switch_uint32_t sai_array_count(sai_array_t *array);
+switch_uint32_t sai_array_count(sai_array_t* array);
 
-sai_status_t sai_array_insert(sai_array_t *array,
-                              sai_uint64_t index,
-                              void *data);
+sai_status_t sai_array_insert(sai_array_t* array, sai_uint64_t index,
+                              void* data);
 
-sai_status_t sai_array_delete(sai_array_t *array, sai_uint64_t index);
+sai_status_t sai_array_delete(sai_array_t* array, sai_uint64_t index);
 
-sai_status_t sai_array_get(sai_array_t *array, sai_uint64_t index, void **data);
+sai_status_t sai_array_get(sai_array_t* array, sai_uint64_t index, void** data);
 
 // -----------------------------------------------------------------------------
 // Hash table utils
@@ -258,7 +249,7 @@ switch_uint32_t switch_sai_port_non_default_ppgs(void);
 bool switch_sai_default_initialize(void);
 
 #if defined(STATIC_LINK_LIB) && defined(THRIFT_ENABLED)
-int start_p4_sai_thrift_rpc_server(char *port);
+int start_p4_sai_thrift_rpc_server(char* port);
 #endif  // STATIC_LINK_LIB && THRIFT_ENABLED
 
 // -----------------------------------------------------------------------------

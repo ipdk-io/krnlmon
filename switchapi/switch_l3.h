@@ -38,7 +38,6 @@ extern "C" {
  *  @{
  */
 
-
 /** route type */
 typedef enum switch_route_type_s {
   SWITCH_ROUTE_TYPE_HOST = 0,
@@ -98,7 +97,6 @@ typedef struct switch_route_info_s {
 
 } switch_route_info_t;
 
-
 /**
  Get the handle of the interface that route lookup returns for a host addr
  @param device device
@@ -108,8 +106,8 @@ typedef struct switch_route_info_s {
 */
 switch_status_t switch_api_l3_route_nhop_get(switch_device_t device,
                                              switch_handle_t vrf_handle,
-                                             switch_ip_addr_t *ip_addr,
-                                             switch_handle_t *intf_handle);
+                                             switch_ip_addr_t* ip_addr,
+                                             switch_handle_t* intf_handle);
 
 /**
  * @brief route add - add an entry to host or lpm table to match based on
@@ -122,7 +120,7 @@ switch_status_t switch_api_l3_route_nhop_get(switch_device_t device,
  * returned.
  */
 switch_status_t switch_api_l3_route_add(
-    switch_device_t device, switch_api_route_entry_t *api_route_entry);
+    switch_device_t device, switch_api_route_entry_t* api_route_entry);
 
 /**
  * @brief route update - update an entry to host or lpm table to match based on
@@ -135,7 +133,7 @@ switch_status_t switch_api_l3_route_add(
  * returned.
  */
 switch_status_t switch_api_l3_route_update(
-    switch_device_t device, switch_api_route_entry_t *api_route_entry);
+    switch_device_t device, switch_api_route_entry_t* api_route_entry);
 
 /**
  * @brief route delete - delete an entry to host or lpm table to match based on
@@ -147,8 +145,8 @@ switch_status_t switch_api_l3_route_update(
  * @return #SWITCH_STATUS_SUCCESS if success otherwise error code is
  * returned.
  */
-switch_status_t switch_api_l3_delete_route(switch_device_t device,
-    switch_api_route_entry_t *api_route_entry);
+switch_status_t switch_api_l3_delete_route(
+    switch_device_t device, switch_api_route_entry_t* api_route_entry);
 /**
  Lookup FIB table (host or LPM) for a given host address
  Return nexthop handle (single path or ECMP group)
@@ -159,9 +157,8 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
  @param nhop_handle pointer to return Nexthop  Handle
 */
 switch_status_t switch_api_l3_route_lookup(
-    switch_device_t device,
-    switch_api_route_entry_t *api_route_entry,
-    switch_handle_t *nhop_handle);
+    switch_device_t device, switch_api_route_entry_t* api_route_entry,
+    switch_handle_t* nhop_handle);
 
 switch_status_t switch_api_rif_ipv4_unicast_enabled_set(
     switch_device_t device, switch_handle_t intf_handle, bool set);
@@ -171,19 +168,18 @@ switch_status_t switch_api_rif_ipv6_unicast_enabled_set(
 
 switch_status_t switch_api_l3_route_handle_lookup(
     const switch_device_t device,
-    const switch_api_route_entry_t *api_route_entry,
-    switch_handle_t *route_handle);
+    const switch_api_route_entry_t* api_route_entry,
+    switch_handle_t* route_handle);
 
 switch_status_t switch_api_route_table_size_get(switch_device_t device,
-                                                switch_size_t *tbl_size);
+                                                switch_size_t* tbl_size);
 
 switch_status_t switch_route_hashtable_insert(switch_device_t device,
                                               switch_handle_t route_handle);
 
 switch_status_t switch_route_table_hash_lookup(
-    switch_device_t device,
-    switch_route_entry_t *route_entry,
-    switch_handle_t *route_handle);
+    switch_device_t device, switch_route_entry_t* route_entry,
+    switch_handle_t* route_handle);
 
 switch_status_t switch_route_hashtable_remove(switch_device_t device,
                                               switch_handle_t route_handle);

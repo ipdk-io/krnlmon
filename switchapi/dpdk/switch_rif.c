@@ -18,16 +18,14 @@
 #include <net/if.h>
 
 /* Local header includes */
-#include "switchapi/switch_rif.h"
-
+#include "bf_types.h"
+#include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_rif.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_status.h"
-#include "switch_pd_utils.h"
-
-#include "bf_types.h"
 
 /*
  * Routine Description:
@@ -75,11 +73,9 @@ switch_status_t switch_rif_free(switch_device_t device) {
 }
 
 switch_status_t switch_api_rif_attribute_get(
-    const switch_device_t device,
-    const switch_handle_t rif_handle,
-    const switch_uint64_t rif_flags,
-    switch_api_rif_info_t *api_rif_info) {
-  switch_rif_info_t *rif_info = NULL;
+    const switch_device_t device, const switch_handle_t rif_handle,
+    const switch_uint64_t rif_flags, switch_api_rif_info_t* api_rif_info) {
+  switch_rif_info_t* rif_info = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_RIF_HANDLE(rif_handle)) {
@@ -88,9 +84,7 @@ switch_status_t switch_api_rif_attribute_get(
         "rif attribute get: Invalid rif handle on device %d, "
         "rif handle 0x%lx: "
         "error: %s\n",
-        device,
-        rif_handle,
-        switch_error_to_string(status));
+        device, rif_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -103,12 +97,11 @@ switch_status_t switch_api_rif_attribute_get(
   return status;
 }
 
-switch_status_t switch_api_rif_create(
-    switch_device_t device,
-    switch_api_rif_info_t *api_rif_info,
-    switch_handle_t *rif_handle) {
+switch_status_t switch_api_rif_create(switch_device_t device,
+                                      switch_api_rif_info_t* api_rif_info,
+                                      switch_handle_t* rif_handle) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_rif_info_t *rif_info = NULL;
+  switch_rif_info_t* rif_info = NULL;
 
   if (api_rif_info->rmac_handle == SWITCH_API_INVALID_HANDLE) {
     status = switch_api_device_default_rmac_handle_get(
@@ -121,8 +114,7 @@ switch_status_t switch_api_rif_create(
     krnlmon_log_error(
         "rif create: Invalid rmac handle on device %d: "
         "error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -132,24 +124,23 @@ switch_status_t switch_api_rif_create(
   status = switch_rif_get(device, *rif_handle, &rif_info);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
 
-  /* When multipipe support is available in P4-OVS, make port_id as 
+  /* When multipipe support is available in P4-OVS, make port_id as
    * in_port_id and out_port_id. Use accordingly for respective pipelines. */
   api_rif_info->port_id = -1;
   api_rif_info->phy_port_id = -1;
 
   switch_pd_to_get_port_id(api_rif_info);
 
-  SWITCH_MEMCPY(&rif_info->api_rif_info,
-                api_rif_info,
+  SWITCH_MEMCPY(&rif_info->api_rif_info, api_rif_info,
                 sizeof(switch_api_rif_info_t));
-  
+
   return status;
 }
 
 switch_status_t switch_api_rif_delete(switch_device_t device,
-                                               switch_handle_t rif_handle) {
+                                      switch_handle_t rif_handle) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_rif_info_t *rif_info = NULL;
+  switch_rif_info_t* rif_info = NULL;
 
   status = switch_rif_get(device, rif_handle, &rif_info);
   CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
@@ -159,4 +150,3 @@ switch_status_t switch_api_rif_delete(switch_device_t device,
 
   return status;
 }
-
