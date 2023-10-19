@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
+#include "saifdb.h"
+
 #include <linux/if_ether.h>
 
-#include "saifdb.h"
+#include "saiinternal.h"
+#include "switchapi/switch_device.h"
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_interface.h"
-#include "switchapi/switch_device.h"
-#include "saiinternal.h"
 
-static switch_l2_learn_from_t
-switch_type_learn_from(sai_l2_learn_from_t sai_learn_from_type)
-{
-  switch(sai_learn_from_type) {
+static switch_l2_learn_from_t switch_type_learn_from(
+    sai_l2_learn_from_t sai_learn_from_type) {
+  switch (sai_learn_from_type) {
     case SAI_L2_FWD_LEARN_NONE:
       return SWITCH_L2_FWD_LEARN_NONE;
     case SAI_L2_FWD_LEARN_TUNNEL_INTERFACE:
@@ -41,30 +41,25 @@ switch_type_learn_from(sai_l2_learn_from_t sai_learn_from_type)
   return SWITCH_L2_FWD_LEARN_NONE;
 }
 
-static void sai_fdb_entry_to_string(_In_ const sai_fdb_entry_t *fdb_entry,
-                                    _Out_ char *entry_string) {
-  snprintf(entry_string,
-           SAI_MAX_ENTRY_STRING_LEN,
+static void sai_fdb_entry_to_string(_In_ const sai_fdb_entry_t* fdb_entry,
+                                    _Out_ char* entry_string) {
+  snprintf(entry_string, SAI_MAX_ENTRY_STRING_LEN,
            "fdb entry mac [%02x:%02x:%02x:%02x:%02x:%02x]",
-           fdb_entry->mac_address[0],
-           fdb_entry->mac_address[1],
-           fdb_entry->mac_address[2],
-           fdb_entry->mac_address[3],
-           fdb_entry->mac_address[4],
-           fdb_entry->mac_address[5]);
+           fdb_entry->mac_address[0], fdb_entry->mac_address[1],
+           fdb_entry->mac_address[2], fdb_entry->mac_address[3],
+           fdb_entry->mac_address[4], fdb_entry->mac_address[5]);
 }
 
-static sai_status_t sai_fdb_entry_parse(const sai_fdb_entry_t *fdb_entry,
-                                        switch_api_l2_info_t *mac_entry) {
-
+static sai_status_t sai_fdb_entry_parse(const sai_fdb_entry_t* fdb_entry,
+                                        switch_api_l2_info_t* mac_entry) {
   memcpy(mac_entry->dst_mac.mac_addr, fdb_entry->mac_address, ETH_ALEN);
   return SAI_STATUS_SUCCESS;
 }
 
-static sai_status_t sai_fdb_entry_attribute_parse(uint32_t attr_count,
-                                          const sai_attribute_t *attr_list,
-                                          switch_api_l2_info_t *mac_entry) {
-  const sai_attribute_t *attribute;
+static sai_status_t sai_fdb_entry_attribute_parse(
+    uint32_t attr_count, const sai_attribute_t* attr_list,
+    switch_api_l2_info_t* mac_entry) {
+  const sai_attribute_t* attribute;
   uint32_t i = 0;
 
   for (i = 0; i < attr_count; i++) {
@@ -110,9 +105,9 @@ static sai_status_t sai_fdb_entry_attribute_parse(uint32_t attr_count,
  *    SAI_STATUS_SUCCESS on success
  *    Failure status code on error
  */
-static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
-                                  _In_ uint32_t attr_count,
-                                  _In_ const sai_attribute_t *attr_list) {
+static sai_status_t sai_create_fdb_entry(
+    _In_ const sai_fdb_entry_t* fdb_entry, _In_ uint32_t attr_count,
+    _In_ const sai_attribute_t* attr_list) {
   switch_api_l2_info_t mac_entry;
   sai_status_t status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
@@ -137,9 +132,8 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    krnlmon_log_error("Failed to create fdb entry %s, error: %s",
-                  entry_string,
-                  sai_status_to_string(status));
+    krnlmon_log_error("Failed to create fdb entry %s, error: %s", entry_string,
+                      sai_status_to_string(status));
   }
 
   mac_entry.type = SWITCH_L2_FWD_TX;
@@ -150,15 +144,13 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
     return sai_switch_status_to_sai_status(switch_status);
   }
 
-  switch_status = switch_api_l2_forward_create(0, &mac_entry,
-                                               &mac_handle);
+  switch_status = switch_api_l2_forward_create(0, &mac_entry, &mac_handle);
   status = sai_switch_status_to_sai_status(switch_status);
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    krnlmon_log_error("Failed to create fdb entry %s : error: %s",
-                  entry_string,
-                  sai_status_to_string(status));
+    krnlmon_log_error("Failed to create fdb entry %s : error: %s", entry_string,
+                      sai_status_to_string(status));
     return status;
   }
 
@@ -168,7 +160,7 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
 /*
  * Routine Description:
  *    Remove FDB entry
- * 
+ *
  * Arguments:
  *    [in] fdb_entry - fdb entry
  *
@@ -176,8 +168,8 @@ static sai_status_t sai_create_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry,
  *    SAI_STATUS_SUCCESS on success
  *    Failure status code on error
  */
-static sai_status_t sai_remove_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry)
-{
+static sai_status_t sai_remove_fdb_entry(
+    _In_ const sai_fdb_entry_t* fdb_entry) {
   switch_api_l2_info_t mac_entry;
   sai_status_t status = SAI_STATUS_SUCCESS;
   switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
@@ -198,9 +190,8 @@ static sai_status_t sai_remove_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry)
 
   if (status != SAI_STATUS_SUCCESS) {
     sai_fdb_entry_to_string(fdb_entry, entry_string);
-    krnlmon_log_error("Failed to remove fdb entry %s, error: %s",
-                  entry_string,
-                  sai_status_to_string(status));
+    krnlmon_log_error("Failed to remove fdb entry %s, error: %s", entry_string,
+                      sai_status_to_string(status));
   }
 
   return (sai_status_t)status;
@@ -212,7 +203,7 @@ static sai_status_t sai_remove_fdb_entry(_In_ const sai_fdb_entry_t *fdb_entry)
 sai_fdb_api_t fdb_api = {.create_fdb_entry = sai_create_fdb_entry,
                          .remove_fdb_entry = sai_remove_fdb_entry};
 
-sai_status_t sai_fdb_initialize(sai_api_service_t *sai_api_service) {
+sai_status_t sai_fdb_initialize(sai_api_service_t* sai_api_service) {
   sai_api_service->fdb_api = fdb_api;
   return SAI_STATUS_SUCCESS;
 }

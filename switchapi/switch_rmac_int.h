@@ -26,19 +26,19 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define switch_rmac_handle_create(_device) \
-  switch_handle_create(                    \
-      _device, SWITCH_HANDLE_TYPE_RMAC, sizeof(switch_rmac_info_t))
+#define switch_rmac_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_RMAC, \
+                       sizeof(switch_rmac_info_t))
 
 #define switch_rmac_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_RMAC, _handle)
 
-#define switch_rmac_get(_device, _handle, _info)                    \
-  ({                                                                \
-    switch_rmac_info_t *_tmp_rmac_info = NULL;                      \
-    (void)(_tmp_rmac_info == *_info);                               \
-    switch_handle_get(                                              \
-        _device, SWITCH_HANDLE_TYPE_RMAC, _handle, (void **)_info); \
+#define switch_rmac_get(_device, _handle, _info)                 \
+  ({                                                             \
+    switch_rmac_info_t* _tmp_rmac_info = NULL;                   \
+    (void)(_tmp_rmac_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_RMAC, _handle, \
+                      (void**)_info);                            \
   })
 
 /** rmac entry */
@@ -83,10 +83,10 @@ typedef struct switch_smac_entry_s {
 /** router mac device context */
 typedef struct switch_rmac_context_s {
   /** smac index allocator */
-  switch_id_allocator_t *smac_allocator;
+  switch_id_allocator_t* smac_allocator;
 
   /** tunnel smac index allocator */
-  switch_id_allocator_t *tunnel_smac_allocator;
+  switch_id_allocator_t* tunnel_smac_allocator;
 
 } switch_rmac_context_t;
 

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handle.h"
+#include "switchlink_init_sai.h"
 
-static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
+static sai_next_hop_group_api_t* sai_nhop_group_api = NULL;
 
 /*
  * Routine Description:
@@ -30,14 +30,13 @@ static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
  */
 
 sai_status_t sai_init_nhop_group_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void **)&sai_nhop_group_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void**)&sai_nhop_group_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
-
 
 /*
  * Routine Description:
@@ -51,7 +50,7 @@ sai_status_t sai_init_nhop_group_api() {
  *   -1 in case of error
  */
 
-static int delete_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
+static int delete_ecmp(switchlink_db_ecmp_info_t* ecmp_info) {
   sai_status_t retval = SAI_STATUS_SUCCESS;
   sai_status_t status;
 
@@ -59,7 +58,7 @@ static int delete_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
   uint8_t index = 0;
   for (index = 0; index < ecmp_info->num_nhops; index++) {
     status = sai_nhop_group_api->remove_next_hop_group_member(
-      ecmp_info->nhop_member_handles[index]);
+        ecmp_info->nhop_member_handles[index]);
     if (!retval) retval = status;
   }
 #endif
@@ -110,20 +109,22 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
 
     for (index = 0; index < num_nhops; index++) {
       memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
-      status = switchlink_db_get_nexthop_handle_info(nhops[index],
-                                                     &nexthop_info);
+      status =
+          switchlink_db_get_nexthop_handle_info(nhops[index], &nexthop_info);
       if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        krnlmon_log_error("Cannot get nhop info for nhop handle 0x%lx", nhops[index]);
+        krnlmon_log_error("Cannot get nhop info for nhop handle 0x%lx",
+                          nhops[index]);
         continue;
       }
 
       if (validate_delete_nexthop(nexthop_info.using_by,
                                   SWITCHLINK_NHOP_FROM_ROUTE)) {
-        krnlmon_log_debug("Deleting nhop 0x%lx, from delete_ecmp", nexthop_info.nhop_h);
+        krnlmon_log_debug("Deleting nhop 0x%lx, from delete_ecmp",
+                          nexthop_info.nhop_h);
         switchlink_delete_nexthop(nexthop_info.nhop_h);
         switchlink_db_delete_nexthop(&nexthop_info);
       } else {
-          krnlmon_log_debug("Removing Route learn from nhop");
+        krnlmon_log_debug("Removing Route learn from nhop");
         nexthop_info.using_by &= ~SWITCHLINK_NHOP_FROM_ROUTE;
         switchlink_db_update_nexthop_using_by(&nexthop_info);
       }
@@ -143,7 +144,7 @@ void switchlink_delete_ecmp(switchlink_handle_t ecmp_h) {
  *   -1 in case of error
  */
 
-int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
+int switchlink_create_ecmp(switchlink_db_ecmp_info_t* ecmp_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
   uint8_t index = 0;
   sai_attribute_t attr_list[1];
@@ -153,8 +154,8 @@ int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
   attr_list[0].id = SAI_NEXT_HOP_GROUP_ATTR_TYPE;
   attr_list[0].value.s32 = SAI_NEXT_HOP_GROUP_TYPE_ECMP;
 
-  status = sai_nhop_group_api->create_next_hop_group(
-      &(ecmp_info->ecmp_h), 0, 0x1, attr_list);
+  status = sai_nhop_group_api->create_next_hop_group(&(ecmp_info->ecmp_h), 0,
+                                                     0x1, attr_list);
   if (status != SAI_STATUS_SUCCESS) {
     krnlmon_log_error("Unable to create nexthop group for ECMP");
     return -1;
@@ -169,10 +170,10 @@ int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info) {
     status = sai_nhop_group_api->create_next_hop_group_member(
         &ecmp_info->nhop_member_handles[index], 0, 0x2, attr_member_list);
     if (status != SAI_STATUS_SUCCESS) {
-        krnlmon_log_error("Unable to add members to nexthop group for ECMP");
-        return -1;
+      krnlmon_log_error("Unable to add members to nexthop group for ECMP");
+      return -1;
     }
   }
 
-  return status; 
+  return status;
 }

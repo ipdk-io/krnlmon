@@ -108,8 +108,7 @@ typedef struct switch_api_nhop_info_s {
 } switch_api_nhop_info_t;
 
 /** nhop_group info struct */
-typedef struct switch_nhop_group_info_s
-{
+typedef struct switch_nhop_group_info_s {
   switch_handle_t nhop_group_handle;
 
   switch_list_t members;
@@ -121,8 +120,6 @@ typedef struct switch_nhop_group_info_s
   bool pd_nhop_group_deleted;
 
 } switch_nhop_group_info_t;
-
-
 
 typedef struct switch_nhop_member_s {
   /** nhop member handle */
@@ -156,10 +153,8 @@ switch_status_t switch_nhop_member_handle_init(switch_device_t device);
  @param nhop_key- Interface to be associated with the nexthop and nexthop ip
 */
 switch_status_t switch_api_nhop_create(
-    const switch_device_t device,
-    const switch_api_nhop_info_t *api_nhop_info,
-    switch_handle_t *nhop_handle);
-
+    const switch_device_t device, const switch_api_nhop_info_t* api_nhop_info,
+    switch_handle_t* nhop_handle);
 
 /**
  Update a Nexthop
@@ -170,7 +165,7 @@ switch_status_t switch_api_nhop_create(
 switch_status_t switch_api_nhop_update(switch_device_t device,
                                        switch_handle_t nhop_handle,
                                        switch_uint64_t flags,
-                                       switch_api_nhop_info_t *api_nhop_info);
+                                       switch_api_nhop_info_t* api_nhop_info);
 
 /**
  Get attributes of a Nexthop
@@ -180,7 +175,7 @@ switch_status_t switch_api_nhop_update(switch_device_t device,
 */
 switch_status_t switch_api_nhop_get(switch_device_t device,
                                     switch_handle_t nhop_handle,
-                                    switch_api_nhop_info_t *api_nhop_info);
+                                    switch_api_nhop_info_t* api_nhop_info);
 
 /**
  Delete a Nexthop
@@ -195,15 +190,15 @@ switch_status_t switch_api_nhop_delete(const switch_device_t device,
  @param device - device to create the nhop_group group
  @param nhop_handle - Handle that identifies nexthop uniquely
 */
-switch_status_t switch_api_create_nhop_group(const switch_device_t device,
-                                            switch_handle_t *nhop_group_handle);
+switch_status_t switch_api_create_nhop_group(
+    const switch_device_t device, switch_handle_t* nhop_group_handle);
 
 /**
  Delete a nhop Group
  @param nhop_group_handle - Handle that identifies nhop group uniquely
 */
-switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
-                                      const switch_handle_t nhop_group_handle);
+switch_status_t switch_api_delete_nhop_group(
+    const switch_device_t device, const switch_handle_t nhop_group_handle);
 
 /**
  Add nexthop member to nhop group
@@ -213,11 +208,9 @@ switch_status_t switch_api_delete_nhop_group(const switch_device_t device,
  @param nhop_handle_list - List of nexthops to be added to the nhop Group
 */
 switch_status_t switch_api_add_nhop_member(
-    const switch_device_t device,
-    const switch_handle_t nhop_group_handle,
-    const switch_uint32_t num_nhops,
-    const switch_handle_t *nhop_handles,
-    switch_handle_t *member_handle);
+    const switch_device_t device, const switch_handle_t nhop_group_handle,
+    const switch_uint32_t num_nhops, const switch_handle_t* nhop_handles,
+    switch_handle_t* member_handle);
 
 /**
  Delete nexthop member from nhop group
@@ -227,27 +220,24 @@ switch_status_t switch_api_add_nhop_member(
  @param nhop_handle_list - List of nexthops to be added to the nhop Group
 */
 switch_status_t switch_api_delete_nhop_member(
-    const switch_device_t device,
-    const switch_handle_t nhop_group_handle,
-    const switch_uint32_t num_nhops,
-    const switch_handle_t *nhop_handles);
+    const switch_device_t device, const switch_handle_t nhop_group_handle,
+    const switch_uint32_t num_nhops, const switch_handle_t* nhop_handles);
 
 /*
  Return nexthop handle from (intf_handle, ip address)
  @param nhop_key- Interface to be associated with the nexthop and nexthop ip
  */
 switch_status_t switch_api_nhop_handle_get(const switch_device_t device,
-                                           const switch_nhop_key_t *nhop_key,
-                                           switch_handle_t *nhop_handle);
+                                           const switch_nhop_key_t* nhop_key,
+                                           switch_handle_t* nhop_handle);
 
 /*
  Get neighbor handle from nexthop handle
  @param nhop_handle nexthop handle
  */
 switch_status_t switch_api_neighbor_handle_get(
-    const switch_device_t device,
-    const switch_handle_t nhop_handle,
-    switch_handle_t *neighbor_handle);
+    const switch_device_t device, const switch_handle_t nhop_handle,
+    switch_handle_t* neighbor_handle);
 
 /*
  Get to know whether nhop is single path or ecmp
@@ -255,50 +245,43 @@ switch_status_t switch_api_neighbor_handle_get(
 */
 switch_status_t switch_api_nhop_id_type_get(const switch_device_t device,
                                             const switch_handle_t nhop_handle,
-                                            switch_nhop_id_type_t *nhop_type);
+                                            switch_nhop_id_type_t* nhop_type);
 
-switch_status_t switch_api_delete_nhop_members(switch_device_t device,
-                                               switch_handle_t nhop_group_handle);
+switch_status_t switch_api_delete_nhop_members(
+    switch_device_t device, switch_handle_t nhop_group_handle);
 
-switch_status_t switch_api_nhop_members_get(const switch_device_t device,
-                                            const switch_handle_t nhop_group_handle,
-                                            switch_uint16_t *num_nhops,
-                                            switch_handle_t **nhop_handles);
+switch_status_t switch_api_nhop_members_get(
+    const switch_device_t device, const switch_handle_t nhop_group_handle,
+    switch_uint16_t* num_nhops, switch_handle_t** nhop_handles);
 
 switch_status_t switch_api_nhop_handle_dump(const switch_device_t device,
                                             const switch_handle_t nhop_handle,
-                                            const void *cli_ctx);
+                                            const void* cli_ctx);
 switch_status_t switch_api_nhop_table_size_get(switch_device_t device,
-                                               switch_size_t *tbl_size);
+                                               switch_size_t* tbl_size);
 
 switch_status_t switch_api_nhop_group_get_by_nhop_member(
-    const switch_device_t device,
-    const switch_handle_t nhop_member_handle,
-    switch_handle_t *nhop_group_handle,
-    switch_handle_t *nhop_handle);
+    const switch_device_t device, const switch_handle_t nhop_member_handle,
+    switch_handle_t* nhop_group_handle, switch_handle_t* nhop_handle);
 
 switch_status_t switch_api_rif_nhop_get(switch_device_t device,
                                         switch_handle_t vrf_handle,
-                                        switch_handle_t *nhop_handle);
-
+                                        switch_handle_t* nhop_handle);
 
 /**
  * function to initialize nhop key
- * */ 
-switch_status_t switch_nhop_hash_key_init(void *args,
-                                          switch_uint8_t *key,
-                                          switch_uint32_t *len);
+ * */
+switch_status_t switch_nhop_hash_key_init(void* args, switch_uint8_t* key,
+                                          switch_uint32_t* len);
 
 /**
  * function to compare 2 nhop keys
  * */
-switch_int32_t switch_nhop_hash_compare(const void *key1, const void *key2);
+switch_int32_t switch_nhop_hash_compare(const void* key1, const void* key2);
 
 switch_status_t nhop_member_get_from_nhop(
-    const switch_device_t device,
-    const switch_handle_t nhop_group_handle,
-    const switch_handle_t nhop_handle,
-    switch_nhop_member_t **nhop_member);
+    const switch_device_t device, const switch_handle_t nhop_group_handle,
+    const switch_handle_t nhop_handle, switch_nhop_member_t** nhop_member);
 #ifdef __cplusplus
 }
 #endif

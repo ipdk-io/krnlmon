@@ -27,7 +27,7 @@ extern "C" {
 /** ID allocator */
 typedef struct switch_id_allocator_t_ {
   switch_uint32_t n_words; /**< number fo 32 bit words in allocator */
-  switch_uint32_t *data;   /**< bitmap of allocator */
+  switch_uint32_t* data;   /**< bitmap of allocator */
   bool zero_based;         /**< allocate index from zero if set */
   bool expandable; /**< if set, expand bitmap when needed. zero_based must be
                       FALSE */
@@ -41,14 +41,14 @@ typedef struct switch_id_allocator_t_ {
 switch_status_t switch_api_id_allocator_new(switch_device_t device,
                                             switch_uint32_t initial_size,
                                             bool zero_based,
-                                            switch_id_allocator_t **allocator);
+                                            switch_id_allocator_t** allocator);
 
 /**
  Delete the allocator
  @param allocator allocator allocated with create
 */
 switch_status_t switch_api_id_allocator_destroy(
-    switch_device_t device, switch_id_allocator_t *allocator);
+    switch_device_t device, switch_id_allocator_t* allocator);
 
 /**
  Allocate one id from the allocator
@@ -56,7 +56,7 @@ switch_status_t switch_api_id_allocator_destroy(
  @param allocator allocator created with create
 */
 switch_status_t switch_api_id_allocator_allocate(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t *id);
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t* id);
 
 /**
  Allocate count consecutive ids from the allocator
@@ -65,10 +65,8 @@ switch_status_t switch_api_id_allocator_allocate(
  @param count number of consecutive ids to allocate
 */
 switch_status_t switch_api_id_allocator_allocate_contiguous(
-    switch_device_t device,
-    switch_id_allocator_t *allocator,
-    switch_uint8_t count,
-    switch_id_t *id);
+    switch_device_t device, switch_id_allocator_t* allocator,
+    switch_uint8_t count, switch_id_t* id);
 
 /**
  Free up id in allocator
@@ -76,7 +74,7 @@ switch_status_t switch_api_id_allocator_allocate_contiguous(
  @param id id to free in allocator
 */
 switch_status_t switch_api_id_allocator_release(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t id);
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t id);
 
 /**
  Set a bit in allocator
@@ -84,7 +82,7 @@ switch_status_t switch_api_id_allocator_release(
  @param id - bit to be set in allocator
 */
 switch_status_t switch_api_id_allocator_set(switch_device_t device,
-                                            switch_id_allocator_t *allocator,
+                                            switch_id_allocator_t* allocator,
                                             switch_id_t id);
 /**
  Check if a bit is set in allocator
@@ -92,7 +90,7 @@ switch_status_t switch_api_id_allocator_set(switch_device_t device,
  @param id - bit to be checked in allocator
 */
 bool switch_api_id_allocator_is_set(switch_device_t device,
-                                    switch_id_allocator_t *allocator,
+                                    switch_id_allocator_t* allocator,
                                     switch_id_t id);
 
 #ifdef __cplusplus

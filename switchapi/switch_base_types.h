@@ -21,11 +21,11 @@
 /**
  * Third party includes
  */
+#include "bf_sal/bf_sys_mem.h"
+#include "bf_sal/bf_sys_timer.h"
 #include "judy-1.0.5/src/Judy.h"
 #include "tommyds/tommyhashtbl.h"
 #include "tommyds/tommylist.h"
-#include "bf_sal/bf_sys_mem.h"
-#include "bf_sal/bf_sys_timer.h"
 #ifdef STATIC_LINK_LIB
 #include "bf_switchd/bf_switchd.h"
 #endif  // STATIC_LINK_LIB
@@ -33,9 +33,9 @@
 /**
  * standard includes
  */
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 #ifdef __cplusplus
@@ -81,7 +81,7 @@ extern "C" {
 #define SWITCH_MEMCPY memcpy
 #define SWITCH_MEMCMP memcmp
 
-#define UNUSED(x) (void) x;
+#define UNUSED(x) (void)x;
 
 #define __MODULE__ SWITCH_API_TYPE_NONE
 
@@ -331,7 +331,7 @@ typedef switch_int32_t switch_dev_port_t;
  */
 typedef struct switch_handle_list_s {
   /** handle array */
-  switch_handle_t *handles;
+  switch_handle_t* handles;
 
   /** number of handles */
   switch_size_t num_handles;
@@ -353,7 +353,7 @@ typedef switch_uint128_t switch_ip6_t;
 /** List of signed 32 bit integer values */
 typedef struct switch_s32_list_s {
   /** integer array */
-  switch_int32_t *value;
+  switch_int32_t* value;
 
   /** number of entries */
   switch_uint16_t num_entries;
@@ -363,7 +363,7 @@ typedef struct switch_s32_list_s {
 /** List of unsigned 32 bit integer values */
 typedef struct switch_u32_list_s {
   /** integer array */
-  switch_int32_t *value;
+  switch_int32_t* value;
 
   /** number of entries */
   switch_uint16_t num_entries;

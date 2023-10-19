@@ -25,9 +25,8 @@ extern "C" {
 
 #define __FILE_ID__ SWITCHAPI_UTILS
 
-static switch_uint32_t MurmurHash(const void *key,
-                           switch_uint32_t length,
-                           switch_uint32_t seed) {
+static switch_uint32_t MurmurHash(const void* key, switch_uint32_t length,
+                                  switch_uint32_t seed) {
 // 'm' and 'r' are mixing constants generated offline.
 // They're not really 'magic', they just happen to work well.
 #define m 0x5bd1e995
@@ -37,10 +36,10 @@ static switch_uint32_t MurmurHash(const void *key,
   switch_uint32_t h = seed ^ length;
 
   // Mix 4 bytes at a time into the hash
-  const unsigned char *data = (const unsigned char *)key;
+  const unsigned char* data = (const unsigned char*)key;
 
   while (length >= 4) {
-    uint32_t k = *(uint32_t *)data;
+    uint32_t k = *(uint32_t*)data;
 
     k *= m;
     k ^= k >> r;
@@ -76,25 +75,24 @@ static switch_uint32_t MurmurHash(const void *key,
   return h;
 }
 
-switch_status_t SWITCH_ARRAY_INIT(switch_array_t *array) {
+switch_status_t SWITCH_ARRAY_INIT(switch_array_t* array) {
   SWITCH_ASSERT(array != NULL);
   array->array = NULL;
   array->num_entries = 0;
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_uint32_t SWITCH_ARRAY_COUNT(switch_array_t *array) {
+switch_uint32_t SWITCH_ARRAY_COUNT(switch_array_t* array) {
   SWITCH_ASSERT(array != NULL);
   return array->num_entries;
 }
 
-switch_status_t SWITCH_ARRAY_INSERT(switch_array_t *array,
-                                    switch_uint64_t index,
-                                    void *data) {
+switch_status_t SWITCH_ARRAY_INSERT(switch_array_t* array,
+                                    switch_uint64_t index, void* data) {
   SWITCH_ASSERT(array != NULL);
   SWITCH_ASSERT(data != NULL);
 
-  Word_t *p = NULL;
+  Word_t* p = NULL;
   JLI(p, array->array, (switch_uint64_t)index);
   if (p) {
     *p = (Word_t)data;
@@ -105,38 +103,36 @@ switch_status_t SWITCH_ARRAY_INSERT(switch_array_t *array,
   }
 }
 
-switch_status_t SWITCH_ARRAY_GET(switch_array_t *array,
-                                 switch_uint64_t index,
-                                 void **data) {
+switch_status_t SWITCH_ARRAY_GET(switch_array_t* array, switch_uint64_t index,
+                                 void** data) {
   SWITCH_ASSERT(array != NULL);
   SWITCH_ASSERT(data != NULL);
 
-  Word_t *p = NULL;
+  Word_t* p = NULL;
   JLG(p, array->array, (switch_uint64_t)index);
   if (p) {
-    *(Word_t *)data = *(Word_t *)p;
+    *(Word_t*)data = *(Word_t*)p;
     return SWITCH_STATUS_SUCCESS;
   } else {
     return SWITCH_STATUS_ITEM_NOT_FOUND;
   }
 }
 
-switch_status_t SWITCH_ARRAY_NEXT(switch_array_t *array,
-                                  switch_uint64_t *index,
-                                  void **data) {
+switch_status_t SWITCH_ARRAY_NEXT(switch_array_t* array, switch_uint64_t* index,
+                                  void** data) {
   Word_t tmp_index = (Word_t)*index;
 
   SWITCH_ASSERT(array != NULL);
   SWITCH_ASSERT(data != NULL);
 
-  Word_t *p = NULL;
+  Word_t* p = NULL;
   if (tmp_index == 0) {
     JLF(p, array->array, tmp_index);
   } else {
     JLN(p, array->array, tmp_index);
   }
   if (p) {
-    *(Word_t *)data = *(Word_t *)p;
+    *(Word_t*)data = *(Word_t*)p;
     *index = (switch_uint64_t)tmp_index;
     return SWITCH_STATUS_SUCCESS;
   } else {
@@ -144,7 +140,7 @@ switch_status_t SWITCH_ARRAY_NEXT(switch_array_t *array,
   }
 }
 
-switch_status_t SWITCH_ARRAY_DELETE(switch_array_t *array,
+switch_status_t SWITCH_ARRAY_DELETE(switch_array_t* array,
                                     switch_uint64_t index) {
   SWITCH_ASSERT(array != NULL);
 
@@ -158,7 +154,7 @@ switch_status_t SWITCH_ARRAY_DELETE(switch_array_t *array,
   }
 }
 
-switch_status_t SWITCH_LIST_INIT(switch_list_t *list) {
+switch_status_t SWITCH_LIST_INIT(switch_list_t* list) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(list != NULL);
@@ -166,7 +162,7 @@ switch_status_t SWITCH_LIST_INIT(switch_list_t *list) {
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("list insert failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_list_init(&list->list);
@@ -174,7 +170,7 @@ switch_status_t SWITCH_LIST_INIT(switch_list_t *list) {
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_LIST_SORT(switch_list_t *list,
+switch_status_t SWITCH_LIST_SORT(switch_list_t* list,
                                  switch_list_compare_func_t compare_func) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -183,14 +179,14 @@ switch_status_t SWITCH_LIST_SORT(switch_list_t *list,
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("list insert failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_list_sort(&list->list, compare_func);
   return SWITCH_STATUS_SUCCESS;
 }
 
-bool SWITCH_LIST_EMPTY(switch_list_t *list) {
+bool SWITCH_LIST_EMPTY(switch_list_t* list) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   bool is_empty = false;
 
@@ -199,7 +195,7 @@ bool SWITCH_LIST_EMPTY(switch_list_t *list) {
   if (!list) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("list empty get failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return FALSE;
   }
 
@@ -207,7 +203,7 @@ bool SWITCH_LIST_EMPTY(switch_list_t *list) {
   return is_empty;
 }
 
-switch_size_t SWITCH_LIST_COUNT(switch_list_t *list) {
+switch_size_t SWITCH_LIST_COUNT(switch_list_t* list) {
   SWITCH_ASSERT(list != NULL);
 
   if (!list) {
@@ -217,9 +213,8 @@ switch_size_t SWITCH_LIST_COUNT(switch_list_t *list) {
   return list->num_entries;
 }
 
-switch_status_t SWITCH_LIST_INSERT(switch_list_t *list,
-                                   switch_node_t *node,
-                                   void *data) {
+switch_status_t SWITCH_LIST_INSERT(switch_list_t* list, switch_node_t* node,
+                                   void* data) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(list != NULL);
@@ -229,7 +224,7 @@ switch_status_t SWITCH_LIST_INSERT(switch_list_t *list,
   if (!list || !node || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("list insert failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_list_insert_head(&list->list, node, data);
@@ -237,7 +232,7 @@ switch_status_t SWITCH_LIST_INSERT(switch_list_t *list,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_LIST_DELETE(switch_list_t *list, switch_node_t *node) {
+switch_status_t SWITCH_LIST_DELETE(switch_list_t* list, switch_node_t* node) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(list != NULL);
@@ -246,7 +241,7 @@ switch_status_t SWITCH_LIST_DELETE(switch_list_t *list, switch_node_t *node) {
   if (!list || !node) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("list delete failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_list_remove_existing(&list->list, node);
@@ -254,7 +249,7 @@ switch_status_t SWITCH_LIST_DELETE(switch_list_t *list, switch_node_t *node) {
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
+switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t* hashtable) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(hashtable != NULL);
@@ -263,7 +258,7 @@ switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
   if (!hashtable || hashtable->size == 0) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable init failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_hashtable_init(&hashtable->table, hashtable->size);
@@ -271,7 +266,7 @@ switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t *hashtable) {
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_size_t SWITCH_HASHTABLE_COUNT(switch_hashtable_t *hashtable) {
+switch_size_t SWITCH_HASHTABLE_COUNT(switch_hashtable_t* hashtable) {
   SWITCH_ASSERT(hashtable != NULL);
 
   if (!hashtable) {
@@ -281,10 +276,9 @@ switch_size_t SWITCH_HASHTABLE_COUNT(switch_hashtable_t *hashtable) {
   return hashtable->num_entries;
 }
 
-switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
-                                        switch_hashnode_t *node,
-                                        void *key,
-                                        void *data) {
+switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t* hashtable,
+                                        switch_hashnode_t* node, void* key,
+                                        void* data) {
   switch_uint8_t hash_key[SWITCH_API_BUFFER_SIZE];
   switch_uint32_t hash_length = 0;
   switch_uint32_t hash = 0;
@@ -298,7 +292,7 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
   if (!hashtable || !node || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable insert failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -307,7 +301,7 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("hashtable insert failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -317,9 +311,8 @@ switch_status_t SWITCH_HASHTABLE_INSERT(switch_hashtable_t *hashtable,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
-                                        void *key,
-                                        void **data) {
+switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t* hashtable,
+                                        void* key, void** data) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_uint8_t hash_key[SWITCH_API_BUFFER_SIZE];
   switch_uint32_t hash_length = 0;
@@ -332,7 +325,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
   if (!hashtable || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable delete failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -341,17 +334,17 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("hashtable delete failed, error: %s\n",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
   hash = MurmurHash(hash_key, hash_length, hashtable->hash_seed);
-  *data = (void *)tommy_hashtable_remove(
+  *data = (void*)tommy_hashtable_remove(
       &hashtable->table, hashtable->compare_func, hash_key, hash);
   if (!(*data)) {
     status = SWITCH_STATUS_ITEM_NOT_FOUND;
     krnlmon_log_error("hashtable delete failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -359,8 +352,8 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t *hashtable,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t *hashtable,
-                                             switch_hashnode_t *node) {
+switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t* hashtable,
+                                             switch_hashnode_t* node) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(hashtable != NULL);
@@ -369,7 +362,7 @@ switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t *hashtable,
   if (!hashtable || !node) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable delete node failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_hashtable_remove_existing(&hashtable->table, node);
@@ -377,9 +370,8 @@ switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t *hashtable,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
-                                        void *key,
-                                        void **data) {
+switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t* hashtable,
+                                        void* key, void** data) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_uint8_t hash_key[SWITCH_API_BUFFER_SIZE];
   switch_uint32_t hash_length = 0;
@@ -392,7 +384,7 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
   if (!hashtable || !key || !data) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_debug("hashtable search failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -401,26 +393,25 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t *hashtable,
   status = hashtable->key_func(key, hash_key, &hash_length);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_debug("hashtable search failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
   hash = MurmurHash(hash_key, hash_length, hashtable->hash_seed);
-  *data = (void *)tommy_hashtable_search(
+  *data = (void*)tommy_hashtable_search(
       &hashtable->table, hashtable->compare_func, hash_key, hash);
   if (!(*data)) {
     status = SWITCH_STATUS_ITEM_NOT_FOUND;
     krnlmon_log_debug("hashtable search failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
   return status;
 }
 
-switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t *hashtable,
-                                             void *func,
-                                             void *arg) {
+switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t* hashtable,
+                                             void* func, void* arg) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(hashtable != NULL);
@@ -430,7 +421,7 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t *hashtable,
   if (!hashtable || !func || !arg) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable foreach arg failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_hashtable_foreach_arg(&hashtable->table, func, arg);
@@ -438,7 +429,7 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t *hashtable,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable) {
+switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   SWITCH_ASSERT(hashtable != NULL);
@@ -446,14 +437,14 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t *hashtable) {
   if (!hashtable) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("hashtable done failed, error: %s\n",
-              switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
   tommy_hashtable_done(&hashtable->table);
   return SWITCH_STATUS_SUCCESS;
 }
 
-char *switch_error_to_string(switch_status_t status) {
+char* switch_error_to_string(switch_status_t status) {
   switch (status) {
     case SWITCH_STATUS_ITEM_NOT_FOUND:
       return "err: entry not found";
@@ -496,7 +487,7 @@ char *switch_error_to_string(switch_status_t status) {
   }
 }
 
-char *switch_handle_type_to_string(switch_handle_type_t handle_type) {
+char* switch_handle_type_to_string(switch_handle_type_t handle_type) {
   switch (handle_type) {
     case SWITCH_HANDLE_TYPE_NONE:
       return "none";
@@ -598,7 +589,7 @@ char *switch_handle_type_to_string(switch_handle_type_t handle_type) {
       return "pktdriver rx filter";
     case SWITCH_HANDLE_TYPE_PKTDRIVER_TX_FILTER:
       return "pktdriver tx filter";
-   case SWITCH_HANDLE_TYPE_ROUTE:
+    case SWITCH_HANDLE_TYPE_ROUTE:
       return "route";
     case SWITCH_HANDLE_TYPE_DEVICE:
       return "device";
@@ -752,8 +743,7 @@ switch_status_t switch_pd_tdi_status_to_status(tdi_status_t pd_status) {
   return status;
 }
 
-
-static bool switch_l3_host_entry(const switch_ip_addr_t *ip_addr) {
+static bool switch_l3_host_entry(const switch_ip_addr_t* ip_addr) {
   SWITCH_ASSERT(ip_addr != NULL);
 
   if (ip_addr->type == SWITCH_API_IP_ADDR_V4) {
@@ -765,10 +755,9 @@ static bool switch_l3_host_entry(const switch_ip_addr_t *ip_addr) {
   }
 }
 
-switch_status_t switch_ipv4_to_string(switch_ip4_t ip4,
-                                      char *buffer,
+switch_status_t switch_ipv4_to_string(switch_ip4_t ip4, char* buffer,
                                       switch_int32_t buffer_size,
-                                      switch_int32_t *length) {
+                                      switch_int32_t* length) {
   SWITCH_ASSERT(buffer != NULL);
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
@@ -779,10 +768,9 @@ switch_status_t switch_ipv4_to_string(switch_ip4_t ip4,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t switch_ipv6_to_string(switch_ip6_t ip6,
-                                      char *buffer,
+switch_status_t switch_ipv6_to_string(switch_ip6_t ip6, char* buffer,
                                       switch_int32_t buffer_size,
-                                      switch_int32_t *length) {
+                                      switch_int32_t* length) {
   SWITCH_ASSERT(buffer != NULL);
 
   char tmp_buffer[SWITCH_API_BUFFER_SIZE];
@@ -792,22 +780,16 @@ switch_status_t switch_ipv6_to_string(switch_ip6_t ip6,
   return SWITCH_STATUS_SUCCESS;
 }
 
-switch_status_t switch_mac_to_string(switch_mac_addr_t *mac,
-                                     char *buffer,
+switch_status_t switch_mac_to_string(switch_mac_addr_t* mac, char* buffer,
                                      switch_int32_t buffer_size,
-                                     switch_int32_t *length_out) {
+                                     switch_int32_t* length_out) {
   SWITCH_ASSERT(buffer != NULL);
   SWITCH_ASSERT(mac != NULL);
 
-  switch_int32_t length = snprintf(buffer,
-                                   buffer_size,
-                                   "%02x:%02x:%02x:%02x:%02x:%02x",
-                                   mac->mac_addr[0],
-                                   mac->mac_addr[1],
-                                   mac->mac_addr[2],
-                                   mac->mac_addr[3],
-                                   mac->mac_addr[4],
-                                   mac->mac_addr[5]);
+  switch_int32_t length =
+      snprintf(buffer, buffer_size, "%02x:%02x:%02x:%02x:%02x:%02x",
+               mac->mac_addr[0], mac->mac_addr[1], mac->mac_addr[2],
+               mac->mac_addr[3], mac->mac_addr[4], mac->mac_addr[5]);
   if (length_out) {
     *length_out = length;
   }
@@ -815,7 +797,7 @@ switch_status_t switch_mac_to_string(switch_mac_addr_t *mac,
 }
 
 static switch_status_t switch_ipv4_prefix_to_mask(switch_uint32_t prefix,
-                                           switch_uint32_t *mask) {
+                                                  switch_uint32_t* mask) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!mask) {
@@ -832,7 +814,7 @@ static switch_status_t switch_ipv4_prefix_to_mask(switch_uint32_t prefix,
 }
 
 static switch_status_t switch_ipv6_prefix_to_mask(switch_uint32_t prefix,
-                                           switch_uint8_t *mask) {
+                                                  switch_uint8_t* mask) {
   switch_uint32_t prefix_bytes = 0;
   switch_uint32_t index = 0;
 
@@ -972,7 +954,7 @@ switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   }
 }
 
-char *switch_api_type_to_string(switch_api_type_t api_type) {
+char* switch_api_type_to_string(switch_api_type_t api_type) {
   switch (api_type) {
     case SWITCH_API_TYPE_PORT:
       return "port";
@@ -1054,7 +1036,7 @@ char *switch_api_type_to_string(switch_api_type_t api_type) {
   }
 }
 
-static char *switch_packet_type_to_string(switch_packet_type_t packet_type) {
+static char* switch_packet_type_to_string(switch_packet_type_t packet_type) {
   switch (packet_type) {
     case SWITCH_PACKET_TYPE_UNICAST:
       return "unicast";
@@ -1068,8 +1050,8 @@ static char *switch_packet_type_to_string(switch_packet_type_t packet_type) {
   }
 }
 
-switch_int32_t switch_convert_string_to_ipv4(const char *v4_string,
-                                             switch_ip4_t *ip) {
+switch_int32_t switch_convert_string_to_ipv4(const char* v4_string,
+                                             switch_ip4_t* ip) {
   switch_int32_t ret_val;
 
   if (!v4_string || !ip) {
@@ -1085,8 +1067,8 @@ switch_int32_t switch_convert_string_to_ipv4(const char *v4_string,
   return 1;
 }
 
-switch_int32_t switch_convert_string_to_ipv6(const char *v6_string,
-                                             switch_ip6_t *ip) {
+switch_int32_t switch_convert_string_to_ipv6(const char* v6_string,
+                                             switch_ip6_t* ip) {
   switch_int32_t ret_val;
 
   if (!v6_string || !ip) {

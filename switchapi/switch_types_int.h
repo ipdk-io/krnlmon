@@ -20,8 +20,9 @@
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include "switchapi/switch_handle.h"
+
 #include "switchapi/switch_base_types.h"
+#include "switchapi/switch_handle.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,18 +49,17 @@ typedef tommy_hashtable_node switch_hashnode_t;
 #define switch_select select
 #define switch_snprintf snprintf
 
-typedef switch_status_t (*switch_key_func_t)(void *args,
-                                             switch_uint8_t *key,
-                                             switch_uint32_t *len);
+typedef switch_status_t (*switch_key_func_t)(void* args, switch_uint8_t* key,
+                                             switch_uint32_t* len);
 
-typedef switch_int32_t (*switch_hash_compare_func_t)(const void *key1,
-                                                     const void *key2);
+typedef switch_int32_t (*switch_hash_compare_func_t)(const void* key1,
+                                                     const void* key2);
 
-typedef switch_int32_t (*switch_list_compare_func_t)(const void *key1,
-                                                     const void *key2);
+typedef switch_int32_t (*switch_list_compare_func_t)(const void* key1,
+                                                     const void* key2);
 
 typedef struct switch_array_ {
-  void *array;
+  void* array;
   switch_size_t num_entries;
 } switch_array_t;
 
@@ -77,23 +77,17 @@ typedef struct switch_list_ {
   switch_size_t num_entries;
 } switch_list_t;
 
-static inline const char *switch_macaddress_to_string(
-    const switch_mac_addr_t *mac) {
+static inline const char* switch_macaddress_to_string(
+    const switch_mac_addr_t* mac) {
   static char mac_str[18];
-  snprintf(mac_str,
-           sizeof(mac_str),
-           "%02x:%02x:%02x:%02x:%02x:%02x",
-           mac->mac_addr[0],
-           mac->mac_addr[1],
-           mac->mac_addr[2],
-           mac->mac_addr[3],
-           mac->mac_addr[4],
-           mac->mac_addr[5]);
+  snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
+           mac->mac_addr[0], mac->mac_addr[1], mac->mac_addr[2],
+           mac->mac_addr[3], mac->mac_addr[4], mac->mac_addr[5]);
   return mac_str;
 }
 
-static inline const char *switch_ipaddress_to_string(
-    const switch_ip_addr_t *ip_addr) {
+static inline const char* switch_ipaddress_to_string(
+    const switch_ip_addr_t* ip_addr) {
   static char ipv4_str[INET_ADDRSTRLEN + 10];
   static char ipv6_str[INET6_ADDRSTRLEN + 10];
   int len = 0;

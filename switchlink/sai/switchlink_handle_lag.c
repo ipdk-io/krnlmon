@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+#include <linux/if.h>
+
 #include "bf_pal/bf_pal_port_intf.h"
 #include "bf_rt/bf_rt_common.h"
 #include "bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchlink_init_sai.h"
-#include <linux/if.h>
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16
@@ -329,7 +330,8 @@ void switchlink_create_lag_member(
 
   status = switchlink_db_get_lag_member_info(&lag_member_info);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    status = switchlink_db_get_mac_lag_handle(lag_member_intf->mac_addr, &lag_h);
+    status =
+        switchlink_db_get_mac_lag_handle(lag_member_intf->mac_addr, &lag_h);
     if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
       lag_member_intf->lag_h = lag_h;
       krnlmon_log_debug("Parent LAG handle is: 0x%lx", lag_h);

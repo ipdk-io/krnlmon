@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-#include "sai.h"
 #include "switchlink_init_sai.h"
+
+#include "sai.h"
 
 extern sai_status_t sai_initialize(void);
 

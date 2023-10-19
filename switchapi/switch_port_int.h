@@ -92,41 +92,40 @@ typedef enum switch_port_vlan_xlate_entry_type_s {
 #define SWITCH_PORT_FREE(_d, _p) SWITCH_FREE(_d, _p)
 
 /** port handle wrappers */
-#define switch_port_handle_create(_device) \
-  switch_handle_create(                    \
-      _device, SWITCH_HANDLE_TYPE_PORT, sizeof(switch_port_info_t))
+#define switch_port_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_PORT, \
+                       sizeof(switch_port_info_t))
 
 #define switch_port_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_PORT, _handle)
 
-#define switch_port_get(_device, _handle, _info)                    \
-  ({                                                                \
-    switch_port_info_t *_tmp_port_info = NULL;                      \
-    (void)(_tmp_port_info == *_info);                               \
-    switch_handle_get(                                              \
-        _device, SWITCH_HANDLE_TYPE_PORT, _handle, (void **)_info); \
+#define switch_port_get(_device, _handle, _info)                 \
+  ({                                                             \
+    switch_port_info_t* _tmp_port_info = NULL;                   \
+    (void)(_tmp_port_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_PORT, _handle, \
+                      (void**)_info);                            \
   })
 
 /** port priority group handle wrappers */
-#define switch_ppg_handle_create(_device)                 \
-  switch_handle_create(_device,                           \
-                       SWITCH_HANDLE_TYPE_PRIORITY_GROUP, \
+#define switch_ppg_handle_create(_device)                          \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_PRIORITY_GROUP, \
                        sizeof(switch_port_priority_group_t))
 
 #define switch_ppg_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_PRIORITY_GROUP, _handle)
 
-#define switch_ppg_get(_device, _handle, _info)                               \
-  ({                                                                          \
-    switch_port_priority_group_t *_tmp_port_priority_group = NULL;            \
-    (void)(_tmp_port_priority_group == *_info);                               \
-    switch_handle_get(                                                        \
-        _device, SWITCH_HANDLE_TYPE_PRIORITY_GROUP, _handle, (void **)_info); \
+#define switch_ppg_get(_device, _handle, _info)                            \
+  ({                                                                       \
+    switch_port_priority_group_t* _tmp_port_priority_group = NULL;         \
+    (void)(_tmp_port_priority_group == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_PRIORITY_GROUP, _handle, \
+                      (void**)_info);                                      \
   })
 
 #define SWITCH_PORT_DEV_PORT_GET(_device, _port_handle, _dev_port, _status) \
   do {                                                                      \
-    switch_port_info_t *_port_info = NULL;                                  \
+    switch_port_info_t* _port_info = NULL;                                  \
     _status = SWITCH_STATUS_INVALID_HANDLE;                                 \
     _status = switch_port_get(_device, _port_handle, &_port_info);          \
     if (_port_info) {                                                       \
@@ -134,8 +133,7 @@ typedef enum switch_port_vlan_xlate_entry_type_s {
     }                                                                       \
   } while (0);
 
-
-static inline char *switch_port_speed_to_string(
+static inline char* switch_port_speed_to_string(
     switch_port_speed_t port_speed) {
   switch (port_speed) {
     case SWITCH_PORT_SPEED_10G:
@@ -155,7 +153,7 @@ static inline char *switch_port_speed_to_string(
   }
 }
 
-static inline char *switch_port_type_to_string(switch_port_type_t port_type) {
+static inline char* switch_port_type_to_string(switch_port_type_t port_type) {
   switch (port_type) {
     case SWITCH_PORT_TYPE_NORMAL:
       return "NORMAL";
@@ -170,7 +168,7 @@ static inline char *switch_port_type_to_string(switch_port_type_t port_type) {
   }
 }
 
-static inline char *switch_port_oper_status_to_string(
+static inline char* switch_port_oper_status_to_string(
     switch_port_oper_status_t oper_status) {
   switch (oper_status) {
     case SWITCH_PORT_OPER_STATUS_UNKNOWN:
@@ -186,7 +184,7 @@ static inline char *switch_port_oper_status_to_string(
   }
 }
 
-static inline char *switch_port_auto_neg_mode_to_string(
+static inline char* switch_port_auto_neg_mode_to_string(
     switch_port_auto_neg_mode_t an_mode) {
   switch (an_mode) {
     case SWITCH_PORT_AUTO_NEG_MODE_DEFAULT:
@@ -200,7 +198,7 @@ static inline char *switch_port_auto_neg_mode_to_string(
   }
 }
 
-static inline char *switch_port_lb_mode_to_string(
+static inline char* switch_port_lb_mode_to_string(
     switch_port_loopback_mode_t lb_mode) {
   switch (lb_mode) {
     case SWITCH_PORT_LOOPBACK_MODE_NONE:
@@ -353,8 +351,8 @@ typedef enum switch_port_num_lanes_s {
     }                                                                     \
   } while (0);
 
-#define SWITCH_PORT_SC_STATS_HW_FLAG_ISSET(                                   \
-    _port_info, _pkt_type, _color, _hw_set)                                   \
+#define SWITCH_PORT_SC_STATS_HW_FLAG_ISSET(_port_info, _pkt_type, _color,     \
+                                           _hw_set)                           \
   do {                                                                        \
     if (_pkt_type == SWITCH_PACKET_TYPE_UNICAST) {                            \
       if (_color == SWITCH_COLOR_GREEN) {                                     \
