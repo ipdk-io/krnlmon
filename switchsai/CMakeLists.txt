@@ -3,20 +3,38 @@
 # Copyright 2022 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-add_library(switchsai_o OBJECT
-   sai.c
-   saifdb.c
-   saiinternal.h
-   sailag.c
-   saineighbor.c
-   sainexthop.c
-   sainexthopgroup.c
-   sairoute.c
-   sairouterinterface.c
-   saitunnel.c
-   saiutils.c
-   saivirtualrouter.c
-)
+if(DPDK_TARGET)
+  add_library(switchsai_o OBJECT
+     sai.c
+     saifdb.c
+     saiinternal.h
+     saineighbor.c
+     sainexthop.c
+     sainexthopgroup.c
+     sairoute.c
+     sairouterinterface.c
+     saitunnel.c
+     saiutils.c
+     saivirtualrouter.c
+  )
+endif()
+
+if(ES2K_TARGET)
+  add_library(switchsai_o OBJECT
+     sai.c
+     saifdb.c
+     saiinternal.h
+     sailag.c
+     saineighbor.c
+     sainexthop.c
+     sainexthopgroup.c
+     sairoute.c
+     sairouterinterface.c
+     saitunnel.c
+     saiutils.c
+     saivirtualrouter.c
+  )
+endif()
 
 target_include_directories(switchsai_o PRIVATE
     ${SAI_INCLUDE_DIR}
