@@ -15,12 +15,20 @@
  * limitations under the License.
  */
 
-#include "switchapi/switch_config_int.h"
-#include "switchapi/switch_internal.h"
+#include <stddef.h>                       // for NULL
+
+#include "switchapi/switch_base_types.h"  // for switch_status_t, FALSE, swi...
+#include "switchapi/switch_config.h"      // for switch_config_t, switch_con...
+#include "switchapi/switch_config_int.h"  // for switch_config_info_t, SWITC...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_t
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for switch_table_default_sizes_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_CONFIG
 switch_config_info_t config_info;

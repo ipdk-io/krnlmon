@@ -18,19 +18,20 @@
 #ifndef __SWITCH_TUNNEL_H__
 #define __SWITCH_TUNNEL_H__
 
-#include <stddef.h>                       // for NULL
+#include <stddef.h>               // for NULL
 
-#include "switch_base_types.h"            // for switch_handle_t, switch_sta...
-#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_TUNNEL
+#include "judy-1.0.5/src/Judy.h"  // for Pvoid_t
+#include "switch_base_types.h"    // for switch_handle_t, switch_status_t
+#include "switch_handle.h"        // for SWITCH_HANDLE_TYPE_TUNNEL, SWITCH_H...
 #include "switch_interface.h"
-#include "switch_types_int.h"             // for switch_hashtable_t, switch_...
-#include "judy-1.0.5/src/Judy.h"          // for Pvoid_t
+#include "switch_internal.h"      // for switch_handle_get, switch_handle_cr...
+#include "switch_types_int.h"     // for switch_hashtable_t, switch_array_t
 #include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
-#include "switchapi/switch_id.h"          // for switch_id_allocator_t
+#include "switchapi/switch_id.h"  // for switch_id_allocator_t
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /** @defgroup Tunnel Tunnel API
  *  API functions create tunnel interfaces

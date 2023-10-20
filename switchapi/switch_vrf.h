@@ -23,6 +23,7 @@
 #include "switch_base_types.h"            // for switch_device_t, switch_han...
 #include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_VRF
 #include "switch_interface.h"
+#include "switch_internal.h"              // for switch_handle_delete, switc...
 #include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
 #include "switchapi/switch_handle_int.h"  // for switch_handle_delete, switc...
 #include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
@@ -30,7 +31,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define MAX_VRF 1024
 

@@ -24,7 +24,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /** @defgroup Interface Interface configuration API
  *  API functions listed to configure the interfaces

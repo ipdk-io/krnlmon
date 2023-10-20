@@ -17,14 +17,29 @@
 
 #include "switch_pd_fdb.h"
 
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_fdb.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_rif_int.h"
+#include <netinet/in.h>                            // for ntohl
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint8_t, uint32_t
+
+#include "switch_pd_p4_name_mapping.h"             // for LNW_L2_FWD_TX_TABLE
+#include "switch_pd_utils.h"                       // for switch_pd_tdi_stat...
+#include "switchapi/switch_base_types.h"           // for switch_status_t
+#include "switchapi/switch_fdb.h"                  // for switch_api_l2_info_t
+#include "switchapi/switch_rif.h"                  // for switch_api_rif_info_t
+#include "switchapi/switch_rif_int.h"              // for switch_rif_info_t
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+
+// clang-format off
+#include "tdi/common/tdi_defs.h"                   // for TDI_SUCCESS, tdi_id_t
+#include "tdi/common/c_frontend/tdi_info.h"        // for tdi_table_from_nam...
+#include "tdi/common/c_frontend/tdi_init.h"        // for tdi_device_get
+#include "tdi/common/c_frontend/tdi_session.h"     // for tdi_session_create
+#include "tdi/common/c_frontend/tdi_table.h"       // for tdi_table_action_d...
+#include "tdi/common/c_frontend/tdi_table_data.h"  // for tdi_data_field_set...
+#include "tdi/common/c_frontend/tdi_table_info.h"  // for tdi_data_field_id_...
+#include "tdi/common/c_frontend/tdi_table_key.h"   // for tdi_key_field_set_...
+// clang-format on
 
 switch_status_t switch_pd_l2_tx_forward_table_entry(
     switch_device_t device, const switch_api_l2_info_t* api_l2_tx_info,

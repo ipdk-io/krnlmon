@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "switchapi/dpdk/switch_pd_routing.h"  // for switch_pd_routing_info_t
 #ifndef __SWITCH_NEIGHBOR_H__
 #define __SWITCH_NEIGHBOR_H__
 

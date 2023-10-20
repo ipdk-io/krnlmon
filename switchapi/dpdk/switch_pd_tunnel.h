@@ -18,9 +18,11 @@
 #ifndef __SWITCH_PD_TUNNEL_H__
 #define __SWITCH_PD_TUNNEL_H__
 
-#include "switchapi/switch_base_types.h"
+#include <stdbool.h>                      // for bool
+
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
 #include "switchapi/switch_handle.h"
-#include "switchapi/switch_tunnel.h"
+#include "switchapi/switch_tunnel.h"      // for switch_api_tunnel_info_t
 
 #ifdef __cplusplus
 extern "C" {

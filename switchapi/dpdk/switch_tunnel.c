@@ -17,10 +17,16 @@
 
 #include "switchapi/switch_tunnel.h"
 
-#include "switch_pd_tunnel.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_status.h"
+#include <stdbool.h>                      // for false, true
+
+#include "switch_pd_tunnel.h"             // for switch_pd_tunnel_entry, swi...
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_set
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_TUNNEL
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for switch_api_table_size_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 switch_status_t switch_api_tunnel_delete(const switch_handle_t tunnel_handle) {
   switch_device_t device = 0;
