@@ -17,8 +17,13 @@
 #ifndef __SWITCH_LAG_H__
 #define __SWITCH_LAG_H__
 
-#include "switch_base_types.h"
-#include "switch_types_int.h"
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t, uint8_t
+
+#include "switch_base_types.h"            // for switch_handle_t, switch_dev...
+#include "switch_types_int.h"             // for switch_list_t, switch_node_t
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_LAG, SWI...
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
 
 #ifdef __cplusplus
 extern "C" {

@@ -17,10 +17,16 @@
 
 #include "sainexthop.h"
 
-#include "saiinternal.h"
-#include "switchapi/switch_nhop.h"
-#include "switchapi/switch_rif.h"
-#include "switchapi/switch_tunnel.h"
+#include <string.h>                       // for memcpy, memset
+
+#include "sai.h"                          // for sai_object_type_query
+#include "saiinternal.h"                  // for sai_status_to_string, sai_i...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, SWIT...
+#include "switchapi/switch_nhop.h"        // for switch_api_nhop_info_t, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 static switch_nhop_type_t sai_nhop_type_to_switch_nhop_type(
     sai_next_hop_type_t sai_type) {

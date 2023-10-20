@@ -18,9 +18,9 @@
 #ifndef __SWITCHLINK_UTILS_H__
 #define __SWITCHLINK_UTILS_H__
 
-#include <netinet/in.h>
+#include <netinet/in.h>  // for in6_addr
 #include <stdbool.h>
-#include <stdint.h>
+#include <stdint.h>      // for uint32_t
 
 #include "switchutils/switch_utils.h"
 

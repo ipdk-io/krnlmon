@@ -17,9 +17,13 @@
 
 #include "saivirtualrouter.h"
 
-#include "saiinternal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_vrf.h"
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "switchapi/switch_base_types.h"  // for _In_, SWITCH_API_INVALID_HA...
+#include "switchapi/switch_vrf.h"         // for switch_api_vrf_create, swit...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 static void sai_vrf_entry_attribute_parse(uint32_t attr_count,
                                           const sai_attribute_t* attr_list) {

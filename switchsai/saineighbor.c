@@ -17,13 +17,18 @@
 
 #include "saineighbor.h"
 
-#include <arpa/inet.h>
+#include <inttypes.h>                     // for PRIx64
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
 
-#include "saiinternal.h"
-#include "switchapi/switch_l3.h"
-#include "switchapi/switch_neighbor.h"
-#include "switchapi/switch_nhop.h"
-#include "switchapi/switch_rif.h"
+#include "saiinternal.h"                  // for sai_status_to_string, SAI_M...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, swit...
+#include "switchapi/switch_neighbor.h"    // for switch_api_neighbor_info_t
+#include "switchapi/switch_nhop.h"        // for switch_nhop_key_t, switch_a...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 static void sai_neighbor_entry_to_string(
     _In_ const sai_neighbor_entry_t* neighbor_entry, _Out_ char* entry_string) {

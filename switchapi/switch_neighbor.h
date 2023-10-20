@@ -14,17 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef __SWITCH_NEIGHBOR_H__
 #define __SWITCH_NEIGHBOR_H__
 
-#include "switch_base_types.h"
+#include "switch_base_types.h"                 // for switch_handle_t, switc...
 #include "switch_handle.h"
 #include "switch_neighbor_int.h"
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_routing_info_t
+#include "switchapi/switch_rif.h"              // for switch_rif_type_t
+#include "switchapi/switch_types_int.h"        // for switch_node_t
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 typedef enum switch_neighbor_type_s {
   SWITCH_NEIGHBOR_TYPE_IP = 0x0,

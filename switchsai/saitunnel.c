@@ -17,10 +17,17 @@
 
 #include "saitunnel.h"
 
-#include "saiinternal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_status.h"
-#include "switchapi/switch_tunnel.h"
+#include <netinet/in.h>                   // for ntohl
+#include <string.h>                       // for memcpy, NULL
+
+#include "saiinternal.h"                  // for SAI_ASSERT, sai_api_service_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_ip_addr_t, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_tunnel.h"      // for switch_api_tunnel_info_t
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saiswitch.h"                    // for SAI_TUNNEL_TYPE_IPINIP, SAI...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchutils/switch_log.h"       // for krnlmon_log_debug, krnlmon_...
 
 char* sai_status_to_string(_In_ const sai_status_t status) {
   switch (status) {

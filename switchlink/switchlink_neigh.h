@@ -23,6 +23,7 @@
 #include <stdbool.h>
 
 struct nlmsghdr;
+
 /*
 extern void switchlink_create_neigh(switchlink_handle_t vrf_h,
                          switchlink_ip_addr_t *ipaddr,

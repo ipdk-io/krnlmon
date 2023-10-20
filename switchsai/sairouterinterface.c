@@ -17,12 +17,17 @@
 
 #include "sairouterinterface.h"
 
-#include "saiinternal.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_interface.h"
-#include "switchapi/switch_l3.h"
-#include "switchapi/switch_rif.h"
-#include "switchapi/switch_rmac.h"
+#include <string.h>                       // for memcpy, NULL
+
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t, swit...
+#include "switchapi/switch_rmac.h"        // for switch_api_router_mac_add
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, switch_mac...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 static sai_status_t sai_create_rmac_internal(sai_object_id_t switch_id,
                                              uint32_t attr_count,

@@ -18,9 +18,11 @@
 #ifndef __SWITCH_NHOP_H__
 #define __SWITCH_NHOP_H__
 
-#include "switch_base_types.h"
+#include <stdbool.h>            // for bool
+
+#include "switch_base_types.h"  // for switch_handle_t, switch_status_t, swi...
 #include "switch_handle.h"
-#include "switch_types_int.h"
+#include "switch_types_int.h"   // for switch_list_t, switch_node_t
 
 #ifdef __cplusplus
 extern "C" {

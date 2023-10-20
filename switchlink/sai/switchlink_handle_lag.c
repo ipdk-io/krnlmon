@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-#include <linux/if.h>
+#include <linux/if.h>                    // for IF_OPER_DOWN, IF_OPER_UP
+#include <stdint.h>                      // for uint8_t, uint32_t
+#include <stdio.h>                       // for snprintf
+#include <string.h>                      // for memset, memcpy, memcmp, NULL
 
-#include "bf_pal/bf_pal_port_intf.h"
-#include "bf_rt/bf_rt_common.h"
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
-#include "switchlink_init_sai.h"
+#include "bf_pal/bf_pal_port_intf.h"     // for bf_pal_get_port_id_from_mac
+#include "bf_types.h"                    // for BF_SUCCESS, bf_dev_id_t, bf_...
+#include "switchlink_init_sai.h"         // for sai_init_lag_api, switchlink...
+#include "sai.h"                         // for sai_api_query, SAI_API_LAG
+#include "sailag.h"                      // for sai_lag_api_t, SAI_LAG_ATTR_...
+#include "saistatus.h"                   // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                    // for sai_attribute_t, sai_attribu...
+#include "switchlink/switchlink.h"       // for switchlink_handle_t, switchl...
+#include "switchlink/switchlink_db.h"    // for switchlink_db_interface_info_t
+#include "switchlink/switchlink_link.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_log.h"      // for krnlmon_log_error, krnlmon_l...
+#include "switchutils/switch_utils.h"    // for krnlmon_assert
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16

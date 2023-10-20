@@ -15,8 +15,19 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
-#include "switchlink_init_sai.h"
+#include <stdint.h>                        // for uint8_t, int32_t, uint32_t
+#include <string.h>                        // for memset, NULL
+
+#include "switchlink/switchlink_handle.h"  // for switchlink_create_ecmp
+#include "switchlink_init_sai.h"           // for switchlink_delete_nexthop
+#include "sai.h"                           // for sai_api_query, SAI_API_NEX...
+#include "sainexthopgroup.h"               // for sai_next_hop_group_api_t
+#include "saistatus.h"                     // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                      // for sai_attribute_t, sai_status_t
+#include "switchlink/switchlink.h"         // for switchlink_handle_t, SWITC...
+#include "switchlink/switchlink_db.h"      // for switchlink_db_ecmp_info_t
+#include "switchutils/switch_log.h"        // for krnlmon_log_error, krnlmon...
+#include "switchutils/switch_utils.h"      // for krnlmon_assert
 
 static sai_next_hop_group_api_t* sai_nhop_group_api = NULL;
 

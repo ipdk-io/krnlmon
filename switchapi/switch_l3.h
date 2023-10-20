@@ -18,9 +18,12 @@
 #ifndef __SWITCH_L3_H__
 #define __SWITCH_L3_H__
 
-#include "switch_base_types.h"
+#include <stdbool.h>                     // for bool
+
+#include "switch_base_types.h"           // for switch_handle_t, switch_devi...
 #include "switch_handle.h"
-#include "switch_l3_int.h"
+#include "switch_l3_int.h"               // for switch_route_entry_t
+#include "switchapi/switch_types_int.h"  // for switch_hashnode_t
 
 #ifdef __cplusplus
 extern "C" {

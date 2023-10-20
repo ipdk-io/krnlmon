@@ -17,7 +17,8 @@
 
 #include "switchlink_init_sai.h"
 
-#include "sai.h"
+#include "saistatus.h"                 // for SAI_STATUS_SUCCESS
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
 
 extern sai_status_t sai_initialize(void);
 

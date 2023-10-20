@@ -16,10 +16,28 @@
 
 #include "switch_pd_lag.h"
 
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_lag.h"
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint32_t, uint8_t
+
+#include "switch_pd_p4_name_mapping.h"             // for LNW_RX_LAG_TABLE
+#include "switch_pd_utils.h"                       // for switch_pd_get_phys...
+#include "switchapi/switch_handle.h"               // for SWITCH_HANDLE_TYPE...
+#include "switchapi/switch_internal.h"             // for CHECK_RET, FOR_EAC...
+#include "switchapi/switch_lag.h"                  // for switch_lag_member_...
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"            // for switch_list_t, swi...
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+
+// clang-format disable
+#include "tdi/common/tdi_defs.h"                   // for TDI_SUCCESS, tdi_id_t
+#include "tdi/common/c_frontend/tdi_info.h"        // for tdi_table_from_nam...
+#include "tdi/common/c_frontend/tdi_init.h"        // for tdi_device_get
+#include "tdi/common/c_frontend/tdi_session.h"     // for tdi_session_create
+#include "tdi/common/c_frontend/tdi_table.h"       // for tdi_table_action_d...
+#include "tdi/common/c_frontend/tdi_table_data.h"  // for tdi_data_field_set...
+#include "tdi/common/c_frontend/tdi_table_info.h"  // for tdi_key_field_id_get
+#include "tdi/common/c_frontend/tdi_table_key.h"   // for tdi_key_field_set_...
+// clang-format enable
 
 /**
  * Routine Description:

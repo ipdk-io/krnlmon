@@ -18,10 +18,15 @@
 #ifndef __SWITCH_TUNNEL_H__
 #define __SWITCH_TUNNEL_H__
 
-#include "switch_base_types.h"
-#include "switch_handle.h"
+#include <stddef.h>                       // for NULL
+
+#include "switch_base_types.h"            // for switch_handle_t, switch_sta...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_TUNNEL
 #include "switch_interface.h"
-#include "switch_types_int.h"
+#include "switch_types_int.h"             // for switch_hashtable_t, switch_...
+#include "judy-1.0.5/src/Judy.h"          // for Pvoid_t
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
+#include "switchapi/switch_id.h"          // for switch_id_allocator_t
 
 #ifdef __cplusplus
 extern "C" {

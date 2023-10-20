@@ -24,6 +24,8 @@
 
 #include "switchlink_handle.h"
 
+struct nlmsghdr;
+
 void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype);
 
 #endif /* __SWITCHLINK_ROUTE_H__ */

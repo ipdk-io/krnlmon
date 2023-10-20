@@ -17,7 +17,12 @@
 
 #include "switchapi/switch_id.h"
 
-#include "switchapi/switch_internal.h"
+#include <stddef.h>                       // for NULL
+
+#include "switchapi/switch_internal.h"    // for switch_error_to_string
+#include "switchapi/switch_base_types.h"  // for switch_uint32_t, switch_sta...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
 
 #ifdef __cplusplus
 extern "C" {

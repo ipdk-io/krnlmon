@@ -18,9 +18,14 @@
 #ifndef __SWITCH_FDB_H__
 #define __SWITCH_FDB_H__
 
-#include "switch_base_types.h"
-#include "switch_handle.h"
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint8_t
+
+#include "switch_base_types.h"            // for switch_status_t, switch_dev...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_L2_FWD_RX
 #include "switch_interface.h"
+#include "switchapi/switch_handle_int.h"  // for switch_handle_create, switc...
+#include "switchapi/switch_types_int.h"   // for switch_hashnode_t, switch_h...
 
 #ifdef __cplusplus
 extern "C" {

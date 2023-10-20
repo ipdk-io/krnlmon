@@ -17,12 +17,17 @@
 
 #include "saifdb.h"
 
-#include <linux/if_ether.h>
+#include <linux/if_ether.h>               // for ETH_ALEN
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
 
-#include "saiinternal.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_fdb.h"
-#include "switchapi/switch_interface.h"
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, SWITCH_API_INVALID_HA...
+#include "switchapi/switch_fdb.h"         // for switch_api_l2_info_t, switc...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 static switch_l2_learn_from_t switch_type_learn_from(
     sai_l2_learn_from_t sai_learn_from_type) {

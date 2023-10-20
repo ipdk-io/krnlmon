@@ -15,8 +15,17 @@
  * limitations under the License.
  */
 
-#include "saiinternal.h"
-#include "switchapi/switch_base_types.h"
+#include <arpa/inet.h>                    // for inet_ntop
+#include <netinet/in.h>                   // for ntohl
+#include <stdint.h>                       // for uint32_t, uint8_t
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memcpy, NULL, strlen, strnlen
+#include <sys/socket.h>                   // for AF_INET, AF_INET6
+
+#include "saiinternal.h"                  // for get_attr_from_list, sai_ip_...
+#include "switchapi/switch_base_types.h"  // for _In_, _Out_, switch_ip_addr_t
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_ip_prefix_t, sai_ip_addr_t
 
 sai_status_t sai_ipv4_prefix_length(_In_ sai_ip4_t ip4,
                                     _Out_ uint32_t* prefix_length) {

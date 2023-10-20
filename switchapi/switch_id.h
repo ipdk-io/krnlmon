@@ -18,7 +18,9 @@
 #ifndef __SWITCH_ID_H__
 #define __SWITCH_ID_H__
 
-#include "switch_base_types.h"
+#include <stdbool.h>            // for bool
+
+#include "switch_base_types.h"  // for switch_device_t, switch_status_t, swi...
 
 #ifdef __cplusplus
 extern "C" {

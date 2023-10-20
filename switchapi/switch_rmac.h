@@ -18,7 +18,7 @@
 #ifndef __SWITCH_RMAC_H__
 #define __SWITCH_RMAC_H__
 
-#include "switch_base_types.h"
+#include "switch_base_types.h"  // for switch_handle_t, switch_device_t, swi...
 #include "switch_status.h"
 
 #ifdef __cplusplus

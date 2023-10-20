@@ -18,7 +18,7 @@
 #ifndef __SWITCH_HANDLE_H__
 #define __SWITCH_HANDLE_H__
 
-#include "switch_base_types.h"
+#include "switch_base_types.h"  // for switch_handle_t
 #include "switch_id.h"
 #include "switch_status.h"
 

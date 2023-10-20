@@ -18,9 +18,15 @@
 #ifndef __SWITCH_VRF_H__
 #define __SWITCH_VRF_H__
 
-#include "switch_base_types.h"
-#include "switch_handle.h"
+#include <stddef.h>                       // for NULL
+
+#include "switch_base_types.h"            // for switch_device_t, switch_han...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_VRF
 #include "switch_interface.h"
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_delete, switc...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"   // for switch_array_t
 
 #ifdef __cplusplus
 extern "C" {

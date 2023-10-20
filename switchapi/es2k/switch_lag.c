@@ -16,13 +16,14 @@
 
 #include "switchapi/switch_lag.h"
 
-#include "bf_types.h"
-#include "switch_pd_utils.h"
-#include "switchapi/es2k/switch_pd_lag.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_internal.h"
-#include "switchapi/switch_status.h"
+#include <stdbool.h>                       // for false, true
+
+#include "switchapi/es2k/switch_pd_lag.h"  // for switch_pd_rx_lag_table_entry
+#include "switchapi/switch_base_types.h"   // for switch_status_t, switch_de...
+#include "switchapi/switch_device.h"       // for switch_api_device_default_...
+#include "switchapi/switch_internal.h"     // for switch_error_to_string
+#include "switchapi/switch_status.h"       // for SWITCH_STATUS_SUCCESS, SWI...
+#include "switchutils/switch_log.h"        // for krnlmon_log_error, krnlmon...
 
 /**
  * Routine Description:

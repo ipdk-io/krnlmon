@@ -27,18 +27,28 @@
 
 #include "switchlink_main.h"
 
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netlink/msg.h>
-#include <netlink/netlink.h>
-#include <pthread.h>
-#include <stdint.h>
-#include <sys/select.h>
-#include <unistd.h>
+#include <errno.h>                     // for EINTR, errno
+#include <fcntl.h>                     // for fcntl, F_GETFL, F_SETFL, O_NON...
+#include <netlink/msg.h>               // for nlmsg_get_max_size, nlmsg_hdr
+#include <netlink/netlink.h>           // for nl_connect, nl_recvmsgs_default
+#include <pthread.h>                   // for pthread_cancel, pthread_join
+#include <stdint.h>                    // for uint8_t
+#include <sys/select.h>                // for select, FD_ISSET, FD_SET, FD_ZERO
+#include <unistd.h>                    // for usleep
+#include <linux/netlink.h>             // for nlmsghdr, NETLINK_ROUTE, NLMSG...
+#include <linux/rtnetlink.h>           // for rtgenmsg, RTM_GETROUTE, RTM_GE...
+#include <netlink/handlers.h>          // for NL_CB_CUSTOM, NL_CB_FINISH
+#include <netlink/socket.h>            // for nl_socket_add_memberships, nl_...
+#include <stdio.h>                     // for perror, NULL
+#include <string.h>                    // for strerror_r
+#include <sys/socket.h>                // for AF_INET, AF_INET6, AF_BRIDGE
 
-#include "switchlink.h"
-#include "switchlink_int.h"
+#include "switchlink.h"                // for switchlink_get_nl_sock
+#include "switchlink_int.h"            // for switchlink_process_address_msg
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug, krnlmon_log...
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+
+struct nl_msg;
 
 static struct nl_sock* g_nlsk = NULL;
 static pthread_t switchlink_thread;

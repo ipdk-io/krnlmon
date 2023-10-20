@@ -15,57 +15,65 @@
  * limitations under the License.
  */
 
-#include "saiinternal.h"
-#include "switchapi/switch_base_types.h"
-#include "switchapi/switch_handle.h"
-#include "switchapi/switch_nhop.h"
+#include <stddef.h>                       // for NULL
+
+#include "sai.h"                          // for SAI_API_MAX, SAI_API_ACL
+#include "saiinternal.h"                  // for sai_api_service_t, sai_fdb_...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for SAI_OBJECT_TYPE_NEXT_HOP_GROUP
+#include "switchapi/switch_base_types.h"  // for switch_api_init, _In_, _Out_
+#include "switchapi/switch_handle.h"      // for switch_handle_type_get, SWI...
+#include "switchapi/switch_nhop.h"        // for switch_api_nhop_id_type_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 static sai_api_service_t sai_api_service;
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
-static const char* module[SAI_API_MAX] = {"SAI_API_UNSPECIFIED",
-                                          "SAI_API_SWITCH",
-                                          "SAI_API_PORT",
-                                          "SAI_API_FDB",
-                                          "SAI_API_VLAN",
-                                          "SAI_API_VIRTUAL_ROUTER",
-                                          "SAI_API_ROUTE",
-                                          "SAI_API_NEXT_HOP",
-                                          "SAI_API_NEXT_HOP_GROUP",
-                                          "SAI_API_ROUTER_INTERFACE",
-                                          "SAI_API_NEIGHBOR",
-                                          "SAI_API_ACL",
-                                          "SAI_API_HOSTIF",
-                                          "SAI_API_MIRROR",
-                                          "SAI_API_SAMPLEPACKET",
-                                          "SAI_API_STP",
-                                          "SAI_API_LAG",
-                                          "SAI_API_POLICER",
-                                          "SAI_API_WRED",
-                                          "SAI_API_QOS_MAP",
-                                          "SAI_API_QUEUE",
-                                          "SAI_API_SCHEDULER",
-                                          "SAI_API_SCHEDULER_GROUP",
-                                          "SAI_API_BUFFER",
-                                          "SAI_API_HASH",
-                                          "SAI_API_UDF",
-                                          "SAI_API_TUNNEL",
-                                          "SAI_API_L2MC",
-                                          "SAI_API_IPMC",
-                                          "SAI_API_RPF_GROUP",
-                                          "SAI_API_L2MC_GROUP",
-                                          "SAI_API_IPMC_GROUP",
-                                          "SAI_API_MCAST_FDB",
-                                          "SAI_API_BRIDGE",
-                                          "SAI_API_TAM",
-                                          "SAI_API_SEGMENTROUTE",
-                                          "SAI_API_MPLS",
-                                          "SAI_API_DTEL",
-                                          "SAI_API_BFD",
-                                          "SAI_API_ISOLATION_GROUP"};
+static const char* module[SAI_API_MAX] = {
+  "SAI_API_UNSPECIFIED",
+  "SAI_API_SWITCH",
+  "SAI_API_PORT",
+  "SAI_API_FDB",
+  "SAI_API_VLAN",
+  "SAI_API_VIRTUAL_ROUTER",
+  "SAI_API_ROUTE",
+  "SAI_API_NEXT_HOP",
+  "SAI_API_NEXT_HOP_GROUP",
+  "SAI_API_ROUTER_INTERFACE",
+  "SAI_API_NEIGHBOR",
+  "SAI_API_ACL",
+  "SAI_API_HOSTIF",
+  "SAI_API_MIRROR",
+  "SAI_API_SAMPLEPACKET",
+  "SAI_API_STP",
+  "SAI_API_LAG",
+  "SAI_API_POLICER",
+  "SAI_API_WRED",
+  "SAI_API_QOS_MAP",
+  "SAI_API_QUEUE",
+  "SAI_API_SCHEDULER",
+  "SAI_API_SCHEDULER_GROUP",
+  "SAI_API_BUFFER",
+  "SAI_API_HASH",
+  "SAI_API_UDF",
+  "SAI_API_TUNNEL",
+  "SAI_API_L2MC",
+  "SAI_API_IPMC",
+  "SAI_API_RPF_GROUP",
+  "SAI_API_L2MC_GROUP",
+  "SAI_API_IPMC_GROUP",
+  "SAI_API_MCAST_FDB",
+  "SAI_API_BRIDGE",
+  "SAI_API_TAM",
+  "SAI_API_SEGMENTROUTE",
+  "SAI_API_MPLS",
+  "SAI_API_DTEL",
+  "SAI_API_BFD",
+  "SAI_API_ISOLATION_GROUP"
+};
 
 sai_status_t sai_api_query(_In_ sai_api_t sai_api_id,
                            _Out_ void** api_method_table) {

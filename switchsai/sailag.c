@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-#include "saiinternal.h"
-#include "switchapi/switch_device.h"
-#include "switchapi/switch_lag.h"
-#include "switchapi/switch_rmac.h"
-#include "switchapi/switch_status.h"
+#include <stdint.h>                       // for uint32_t
+#include <string.h>                       // for NULL, memcpy
+
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "sailag.h"                       // for SAI_LAG_ATTR_CUSTOM_RANGE_S...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_lag.h"         // for switch_api_lag_info_t, swit...
+#include "switchapi/switch_rmac.h"        // for switch_api_router_mac_add
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
 
 /**
  * Routine Description:

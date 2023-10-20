@@ -17,7 +17,9 @@
 
 #include "switchlink_utils.h"
 
-#include <string.h>
+#include <string.h>                    // for memset
+
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
 
 uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len) {
   return (prefix_len ? (((uint32_t)0xFFFFFFFF) << (32 - prefix_len)) : 0);
