@@ -1,13 +1,12 @@
 # CMake build file for krnlmon/switchsai
 #
-# Copyright 2022 Intel Corporation
+# Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchsai_o OBJECT
    sai.c
    saifdb.c
    saiinternal.h
-   sailag.c
    saineighbor.c
    sainexthop.c
    sainexthopgroup.c
@@ -17,6 +16,10 @@ add_library(switchsai_o OBJECT
    saiutils.c
    saivirtualrouter.c
 )
+
+if(ES2K_TARGET)
+  target_sources(switchsai_o OBJECT PRIVATE sailag.c)
+endif()
 
 target_include_directories(switchsai_o PRIVATE
     ${SAI_INCLUDE_DIR}
