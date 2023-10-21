@@ -43,6 +43,25 @@ elseif(DEPEND_INSTALL_DIR STREQUAL "")
   message(FATAL_ERROR "DEPEND_INSTALL_DIR (DEPEND_INSTALL) not defined!")
 endif()
 
+# If we're a submodule of the networking-recipe superproject, use its SAI
+# source directory by default.
+if(NOT DEFINED SAI_SOURCE_DIR)
+  get_filename_component(_path "${PROJECT_SOURCE_DIR}/../SAI" REALPATH)
+  if(EXISTS "${_path}")
+    set(SAI_SOURCE_DIR "${_path}" CACHE PATH "Path to SAI source directory")
+    mark_as_advanced(SAI_SOURCE_DIR)
+  endif()
+  unset(_path)
+endif()
+
+# If we're a submodule of the networking-recipe superproject, add its
+# cmake modules directory to our module search path.
+get_filename_component(_path "${PROJECT_SOURCE_DIR}/../../cmake" REALPATH)
+if(EXISTS "${_path}/SelectTdiTarget.cmake")
+  list(APPEND CMAKE_MODULE_PATH ${_path})
+endif()
+unset(_path)
+
 #-----------------------------------------------------------------------
 # Target selection
 #-----------------------------------------------------------------------
