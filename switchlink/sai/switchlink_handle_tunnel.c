@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handle.h"
+#include "switchlink_init_sai.h"
 
-static sai_tunnel_api_t *sai_tunnel_intf_api = NULL;
+static sai_tunnel_api_t* sai_tunnel_intf_api = NULL;
 
 sai_status_t sai_init_tunnel_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_TUNNEL, (void **)&sai_tunnel_intf_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_TUNNEL, (void**)&sai_tunnel_intf_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
@@ -43,36 +43,35 @@ sai_status_t sai_init_tunnel_api() {
  */
 
 static sai_status_t create_tunnel(
-          const switchlink_db_tunnel_interface_info_t *tnl_intf,
-          switchlink_handle_t *tnl_intf_h) {
-    sai_attribute_t attr_list[10];
-    int ac = 0;
-    memset(attr_list, 0, sizeof(attr_list));
+    const switchlink_db_tunnel_interface_info_t* tnl_intf,
+    switchlink_handle_t* tnl_intf_h) {
+  sai_attribute_t attr_list[10];
+  int ac = 0;
+  memset(attr_list, 0, sizeof(attr_list));
 
-
-    // TODO looks like remote is valid only for PEER_MODE = P2P
-    if (tnl_intf->src_ip.family == AF_INET) {
-        attr_list[ac].id = SAI_TUNNEL_ATTR_ENCAP_SRC_IP;
-        attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
-        attr_list[ac].value.ipaddr.addr.ip4 =
-                        htonl(tnl_intf->src_ip.ip.v4addr.s_addr);
-        ac++;
-    }
-
-    // TODO looks like remote is valid only for PEER_MODE = P2P
-    if (tnl_intf->dst_ip.family == AF_INET) {
-        attr_list[ac].id = SAI_TUNNEL_ATTR_ENCAP_DST_IP;
-        attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
-        attr_list[ac].value.ipaddr.addr.ip4 =
-                        htonl(tnl_intf->dst_ip.ip.v4addr.s_addr);
-        ac++;
-    }
-
-    attr_list[ac].id = SAI_TUNNEL_ATTR_VXLAN_UDP_SPORT;
-    attr_list[ac].value.u16 = tnl_intf->dst_port;
+  // TODO looks like remote is valid only for PEER_MODE = P2P
+  if (tnl_intf->src_ip.family == AF_INET) {
+    attr_list[ac].id = SAI_TUNNEL_ATTR_ENCAP_SRC_IP;
+    attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
+    attr_list[ac].value.ipaddr.addr.ip4 =
+        htonl(tnl_intf->src_ip.ip.v4addr.s_addr);
     ac++;
+  }
 
-    return sai_tunnel_intf_api->create_tunnel(tnl_intf_h, 0, ac, attr_list);
+  // TODO looks like remote is valid only for PEER_MODE = P2P
+  if (tnl_intf->dst_ip.family == AF_INET) {
+    attr_list[ac].id = SAI_TUNNEL_ATTR_ENCAP_DST_IP;
+    attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
+    attr_list[ac].value.ipaddr.addr.ip4 =
+        htonl(tnl_intf->dst_ip.ip.v4addr.s_addr);
+    ac++;
+  }
+
+  attr_list[ac].id = SAI_TUNNEL_ATTR_VXLAN_UDP_SPORT;
+  attr_list[ac].value.u16 = tnl_intf->dst_port;
+  ac++;
+
+  return sai_tunnel_intf_api->create_tunnel(tnl_intf_h, 0, ac, attr_list);
 }
 
 /*
@@ -89,40 +88,39 @@ static sai_status_t create_tunnel(
  */
 
 static sai_status_t create_term_table_entry(
-                         const switchlink_db_tunnel_interface_info_t *tnl_intf,
-                         switchlink_handle_t *tnl_term_intf_h) {
-    sai_attribute_t attr_list[10];
-    memset(attr_list, 0, sizeof(attr_list));
-    int ac = 0;
+    const switchlink_db_tunnel_interface_info_t* tnl_intf,
+    switchlink_handle_t* tnl_term_intf_h) {
+  sai_attribute_t attr_list[10];
+  memset(attr_list, 0, sizeof(attr_list));
+  int ac = 0;
 
-    if (tnl_intf->dst_ip.family == AF_INET) {
-        attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP;
-        attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
-        attr_list[ac].value.ipaddr.addr.ip4 =
-                        htonl(tnl_intf->dst_ip.ip.v4addr.s_addr);
-        ac++;
-    }
-
-    if (tnl_intf->src_ip.family == AF_INET) {
-        attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP;
-        attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
-        attr_list[ac].value.ipaddr.addr.ip4 =
-                        htonl(tnl_intf->src_ip.ip.v4addr.s_addr);
-        ac++;
-    }
-
-    attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID;
-    attr_list[ac].value.u32 = tnl_intf->vni_id;
+  if (tnl_intf->dst_ip.family == AF_INET) {
+    attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_DST_IP;
+    attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
+    attr_list[ac].value.ipaddr.addr.ip4 =
+        htonl(tnl_intf->dst_ip.ip.v4addr.s_addr);
     ac++;
+  }
 
-    return sai_tunnel_intf_api->create_tunnel_term_table_entry(tnl_term_intf_h,
-                                                           0, ac,
-                                                           attr_list);
+  if (tnl_intf->src_ip.family == AF_INET) {
+    attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_SRC_IP;
+    attr_list[ac].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
+    attr_list[ac].value.ipaddr.addr.ip4 =
+        htonl(tnl_intf->src_ip.ip.v4addr.s_addr);
+    ac++;
+  }
+
+  attr_list[ac].id = SAI_TUNNEL_TERM_TABLE_ENTRY_ATTR_ACTION_TUNNEL_ID;
+  attr_list[ac].value.u32 = tnl_intf->vni_id;
+  ac++;
+
+  return sai_tunnel_intf_api->create_tunnel_term_table_entry(tnl_term_intf_h, 0,
+                                                             ac, attr_list);
 }
 
 /*
  * Routine Description:
- *    Wrapper function to create tunnel interface and create tunnel 
+ *    Wrapper function to create tunnel interface and create tunnel
  *    term table entry
  *
  * Arguments:
@@ -135,65 +133,75 @@ static sai_status_t create_term_table_entry(
  *   -1 in case of error
  */
 
-static int
-create_tunnel_interface(const switchlink_db_tunnel_interface_info_t *tnl_intf,
-                        switchlink_handle_t *tnl_intf_h,
-                        switchlink_handle_t *tnl_term_h) {
-    sai_status_t status = SAI_STATUS_SUCCESS;
-
-    status = create_tunnel(tnl_intf, tnl_intf_h);
-    if (status != SAI_STATUS_SUCCESS) {
-        krnlmon_log_error("Cannot create tunnel for interface: %s", tnl_intf->ifname);
-        return -1;
-    }
-    krnlmon_log_info("Created tunnel interface: %s", tnl_intf->ifname);
-
-    status = create_term_table_entry(tnl_intf, tnl_term_h);
-    if (status != SAI_STATUS_SUCCESS) {
-        krnlmon_log_error("Cannot create tunnel termination table entry for "
-                 "interface: %s", tnl_intf->ifname);
-        return -1;
-    }
-    krnlmon_log_info("Created tunnel termination entry for "
-              "interface: %s", tnl_intf->ifname);
-
-    return 0;
-}
-
-/*
- * Routine Description:
- *    Wrapper function to delete tunnel interface and delete tunnel 
- *    term table entry
- *
- * Arguments:
- *    [in] tnl_intf - tunnel interface info
- *    [in] tnl_intf_h - tunnel interface handle
- *    [in] tnl_term_h - tunnel term handle
- *
- * Return Values:
- *    0 on success
- *   -1 in case of error
- */
-
-static int delete_tunnel_interface(const switchlink_db_tunnel_interface_info_t
-                                   *tnl_intf) {
+static int create_tunnel_interface(
+    const switchlink_db_tunnel_interface_info_t* tnl_intf,
+    switchlink_handle_t* tnl_intf_h, switchlink_handle_t* tnl_term_h) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
-  status = 
-    sai_tunnel_intf_api->remove_tunnel_term_table_entry(tnl_intf->tnl_term_h);
+  status = create_tunnel(tnl_intf, tnl_intf_h);
   if (status != SAI_STATUS_SUCCESS) {
-      krnlmon_log_error("Cannot remove tunnel termination entry for "
-               "interface: %s", tnl_intf->ifname);
-      return -1;
+    krnlmon_log_error("Cannot create tunnel for interface: %s",
+                      tnl_intf->ifname);
+    return -1;
   }
-  krnlmon_log_info("Removed tunnel termination entry for "
-            "interface: %s", tnl_intf->ifname);
+  krnlmon_log_info("Created tunnel interface: %s", tnl_intf->ifname);
+
+  status = create_term_table_entry(tnl_intf, tnl_term_h);
+  if (status != SAI_STATUS_SUCCESS) {
+    krnlmon_log_error(
+        "Cannot create tunnel termination table entry for "
+        "interface: %s",
+        tnl_intf->ifname);
+    return -1;
+  }
+  krnlmon_log_info(
+      "Created tunnel termination entry for "
+      "interface: %s",
+      tnl_intf->ifname);
+
+  return 0;
+}
+
+/*
+ * Routine Description:
+ *    Wrapper function to delete tunnel interface and delete tunnel
+ *    term table entry
+ *
+ * Arguments:
+ *    [in] tnl_intf - tunnel interface info
+ *    [in] tnl_intf_h - tunnel interface handle
+ *    [in] tnl_term_h - tunnel term handle
+ *
+ * Return Values:
+ *    0 on success
+ *   -1 in case of error
+ */
+
+static int delete_tunnel_interface(
+    const switchlink_db_tunnel_interface_info_t* tnl_intf) {
+  sai_status_t status = SAI_STATUS_SUCCESS;
+
+  status =
+      sai_tunnel_intf_api->remove_tunnel_term_table_entry(tnl_intf->tnl_term_h);
+  if (status != SAI_STATUS_SUCCESS) {
+    krnlmon_log_error(
+        "Cannot remove tunnel termination entry for "
+        "interface: %s",
+        tnl_intf->ifname);
+    return -1;
+  }
+  krnlmon_log_info(
+      "Removed tunnel termination entry for "
+      "interface: %s",
+      tnl_intf->ifname);
 
   status = sai_tunnel_intf_api->remove_tunnel(tnl_intf->orif_h);
   if (status != SAI_STATUS_SUCCESS) {
-      krnlmon_log_error("Cannot remove tunnel entry for "
-               "interface: %s", tnl_intf->ifname);
-      return -1;
+    krnlmon_log_error(
+        "Cannot remove tunnel entry for "
+        "interface: %s",
+        tnl_intf->ifname);
+    return -1;
   }
 
   krnlmon_log_info("Removed tunnel entry for interface: %s", tnl_intf->ifname);
@@ -214,21 +222,21 @@ static int delete_tunnel_interface(const switchlink_db_tunnel_interface_info_t
  */
 
 void switchlink_create_tunnel_interface(
-                       switchlink_db_tunnel_interface_info_t *tnl_intf) {
+    switchlink_db_tunnel_interface_info_t* tnl_intf) {
   switchlink_db_status_t status;
   switchlink_db_tunnel_interface_info_t tnl_ifinfo;
 
-  status = switchlink_db_get_tunnel_interface_info(tnl_intf->ifindex,
-                                                   &tnl_ifinfo);
+  status =
+      switchlink_db_get_tunnel_interface_info(tnl_intf->ifindex, &tnl_ifinfo);
   if (status == SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-
     krnlmon_log_debug("Switchlink tunnel interface: %s", tnl_intf->ifname);
-    status = create_tunnel_interface(tnl_intf,
-                                     &(tnl_intf->orif_h),
+    status = create_tunnel_interface(tnl_intf, &(tnl_intf->orif_h),
                                      &(tnl_intf->tnl_term_h));
     if (status) {
-      krnlmon_log_error("newlink: Failed to create switchlink tunnel interface :%s, "
-               "error: %d", tnl_intf->ifname, status);
+      krnlmon_log_error(
+          "newlink: Failed to create switchlink tunnel interface :%s, "
+          "error: %d",
+          tnl_intf->ifname, status);
       return;
     }
 
@@ -236,8 +244,10 @@ void switchlink_create_tunnel_interface(
     switchlink_db_add_tunnel_interface(tnl_intf->ifindex, tnl_intf);
     return;
   }
-  krnlmon_log_debug("Switchlink DB already has tunnel config for "
-           "interface: %s", tnl_intf->ifname);
+  krnlmon_log_debug(
+      "Switchlink DB already has tunnel config for "
+      "interface: %s",
+      tnl_intf->ifname);
   return;
 }
 
@@ -256,8 +266,9 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
   switchlink_db_tunnel_interface_info_t tnl_intf;
   if (switchlink_db_get_tunnel_interface_info(ifindex, &tnl_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-      krnlmon_log_info("Trying to delete a tunnel which is not "
-                "available");
+    krnlmon_log_info(
+        "Trying to delete a tunnel which is not "
+        "available");
     return;
   }
 

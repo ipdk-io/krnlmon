@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handle.h"
+#include "switchlink_init_sai.h"
 
-static sai_route_api_t *sai_route_api = NULL;
+static sai_route_api_t* sai_route_api = NULL;
 
 /*
  * Routine Description:
@@ -30,10 +30,10 @@ static sai_route_api_t *sai_route_api = NULL;
  */
 
 sai_status_t sai_init_route_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_ROUTE, (void **)&sai_route_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_ROUTE, (void**)&sai_route_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
@@ -50,7 +50,7 @@ sai_status_t sai_init_route_api() {
  *   -1 in case of error
  */
 
-static int delete_create(const switchlink_db_route_info_t *route_info) {
+static int delete_create(const switchlink_db_route_info_t* route_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   sai_route_entry_t route_entry;
@@ -65,8 +65,7 @@ static int delete_create(const switchlink_db_route_info_t *route_info) {
   } else {
     krnlmon_assert(route_info->ip_addr.family == AF_INET6);
     route_entry.destination.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
-    memcpy(route_entry.destination.addr.ip6,
-           &(route_info->ip_addr.ip.v6addr),
+    memcpy(route_entry.destination.addr.ip6, &(route_info->ip_addr.ip.v6addr),
            sizeof(sai_ip6_t));
     struct in6_addr mask =
         ipv6_prefix_len_to_mask(route_info->ip_addr.prefix_len);
@@ -99,7 +98,7 @@ static int delete_create(const switchlink_db_route_info_t *route_info) {
  *   -1 in case of error
  */
 
-static int delete_route(const switchlink_db_route_info_t *route_info) {
+static int delete_route(const switchlink_db_route_info_t* route_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   sai_route_entry_t route_entry;
@@ -114,8 +113,7 @@ static int delete_route(const switchlink_db_route_info_t *route_info) {
   } else {
     krnlmon_assert(route_info->ip_addr.family == AF_INET6);
     route_entry.destination.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
-    memcpy(route_entry.destination.addr.ip6,
-           &(route_info->ip_addr.ip.v6addr),
+    memcpy(route_entry.destination.addr.ip6, &(route_info->ip_addr.ip.v6addr),
            sizeof(sai_ip6_t));
     struct in6_addr mask =
         ipv6_prefix_len_to_mask(route_info->ip_addr.prefix_len);
@@ -142,8 +140,8 @@ static int delete_route(const switchlink_db_route_info_t *route_info) {
  */
 
 void switchlink_create_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst,
-                             const switchlink_ip_addr_t *gateway,
+                             const switchlink_ip_addr_t* dst,
+                             const switchlink_ip_addr_t* gateway,
                              switchlink_handle_t ecmp_h,
                              switchlink_handle_t intf_h) {
   if (!dst || (!gateway && !ecmp_h)) {
@@ -168,7 +166,8 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
   if (!ecmp_h) {
     // Ignore NULL gateway address, dont create a NHOP for that
     if ((gateway->family == AF_INET && gateway->ip.v4addr.s_addr) ||
-        (gateway->family == AF_INET6 && gateway->ip.v6addr.__in6_u.__u6_addr8[0])) {
+        (gateway->family == AF_INET6 &&
+         gateway->ip.v6addr.__in6_u.__u6_addr8[0])) {
       switchlink_db_nexthop_info_t nexthop_info;
       memset(&nexthop_info, 0, sizeof(switchlink_db_nexthop_info_t));
       memcpy(&(nexthop_info.ip_addr), gateway, sizeof(switchlink_ip_addr_t));
@@ -177,15 +176,19 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
       switchlink_db_status_t status;
       status = switchlink_db_get_nexthop_info(&nexthop_info);
       if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          krnlmon_log_debug("Received nhop 0x%lx handler, update from"
-                   " route", nexthop_info.nhop_h);
+        krnlmon_log_debug(
+            "Received nhop 0x%lx handler, update from"
+            " route",
+            nexthop_info.nhop_h);
         nhop_h = nexthop_info.nhop_h;
         nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
         switchlink_db_update_nexthop_using_by(&nexthop_info);
       } else {
         if (!switchlink_create_nexthop(&nexthop_info)) {
-          krnlmon_log_debug("Created nhop 0x%lx handle, update from "
-                   " route", nexthop_info.nhop_h);
+          krnlmon_log_debug(
+              "Created nhop 0x%lx handle, update from "
+              " route",
+              nexthop_info.nhop_h);
           nhop_h = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
           switchlink_db_add_nexthop(&nexthop_info);
@@ -222,7 +225,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
 
   // add the route
   krnlmon_log_info("Create route: 0x%x/%d", dst->ip.v4addr.s_addr,
-             dst->prefix_len);
+                   dst->prefix_len);
   if (delete_create(&route_info) == -1) {
     if (route_info.ecmp) {
       switchlink_delete_ecmp(route_info.nhop_h);
@@ -251,7 +254,7 @@ void switchlink_create_route(switchlink_handle_t vrf_h,
  */
 
 void switchlink_delete_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst) {
+                             const switchlink_ip_addr_t* dst) {
   bool ecmp_enable = false;
   switchlink_handle_t ecmp_h;
 
@@ -274,7 +277,7 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
   }
 
   krnlmon_log_info("Route deleted: 0x%x/%d", dst->ip.v4addr.s_addr,
-             dst->prefix_len);
+                   dst->prefix_len);
   ecmp_enable = route_info.ecmp;
   ecmp_h = route_info.nhop_h;
 
@@ -285,4 +288,3 @@ void switchlink_delete_route(switchlink_handle_t vrf_h,
     }
   }
 }
-

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,17 @@ extern "C" {
 #define __FILE_ID__ SWITCH_ID
 
 static switch_status_t switch_api_id_allocator_new_internal(
-    switch_device_t device,
-    switch_uint32_t initial_size,
-    bool zero_based,
-    switch_id_allocator_t **allocator) {
+    switch_device_t device, switch_uint32_t initial_size, bool zero_based,
+    switch_id_allocator_t** allocator) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   *allocator = SWITCH_MALLOC(device, sizeof(switch_id_allocator_t), 1);
   if (*allocator == NULL) {
     status = SWITCH_STATUS_NO_MEMORY;
-    krnlmon_log_error("id alloc: Failed to allocate memory for switch_id_allocator_t, "
-             "error: %s\n", switch_error_to_string(status));
+    krnlmon_log_error(
+        "id alloc: Failed to allocate memory for switch_id_allocator_t, "
+        "error: %s\n",
+        switch_error_to_string(status));
     return status;
   }
 
@@ -45,8 +45,10 @@ static switch_status_t switch_api_id_allocator_new_internal(
   if ((*allocator)->data == NULL) {
     status = SWITCH_STATUS_NO_MEMORY;
     SWITCH_FREE(device, *allocator);
-    krnlmon_log_error("id alloc: Failed to allocate memory for allocator data, "
-             "error: %s\n", switch_error_to_string(status));
+    krnlmon_log_error(
+        "id alloc: Failed to allocate memory for allocator data, "
+        "error: %s\n",
+        switch_error_to_string(status));
     return status;
   }
 
@@ -57,12 +59,13 @@ static switch_status_t switch_api_id_allocator_new_internal(
 }
 
 static switch_status_t switch_api_id_allocator_destroy_internal(
-    switch_device_t device, switch_id_allocator_t *allocator) {
+    switch_device_t device, switch_id_allocator_t* allocator) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("id destroy failed, error: %s", switch_error_to_string(status));
+    krnlmon_log_error("id destroy failed, error: %s",
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -89,10 +92,8 @@ static inline switch_int32_t switch_api_id_fit_width(switch_uint32_t val,
 }
 
 static switch_status_t switch_api_id_allocator_allocate_contiguous_internal(
-    switch_device_t device,
-    switch_id_allocator_t *allocator,
-    switch_uint8_t count,
-    switch_uint32_t *id) {
+    switch_device_t device, switch_id_allocator_t* allocator,
+    switch_uint8_t count, switch_uint32_t* id) {
   switch_uint32_t n_words = 0;
   switch_uint32_t i = 0;
   switch_int32_t pos = -1;
@@ -101,7 +102,7 @@ static switch_status_t switch_api_id_allocator_allocate_contiguous_internal(
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("id alloc contiguous failed, error: %s",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -118,11 +119,11 @@ static switch_status_t switch_api_id_allocator_allocate_contiguous_internal(
   }
 
   n_words = allocator->n_words;
-  allocator->data = SWITCH_REALLOC(
-      device, allocator->data, n_words * 2 * sizeof(switch_uint32_t));
+  allocator->data = SWITCH_REALLOC(device, allocator->data,
+                                   n_words * 2 * sizeof(switch_uint32_t));
 
-  SWITCH_MEMSET(
-      &allocator->data[n_words], 0, n_words * sizeof(switch_uint32_t));
+  SWITCH_MEMSET(&allocator->data[n_words], 0,
+                n_words * sizeof(switch_uint32_t));
   allocator->n_words = n_words * 2;
   allocator->data[n_words] |= (0xFFFFFFFF << (32 - count)) & 0xFFFFFFFF;
   *id = 32 * n_words + (allocator->zero_based ? 0 : 1);
@@ -130,13 +131,13 @@ static switch_status_t switch_api_id_allocator_allocate_contiguous_internal(
 }
 
 static switch_status_t switch_api_id_allocator_allocate_internal(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t *id) {
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t* id) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error("id alloc internal failed, error: %s",
-             switch_error_to_string(status));
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -144,12 +145,13 @@ static switch_status_t switch_api_id_allocator_allocate_internal(
 }
 
 static switch_status_t switch_api_id_allocator_release_internal(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t id) {
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t id) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!allocator) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
-    krnlmon_log_error("id release failed, error: %s", switch_error_to_string(status));
+    krnlmon_log_error("id release failed, error: %s",
+                      switch_error_to_string(status));
     return status;
   }
 
@@ -161,33 +163,31 @@ static switch_status_t switch_api_id_allocator_release_internal(
 }
 
 switch_status_t switch_api_id_allocator_destroy(
-    switch_device_t device, switch_id_allocator_t *allocator) {
+    switch_device_t device, switch_id_allocator_t* allocator) {
   return switch_api_id_allocator_destroy_internal(device, allocator);
 }
 
 switch_status_t switch_api_id_allocator_new(switch_device_t device,
                                             switch_uint32_t initial_size,
                                             bool zero_based,
-                                            switch_id_allocator_t **allocator) {
+                                            switch_id_allocator_t** allocator) {
   return switch_api_id_allocator_new_internal(device, initial_size, zero_based,
-                                       allocator);
+                                              allocator);
 }
 
 switch_status_t switch_api_id_allocator_allocate(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t *id) {
-    return switch_api_id_allocator_allocate_internal(device, allocator, id);
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t* id) {
+  return switch_api_id_allocator_allocate_internal(device, allocator, id);
 }
 
 switch_status_t switch_api_id_allocator_release(
-    switch_device_t device, switch_id_allocator_t *allocator, switch_id_t id) {
-    return switch_api_id_allocator_release_internal(device, allocator, id);
+    switch_device_t device, switch_id_allocator_t* allocator, switch_id_t id) {
+  return switch_api_id_allocator_release_internal(device, allocator, id);
 }
 
 switch_status_t switch_api_id_allocator_allocate_contiguous(
-    switch_device_t device,
-    switch_id_allocator_t *allocator,
-    switch_uint8_t count,
-    switch_id_t *id) {
+    switch_device_t device, switch_id_allocator_t* allocator,
+    switch_uint8_t count, switch_id_t* id) {
   return switch_api_id_allocator_allocate_contiguous_internal(device, allocator,
-                                                       count, id);
+                                                              count, id);
 }

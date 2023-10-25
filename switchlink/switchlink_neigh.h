@@ -34,6 +34,6 @@ extern void switchlink_linux_mac_update(switchlink_mac_addr_t mac_addr,
                                         switchlink_handle_t intf_h,
                                         bool create);
 */
-void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg, int msgtype);
+void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg, int msgtype);
 
 #endif /* __SWITCHLINK_NEIGH_H__ */

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
  */
 
 #include "switchapi/switch_rmac.h"
-#include "switchapi/switch_rmac_int.h"
 
-#include "switchapi/switch_internal.h"
 #include "switch_pd_routing.h"
+#include "switchapi/switch_internal.h"
+#include "switchapi/switch_rmac_int.h"
 
 /*
  * Routine Description:
@@ -33,7 +33,7 @@
  *             Failure status code on error
  */
 switch_status_t switch_rmac_init(switch_device_t device) {
-  switch_rmac_context_t *rmac_ctx = NULL;
+  switch_rmac_context_t* rmac_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   rmac_ctx = SWITCH_MALLOC(device, sizeof(switch_rmac_context_t), 0x1);
@@ -42,19 +42,17 @@ switch_status_t switch_rmac_init(switch_device_t device) {
     krnlmon_log_error(
         "rmac_init:Failed to allocate memory for switch_rmac_context_t "
         "on device %d ,error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  status = switch_device_api_context_set(
-      device, SWITCH_API_TYPE_RMAC, (void *)rmac_ctx);
+  status = switch_device_api_context_set(device, SWITCH_API_TYPE_RMAC,
+                                         (void*)rmac_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "rmac_init: Failed to set device api context on device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -63,13 +61,13 @@ switch_status_t switch_rmac_init(switch_device_t device) {
 
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
-        "rmac init: Failed to initialize handle SWITCH_HANDLE_TYPE_RMAC on device %d "
+        "rmac init: Failed to initialize handle SWITCH_HANDLE_TYPE_RMAC on "
+        "device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
-  
+
   krnlmon_log_info("rmac init successful on device %d\n", device);
   return status;
 }
@@ -86,17 +84,16 @@ switch_status_t switch_rmac_init(switch_device_t device) {
  *             Failure status code on error
  */
 switch_status_t switch_rmac_free(switch_device_t device) {
-  switch_rmac_context_t *rmac_ctx = NULL;
+  switch_rmac_context_t* rmac_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
-  status = switch_device_api_context_get(
-      device, SWITCH_API_TYPE_RMAC, (void **)&rmac_ctx);
+  status = switch_device_api_context_get(device, SWITCH_API_TYPE_RMAC,
+                                         (void**)&rmac_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "rmac free: Failed to get device api context on device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -105,10 +102,9 @@ switch_status_t switch_rmac_free(switch_device_t device) {
     krnlmon_log_error(
         "rmac free: Failed to free handle SWITCH_HANDLE_TYPE_RMAC on device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
-  
+
   SWITCH_FREE(device, rmac_ctx);
   status = switch_device_api_context_set(device, SWITCH_API_TYPE_RMAC, NULL);
   SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
@@ -117,10 +113,9 @@ switch_status_t switch_rmac_free(switch_device_t device) {
 }
 
 switch_status_t switch_api_router_mac_group_create(
-    const switch_device_t device,
-    const switch_rmac_type_t rmac_type,
-    switch_handle_t *rmac_handle) {
-  switch_rmac_info_t *rmac_info = NULL;
+    const switch_device_t device, const switch_rmac_type_t rmac_type,
+    switch_handle_t* rmac_handle) {
+  switch_rmac_info_t* rmac_info = NULL;
   switch_handle_t handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -130,8 +125,7 @@ switch_status_t switch_api_router_mac_group_create(
     krnlmon_log_error(
         "rmac group create: Failed to create rmac handle on device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -140,8 +134,7 @@ switch_status_t switch_api_router_mac_group_create(
     krnlmon_log_error(
         "rmac group create: Failed to get rmac info on device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -155,8 +148,7 @@ switch_status_t switch_api_router_mac_group_create(
   krnlmon_log_info(
       "rmac group created on device %d, "
       "rmac handle 0x%lx \n",
-      device,
-      handle);
+      device, handle);
 
   return status;
 }
@@ -164,19 +156,17 @@ switch_status_t switch_api_router_mac_group_create(
 switch_status_t switch_api_router_mac_group_delete(
     const switch_device_t device, const switch_handle_t rif_handle,
     const switch_handle_t rmac_handle) {
-  switch_rmac_info_t *rmac_info = NULL;
-  switch_rmac_entry_t *rmac_entry = NULL;
-  switch_node_t *node = NULL;
+  switch_rmac_info_t* rmac_info = NULL;
+  switch_rmac_entry_t* rmac_entry = NULL;
+  switch_node_t* node = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  
+
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
     krnlmon_log_error(
         "rmac group delete: Invalid rmac handle 0x%lx: on device %d "
         ",error: %s\n",
-        rmac_handle,
-        device,
-        switch_error_to_string(status));
+        rmac_handle, device, switch_error_to_string(status));
     return status;
   }
 
@@ -186,24 +176,19 @@ switch_status_t switch_api_router_mac_group_delete(
     krnlmon_log_error(
         "rmac group delete: Failed to get rmac info on device %d rmac hadle "
         "0x%lx: ,error: %s\n",
-        device,
-        rmac_handle,
-        switch_error_to_string(status));
+        device, rmac_handle, switch_error_to_string(status));
     return status;
   }
 
   FOR_EACH_IN_LIST(rmac_info->rmac_list, node) {
     rmac_entry = node->data;
-    status =
-        switch_api_router_mac_delete(device, rif_handle, rmac_handle,
-                                     &rmac_entry->mac);
+    status = switch_api_router_mac_delete(device, rif_handle, rmac_handle,
+                                          &rmac_entry->mac);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
           "rmac group delete: Failed to delete router mac on device %d "
           "rmac handle 0x%lx: ,error: %s\n",
-          device,
-          rmac_handle,
-          switch_error_to_string(status));
+          device, rmac_handle, switch_error_to_string(status));
     }
   }
   FOR_EACH_IN_LIST_END();
@@ -213,29 +198,25 @@ switch_status_t switch_api_router_mac_group_delete(
     krnlmon_log_error(
         "rmac group delete: Failed to delete rmac handle 0x%lx: on device %d "
         ",error: %s\n",
-        rmac_handle,
-        device,
-        switch_error_to_string(status));
+        rmac_handle, device, switch_error_to_string(status));
     return status;
   }
 
   krnlmon_log_info(
       "rmac group deleted on device %d, "
       "rmac handle 0x%lx\n",
-      device,
-      rmac_handle);
+      device, rmac_handle);
 
   return status;
 }
 
-switch_status_t switch_api_router_mac_delete(
-    const switch_device_t device,
-    const switch_handle_t rif_handle,
-    const switch_handle_t rmac_handle,
-    const switch_mac_addr_t *mac) {
-  switch_rmac_info_t *rmac_info = NULL;
-  switch_rmac_entry_t *rmac_entry = NULL;
-  switch_node_t *node = NULL;
+switch_status_t switch_api_router_mac_delete(const switch_device_t device,
+                                             const switch_handle_t rif_handle,
+                                             const switch_handle_t rmac_handle,
+                                             const switch_mac_addr_t* mac) {
+  switch_rmac_info_t* rmac_info = NULL;
+  switch_rmac_entry_t* rmac_entry = NULL;
+  switch_node_t* node = NULL;
   bool entry_found = FALSE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -244,9 +225,7 @@ switch_status_t switch_api_router_mac_delete(
     krnlmon_log_error(
         "router mac delete: Invalid rmac handle 0x%lx, mac %s: on device %d "
         ",error: %s\n",
-        rmac_handle,
-        switch_macaddress_to_string(mac),
-        device,
+        rmac_handle, switch_macaddress_to_string(mac), device,
         switch_error_to_string(status));
     return status;
   }
@@ -257,13 +236,12 @@ switch_status_t switch_api_router_mac_delete(
     krnlmon_log_error(
         "router mac delete: Failed to get rmac info, handle 0x%lx "
         ",error: %s\n",
-        rmac_handle,
-        switch_error_to_string(status));
+        rmac_handle, switch_error_to_string(status));
     return status;
   }
 
   FOR_EACH_IN_LIST(rmac_info->rmac_list, node) {
-    rmac_entry = (switch_rmac_entry_t *)node->data;
+    rmac_entry = (switch_rmac_entry_t*)node->data;
     if (SWITCH_MEMCMP(&(rmac_entry->mac), mac, sizeof(switch_mac_addr_t)) ==
         0) {
       entry_found = TRUE;
@@ -277,9 +255,7 @@ switch_status_t switch_api_router_mac_delete(
     krnlmon_log_error(
         "router mac delete: Failed to find rmac entry on device %d, rmac "
         "handle 0x%lx, mac %s: ,error: %s\n",
-        device,
-        rmac_handle,
-        switch_macaddress_to_string(mac),
+        device, rmac_handle, switch_macaddress_to_string(mac),
         switch_error_to_string(status));
     return status;
   }
@@ -288,13 +264,11 @@ switch_status_t switch_api_router_mac_delete(
     status = switch_pd_rmac_table_entry(device, rmac_entry, rif_handle, false);
     if (status != SWITCH_STATUS_SUCCESS) {
       krnlmon_log_error(
-        "router mac delete: Failed to delete PD rmac entry on device %d ,"
-        "rmac handle 0x%lx, mac %s: "
-        ",error: %s\n",
-        device,
-        rmac_handle,
-        switch_macaddress_to_string(mac),
-        switch_error_to_string(status));
+          "router mac delete: Failed to delete PD rmac entry on device %d ,"
+          "rmac handle 0x%lx, mac %s: "
+          ",error: %s\n",
+          device, rmac_handle, switch_macaddress_to_string(mac),
+          switch_error_to_string(status));
       return status;
     }
   }
@@ -305,17 +279,13 @@ switch_status_t switch_api_router_mac_delete(
         "router mac delete: Failed to delete from switch list on device %d ,"
         "rmac handle 0x%lx, mac %s: "
         ",error: %s\n",
-        device,
-        rmac_handle,
-        switch_macaddress_to_string(mac),
+        device, rmac_handle, switch_macaddress_to_string(mac),
         switch_error_to_string(status));
     return status;
   }
 
   krnlmon_log_info("rmac deleted on device %d, rmac handle 0x%lx, mac %s\n",
-                   device,
-                   rmac_handle,
-                   switch_macaddress_to_string(mac));
+                   device, rmac_handle, switch_macaddress_to_string(mac));
 
   if (rmac_entry) {
     SWITCH_FREE(device, rmac_entry);
@@ -324,13 +294,12 @@ switch_status_t switch_api_router_mac_delete(
   return status;
 }
 
-switch_status_t switch_api_router_mac_add(
-    const switch_device_t device,
-    const switch_handle_t rmac_handle,
-    const switch_mac_addr_t *mac) {
-  switch_rmac_info_t *rmac_info = NULL;
-  switch_rmac_entry_t *rmac_entry = NULL;
-  switch_node_t *node = NULL;
+switch_status_t switch_api_router_mac_add(const switch_device_t device,
+                                          const switch_handle_t rmac_handle,
+                                          const switch_mac_addr_t* mac) {
+  switch_rmac_info_t* rmac_info = NULL;
+  switch_rmac_entry_t* rmac_entry = NULL;
+  switch_node_t* node = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_RMAC_HANDLE(rmac_handle)) {
@@ -338,9 +307,7 @@ switch_status_t switch_api_router_mac_add(
     krnlmon_log_error(
         "router mac add: Invalid rmac handle 0x%lx: on device %d "
         ",error: %s\n",
-        rmac_handle,
-        device,
-        switch_error_to_string(status));
+        rmac_handle, device, switch_error_to_string(status));
     return status;
   }
 
@@ -350,9 +317,7 @@ switch_status_t switch_api_router_mac_add(
     krnlmon_log_error(
         "router mac add: Failed to get rmac info on device %d, rmac "
         "handle 0x%lx: ,error: %s\n",
-        device,
-        rmac_handle,
-        switch_error_to_string(status));
+        device, rmac_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -361,14 +326,12 @@ switch_status_t switch_api_router_mac_add(
     krnlmon_log_error(
         "router mac add: Invalid mac on device %d, rmac handle 0x%lx: "
         ",error: %s\n",
-        device,
-        rmac_handle,
-        switch_error_to_string(status));
+        device, rmac_handle, switch_error_to_string(status));
     return status;
   }
 
   FOR_EACH_IN_LIST(rmac_info->rmac_list, node) {
-    rmac_entry = (switch_rmac_entry_t *)node->data;
+    rmac_entry = (switch_rmac_entry_t*)node->data;
     if (SWITCH_MEMCMP(&(rmac_entry->mac), mac, sizeof(switch_mac_addr_t)) ==
         0) {
       return SWITCH_STATUS_ITEM_ALREADY_EXISTS;
@@ -382,9 +345,7 @@ switch_status_t switch_api_router_mac_add(
     krnlmon_log_error(
         "router mac add: Failed to allocate memory for switch_rmac_entry_t "
         "on device %d rmac handle 0x%lx: ,error: %s\n",
-        device,
-        rmac_handle,
-        switch_error_to_string(status));
+        device, rmac_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -394,8 +355,9 @@ switch_status_t switch_api_router_mac_add(
 
   SWITCH_LIST_INSERT(&(rmac_info->rmac_list), &(rmac_entry->node), rmac_entry);
 
-  krnlmon_log_info("RMAC added on device %d, rmac handle 0x%lx, mac %s\n", device,
-             rmac_handle, switch_macaddress_to_string(&rmac_entry->mac));
+  krnlmon_log_info("RMAC added on device %d, rmac handle 0x%lx, mac %s\n",
+                   device, rmac_handle,
+                   switch_macaddress_to_string(&rmac_entry->mac));
 
   return status;
 }

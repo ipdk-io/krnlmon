@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,19 +34,19 @@ extern "C" {
 #define SWITCH_IP_TYPE_IPv6 2
 
 /** route handle wrappers */
-#define switch_route_handle_create(_device) \
-  switch_handle_create(                     \
-      _device, SWITCH_HANDLE_TYPE_ROUTE, sizeof(switch_route_info_t))
+#define switch_route_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_ROUTE, \
+                       sizeof(switch_route_info_t))
 
 #define switch_route_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_ROUTE, _handle)
 
-#define switch_route_get(_device, _handle, _info)                    \
-  ({                                                                 \
-    switch_route_info_t *_tmp_route_info = NULL;                     \
-    (void)(_tmp_route_info == *_info);                               \
-    switch_handle_get(                                               \
-        _device, SWITCH_HANDLE_TYPE_ROUTE, _handle, (void **)_info); \
+#define switch_route_get(_device, _handle, _info)                 \
+  ({                                                              \
+    switch_route_info_t* _tmp_route_info = NULL;                  \
+    (void)(_tmp_route_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_ROUTE, _handle, \
+                      (void**)_info);                             \
   })
 
 /** stores route information */
@@ -74,21 +74,20 @@ typedef struct switch_l3_context_s {
 
 #define SWITCH_L3_IP_IPV6_ADDRESS(ip_info) ip_info->ip.v6addr
 
-switch_status_t switch_route_table_entry_key_init(void *args,
-                                                  switch_uint8_t *key,
-                                                  switch_uint32_t *len);
+switch_status_t switch_route_table_entry_key_init(void* args,
+                                                  switch_uint8_t* key,
+                                                  switch_uint32_t* len);
 
-switch_int32_t switch_route_entry_hash_compare(const void *key1,
-                                               const void *key2);
+switch_int32_t switch_route_entry_hash_compare(const void* key1,
+                                               const void* key2);
 
 switch_status_t switch_l3_init(switch_device_t device);
 
 switch_status_t switch_l3_free(switch_device_t device);
 
 switch_status_t switch_route_table_hash_lookup(
-    switch_device_t device,
-    switch_route_entry_t *route_entry,
-    switch_handle_t *route_handle);
+    switch_device_t device, switch_route_entry_t* route_entry,
+    switch_handle_t* route_handle);
 
 #ifdef __cplusplus
 }

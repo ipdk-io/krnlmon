@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,25 +24,23 @@
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rmac_int.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
 /** enum to decide the proper key and action based on ecmp or nhop
  * */
-typedef enum switch_pv4_table_action_s
-{
+typedef enum switch_pv4_table_action_s {
   SWITCH_ACTION_NHOP = 0,
   SWITCH_ACTION_NHOP_GROUP = 1,
   SWITCH_ACTION_NONE = 2
-}switch_ipv4_table_action_t;
+} switch_ipv4_table_action_t;
 
 /**
  * create pd_routing structure to hold
  * the data to be sent to
  * the backend to update the table */
-typedef struct switch_pd_routing_info_s
-{
+typedef struct switch_pd_routing_info_s {
   switch_handle_t neighbor_handle;
 
   switch_handle_t nexthop_handle;
@@ -56,45 +54,40 @@ typedef struct switch_pd_routing_info_s
 } switch_pd_routing_info_t;
 
 switch_status_t switch_pd_nexthop_table_entry(
-    switch_device_t device,
-    const switch_pd_routing_info_t  *api_nexthop_pd_info,
+    switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
 
 switch_status_t switch_pd_neighbor_table_entry(
     switch_device_t device,
-    const switch_pd_routing_info_t  *api_neighbor_pd_info,
-    bool entry_add);
+    const switch_pd_routing_info_t* api_neighbor_pd_info, bool entry_add);
 
-switch_status_t switch_pd_rmac_table_entry (
-    switch_device_t device,
-    switch_rmac_entry_t *rmac_entry,
-    switch_handle_t rif_handle,
+switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
+                                           switch_rmac_entry_t* rmac_entry,
+                                           switch_handle_t rif_handle,
+                                           bool entry_type);
+
+switch_status_t switch_pd_rif_mod_entry(switch_device_t device,
+                                        switch_rmac_entry_t* rmac_entry,
+                                        switch_handle_t rif_handle,
+                                        bool entry_add);
+
+switch_status_t switch_pd_ipv4_table_entry(
+    switch_device_t device, const switch_api_route_entry_t* api_route_entry,
+    bool entry_add, switch_ipv4_table_action_t action);
+switch_status_t switch_routing_table_entry(
+    switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
     bool entry_type);
 
-switch_status_t switch_pd_rif_mod_entry(
-    switch_device_t device,
-    switch_rmac_entry_t *rmac_entry,
-    switch_handle_t rif_handle,
+switch_status_t switch_pd_handle_member(
+    switch_device_t device, const switch_nhop_member_t* nhop_member_pd_info,
     bool entry_add);
 
-switch_status_t switch_pd_ipv4_table_entry (switch_device_t device,
-    const switch_api_route_entry_t *api_route_entry,
-    bool entry_add, switch_ipv4_table_action_t action);
-switch_status_t switch_routing_table_entry (
-        switch_device_t device,
-        const switch_pd_routing_info_t *api_routing_info,
-        bool entry_type);
-
-switch_status_t switch_pd_handle_member(switch_device_t device,
-    const switch_nhop_member_t *nhop_member_pd_info,
+switch_status_t switch_pd_handle_group(
+    switch_device_t device, switch_nhop_group_info_t* nhop_group_pd_info,
     bool entry_add);
 
-switch_status_t switch_pd_handle_group(switch_device_t device,
-    switch_nhop_group_info_t *nhop_group_pd_info,
-    bool entry_add);
-
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif 
+#endif

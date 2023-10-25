@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,19 +78,17 @@ typedef struct switch_neighbor_info_s {
 } switch_neighbor_info_t;
 
 switch_status_t switch_api_neighbor_attribute_get(
-    const switch_device_t device,
-    const switch_handle_t neighbor_handle,
+    const switch_device_t device, const switch_handle_t neighbor_handle,
     const switch_uint64_t neighbor_flags,
-    switch_api_neighbor_info_t *api_neighbor_info);
+    switch_api_neighbor_info_t* api_neighbor_info);
 /**
 ARP entry add
 @param device device
 @param neighbor - ARP information used to set egress table
 */
 switch_status_t switch_api_neighbor_create(
-    switch_device_t device,
-    switch_api_neighbor_info_t *api_neighbor,
-    switch_handle_t *neighbor_handle);
+    switch_device_t device, switch_api_neighbor_info_t* api_neighbor,
+    switch_handle_t* neighbor_handle);
 
 /**
 ARP entry delete

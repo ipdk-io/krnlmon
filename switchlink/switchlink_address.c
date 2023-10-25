@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-#include "switchlink_route.h"
-#include "switchlink_int.h"
+#include <netlink/msg.h>
+
 #include "switchlink_handle.h"
+#include "switchlink_int.h"
+#include "switchlink_route.h"
 
 /*
  * Routine Description:
@@ -33,24 +35,22 @@
  *    void
  */
 
-void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
+void switchlink_process_address_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
-  struct nlattr *attr;
-  struct ifaddrmsg *addrmsg;
+  struct nlattr* attr;
+  struct ifaddrmsg* addrmsg;
   bool addr_valid = false;
   switchlink_ip_addr_t addr;
 
   krnlmon_assert((msgtype == RTM_NEWADDR) || (msgtype == RTM_DELADDR));
   addrmsg = nlmsg_data(nlmsg);
   hdrlen = sizeof(struct ifaddrmsg);
-  krnlmon_log_debug("%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
-       "scope = 0x%x ifindex = %d\n",
-       ((msgtype == RTM_NEWADDR) ? "new" : "del"),
-       addrmsg->ifa_family,
-       addrmsg->ifa_prefixlen,
-       addrmsg->ifa_flags,
-       addrmsg->ifa_scope,
-       addrmsg->ifa_index);
+  krnlmon_log_debug(
+      "%saddr: family = %d, prefixlen = %d, flags = 0x%x, "
+      "scope = 0x%x ifindex = %d\n",
+      ((msgtype == RTM_NEWADDR) ? "new" : "del"), addrmsg->ifa_family,
+      addrmsg->ifa_prefixlen, addrmsg->ifa_flags, addrmsg->ifa_scope,
+      addrmsg->ifa_index);
 
   if ((addrmsg->ifa_family != AF_INET) && (addrmsg->ifa_family != AF_INET6)) {
     // an address family that we are not interested in, skip
@@ -64,7 +64,7 @@ void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   status = switchlink_db_get_interface_info(addrmsg->ifa_index, &ifinfo);
   if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
     krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
-    if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+    if (ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
       intf_h = ifinfo.lag_h;
     } else {
       intf_h = ifinfo.intf_h;
@@ -73,7 +73,7 @@ void switchlink_process_address_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     // TODO P4-OVS, for now we ignore these notifications.
     // Needed when, we get address add before port create notification
     krnlmon_log_debug("Ignoring interface address notification ifindex: %d",
-             addrmsg->ifa_index);
+                      addrmsg->ifa_index);
     return;
   }
 

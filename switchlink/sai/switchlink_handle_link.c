@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handle.h"
+#include "switchlink_init_sai.h"
 
-static sai_virtual_router_api_t *sai_vrf_api = NULL;
-static sai_router_interface_api_t *sai_rintf_api = NULL;
+static sai_virtual_router_api_t* sai_vrf_api = NULL;
+static sai_router_interface_api_t* sai_rintf_api = NULL;
 /*
  * Routine Description:
  *    Initialize Router Interface SAI API
@@ -30,10 +30,10 @@ static sai_router_interface_api_t *sai_rintf_api = NULL;
  */
 
 sai_status_t sai_init_rintf_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void **)&sai_rintf_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_ROUTER_INTERFACE, (void**)&sai_rintf_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
@@ -48,10 +48,10 @@ sai_status_t sai_init_rintf_api() {
  */
 
 sai_status_t sai_init_vrf_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_VIRTUAL_ROUTER, (void **)&sai_vrf_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_VIRTUAL_ROUTER, (void**)&sai_vrf_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
@@ -68,7 +68,7 @@ sai_status_t sai_init_vrf_api() {
  *    Failure status code on error
  */
 
-int switchlink_create_vrf(switchlink_handle_t *vrf_h) {
+int switchlink_create_vrf(switchlink_handle_t* vrf_h) {
   sai_status_t status = SAI_STATUS_SUCCESS;
   sai_attribute_t attr_list[2];
 
@@ -95,9 +95,8 @@ int switchlink_create_vrf(switchlink_handle_t *vrf_h) {
  *   -1 in case of error
  */
 
-static int create_interface(
-                        const switchlink_db_interface_info_t *intf,
-                        switchlink_handle_t *intf_h) {
+static int create_interface(const switchlink_db_interface_info_t* intf,
+                            switchlink_handle_t* intf_h) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   if (intf->intf_type == SWITCHLINK_INTF_TYPE_L3) {
@@ -110,10 +109,10 @@ static int create_interface(
     attr_list[ac].id = SAI_ROUTER_INTERFACE_ATTR_TYPE;
     attr_list[ac].value.oid = 0;
     if (!(intf_h)) {
-	krnlmon_log_error("Interface handle is NULL");
-	return -1;
-    } else {	
-        attr_list[ac].value.oid = *intf_h;
+      krnlmon_log_error("Interface handle is NULL");
+      return -1;
+    } else {
+      attr_list[ac].value.oid = *intf_h;
     }
     ac++;
     attr_list[ac].id = SAI_ROUTER_INTERFACE_ATTR_SRC_MAC_ADDRESS;
@@ -123,8 +122,7 @@ static int create_interface(
     attr_list[ac].value.u32 = intf->ifindex;
     ac++;
 
-    status =
-        sai_rintf_api->create_router_interface(intf_h, 0, ac++, attr_list);
+    status = sai_rintf_api->create_router_interface(intf_h, 0, ac++, attr_list);
   }
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
 }
@@ -142,8 +140,8 @@ static int create_interface(
  *   -1 in case of error
  */
 
-static int delete_interface(const switchlink_db_interface_info_t *intf,
-                                switchlink_handle_t intf_h) {
+static int delete_interface(const switchlink_db_interface_info_t* intf,
+                            switchlink_handle_t intf_h) {
   sai_status_t status = SAI_STATUS_SUCCESS;
   if (intf->intf_type == SWITCHLINK_INTF_TYPE_L3) {
     status = sai_rintf_api->remove_router_interface(intf_h);
@@ -162,7 +160,7 @@ static int delete_interface(const switchlink_db_interface_info_t *intf,
  *    void
  */
 
-void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
+void switchlink_create_interface(switchlink_db_interface_info_t* intf) {
   switchlink_db_status_t status;
   switchlink_db_interface_info_t ifinfo;
 
@@ -173,8 +171,9 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
 
     status = create_interface(intf, &(intf->intf_h));
     if (status) {
-      krnlmon_log_error("newlink: Failed to create switchlink interface, error: %d\n",
-               status);
+      krnlmon_log_error(
+          "newlink: Failed to create switchlink interface, error: %d\n",
+          status);
       return;
     }
 
@@ -182,18 +181,18 @@ void switchlink_create_interface(switchlink_db_interface_info_t *intf) {
     switchlink_db_add_interface(intf->ifindex, intf);
   } else {
     // interface has already been created
-    if (memcmp(&(ifinfo.mac_addr),
-               &(intf->mac_addr),
+    if (memcmp(&(ifinfo.mac_addr), &(intf->mac_addr),
                sizeof(switchlink_mac_addr_t))) {
-       memcpy(&(ifinfo.mac_addr), &(intf->mac_addr),
-              sizeof(switchlink_mac_addr_t));
+      memcpy(&(ifinfo.mac_addr), &(intf->mac_addr),
+             sizeof(switchlink_mac_addr_t));
 
       // Delete if RMAC is configured previously, and create this new RMAC.
       status = create_interface(&ifinfo, &ifinfo.intf_h);
       if (status) {
-        krnlmon_log_error("newlink: Failed to create switchlink interface,"
-                    " error: %d\n",
-                    status);
+        krnlmon_log_error(
+            "newlink: Failed to create switchlink interface,"
+            " error: %d\n",
+            status);
         return;
       }
 
@@ -225,4 +224,3 @@ void switchlink_delete_interface(uint32_t ifindex) {
   delete_interface(&intf, intf.intf_h);
   switchlink_db_delete_interface(intf.ifindex);
 }
-

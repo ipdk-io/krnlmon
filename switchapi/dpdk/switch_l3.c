@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
+#include "switchapi/switch_l3.h"
+
 #include "switch_pd_routing.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
-#include "switchapi/switch_l3.h"
 #include "switchapi/switch_nhop_int.h"
 
-switch_status_t switch_route_table_entry_key_init(void *args,
-                                                  switch_uint8_t *key,
-                                                  switch_uint32_t *len) {
-  switch_route_entry_t *route_entry = NULL;
+switch_status_t switch_route_table_entry_key_init(void* args,
+                                                  switch_uint8_t* key,
+                                                  switch_uint32_t* len) {
+  switch_route_entry_t* route_entry = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!args || !key || !len) {
@@ -33,7 +34,7 @@ switch_status_t switch_route_table_entry_key_init(void *args,
   }
 
   *len = 0;
-  route_entry = (switch_route_entry_t *)args;
+  route_entry = (switch_route_entry_t*)args;
 
   SWITCH_MEMCPY(key, &route_entry->vrf_handle, sizeof(switch_handle_t));
   *len += sizeof(switch_handle_t);
@@ -49,13 +50,13 @@ switch_status_t switch_route_table_entry_key_init(void *args,
   return status;
 }
 
-switch_int32_t switch_route_entry_hash_compare(const void *key1,
-                                               const void *key2) {
+switch_int32_t switch_route_entry_hash_compare(const void* key1,
+                                               const void* key2) {
   return SWITCH_MEMCMP(key1, key2, SWITCH_ROUTE_HASH_KEY_SIZE);
 }
 
 switch_status_t switch_l3_init(switch_device_t device) {
-  switch_l3_context_t *l3_ctx = NULL;
+  switch_l3_context_t* l3_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   l3_ctx = SWITCH_MALLOC(device, sizeof(switch_l3_context_t), 0x1);
@@ -64,62 +65,57 @@ switch_status_t switch_l3_init(switch_device_t device) {
     krnlmon_log_error(
         "l3 init: Failed to allocate memory for switch_l3_context_t "
         "on device %d ,error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
   status =
-      switch_device_api_context_set(device, SWITCH_API_TYPE_L3, (void *)l3_ctx);
+      switch_device_api_context_set(device, SWITCH_API_TYPE_L3, (void*)l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "l3 init: Failed to set device context device %d "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
-  
+
   l3_ctx->route_hashtable.size = IPV4_TABLE_SIZE;
   l3_ctx->route_hashtable.compare_func = switch_route_entry_hash_compare;
   l3_ctx->route_hashtable.key_func = switch_route_table_entry_key_init;
   l3_ctx->route_hashtable.hash_seed = SWITCH_ROUTE_HASH_SEED;
-  
+
   status = SWITCH_HASHTABLE_INIT(&l3_ctx->route_hashtable);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "l3 init: Failed to init hashtable on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  status = switch_handle_type_init(
-      device, SWITCH_HANDLE_TYPE_ROUTE, IPV4_TABLE_SIZE);
+  status = switch_handle_type_init(device, SWITCH_HANDLE_TYPE_ROUTE,
+                                   IPV4_TABLE_SIZE);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "l3 init: Failed to init SWITCH_HANDLE_TYPE_ROUTE on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
   return status;
-} 
+}
 
 switch_status_t switch_l3_free(switch_device_t device) {
-  switch_l3_context_t *l3_ctx = NULL;
+  switch_l3_context_t* l3_ctx = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
-  status = switch_device_api_context_get(
-      device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
+  status = switch_device_api_context_get(device, SWITCH_API_TYPE_L3,
+                                         (void**)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "l3 free: Failed to get device context on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
 
   status = SWITCH_HASHTABLE_DONE(&l3_ctx->route_hashtable);
@@ -127,8 +123,7 @@ switch_status_t switch_l3_free(switch_device_t device) {
     krnlmon_log_error(
         "l3 free: SWITCH_HASHTABLE_DONE failed on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
 
   status = switch_handle_type_free(device, SWITCH_HANDLE_TYPE_ROUTE);
@@ -136,8 +131,7 @@ switch_status_t switch_l3_free(switch_device_t device) {
     krnlmon_log_error(
         "l3 free: Failed to free SWITCH_HANDLE_TYPE_ROUTE on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
   }
 
   SWITCH_FREE(device, l3_ctx);
@@ -148,11 +142,10 @@ switch_status_t switch_l3_free(switch_device_t device) {
 }
 
 switch_status_t switch_route_table_hash_lookup(
-    switch_device_t device,
-    switch_route_entry_t *route_entry,
-    switch_handle_t *route_handle) {
-  switch_l3_context_t *l3_ctx = NULL;
-  switch_route_info_t *route_info = NULL;
+    switch_device_t device, switch_route_entry_t* route_entry,
+    switch_handle_t* route_handle) {
+  switch_l3_context_t* l3_ctx = NULL;
+  switch_route_info_t* route_info = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!route_entry) {
@@ -160,24 +153,22 @@ switch_status_t switch_route_table_hash_lookup(
     krnlmon_log_error(
         "route table lookup failed on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  status = switch_device_api_context_get(
-      device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
+  status = switch_device_api_context_get(device, SWITCH_API_TYPE_L3,
+                                         (void**)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "route table lookup: Failed to get device context on device %d: "
         ",error: %s\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
-  status = SWITCH_HASHTABLE_SEARCH(
-      &l3_ctx->route_hashtable, (void *)route_entry, (void **)&route_info);
+  status = SWITCH_HASHTABLE_SEARCH(&l3_ctx->route_hashtable, (void*)route_entry,
+                                   (void**)&route_info);
   if (status == SWITCH_STATUS_SUCCESS) {
     *route_handle = route_info->api_route_info.route_handle;
   }
@@ -187,9 +178,9 @@ switch_status_t switch_route_table_hash_lookup(
 
 switch_status_t switch_route_hashtable_insert(switch_device_t device,
                                               switch_handle_t route_handle) {
-  switch_l3_context_t *l3_ctx = NULL;
-  switch_route_info_t *route_info = NULL;
-  switch_route_entry_t *route_entry = NULL;
+  switch_l3_context_t* l3_ctx = NULL;
+  switch_route_info_t* route_info = NULL;
+  switch_route_entry_t* route_entry = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_ROUTE_HANDLE(route_handle)) {
@@ -197,9 +188,7 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
     krnlmon_log_error(
         "route hashtable insert failed on device %d "
         ",route handle 0x%lx, error: %s\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -208,37 +197,30 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
     krnlmon_log_error(
         "route hashtable insert: Failed to get route info on device %d "
         ",route handle 0x%lx, error: %s\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
   route_entry = &route_info->route_entry;
 
-  status = switch_device_api_context_get(
-      device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
+  status = switch_device_api_context_get(device, SWITCH_API_TYPE_L3,
+                                         (void**)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "route hashtable insert failed on device %d "
         "route handle 0x%lx: l3 context get failed(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
-  status = SWITCH_HASHTABLE_INSERT(&l3_ctx->route_hashtable,
-                                   &((route_info)->node),
-                                   (void *)route_entry,
-                                   (void *)(route_info));
+  status =
+      SWITCH_HASHTABLE_INSERT(&l3_ctx->route_hashtable, &((route_info)->node),
+                              (void*)route_entry, (void*)(route_info));
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "route hashtable insert failed on device %d "
         "route handle 0x%lx: hashtable insert failed(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -247,9 +229,9 @@ switch_status_t switch_route_hashtable_insert(switch_device_t device,
 
 switch_status_t switch_route_hashtable_remove(switch_device_t device,
                                               switch_handle_t route_handle) {
-  switch_l3_context_t *l3_ctx = NULL;
-  switch_route_info_t *route_info = NULL;
-  switch_route_entry_t *route_entry = NULL;
+  switch_l3_context_t* l3_ctx = NULL;
+  switch_route_info_t* route_info = NULL;
+  switch_route_entry_t* route_entry = NULL;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   if (!SWITCH_ROUTE_HANDLE(route_handle)) {
@@ -257,9 +239,7 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
     krnlmon_log_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: route handle invalid(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -268,35 +248,29 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
     krnlmon_log_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: route get failed(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
   route_entry = &route_info->route_entry;
 
-  status = switch_device_api_context_get(
-      device, SWITCH_API_TYPE_L3, (void **)&l3_ctx);
+  status = switch_device_api_context_get(device, SWITCH_API_TYPE_L3,
+                                         (void**)&l3_ctx);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: l3 context get failed(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
-  status = SWITCH_HASHTABLE_DELETE(
-      &l3_ctx->route_hashtable, (void *)route_entry, (void **)&route_info);
+  status = SWITCH_HASHTABLE_DELETE(&l3_ctx->route_hashtable, (void*)route_entry,
+                                   (void**)&route_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(
         "route hashtable delete failed on device %d "
         "route handle 0x%lx: l3 hashtable delete failed(%s)\n",
-        device,
-        route_handle,
-        switch_error_to_string(status));
+        device, route_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -304,29 +278,27 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
 }
 
 switch_status_t switch_api_l3_route_add(
-    switch_device_t device, switch_api_route_entry_t *api_route_entry) 
-{
+    switch_device_t device, switch_api_route_entry_t* api_route_entry) {
   switch_handle_t nhop_group_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_route_info_t *route_info = NULL;
-  switch_nhop_group_info_t *nhop_group_info = NULL;
+  switch_route_info_t* route_info = NULL;
+  switch_nhop_group_info_t* nhop_group_info = NULL;
   switch_route_entry_t route_entry;
   switch_handle_t route_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t vrf_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t nhop_default_group_handle = SWITCH_API_INVALID_HANDLE;
-  switch_nhop_member_t *nhop_member = NULL;
+  switch_nhop_member_t* nhop_member = NULL;
 
   if (!api_route_entry) {
     status = SWITCH_STATUS_INVALID_PARAMETER;
     krnlmon_log_error(
         "l3 route table add failed on device %d "
         "parameters invalid(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
-  
+
   vrf_handle = api_route_entry->vrf_handle;
   if (!SWITCH_VRF_HANDLE(vrf_handle)) {
     status = SWITCH_STATUS_INVALID_HANDLE;
@@ -334,9 +306,7 @@ switch_status_t switch_api_l3_route_add(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "vrf handle invalid(%s)\n",
-        device,
-        vrf_handle,
-        switch_error_to_string(status));
+        device, vrf_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -352,9 +322,7 @@ switch_status_t switch_api_l3_route_add(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "route table lookup failed(%s)\n",
-        device,
-        vrf_handle,
-        switch_error_to_string(status));
+        device, vrf_handle, switch_error_to_string(status));
     return status;
   }
 
@@ -363,8 +331,7 @@ switch_status_t switch_api_l3_route_add(
     krnlmon_log_error(
         "l3 route table add failed on device %d "
         "route handle create failed(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -373,59 +340,61 @@ switch_status_t switch_api_l3_route_add(
     krnlmon_log_error(
         "l3 route table add failed on device %d "
         "route get failed(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
   if (switch_handle_type_get(api_route_entry->nhop_handle) ==
-                       SWITCH_HANDLE_TYPE_NHOP) {
-    status = switch_api_get_default_nhop_group(device,
-                                               &nhop_default_group_handle);
+      SWITCH_HANDLE_TYPE_NHOP) {
+    status =
+        switch_api_get_default_nhop_group(device, &nhop_default_group_handle);
     if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("Unable to get default NHOP group "
-                    ":%s \n", switch_error_to_string(status));
-        return status;
+      krnlmon_log_error(
+          "Unable to get default NHOP group "
+          ":%s \n",
+          switch_error_to_string(status));
+      return status;
     }
 
-    status = switch_nhop_member_get_from_nhop(
-                                        device,
-                                        nhop_default_group_handle,
-                                        api_route_entry->nhop_handle,
-                                        &nhop_member);
+    status = switch_nhop_member_get_from_nhop(device, nhop_default_group_handle,
+                                              api_route_entry->nhop_handle,
+                                              &nhop_member);
     if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("Unable to get nhop member handle for nhop 0x%lx"
-                    ": %s \n", api_route_entry->nhop_handle,
-                    switch_error_to_string(status));
-        return status;
+      krnlmon_log_error(
+          "Unable to get nhop member handle for nhop 0x%lx"
+          ": %s \n",
+          api_route_entry->nhop_handle, switch_error_to_string(status));
+      return status;
     }
     api_route_entry->nhop_member_handle = nhop_member->member_handle;
     status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
                                         SWITCH_ACTION_NHOP);
     if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error("ipv4 table update failed for NHOP action "
-                 ":%s \n", switch_error_to_string(status));
-        return status;
+      krnlmon_log_error(
+          "ipv4 table update failed for NHOP action "
+          ":%s \n",
+          switch_error_to_string(status));
+      return status;
     }
   } else if (switch_handle_type_get(api_route_entry->nhop_handle) ==
-                                   SWITCH_HANDLE_TYPE_NHOP_GROUP) {
+             SWITCH_HANDLE_TYPE_NHOP_GROUP) {
     status = switch_pd_ipv4_table_entry(device, api_route_entry, true,
                                         SWITCH_ACTION_NHOP_GROUP);
-    if(status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error("ipv4 table update failed for ECMP action"
-                ": %s\n", switch_error_to_string(status));
+    if (status != SWITCH_STATUS_SUCCESS) {
+      krnlmon_log_error(
+          "ipv4 table update failed for ECMP action"
+          ": %s\n",
+          switch_error_to_string(status));
       return status;
     }
   }
 
   api_route_entry->route_handle = handle;
-  SWITCH_MEMCPY(&route_info->api_route_info,
-                api_route_entry,
+  SWITCH_MEMCPY(&route_info->api_route_info, api_route_entry,
                 sizeof(switch_api_route_entry_t));
   route_info->route_entry.vrf_handle = vrf_handle;
   route_info->nhop_handle = api_route_entry->nhop_handle;
-  SWITCH_MEMCPY(&route_info->route_entry.ip,
-                &api_route_entry->ip_address,
+  SWITCH_MEMCPY(&route_info->route_entry.ip, &api_route_entry->ip_address,
                 sizeof(switch_ip_addr_t));
 
   status = switch_route_hashtable_insert(device, handle);
@@ -434,21 +403,18 @@ switch_status_t switch_api_l3_route_add(
         "l3 route table add failed on device %d "
         "vrf handle 0x%lx "
         "route table insert failed(%s)\n",
-        device,
-        vrf_handle,
-        switch_error_to_string(status));
+        device, vrf_handle, switch_error_to_string(status));
     return status;
   }
 
   return status;
 }
 
-switch_status_t switch_api_l3_delete_route(switch_device_t device,
-    switch_api_route_entry_t *api_route_entry) {
-
+switch_status_t switch_api_l3_delete_route(
+    switch_device_t device, switch_api_route_entry_t* api_route_entry) {
   switch_route_entry_t route_entry;
-  switch_nhop_group_info_t *nhop_group_info = NULL;
-  switch_route_info_t *route_info = NULL;
+  switch_nhop_group_info_t* nhop_group_info = NULL;
+  switch_route_info_t* route_info = NULL;
   switch_api_route_entry_t api_route_info;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_handle_t nhop_group_handle = SWITCH_API_INVALID_HANDLE;
@@ -459,8 +425,7 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
     krnlmon_log_error(
         "l3 route table delete failed on device %d "
         "parameters invalid(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -474,8 +439,7 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
     krnlmon_log_error(
         "l3 route table delete failed on device %d "
         "route entry hash find failed(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
@@ -484,34 +448,34 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
     krnlmon_log_error(
         "l3 route table delete failed on device %d "
         "route get failed(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 
   api_route_info = route_info->api_route_info;
   if (route_info->nhop_handle) {
     if (switch_handle_type_get(api_route_info.nhop_handle) ==
-                               SWITCH_HANDLE_TYPE_NHOP_GROUP) {
+        SWITCH_HANDLE_TYPE_NHOP_GROUP) {
       nhop_group_handle = api_route_info.nhop_handle;
-      status = switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
+      status =
+          switch_nhop_get_group(device, nhop_group_handle, &nhop_group_info);
       if (status != SWITCH_STATUS_SUCCESS) {
         krnlmon_log_error(
             "nhop_group info get failed on device %d nhop_group handle 0x%lx: "
             "nhop_group get Failed:(%s)\n",
-            device,
-            nhop_group_handle,
-            switch_error_to_string(status));
+            device, nhop_group_handle, switch_error_to_string(status));
         return status;
       }
     }
 
-    status = switch_pd_ipv4_table_entry(device, &api_route_info,
-                                        false, SWITCH_ACTION_NONE);
+    status = switch_pd_ipv4_table_entry(device, &api_route_info, false,
+                                        SWITCH_ACTION_NONE);
     SWITCH_ASSERT(status == SWITCH_STATUS_SUCCESS);
-    if(status != SWITCH_STATUS_SUCCESS)
-      krnlmon_log_error("ipv4 table delete failed, error"
-                ": %s\n", switch_error_to_string(status));
+    if (status != SWITCH_STATUS_SUCCESS)
+      krnlmon_log_error(
+          "ipv4 table delete failed, error"
+          ": %s\n",
+          switch_error_to_string(status));
   }
 
   status = switch_route_hashtable_remove(device, route_handle);
@@ -519,8 +483,7 @@ switch_status_t switch_api_l3_delete_route(switch_device_t device,
     krnlmon_log_error(
         "l3 route table delete failed on device %d "
         "route table delete failed(%s)\n",
-        device,
-        switch_error_to_string(status));
+        device, switch_error_to_string(status));
     return status;
   }
 

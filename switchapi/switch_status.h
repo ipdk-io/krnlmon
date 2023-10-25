@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,8 +150,8 @@ extern "C" {
 #define SWITCH_STATUS_INVALID_HANDLE 0x000000018L
 
 /*
-*  RESOURCE is in use
-*/
+ *  RESOURCE is in use
+ */
 #define SWITCH_STATUS_RESOURCE_IN_USE 0x00000019L
 
 /*

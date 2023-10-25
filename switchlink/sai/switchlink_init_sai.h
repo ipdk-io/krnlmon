@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
+#ifndef __SWITCHLINK_INIT_SAI_H__
+#define __SWITCHLINK_INIT_SAI_H__
 
-#ifndef __SWITCHLINK_ANALYZE_H__
-#define __SWITCHLINK_ANALYZE_H__
-
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
+#include "sai.h"
 #include "switchlink/switchlink.h"
 #include "switchlink/switchlink_db.h"
 #include "switchlink/switchlink_utils.h"
-#include "sai.h"
 #include "switchsai/saiinternal.h"
 
 // Init SAI API
@@ -42,27 +41,27 @@ sai_status_t sai_init_lag_api();
 
 // SWITCHLINK_LINK_TYPE_VXLAN handlers
 void switchlink_create_tunnel_interface(
-         switchlink_db_tunnel_interface_info_t *tnl_intf);
+    switchlink_db_tunnel_interface_info_t* tnl_intf);
 void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_BOND handlers
 void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf);
 void switchlink_delete_lag(uint32_t ifindex);
-void switchlink_create_lag_member(switchlink_db_lag_member_info_t* lag_member_info);
+void switchlink_create_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
 void switchlink_delete_lag_member(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_TUN handlers
-void switchlink_create_interface(switchlink_db_interface_info_t *intf);
+void switchlink_create_interface(switchlink_db_interface_info_t* intf);
 void switchlink_delete_interface(uint32_t ifindex);
-
 
 // RTM_NEWNEIGH/ RTM_DELNEIGH handlers
 void switchlink_create_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *ipaddr,
+                             const switchlink_ip_addr_t* ipaddr,
                              switchlink_mac_addr_t mac_addr,
                              switchlink_handle_t intf_h);
 void switchlink_delete_neigh(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *ipaddr,
+                             const switchlink_ip_addr_t* ipaddr,
                              switchlink_handle_t intf_h);
 void switchlink_create_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t bridge_h,
@@ -71,27 +70,27 @@ void switchlink_delete_mac(switchlink_mac_addr_t mac_addr,
                            switchlink_handle_t bridge_h);
 
 // Nexthop handlers
-int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info);
+int switchlink_create_nexthop(switchlink_db_nexthop_info_t* nexthop_info);
 int switchlink_delete_nexthop(switchlink_handle_t nhop_h);
 
 // RTM_NEWROUTE/ RTM_DELROUTE handlers
 void switchlink_create_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst,
-                             const switchlink_ip_addr_t *gateway,
+                             const switchlink_ip_addr_t* dst,
+                             const switchlink_ip_addr_t* gateway,
                              switchlink_handle_t ecmp_h,
                              switchlink_handle_t intf_h);
 void switchlink_delete_route(switchlink_handle_t vrf_h,
-                             const switchlink_ip_addr_t *dst);
+                             const switchlink_ip_addr_t* dst);
 
 // ECMP handlers
-int switchlink_create_ecmp(switchlink_db_ecmp_info_t *ecmp_info);
+int switchlink_create_ecmp(switchlink_db_ecmp_info_t* ecmp_info);
 void switchlink_delete_ecmp(switchlink_handle_t ecmp_h);
 
 // VRF handler
-int switchlink_create_vrf(switchlink_handle_t *vrf_h);
+int switchlink_create_vrf(switchlink_handle_t* vrf_h);
 
-//General utility function
-bool
-validate_delete_nexthop(uint32_t using_by,
-                        switchlink_nhop_using_by_e type);
-#endif /* __SWITCHLINK_ANALYZE_H__ */
+// General utility function
+bool validate_delete_nexthop(uint32_t using_by,
+                             switchlink_nhop_using_by_e type);
+
+#endif /* __SWITCHLINK_INIT_SAI_H__ */

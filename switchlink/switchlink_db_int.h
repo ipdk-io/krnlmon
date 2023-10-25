@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 
 #ifndef __SWITCHLINK_DB_INT_H__
 #define __SWITCHLINK_DB_INT_H__
+
+#include "tommyds/tommyhashlin.h"
+#include "tommyds/tommylist.h"
+#include "tommyds/tommytrieinp.h"
 
 #define min(a, b)           \
   ({                        \
@@ -70,7 +74,6 @@ typedef struct switchlink_db_nexthop_obj_ {
   tommy_node list_node;
   switchlink_db_nexthop_info_t nexthop_info;
 } switchlink_db_nexthop_obj_t;
-
 
 typedef struct switchlink_db_ecmp_obj_ {
   tommy_node list_node;

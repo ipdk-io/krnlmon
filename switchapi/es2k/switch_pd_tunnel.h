@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,28 +20,28 @@
 
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
+#include "switchapi/switch_tunnel.h"
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
 switch_status_t switch_pd_tunnel_entry(
-    switch_device_t device,
-    const switch_api_tunnel_info_t *api_tunnel_info_t,
+    switch_device_t device, const switch_api_tunnel_info_t* api_tunnel_info_t,
     bool entry_add);
 
 switch_status_t switch_pd_tunnel_term_entry(
     switch_device_t device,
-    const switch_api_tunnel_term_info_t *api_tunnel_term_info_t,
+    const switch_api_tunnel_term_info_t* api_tunnel_term_info_t,
     bool entry_add);
 
 switch_status_t switch_pd_vxlan_decap_mod_entry(
     switch_device_t device,
-    const switch_api_tunnel_term_info_t *api_tunnel_term_info_t,
+    const switch_api_tunnel_term_info_t* api_tunnel_term_info_t,
     bool entry_add);
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif 
+#endif

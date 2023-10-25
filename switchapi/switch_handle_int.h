@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
 #ifndef __SWITCH_HANDLE_INT_H__
 #define __SWITCH_HANDLE_INT_H__
 
-#include "switch_internal.h"
 #include "id/id.h"
+#include "switch_internal.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,7 @@ typedef struct switch_handle_info_s {
   switch_handle_type_t type;
 
   /** handle id allocator */
-  switch_id_allocator_t *allocator;
+  switch_id_allocator_t* allocator;
 
   /** number of handles allocated */
   switch_uint32_t num_in_use;
@@ -98,8 +98,7 @@ switch_handle_t switch_handle_create_and_set(switch_device_t device,
 
 switch_status_t switch_handle_get(switch_device_t device,
                                   switch_handle_type_t type,
-                                  switch_handle_t handle,
-                                  void **i_info);
+                                  switch_handle_t handle, void** i_info);
 
 switch_status_t switch_handle_delete(switch_device_t device,
                                      switch_handle_type_t type,
@@ -118,11 +117,11 @@ switch_status_t switch_handle_delete_special(switch_device_t device,
 switch_status_t switch_api_handle_iterate_internal(switch_device_t device,
                                                    switch_handle_type_t type,
                                                    switch_handle_t old_handle,
-                                                   switch_handle_t *new_handle);
+                                                   switch_handle_t* new_handle);
 
 switch_status_t switch_api_handle_count_get(switch_device_t device,
                                             switch_handle_type_t type,
-                                            switch_size_t *num_entries);
+                                            switch_size_t* num_entries);
 
 #define SWITCH_HANDLE_VALID(handle, type) \
   (switch_handle_type_get(handle) == type)
@@ -317,16 +316,16 @@ switch_status_t switch_api_handle_count_get(switch_device_t device,
 #define SWITCH_MPLS_LABEL_STACK_HANDLE(_handle) \
   SWITCH_HANDLE_VALID(_handle, SWITCH_HANDLE_TYPE_MPLS_LABEL_STACK)
 
-#define FOR_EACH_HANDLE_BEGIN(__device, __type, __handle)   \
-  {                                                         \
-    switch_status_t __status = SWITCH_STATUS_SUCCESS;       \
-    switch_handle_t __o_handle = SWITCH_API_INVALID_HANDLE; \
-    switch_handle_t __n_handle = SWITCH_API_INVALID_HANDLE; \
-    do {                                                    \
-      __status = switch_api_handle_iterate_internal(        \
-          __device, __type, __o_handle, &__n_handle);       \
-      SWITCH_ASSERT(__status == SWITCH_STATUS_SUCCESS);     \
-      __handle = __n_handle;                                \
+#define FOR_EACH_HANDLE_BEGIN(__device, __type, __handle)                     \
+  {                                                                           \
+    switch_status_t __status = SWITCH_STATUS_SUCCESS;                         \
+    switch_handle_t __o_handle = SWITCH_API_INVALID_HANDLE;                   \
+    switch_handle_t __n_handle = SWITCH_API_INVALID_HANDLE;                   \
+    do {                                                                      \
+      __status = switch_api_handle_iterate_internal(__device, __type,         \
+                                                    __o_handle, &__n_handle); \
+      SWITCH_ASSERT(__status == SWITCH_STATUS_SUCCESS);                       \
+      __handle = __n_handle;                                                  \
       __o_handle = __n_handle;
 
 #define FOR_EACH_HANDLE_END()                     \

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,41 +39,39 @@ extern "C" {
 #define SWITCH_SRV6_SID_LENGTH 16
 
 /** tunnel handle wrappers */
-#define switch_tunnel_handle_create(_device) \
-  switch_handle_create(                      \
-      _device, SWITCH_HANDLE_TYPE_TUNNEL, sizeof(switch_tunnel_info_t))
+#define switch_tunnel_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_TUNNEL, \
+                       sizeof(switch_tunnel_info_t))
 
 #define switch_tunnel_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_TUNNEL, _handle)
 
-#define switch_tunnel_get(_device, _handle, _info)                    \
-  ({                                                                  \
-    switch_tunnel_info_t *_tmp_tunnel_info = NULL;                    \
-    (void)(_tmp_tunnel_info == *_info);                               \
-    switch_handle_get(                                                \
-        _device, SWITCH_HANDLE_TYPE_TUNNEL, _handle, (void **)_info); \
+#define switch_tunnel_get(_device, _handle, _info)                 \
+  ({                                                               \
+    switch_tunnel_info_t* _tmp_tunnel_info = NULL;                 \
+    (void)(_tmp_tunnel_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_TUNNEL, _handle, \
+                      (void**)_info);                              \
   })
 
 /** tunnel term handle wrappers */
-#define switch_tunnel_term_handle_create(_device)      \
-  switch_handle_create(_device,                        \
-                       SWITCH_HANDLE_TYPE_TUNNEL_TERM, \
+#define switch_tunnel_term_handle_create(_device)               \
+  switch_handle_create(_device, SWITCH_HANDLE_TYPE_TUNNEL_TERM, \
                        sizeof(switch_tunnel_term_info_t))
 
 #define switch_tunnel_term_handle_delete(_device, _handle) \
   switch_handle_delete(_device, SWITCH_HANDLE_TYPE_TUNNEL_TERM, _handle)
 
-#define switch_tunnel_term_get(_device, _handle, _info)                    \
-  ({                                                                       \
-    switch_tunnel_term_info_t *_tmp_tunnel_term_info = NULL;               \
-    (void)(_tmp_tunnel_term_info == *_info);                               \
-    switch_handle_get(                                                     \
-        _device, SWITCH_HANDLE_TYPE_TUNNEL_TERM, _handle, (void **)_info); \
+#define switch_tunnel_term_get(_device, _handle, _info)                 \
+  ({                                                                    \
+    switch_tunnel_term_info_t* _tmp_tunnel_term_info = NULL;            \
+    (void)(_tmp_tunnel_term_info == *_info);                            \
+    switch_handle_get(_device, SWITCH_HANDLE_TYPE_TUNNEL_TERM, _handle, \
+                      (void**)_info);                                   \
   })
 
 /** vxlan default port */
 #define SWITCH_VXLAN_DEFAULT_PORT 4789
-
 
 #define SWITCH_TUNNEL_VNI_SIZE 24
 
@@ -114,16 +112,16 @@ typedef struct switch_tunnel_context_s {
   switch_hashtable_t dst_vtep_hashtable;
 
   /** source ip rewrite index allocator */
-  switch_id_allocator_t *src_ip_id_allocator;
+  switch_id_allocator_t* src_ip_id_allocator;
 
   /** destination ip rewrite index allocator */
-  switch_id_allocator_t *dst_ip_id_allocator;
+  switch_id_allocator_t* dst_ip_id_allocator;
 
   /** tunnel vni allocator */
-  switch_id_allocator_t *tunnel_vni_allocator;
+  switch_id_allocator_t* tunnel_vni_allocator;
 
   /** mpls transit array indexed by label */
-  switch_array_t *mpls_transit_array;
+  switch_array_t* mpls_transit_array;
 
   /** data structure to store tunnel destination IPs */
   Pvoid_t PJLarr_tunnel_dest;
@@ -371,22 +369,20 @@ typedef struct switch_api_tunnel_mapper_entry_s {
 
 switch_status_t switch_api_tunnel_mapper_create(
     const switch_device_t device,
-    const switch_api_tunnel_mapper_t *tunnel_mapper,
-    switch_handle_t *tunnel_mapper_handle);
+    const switch_api_tunnel_mapper_t* tunnel_mapper,
+    switch_handle_t* tunnel_mapper_handle);
 
 switch_status_t switch_api_tunnel_mapper_delete(
     const switch_device_t device, const switch_handle_t tunnel_mapper_handle);
 
 switch_status_t switch_api_tunnel_mapper_entries_get(
-    const switch_device_t device,
-    const switch_handle_t tunnel_mapper_handle,
-    switch_uint16_t *num_entries,
-    switch_handle_t *tunnel_mapper_entry_handles);
+    const switch_device_t device, const switch_handle_t tunnel_mapper_handle,
+    switch_uint16_t* num_entries, switch_handle_t* tunnel_mapper_entry_handles);
 
 switch_status_t switch_api_tunnel_mapper_entry_create(
     const switch_device_t device,
-    const switch_api_tunnel_mapper_entry_t *tunnel_mapper_entry,
-    switch_handle_t *tunnel_mapper_entry_handle);
+    const switch_api_tunnel_mapper_entry_t* tunnel_mapper_entry,
+    switch_handle_t* tunnel_mapper_entry_handle);
 
 switch_status_t switch_api_tunnel_mapper_entry_delete(
     const switch_device_t device,
@@ -395,44 +391,37 @@ switch_status_t switch_api_tunnel_mapper_entry_delete(
 switch_status_t switch_api_tunnel_mapper_entry_get(
     const switch_device_t device,
     const switch_handle_t tunnel_mapper_entry_handle,
-    switch_api_tunnel_mapper_entry_t *tunnel_mapper_entry);
+    switch_api_tunnel_mapper_entry_t* tunnel_mapper_entry);
 
 switch_status_t switch_api_tunnel_create(
-    const switch_device_t device,
-    const switch_api_tunnel_info_t *tunnel_info,
-    switch_handle_t *tunnel_handle);
+    const switch_device_t device, const switch_api_tunnel_info_t* tunnel_info,
+    switch_handle_t* tunnel_handle);
 
-switch_status_t switch_api_tunnel_delete(
-    const switch_handle_t tunnel_handle);
+switch_status_t switch_api_tunnel_delete(const switch_handle_t tunnel_handle);
 
 switch_status_t switch_api_tunnel_info_get(
-    const switch_device_t device,
-    const switch_handle_t tunnel_handle,
-    switch_api_tunnel_info_t *api_tunnel_info);
+    const switch_device_t device, const switch_handle_t tunnel_handle,
+    switch_api_tunnel_info_t* api_tunnel_info);
 
 switch_status_t switch_api_tunnel_interface_get(
-    const switch_device_t device,
-    const switch_handle_t tunnel_handle,
-    switch_handle_t *intf_handle);
+    const switch_device_t device, const switch_handle_t tunnel_handle,
+    switch_handle_t* intf_handle);
 
 switch_status_t switch_api_tunnel_term_entries_get(
-    const switch_device_t device,
-    const switch_handle_t tunnel_handle,
-    switch_uint16_t *num_entries,
-    switch_handle_t *tunnel_term_handles);
+    const switch_device_t device, const switch_handle_t tunnel_handle,
+    switch_uint16_t* num_entries, switch_handle_t* tunnel_term_handles);
 
 switch_status_t switch_api_tunnel_term_create(
     const switch_device_t device,
-    const switch_api_tunnel_term_info_t *tunnel_term_info,
-    switch_handle_t *tunnel_handle);
+    const switch_api_tunnel_term_info_t* tunnel_term_info,
+    switch_handle_t* tunnel_handle);
 
 switch_status_t switch_api_tunnel_term_delete(
     const switch_handle_t tunnel_term_handle);
 
 switch_status_t switch_api_tunnel_term_get(
-    const switch_device_t device,
-    const switch_handle_t tunnel_term_handle,
-    switch_api_tunnel_term_info_t *api_term_info);
+    const switch_device_t device, const switch_handle_t tunnel_term_handle,
+    switch_api_tunnel_term_info_t* api_term_info);
 
 switch_status_t switch_tunnel_init(switch_device_t device);
 

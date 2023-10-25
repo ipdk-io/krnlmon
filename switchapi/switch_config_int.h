@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022-2023 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ typedef struct switch_config_info_s {
 
   bool device_inited[SWITCH_MAX_DEVICE];
 
-  switch_device_context_t *device_ctx[SWITCH_MAX_DEVICE];
+  switch_device_context_t* device_ctx[SWITCH_MAX_DEVICE];
 
   switch_config_params_t config_params;
 
@@ -90,7 +90,7 @@ extern switch_config_info_t config_info;
 
 #define SWITCH_CONFIG_CPU_ETH_INTF() config_info.api_switch_config.cpu_interface
 
-#define SWITCH_CONFIG_CPU_ETH_INTF_LEN() \
+#define SWITCH_CONFIG_CPU_ETH_INTF_LEN()               \
   strnlen(config_info.api_switch_config.cpu_interface, \
           sizeof(config_info.api_switch_config.cpu_interface))
 
@@ -106,12 +106,12 @@ extern switch_config_info_t config_info;
 #define switch_cfg_mc_sess_hdl config_info.mc_sess_hdl
 
 switch_status_t switch_config_table_sizes_get(switch_device_t device,
-                                              switch_size_t *table_sizes);
+                                              switch_size_t* table_sizes);
 
 switch_status_t switch_config_device_context_set(
-    switch_device_t device, switch_device_context_t *device_ctx);
+    switch_device_t device, switch_device_context_t* device_ctx);
 
 switch_status_t switch_config_device_context_get(
-    switch_device_t device, switch_device_context_t **device_ctx);
+    switch_device_t device, switch_device_context_t** device_ctx);
 
 #endif /* __SWITCH_CONFIG_INT_H__ */

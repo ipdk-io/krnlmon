@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handle.h"
+#include "switchlink_init_sai.h"
 
-static sai_next_hop_api_t *sai_nhop_api = NULL;
-static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
+static sai_next_hop_api_t* sai_nhop_api = NULL;
+static sai_next_hop_group_api_t* sai_nhop_group_api = NULL;
 
 /*
  * Routine Description:
@@ -31,12 +31,12 @@ static sai_next_hop_group_api_t *sai_nhop_group_api = NULL;
  */
 
 sai_status_t sai_init_nhop_api() {
-   sai_status_t status = SAI_STATUS_SUCCESS;
+  sai_status_t status = SAI_STATUS_SUCCESS;
 
-   status = sai_api_query(SAI_API_NEXT_HOP, (void **)&sai_nhop_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
-   status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void **)&sai_nhop_group_api);
-   krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_NEXT_HOP, (void**)&sai_nhop_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
+  status = sai_api_query(SAI_API_NEXT_HOP_GROUP, (void**)&sai_nhop_group_api);
+  krnlmon_assert(status == SAI_STATUS_SUCCESS);
 
   return status;
 }
@@ -53,7 +53,7 @@ sai_status_t sai_init_nhop_api() {
  *   -1 in case of error
  */
 
-int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
+int switchlink_create_nexthop(switchlink_db_nexthop_info_t* nexthop_info) {
   sai_status_t status = SAI_STATUS_SUCCESS;
 
   sai_attribute_t attr_list[3];
@@ -68,8 +68,7 @@ int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
   } else {
     attr_list[1].value.ipaddr.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
     memcpy(attr_list[1].value.ipaddr.addr.ip6,
-           &(nexthop_info->ip_addr.ip.v6addr),
-           sizeof(sai_ip6_t));
+           &(nexthop_info->ip_addr.ip.v6addr), sizeof(sai_ip6_t));
   }
   attr_list[2].id = SAI_NEXT_HOP_ATTR_ROUTER_INTERFACE_ID;
   attr_list[2].value.oid = nexthop_info->intf_h;
@@ -83,7 +82,7 @@ int switchlink_create_nexthop(switchlink_db_nexthop_info_t *nexthop_info) {
   attr_list[0].id = SAI_NEXT_HOP_GROUP_MEMBER_ATTR_NEXT_HOP_ID;
   attr_list[0].value.oid = nexthop_info->nhop_h;
   status = sai_nhop_group_api->create_next_hop_group_member(
-           &(nexthop_info->nhop_member_h), 0, 1, attr_list);
+      &(nexthop_info->nhop_member_h), 0, 1, attr_list);
   if (status != SAI_STATUS_SUCCESS) {
     return -1;
   }

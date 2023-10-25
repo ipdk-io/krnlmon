@@ -19,6 +19,10 @@
 
 #include "switchlink_route.h"
 
+#include <netlink/attr.h>
+#include <netlink/msg.h>
+#include <netlink/netlink.h>
+
 /*
  * Routine Description:
  *    Process ecmp netlink messages
@@ -33,8 +37,7 @@
  *    0 in case of failure
  */
 
-static switchlink_handle_t process_ecmp(uint8_t family,
-                                        struct nlattr *attr,
+static switchlink_handle_t process_ecmp(uint8_t family, struct nlattr* attr,
                                         switchlink_handle_t vrf_h) {
   switchlink_db_status_t status;
 
@@ -45,16 +48,16 @@ static switchlink_handle_t process_ecmp(uint8_t family,
   switchlink_db_ecmp_info_t ecmp_info;
   memset(&ecmp_info, 0, sizeof(switchlink_db_ecmp_info_t));
 
-  struct rtnexthop *rnh = (struct rtnexthop *)nla_data(attr);
+  struct rtnexthop* rnh = (struct rtnexthop*)nla_data(attr);
   int attrlen = nla_len(attr);
   while (RTNH_OK(rnh, attrlen)) {
-    struct rtattr *rta = RTNH_DATA(rnh);
+    struct rtattr* rta = RTNH_DATA(rnh);
     if (rta->rta_type == RTA_GATEWAY) {
       switchlink_ip_addr_t gateway;
       memset(&gateway, 0, sizeof(switchlink_ip_addr_t));
       gateway.family = family;
       if (family == AF_INET) {
-        gateway.ip.v4addr.s_addr = ntohl(*((uint32_t *)RTA_DATA(rta)));
+        gateway.ip.v4addr.s_addr = ntohl(*((uint32_t*)RTA_DATA(rta)));
         gateway.prefix_len = 32;
       } else {
         gateway.prefix_len = 128;
@@ -71,18 +74,22 @@ static switchlink_handle_t process_ecmp(uint8_t family,
         nexthop_info.vrf_h = vrf_h;
         status = switchlink_db_get_nexthop_info(&nexthop_info);
         if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          krnlmon_log_debug("Fetched nhop 0x%lx handler, update from"
-                   " route", nexthop_info.nhop_h);
+          krnlmon_log_debug(
+              "Fetched nhop 0x%lx handler, update from"
+              " route",
+              nexthop_info.nhop_h);
           ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
           nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
           switchlink_db_update_nexthop_using_by(&nexthop_info);
         } else {
           if (!switchlink_create_nexthop(&nexthop_info)) {
-             krnlmon_log_debug("Created nhop 0x%lx handler, update from"
-                      " route", nexthop_info.nhop_h);
-             ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
-             nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
-             switchlink_db_add_nexthop(&nexthop_info);
+            krnlmon_log_debug(
+                "Created nhop 0x%lx handler, update from"
+                " route",
+                nexthop_info.nhop_h);
+            ecmp_info.nhops[ecmp_info.num_nhops] = nexthop_info.nhop_h;
+            nexthop_info.using_by |= SWITCHLINK_NHOP_FROM_ROUTE;
+            switchlink_db_add_nexthop(&nexthop_info);
           } else {
             ecmp_info.nhops[ecmp_info.num_nhops] = g_cpu_rx_nhop_h;
           }
@@ -108,8 +115,8 @@ static switchlink_handle_t process_ecmp(uint8_t family,
 }
 
 /* TODO: P4-OVS: Dummy Processing of Netlink messages received
-* Support IPv4 Routing
-*/
+ * Support IPv4 Routing
+ */
 
 /*
  * Routine Description:
@@ -123,10 +130,10 @@ static switchlink_handle_t process_ecmp(uint8_t family,
  *    void
  */
 
-void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
+void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
-  struct nlattr *attr;
-  struct rtmsg *rmsg;
+  struct nlattr* attr;
+  struct rtmsg* rmsg;
   bool src_valid = false;
   bool dst_valid = false;
   bool gateway_valid = false;
@@ -148,18 +155,11 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
   hdrlen = sizeof(struct rtmsg);
   krnlmon_log_debug(
       "%sroute: family = %d, dst_len = %d, src_len = %d, tos = %d, "
-       "table = %d, proto = %d, scope = %d, type = %d, "
-       "flags = 0x%x\n",
-       ((msgtype == RTM_NEWROUTE) ? "new" : "del"),
-       rmsg->rtm_family,
-       rmsg->rtm_dst_len,
-       rmsg->rtm_src_len,
-       rmsg->rtm_tos,
-       rmsg->rtm_table,
-       rmsg->rtm_protocol,
-       rmsg->rtm_scope,
-       rmsg->rtm_type,
-       rmsg->rtm_flags);
+      "table = %d, proto = %d, scope = %d, type = %d, "
+      "flags = 0x%x\n",
+      ((msgtype == RTM_NEWROUTE) ? "new" : "del"), rmsg->rtm_family,
+      rmsg->rtm_dst_len, rmsg->rtm_src_len, rmsg->rtm_tos, rmsg->rtm_table,
+      rmsg->rtm_protocol, rmsg->rtm_scope, rmsg->rtm_type, rmsg->rtm_flags);
 
   if (rmsg->rtm_family > AF_MAX) {
     krnlmon_assert(rmsg->rtm_type == RTN_MULTICAST);
@@ -219,7 +219,7 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
         }
         break;
       case RTA_MULTIPATH:
-          ecmp_h = process_ecmp(af, attr, g_default_vrf_h);
+        ecmp_h = process_ecmp(af, attr, g_default_vrf_h);
         break;
       case RTA_OIF:
         oif_valid = true;
@@ -247,31 +247,29 @@ void switchlink_process_route_msg(const struct nlmsghdr *nlmsg, int msgtype) {
     if (oif_valid) {
       switchlink_db_status_t status;
       status = switchlink_db_get_interface_info(oif, &ifinfo);
-      if(status == SWITCHLINK_DB_STATUS_SUCCESS) {
+      if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
         krnlmon_log_debug("Found interface cache for: %s", ifinfo.ifname);
-        if(ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
+        if (ifinfo.link_type == SWITCHLINK_LINK_TYPE_BOND) {
           intf_h = ifinfo.lag_h;
         } else {
           intf_h = ifinfo.intf_h;
         }
       } else if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        krnlmon_log_error("route: Failed to get switchlink DB interface info, "
-                 "error: %d \n", status);
+        krnlmon_log_error(
+            "route: Failed to get switchlink DB interface info, "
+            "error: %d \n",
+            status);
         return;
       }
     }
     krnlmon_log_info("Create route for %s, with addr: 0x%x", ifinfo.ifname,
-                                                     dst_valid ?
-                                                     dst_addr.ip.v4addr.s_addr :
-                                                     0);
-    switchlink_create_route(g_default_vrf_h,
-                            (dst_valid ? &dst_addr : NULL),
-                            (gateway_valid ? &gateway_addr : NULL),
-                            ecmp_h,
+                     dst_valid ? dst_addr.ip.v4addr.s_addr : 0);
+    switchlink_create_route(g_default_vrf_h, (dst_valid ? &dst_addr : NULL),
+                            (gateway_valid ? &gateway_addr : NULL), ecmp_h,
                             intf_h);
   } else {
-    krnlmon_log_info("Delete route with addr: 0x%x", dst_valid ?
-                                             dst_addr.ip.v4addr.s_addr : 0);
+    krnlmon_log_info("Delete route with addr: 0x%x",
+                     dst_valid ? dst_addr.ip.v4addr.s_addr : 0);
     switchlink_delete_route(g_default_vrf_h, (dst_valid ? &dst_addr : NULL));
   }
 }

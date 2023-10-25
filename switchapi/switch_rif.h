@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,25 +44,22 @@ typedef struct switch_api_rif_info_s {
   switch_handle_t rmac_handle; /**< rmac group id */
   switch_handle_t nh_handle;   /**< shared nexthop if a route points to RIF */
 
-  switch_port_t port_id; /** target dp index used when packet need to tx */
+  switch_port_t port_id;     /** target dp index used when packet need to tx */
   switch_port_t phy_port_id; /** target dp index used when packet need to rx */
 
 } switch_api_rif_info_t;
 
 switch_status_t switch_rif_init(switch_device_t device);
 
-
 switch_status_t switch_rif_free(switch_device_t device);
 
 switch_status_t switch_api_rif_attribute_get(
-    const switch_device_t device,
-    const switch_handle_t rif_handle,
-    const switch_uint64_t rif_flags,
-    switch_api_rif_info_t *api_rif_info);
+    const switch_device_t device, const switch_handle_t rif_handle,
+    const switch_uint64_t rif_flags, switch_api_rif_info_t* api_rif_info);
 
 switch_status_t switch_api_rif_create(switch_device_t device,
-                                      switch_api_rif_info_t *api_rif_info,
-                                      switch_handle_t *rif_handle);
+                                      switch_api_rif_info_t* api_rif_info,
+                                      switch_handle_t* rif_handle);
 switch_status_t switch_api_rif_delete(switch_device_t device,
                                       switch_handle_t rif_handle);
 
