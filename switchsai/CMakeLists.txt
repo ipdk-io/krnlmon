@@ -18,7 +18,7 @@ add_library(switchsai_o OBJECT
 )
 
 if(ES2K_TARGET)
-  target_sources(switchsai_o OBJECT PRIVATE sailag.c)
+  target_sources(switchsai_o PRIVATE sailag.c)
 endif()
 
 target_include_directories(switchsai_o PRIVATE
