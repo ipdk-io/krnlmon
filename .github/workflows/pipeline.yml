@@ -74,7 +74,7 @@ jobs:
           sudo apt install $PREREQS
 
       - name: Build krnlmon
-        working-directory: krnlmon
+        working-directory: recipe
         run: |
           export DEPEND_INSTALL=$DEPS_INSTALL_DIR
           export SDE_INSTALL=$SDE_INSTALL_DIR
@@ -125,7 +125,7 @@ jobs:
           sudo apt install $PREREQS
 
       - name: Run dpdk unit tests
-        working-directory: krnlmon
+        working-directory: recipe
         run: |
           export DEPEND_INSTALL=$DEPS_INSTALL_DIR
           export SDE_INSTALL=$SDE_INSTALL_DIR
