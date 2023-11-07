@@ -20,11 +20,10 @@ if(SAI_SOURCE_DIR STREQUAL "")
   message(FATAL_ERROR "SAI_SOURCE_DIR not defined!")
 endif()
 
-find_path(SAI_INCLUDE_DIR NAMES "sai.h" PATHS ${SAI_SOURCE_DIR}/inc)
-if(NOT SAI_INCLUDE_DIR)
+set(SAI_INCLUDE_DIR ${SAI_SOURCE_DIR}/inc)
+if(NOT EXISTS ${SAI_INCLUDE_DIR}/sai.h)
   message(FATAL_ERROR "sai.h not found")
 endif()
-mark_as_advanced(SAI_INCLUDE_DIR)
 
 # Find netlink libraries
 pkg_check_modules(nl3 REQUIRED IMPORTED_TARGET libnl-3.0)
