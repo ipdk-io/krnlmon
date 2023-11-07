@@ -31,9 +31,74 @@ env:
 
 jobs:
   #---------------------------------------------------------------------
-  # check_krnlmon_dpdk
+  # 1 - dpdk_build_check
   #---------------------------------------------------------------------
-  check_krnlmon_dpdk:
+  dpdk_build_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out krnlmon repository
+        uses: actions/checkout@v3
+        with:
+          path: krnlmon
+
+      - name: Check out SAI repository
+        uses: actions/checkout@v3
+        with:
+          repository: opencomputeproject/SAI
+          path: SAI
+
+      - name: Check out networking-recipe
+        uses: actions/checkout@v3
+        with:
+          repository: ipdk-io/networking-recipe
+          path: recipe
+
+      - name: Install prerequisites
+        run: |
+          sudo apt install $PREREQS
+
+      - name: Install DPDK SDE
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: ${{ env.SDE_REPOSITORY }}
+          tag: ${{ env.SDE_TAG }}
+          fileName: ${{ env.SDE_FILENAME }}
+
+      - run: |
+          sudo tar -xzf $SDE_FILENAME -C /
+          rm $SDE_FILENAME
+
+      - name: Install stratum dependencies
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: ${{ env.DEPS_REPOSITORY }}
+          tag: ${{ env.DEPS_TAG }}
+          fileName: ${{ env.DEPS_FILENAME }}
+
+      - run: |
+          sudo tar -xzf $DEPS_FILENAME -C /
+          rm $DEPS_FILENAME
+
+      - name: Create pipeline.cmake file
+        working-directory: krnlmon
+        run: |
+          echo "set(CMAKE_MODULE_PATH \"$GITHUB_WORKSPACE/recipe/cmake\" CACHE PATH \"\")" > pipeline.cmake
+          echo "set(CMAKE_PREFIX_PATH \"$GITHUB_WORKSPACE/krnlmon/install\" CACHE PATH \"\")" > pipeline.cmake
+          echo "set(SAI_SOURCE_DIR \"$GITHUB_WORKSPACE/SAI\" CACHE PATH \"\")" >> pipeline.cmake
+
+      - name: Run unit tests
+        working-directory: krnlmon
+        run: |
+          export DEPEND_INSTALL=$DEPS_INSTALL_DIR
+          export SDE_INSTALL=$SDE_INSTALL_DIR
+          cmake -S . -B build -C pipeline.cmake -DTDI_TARGET=DPDK
+          cmake --build build -j4 --target install
+
+  #---------------------------------------------------------------------
+  # 2 - dpdk_unit_tests
+  #---------------------------------------------------------------------
+  dpdk_unit_tests:
     runs-on: ubuntu-latest
 
     steps:
