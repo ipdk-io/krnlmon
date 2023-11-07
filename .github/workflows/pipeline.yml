@@ -37,10 +37,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out krnlmon repository
+      - name: Check out networking-recipe
         uses: actions/checkout@v3
         with:
-          path: krnlmon
+          repository: ipdk-io/networking-recipe
+          path: recipe
 
       - name: Check out SAI repository
         uses: actions/checkout@v3
@@ -48,52 +49,37 @@ jobs:
           repository: opencomputeproject/SAI
           path: SAI
 
-      - name: Check out networking-recipe
-        uses: actions/checkout@v3
-        with:
-          repository: ipdk-io/networking-recipe
-          path: recipe
-
-      - name: Install prerequisites
-        run: |
-          sudo apt install $PREREQS
-
-      - name: Install DPDK SDE
+      - name: Install dpdk-sde
         uses: robinraju/release-downloader@v1.8
         with:
           repository: ${{ env.SDE_REPOSITORY }}
           tag: ${{ env.SDE_TAG }}
           fileName: ${{ env.SDE_FILENAME }}
-
       - run: |
           sudo tar -xzf $SDE_FILENAME -C /
           rm $SDE_FILENAME
 
-      - name: Install stratum dependencies
+      - name: Install stratum-deps
         uses: robinraju/release-downloader@v1.8
         with:
           repository: ${{ env.DEPS_REPOSITORY }}
           tag: ${{ env.DEPS_TAG }}
           fileName: ${{ env.DEPS_FILENAME }}
-
       - run: |
           sudo tar -xzf $DEPS_FILENAME -C /
           rm $DEPS_FILENAME
 
-      - name: Create pipeline.cmake file
-        working-directory: krnlmon
+      - name: Install prerequisites
         run: |
-          echo "set(CMAKE_MODULE_PATH \"$GITHUB_WORKSPACE/recipe/cmake\" CACHE PATH \"\")" > pipeline.cmake
-          echo "set(CMAKE_PREFIX_PATH \"$GITHUB_WORKSPACE/krnlmon/install\" CACHE PATH \"\")" > pipeline.cmake
-          echo "set(SAI_SOURCE_DIR \"$GITHUB_WORKSPACE/SAI\" CACHE PATH \"\")" >> pipeline.cmake
+          sudo apt install $PREREQS
 
-      - name: Run unit tests
+      - name: Build krnlmon
         working-directory: krnlmon
         run: |
           export DEPEND_INSTALL=$DEPS_INSTALL_DIR
           export SDE_INSTALL=$SDE_INSTALL_DIR
-          cmake -S . -B build -C pipeline.cmake -DTDI_TARGET=DPDK
-          cmake --build build -j4 --target install
+          ./make-all.sh --target=dpdk --rpath --no-build
+          cmake --build build -j4 --target krnlmon
 
   #---------------------------------------------------------------------
   # 2 - dpdk_unit_tests
@@ -102,10 +88,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out krnlmon repository
+      - name: Check out networking-recipe
         uses: actions/checkout@v3
         with:
-          path: krnlmon
+          repository: ipdk-io/networking-recipe
+          path: recipe
 
       - name: Check out SAI repository
         uses: actions/checkout@v3
@@ -113,48 +100,34 @@ jobs:
           repository: opencomputeproject/SAI
           path: SAI
 
-      - name: Check out networking-recipe
-        uses: actions/checkout@v3
-        with:
-          repository: ipdk-io/networking-recipe
-          path: recipe
-
-      - name: Install prerequisites
-        run: |
-          sudo apt install $PREREQS
-
-      - name: Install DPDK SDE
+      - name: Install dpdk-sde
         uses: robinraju/release-downloader@v1.8
         with:
           repository: ${{ env.SDE_REPOSITORY }}
           tag: ${{ env.SDE_TAG }}
           fileName: ${{ env.SDE_FILENAME }}
-
       - run: |
           sudo tar -xzf $SDE_FILENAME -C /
           rm $SDE_FILENAME
 
-      - name: Install stratum dependencies
+      - name: Install stratum-deps
         uses: robinraju/release-downloader@v1.8
         with:
           repository: ${{ env.DEPS_REPOSITORY }}
           tag: ${{ env.DEPS_TAG }}
           fileName: ${{ env.DEPS_FILENAME }}
-
       - run: |
           sudo tar -xzf $DEPS_FILENAME -C /
           rm $DEPS_FILENAME
 
-      - name: Create pipeline.cmake file
-        working-directory: krnlmon
+      - name: Install prerequisites
         run: |
-          echo "set(CMAKE_MODULE_PATH \"$GITHUB_WORKSPACE/recipe/cmake\" CACHE PATH \"\")" > pipeline.cmake
-          echo "set(SAI_SOURCE_DIR \"$GITHUB_WORKSPACE/SAI\" CACHE PATH \"\")" >> pipeline.cmake
+          sudo apt install $PREREQS
 
-      - name: Run unit tests
+      - name: Run dpdk unit tests
         working-directory: krnlmon
         run: |
           export DEPEND_INSTALL=$DEPS_INSTALL_DIR
           export SDE_INSTALL=$SDE_INSTALL_DIR
-          cmake -S . -B build -C pipeline.cmake -DTDI_TARGET=DPDK
+          ./make-all.sh --target=dpdk --no-build
           cmake --build build --target krnlmon-test
