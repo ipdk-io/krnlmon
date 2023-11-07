@@ -43,11 +43,11 @@ jobs:
           repository: ipdk-io/networking-recipe
           path: recipe
 
-      - name: Check out SAI repository
-        uses: actions/checkout@v3
-        with:
-          repository: opencomputeproject/SAI
-          path: SAI
+      - name: Fetch krnlmon and SAI submodules
+        working-directory: recipe
+        run: |
+          git submodule update --init krnlmon/krnlmon
+          git submodule update --init krnlmon/SAI
 
       - name: Install dpdk-sde
         uses: robinraju/release-downloader@v1.8
@@ -94,11 +94,11 @@ jobs:
           repository: ipdk-io/networking-recipe
           path: recipe
 
-      - name: Check out SAI repository
-        uses: actions/checkout@v3
-        with:
-          repository: opencomputeproject/SAI
-          path: SAI
+      - name: Fetch krnlmon and SAI submodules
+        working-directory: recipe
+        run: |
+          git submodule update --init krnlmon/krnlmon
+          git submodule update --init krnlmon/SAI
 
       - name: Install dpdk-sde
         uses: robinraju/release-downloader@v1.8
