@@ -291,8 +291,18 @@ switch_status_t switch_api_l2_forward_create(const switch_device_t device,
 
       status = switch_rif_get(device, api_l2_info->rif_handle, &rif_info);
       CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+      /* Get appropiate port_id if not already set */
+      switch_pd_to_get_port_id(&rif_info->api_rif_info);
+
+      /* Get physical port ID from its corresponding PR VSI ID */
       status = switch_pd_get_physical_port_id(
           device, rif_info->api_rif_info.port_id, &api_l2_info->port_id);
+      CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+      /* Get bridge ID from its physical port ID */
+      status = switch_pd_get_bridge_id(device, api_l2_info->port_id,
+                                       &api_l2_info->bridge_id);
       CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
     }
 
@@ -312,30 +322,9 @@ switch_status_t switch_api_l2_forward_create(const switch_device_t device,
       return status;
     }
 
-    status = switch_pd_l2_tx_ipv6_forward_table_entry(device, api_l2_info,
-                                                      api_tunnel_info, true);
-    if (status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error(
-          "switch_api_l2_ipv6_forward_create: Failed to create platform "
-          "dependent"
-          " l2 tx forward table entry on device: %d,error: (%s)\n",
-          device, switch_error_to_string(status));
-      return status;
-    }
-
     // These FDB entries are learnt from OVS, and same FDB entry rule
     // should be programmed for 2_fwd_rx_with_tunnel_table too.
     if (api_l2_info->learn_from == SWITCH_L2_FWD_LEARN_VLAN_INTERFACE) {
-      status = switch_pd_sem_bypass_table_entry(device, api_l2_info,
-                                                api_tunnel_info, true);
-      if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error(
-            "switch_api_l2_forward_create: Failed to create platform "
-            "dependent sem bypass table entry on device %d: ,error :(%s)\n",
-            device, switch_error_to_string(status));
-        return status;
-      }
-
       status = switch_pd_l2_rx_forward_with_tunnel_table_entry(
           device, api_l2_info, true);
       if (status != SWITCH_STATUS_SUCCESS) {
@@ -437,30 +426,10 @@ switch_status_t switch_api_l2_forward_delete(
       return status;
     }
 
-    status = switch_pd_l2_tx_ipv6_forward_table_entry(device, api_l2_info, NULL,
-                                                      false);
-    if (status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error(
-          "switch_api_l2_ipv6_forward_create: Failed to delete platform "
-          "dependent l2 tx forward table entry on device: %d,error: (%s)",
-          device, switch_error_to_string(status));
-      return status;
-    }
-
     /* These FDB entries are learnt from OVS, and same FDB entry rule
      * should be deleted from 2_fwd_rx_with_tunnel_table too.
      */
     if (l2_info->api_l2_info.learn_from == SWITCH_L2_FWD_LEARN_VLAN_INTERFACE) {
-      status =
-          switch_pd_sem_bypass_table_entry(device, api_l2_info, NULL, false);
-      if (status != SWITCH_STATUS_SUCCESS) {
-        krnlmon_log_error(
-            "switch_api_l2_forward_delete: Failed to delete platform "
-            "dependent sem bypass table entry on device %d: ,error :%s\n",
-            device, switch_error_to_string(status));
-        return status;
-      }
-
       status = switch_pd_l2_rx_forward_with_tunnel_table_entry(
           device, api_l2_info, false);
       if (status != SWITCH_STATUS_SUCCESS) {
