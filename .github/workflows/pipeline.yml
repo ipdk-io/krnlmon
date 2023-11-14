@@ -93,3 +93,28 @@ jobs:
           export SDE_INSTALL=$SDE_INSTALL_DIR
           cmake -S . -B build -C pipeline.cmake -DTDI_TARGET=DPDK
           cmake --build build --target krnlmon-test
+
+  #---------------------------------------------------------------------
+  # check_clang_format
+  #---------------------------------------------------------------------
+  check_clang_format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out krnlmon repository
+        uses: actions/checkout@v3
+
+      - name: Get list of changed Files
+        id: changes
+        uses: tj-actions/changed-files@v40
+        with:
+          files: |
+            **.c
+            **.h
+            **.cc
+
+      - name: Check for formatting errors
+        run: |
+          for file in ${{ steps.changes.outputs.all_changed_files }}; do
+            clang-format --dry-run -Werror $file
+          done
