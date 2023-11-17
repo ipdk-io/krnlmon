@@ -385,7 +385,6 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
   const tdi_table_hdl* table_hdl = NULL;
   const tdi_table_info_hdl* table_info_hdl = NULL;
 
-  switch_handle_t rif_handle;
   switch_rif_info_t* rif_info = NULL;
   switch_port_t port_id;
 
@@ -459,6 +458,50 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
     goto dealloc_resources;
   }
 
+  switch_status_t switch_status =
+      switch_rif_get(device, api_l2_rx_info->rif_handle, &rif_info);
+  if (switch_status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error("Unable to get rif info, error: %d", switch_status);
+    goto dealloc_resources;
+  }
+
+  switch_status =
+      switch_pd_get_physical_port_id(device, rif_info->api_rif_info.port_id,
+                                     (uint8_t*)&api_l2_rx_info->port_id);
+  if (switch_status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error("Unable to get physical port ID, error: %d",
+                      switch_status);
+    goto dealloc_resources;
+  }
+
+  status = switch_pd_get_bridge_id(device, (uint8_t)api_l2_rx_info->port_id,
+                                   (uint8_t*)&api_l2_rx_info->bridge_id);
+  if (switch_status != SWITCH_STATUS_SUCCESS) {
+    krnlmon_log_error("Unable to get bridge ID, error: %d", switch_status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_id_get(table_info_hdl,
+                                LNW_L2_FWD_RX_TABLE_KEY_BRIDGE_ID, &field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                      LNW_L2_FWD_RX_TABLE_KEY_DST_MAC, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_set_value_ptr(
+      key_hdl, field_id, (const uint8_t*)&api_l2_rx_info->bridge_id, 1);
+
+  status = tdi_key_field_id_get(
+      table_info_hdl, LNW_L2_FWD_RX_TABLE_KEY_SMAC_LEARNED, &field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                      LNW_L2_FWD_RX_TABLE_KEY_DST_MAC, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_set_value(key_hdl, field_id, 1);
+
   if (entry_add && SWITCH_RIF_HANDLE(api_l2_rx_info->rif_handle)) {
     /* Add an entry to target */
     krnlmon_log_info(
@@ -480,14 +523,6 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
           "Unable to get action allocator for ID: %d, "
           "error: %d",
           action_id, status);
-      goto dealloc_resources;
-    }
-
-    rif_handle = api_l2_rx_info->rif_handle;
-    switch_status_t switch_status =
-        switch_rif_get(device, rif_handle, &rif_info);
-    if (switch_status != SWITCH_STATUS_SUCCESS) {
-      krnlmon_log_error("Unable to get rif info, error: %d", switch_status);
       goto dealloc_resources;
     }
 

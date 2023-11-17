@@ -106,6 +106,8 @@ extern "C" {
 
 #define LNW_L2_FWD_RX_TABLE_KEY_BRIDGE_ID "user_meta.pmeta.bridge_id"
 
+#define LNW_L2_FWD_RX_TABLE_KEY_SMAC_LEARNED "user_meta.pmeta.smac_learned"
+
 #define LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
 #define LNW_ACTION_L2_FWD_PARAM_PORT "port"
 #define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG \

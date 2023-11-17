@@ -27,9 +27,9 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rmac_int.h"
 
-tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
-                                            uint32_t netdev_port_id,
-                                            uint8_t* physical_port_id) {
+switch_status_t switch_pd_get_physical_port_id(switch_device_t device,
+                                               uint32_t netdev_port_id,
+                                               uint8_t* physical_port_id) {
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -187,9 +187,9 @@ dealloc_resources:
   return switch_pd_tdi_status_to_status(status);
 }
 
-tdi_status_t switch_pd_get_bridge_id(switch_device_t device,
-                                     uint8_t physical_port_id,
-                                     uint8_t* bridge_id) {
+switch_status_t switch_pd_get_bridge_id(switch_device_t device,
+                                        uint8_t physical_port_id,
+                                        uint8_t* bridge_id) {
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -309,7 +309,7 @@ tdi_status_t switch_pd_get_bridge_id(switch_device_t device,
     goto dealloc_resources;
   }
 
-  status = tdi_key_field_set_value(key_hdl, field_id, 1);
+  status = tdi_key_field_set_value(key_hdl, field_id, 16777214);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error(
         "Unable to set value for key ID: %d for %s"
@@ -353,9 +353,6 @@ tdi_status_t switch_pd_get_bridge_id(switch_device_t device,
                       ACTION_L2_FWD_AND_BYPASS_BRIDGE_PARAM_PORT, status);
     goto dealloc_resources;
   }
-  //    status = tdi_data_field_get_value_ptr(data_hdl, data_field_id,
-  //                                          sizeof(*physical_port_id),
-  //                                          physical_port_id);
   status = tdi_data_field_get_value(data_hdl, data_field_id, &get_bridge_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Failed to get value for the handle: %d", status);
