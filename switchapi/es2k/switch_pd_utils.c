@@ -27,9 +27,9 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rmac_int.h"
 
-tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
-                                            uint32_t netdev_port_id,
-                                            uint8_t* physical_port_id) {
+switch_status_t switch_pd_get_physical_port_id(switch_device_t device,
+                                               uint32_t netdev_port_id,
+                                               uint8_t* physical_port_id) {
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -82,21 +82,17 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
     goto dealloc_resources;
   }
 
-  status = tdi_table_from_name_get(
-      info_hdl, LNW_HANDLE_TX_FROM_HOST_TO_OVS_AND_OVS_TO_WIRE_TABLE,
-      &table_hdl);
+  status = tdi_table_from_name_get(info_hdl, LNW_TX_ACC_VSI_TABLE, &table_hdl);
   if (status != TDI_SUCCESS || !table_hdl) {
     krnlmon_log_error("Unable to get table handle for: %s, error: %d",
-                      LNW_HANDLE_TX_FROM_HOST_TO_OVS_AND_OVS_TO_WIRE_TABLE,
-                      status);
+                      LNW_TX_ACC_VSI_TABLE, status);
     goto dealloc_resources;
   }
 
   status = tdi_table_key_allocate(table_hdl, &key_hdl);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
-                      LNW_HANDLE_TX_FROM_HOST_TO_OVS_AND_OVS_TO_WIRE_TABLE,
-                      status);
+                      LNW_TX_ACC_VSI_TABLE, status);
     goto dealloc_resources;
   }
 
@@ -108,11 +104,10 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
   }
 
   status = tdi_key_field_id_get(
-      table_info_hdl, LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_META_COMMON_VSI,
-      &field_id);
+      table_info_hdl, LNW_TX_ACC_VSI_TABLE_KEY_META_COMMON_VSI, &field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
-                      LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_META_COMMON_VSI, status);
+                      LNW_TX_ACC_VSI_TABLE_KEY_META_COMMON_VSI, status);
     goto dealloc_resources;
   }
 
@@ -120,36 +115,36 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
       key_hdl, field_id, netdev_port_id - SWITCH_PD_TARGET_VPORT_OFFSET);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error(
-        "Unable to set value for key ID: %d for vxlan_encap_mod_table"
+        "Unable to set value for key ID: %d for %s"
         ", error: %d",
-        field_id, status);
+        field_id, LNW_TX_ACC_VSI_TABLE, status);
     goto dealloc_resources;
   }
 
   status = tdi_key_field_id_get(
-      table_info_hdl, LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_USER_META_BIT32_ZEROS,
-      &field_id);
+      table_info_hdl, LNW_TX_ACC_VSI_TABLE_KEY_ZERO_PADDING, &field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
-                      LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_USER_META_BIT32_ZEROS,
-                      status);
+                      LNW_TX_ACC_VSI_TABLE_KEY_ZERO_PADDING, status);
     goto dealloc_resources;
   }
 
   status = tdi_key_field_set_value(key_hdl, field_id, 0);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error(
-        "Unable to set value for key ID: %d for vxlan_encap_mod_table"
+        "Unable to set value for key ID: %d for %s"
         ", error: %d",
-        field_id, status);
+        field_id, LNW_TX_ACC_VSI_TABLE, status);
     goto dealloc_resources;
   }
 
   status = tdi_action_name_to_id(
-      table_info_hdl, LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST, &action_id);
+      table_info_hdl, LNW_TX_ACC_VSI_TABLE_ACTION_L2_FWD_AND_BYPASS_BRIDGE,
+      &action_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
-                      LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST, status);
+                      LNW_TX_ACC_VSI_TABLE_ACTION_L2_FWD_AND_BYPASS_BRIDGE,
+                      status);
     goto dealloc_resources;
   }
 
@@ -158,7 +153,187 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
     krnlmon_log_error(
         "Unable to get action allocator for ID: %s, "
         "error: %d",
-        LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST, status);
+        LNW_TX_ACC_VSI_TABLE_ACTION_L2_FWD_AND_BYPASS_BRIDGE, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_entry_get(table_hdl, session, target_hdl, flags_hdl,
+                               key_hdl, data_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to get data handle for netdev: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_data_field_id_with_action_get(
+      table_info_hdl, ACTION_L2_FWD_AND_BYPASS_BRIDGE_PARAM_PORT, action_id,
+      &data_field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                      ACTION_L2_FWD_AND_BYPASS_BRIDGE_PARAM_PORT, status);
+    goto dealloc_resources;
+  }
+  //    status = tdi_data_field_get_value_ptr(data_hdl, data_field_id,
+  //                                          sizeof(*physical_port_id),
+  //                                          physical_port_id);
+  status = tdi_data_field_get_value(data_hdl, data_field_id, &get_pd_phy_port);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to get value for the handle: %d", status);
+    goto dealloc_resources;
+  }
+  *physical_port_id = (uint8_t)(get_pd_phy_port & 0xff);
+dealloc_resources:
+  status = tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl,
+                                              data_hdl, session, true);
+  return switch_pd_tdi_status_to_status(status);
+}
+
+switch_status_t switch_pd_get_bridge_id(switch_device_t device,
+                                        uint8_t physical_port_id,
+                                        uint8_t* bridge_id) {
+  tdi_status_t status;
+
+  tdi_id_t field_id = 0;
+  tdi_id_t action_id = 0;
+  tdi_id_t data_field_id = 0;
+
+  tdi_dev_id_t dev_id = device;
+
+  tdi_flags_hdl* flags_hdl = NULL;
+  tdi_target_hdl* target_hdl = NULL;
+  const tdi_device_hdl* dev_hdl = NULL;
+  tdi_session_hdl* session = NULL;
+  const tdi_info_hdl* info_hdl = NULL;
+  tdi_table_key_hdl* key_hdl = NULL;
+  tdi_table_data_hdl* data_hdl = NULL;
+  const tdi_table_hdl* table_hdl = NULL;
+  const tdi_table_info_hdl* table_info_hdl = NULL;
+  uint32_t network_byte_order = 0;
+  uint64_t get_bridge_id = 0;
+
+  krnlmon_log_debug("Entered: %s", __func__);
+
+  status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_flags_create(0, &flags_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to create flags handle, error: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_device_get(dev_id, &dev_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to get device handle, error: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_target_create(dev_hdl, &target_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to create target handle, error: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_session_create(dev_hdl, &session);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Failed to create tdi session, error: %d", status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_from_name_get(
+      info_hdl, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, &table_hdl);
+  if (status != TDI_SUCCESS || !table_hdl) {
+    krnlmon_log_error("Unable to get table handle for: %s, error: %d",
+                      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_key_allocate(table_hdl, &key_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to allocate key handle for: %s, error: %d",
+                      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_info_get(table_hdl, &table_info_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get table info handle for table, error: %d",
+                      status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_id_get(
+      table_info_hdl, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_SOURCE_PORT,
+      &field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_SOURCE_PORT,
+                      status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_set_value_and_mask(key_hdl, field_id, physical_port_id,
+                                            0xFFFF);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error(
+        "Unable to set value for key ID: %d for %s"
+        ", error: %d",
+        field_id, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_id_get(
+      table_info_hdl, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_VID, &field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_VID, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_set_value_and_mask(key_hdl, field_id, 0, 0xFFF);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error(
+        "Unable to set value for key ID: %d for %s"
+        ", error: %d",
+        field_id, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, status);
+    goto dealloc_resources;
+  }
+
+  status =
+      tdi_key_field_id_get(table_info_hdl, LNW_KEY_MATCH_PRIORITY, &field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
+                      LNW_KEY_MATCH_PRIORITY, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_key_field_set_value(key_hdl, field_id, 16777214);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error(
+        "Unable to set value for key ID: %d for %s"
+        ", error: %d",
+        field_id, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_action_name_to_id(
+      table_info_hdl, LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_SET_BRIDGE_ID,
+      &action_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_SET_BRIDGE_ID,
+                      status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_table_action_data_allocate(table_hdl, action_id, &data_hdl);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error(
+        "Unable to get action allocator for ID: %s, "
+        "error: %d",
+        LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_SET_BRIDGE_ID, status);
     goto dealloc_resources;
   }
 
@@ -171,23 +346,19 @@ tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
 
   status = tdi_data_field_id_with_action_get(
       table_info_hdl,
-      LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST_PARAM_PORT_ID, action_id,
+      LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_PARAM_BRIDGE_ID, action_id,
       &data_field_id);
   if (status != TDI_SUCCESS) {
-    krnlmon_log_error(
-        "Unable to get action allocator ID for: %s, error: %d",
-        LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST_PARAM_PORT_ID, status);
+    krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
+                      ACTION_L2_FWD_AND_BYPASS_BRIDGE_PARAM_PORT, status);
     goto dealloc_resources;
   }
-  //    status = tdi_data_field_get_value_ptr(data_hdl, data_field_id,
-  //                                          sizeof(*physical_port_id),
-  //                                          physical_port_id);
-  status = tdi_data_field_get_value(data_hdl, data_field_id, &get_pd_phy_port);
+  status = tdi_data_field_get_value(data_hdl, data_field_id, &get_bridge_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Failed to get value for the handle: %d", status);
     goto dealloc_resources;
   }
-  *physical_port_id = (uint8_t)(get_pd_phy_port & 0xff);
+  *bridge_id = (uint8_t)(get_bridge_id & 0xff);
 dealloc_resources:
   status = tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl,
                                               data_hdl, session, true);

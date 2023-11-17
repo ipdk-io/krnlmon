@@ -255,7 +255,7 @@ void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
           intf_h = ifinfo.intf_h;
         }
       } else if (status != SWITCHLINK_DB_STATUS_SUCCESS) {
-        krnlmon_log_error(
+        krnlmon_log_debug(
             "route: Failed to get switchlink DB interface info, "
             "error: %d \n",
             status);

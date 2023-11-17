@@ -102,6 +102,8 @@ typedef struct switch_api_l2_info_s {
 
   uint8_t port_id;
 
+  uint8_t bridge_id;
+
   switch_l2_learn_from_t learn_from;
 
   switch_handle_t l2_handle;

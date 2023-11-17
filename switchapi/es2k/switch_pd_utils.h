@@ -41,7 +41,7 @@
 extern "C" {
 #endif
 
-#define PROGRAM_NAME "fxp-net_linux-networking"
+#define PROGRAM_NAME "fxp-net_linux-networking-v2"
 
 // Currently this value is picked from dpdk_port_config.pb.txt
 #define MAX_NO_OF_PORTS 312
@@ -58,6 +58,10 @@ extern "C" {
 tdi_status_t switch_pd_get_physical_port_id(switch_device_t device,
                                             uint32_t netdev_port_id,
                                             uint8_t* physical_port_id);
+
+tdi_status_t switch_pd_get_bridge_id(switch_device_t device,
+                                     uint8_t physical_port_id,
+                                     uint8_t* bridge_id);
 
 bf_status_t switch_pd_allocate_handle_session(const bf_dev_id_t device_id,
                                               const char* pipeline_name,

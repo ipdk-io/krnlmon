@@ -24,6 +24,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 /* List of tables and corresponding actions */
 
 /* VXLAN_ENCAP_MOD_TABLE */
@@ -103,10 +104,14 @@ extern "C" {
 
 #define LNW_L2_FWD_RX_TABLE_KEY_DST_MAC "dst_mac"
 
+#define LNW_L2_FWD_RX_TABLE_KEY_BRIDGE_ID "user_meta.pmeta.bridge_id"
+
+#define LNW_L2_FWD_RX_TABLE_KEY_SMAC_LEARNED "user_meta.pmeta.smac_learned"
+
 #define LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
 #define LNW_ACTION_L2_FWD_PARAM_PORT "port"
 #define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG \
-  "linux_networking_control.rx_l2_fwd_lag"
+  "linux_networking_control.rx_l2_fwd_lag_and_recirculate"
 #define LNW_ACTION_RX_L2_FWD_LAG_PARAM_LAG_ID "lag_group_id"
 
 /* RX_LAG_TABLE */
@@ -114,11 +119,14 @@ extern "C" {
 
 #define LNW_RX_LAG_TABLE_KEY_PORT_ID "vmeta.common.port_id"
 #define LNW_RX_LAG_TABLE_KEY_LAG_ID "user_meta.cmeta.lag_group_id"
-
 #define LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
   "linux_networking_control.set_egress_port"
 #define LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT "egress_port"
 
+#define LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI "linux_networking_control.fwd_to_vsi"
+#define LNW_ACTION_SET_EGRESS_PORT_PARAM_PORT "port"
+
+// NOP TODO
 /* L2_FWD_RX_WITH_TUNNEL_TABLE */
 #define LNW_L2_FWD_RX_WITH_TUNNEL_TABLE \
   "linux_networking_control.l2_fwd_rx_with_tunnel_table"
@@ -128,10 +136,11 @@ extern "C" {
 #define LNW_L2_FWD_RX_WITH_TUNNEL_TABLE_ACTION_L2_FWD \
   "linux_networking_control.l2_fwd"
 
+// NOP TODO
 /* L2_FWD_TX_TABLE */
 #define LNW_L2_FWD_TX_TABLE "linux_networking_control.l2_fwd_tx_table"
+#define LNW_L2_FWD_TX_TABLE_KEY_BRIDGE_ID "user_meta.pmeta.bridge_id"
 #define LNW_L2_FWD_TX_TABLE_KEY_DST_MAC "dst_mac"
-#define LNW_L2_FWD_TX_TABLE_KEY_TUN_FLAG "user_meta.pmeta.tun_flag1_d0"
 
 #define LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
 
@@ -144,22 +153,11 @@ extern "C" {
 #define LNW_ACTION_SET_TUNNEL_PARAM_TUNNEL_ID "tunnel_id"
 #define LNW_ACTION_SET_TUNNEL_PARAM_DST_ADDR "dst_addr"
 
-/* L2_FWD_TX_TABLE */
-#define LNW_L2_FWD_TX_IPV6_TABLE "linux_networking_control.l2_fwd_tx_ipv6_table"
-#define LNW_L2_FWD_TX_IPV6_TABLE_KEY_DST_MAC "dst_mac"
-#define LNW_L2_FWD_TX_IPV6_TABLE_KEY_TUN_FLAG "user_meta.pmeta.tun_flag1_d0"
-
-#define LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
-
-#define LNW_L2_FWD_TX_IPV6_TABLE_ACTION_L2_FWD_LAG \
-  "linux_networking_control.l2_fwd_lag"
-
 /* NEXTHOP_TABLE */
 // Verified for MEV
 #define LNW_NEXTHOP_TABLE "linux_networking_control.nexthop_table"
 
 #define LNW_NEXTHOP_TABLE_KEY_NEXTHOP_ID "user_meta.cmeta.nexthop_id"
-#define LNW_NEXTHOP_TABLE_KEY_BIT32_ZEROS "user_meta.cmeta.bit32_zeros"
 
 #define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP \
   "linux_networking_control.set_nexthop"
@@ -242,28 +240,32 @@ extern "C" {
 #define LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION \
   "linux_networking_control.ecmp_v6_hash_action"
 
-/* SEM_BYPASS TABLE */
-#define LNW_SEM_BYPASS_TABLE "linux_networking_control.sem_bypass"
+/* LNW_HANDLE_TX_ACC_VSI TABLE */
+#define LNW_TX_ACC_VSI_TABLE "linux_networking_control.tx_acc_vsi"
 
-#define LNW_SEM_BYPASS_TABLE_KEY_DST_MAC "dst_mac"
+#define LNW_TX_ACC_VSI_TABLE_KEY_META_COMMON_VSI "vmeta.common.vsi"
 
-#define LNW_SEM_BYPASS_TABLE_ACTION_SET_DEST "linux_networking_control.set_dest"
+#define LNW_TX_ACC_VSI_TABLE_KEY_ZERO_PADDING "zero_padding"
 
-#define LNW_ACTION_SET_DEST_PARAM_PORT_ID "port_id"
+#define LNW_TX_ACC_VSI_TABLE_ACTION_L2_FWD_AND_BYPASS_BRIDGE \
+  "linux_networking_control.l2_fwd_and_bypass_bridge"
 
-/* HANDLE_TX_FROM_HOST_TO_OVS_AND_OVS_TO_WIRE_TABLE */
-#define LNW_HANDLE_TX_FROM_HOST_TO_OVS_AND_OVS_TO_WIRE_TABLE \
-  "linux_networking_control.handle_tx_from_host_to_ovs_and_ovs_to_wire_table"
+#define ACTION_L2_FWD_AND_BYPASS_BRIDGE_PARAM_PORT "port"
 
-#define LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_META_COMMON_VSI "vmeta.common.vsi"
+/* LNW_SOURCE_PORT_TO_BRIDGE_MAP TABLE */
+#define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE \
+  "linux_networking_control.source_port_to_bridge_map"
 
-#define LNW_HANDLE_OVS_TO_WIRE_TABLE_KEY_USER_META_BIT32_ZEROS \
-  "user_meta.cmeta.bit32_zeros"
+#define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_SOURCE_PORT \
+  "user_meta.cmeta.source_port"
 
-#define LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST \
-  "linux_networking_control.set_dest"
+#define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_KEY_VID \
+  "hdrs.vlan_ext[vmeta.common.depth].hdr.vid"
 
-#define LNW_HANDLE_OVS_TO_WIRE_TABLE_ACTION_SET_DEST_PARAM_PORT_ID "port_id"
+#define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_SET_BRIDGE_ID \
+  "linux_networking_control.set_bridge_id"
+
+#define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_PARAM_BRIDGE_ID "bridge_id"
 
 #ifdef __cplusplus
 }
