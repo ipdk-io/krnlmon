@@ -154,11 +154,11 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
   }
 
   status = tdi_data_field_id_with_action_get(
-      table_info_hdl, LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, action_id,
+      table_info_hdl, ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, action_id,
       &data_field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
-                      LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
+                      ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
     goto dealloc_resources;
   }
 
@@ -346,10 +346,10 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
   }
 
   status = tdi_action_name_to_id(
-      table_info_hdl, LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT, &action_id);
+      table_info_hdl, LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI, &action_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
-                      LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT, status);
+                      LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI, status);
     goto dealloc_resources;
   }
 
@@ -362,12 +362,12 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
     goto dealloc_resources;
   }
 
-  status = tdi_data_field_id_with_action_get(
-      table_info_hdl, LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, action_id,
-      &data_field_id);
+  status = tdi_data_field_id_with_action_get(table_info_hdl,
+                                             LNW_ACTION_FWD_TO_VSI_PARAM_PORT,
+                                             action_id, &data_field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
-                      LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
+                      LNW_ACTION_FWD_TO_VSI_PARAM_PORT, status);
     goto dealloc_resources;
   }
 
