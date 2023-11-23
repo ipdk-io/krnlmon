@@ -561,10 +561,12 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
         LNW_L2_FWD_RX_TABLE, (unsigned int)api_l2_rx_info->rif_handle);
 
     status = tdi_action_name_to_id(
-        table_info_hdl, LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG, &action_id);
+        table_info_hdl,
+        LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG_AND_RECIRCULATE, &action_id);
     if (status != TDI_SUCCESS) {
-      krnlmon_log_error("Unable to get action allocator ID for: %s, error: %d",
-                        LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG, status);
+      krnlmon_log_error(
+          "Unable to get action allocator ID for: %s, error: %d",
+          LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG_AND_RECIRCULATE, status);
       goto dealloc_resources;
     }
 

@@ -1613,12 +1613,12 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
     goto dealloc_resources;
   }
 
-  status = tdi_key_field_id_get(table_info_hdl,
-                                LNW_ECMP_HASH_TABLE_KEY_USER_META_BIT32_ZEROS,
-                                &field_id_meta_bit32_zero);
+  status =
+      tdi_key_field_id_get(table_info_hdl, LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING,
+                           &field_id_meta_bit32_zero);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
-                      LNW_ECMP_HASH_TABLE_KEY_USER_META_BIT32_ZEROS, status);
+                      LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING, status);
     goto dealloc_resources;
   }
 

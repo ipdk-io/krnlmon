@@ -110,8 +110,8 @@ extern "C" {
 
 #define LNW_L2_FWD_RX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
 #define LNW_ACTION_L2_FWD_PARAM_PORT "port"
-#define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG \
-  "linux_networking_control.rx_l2_fwd_lag_and_recirculate"
+#define LNW_L2_FWD_RX_TABLE_ACTION_RX_L2_FWD_LAG_AND_RECIRCULATE \
+  "linux_networking_control.l2_fwd_lag_and_recirculate"
 #define LNW_ACTION_RX_L2_FWD_LAG_PARAM_LAG_ID "lag_group_id"
 
 /* RX_LAG_TABLE */
@@ -119,12 +119,9 @@ extern "C" {
 
 #define LNW_RX_LAG_TABLE_KEY_PORT_ID "vmeta.common.port_id"
 #define LNW_RX_LAG_TABLE_KEY_LAG_ID "user_meta.cmeta.lag_group_id"
-#define LNW_RX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
-  "linux_networking_control.set_egress_port"
-#define LNW_ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT "egress_port"
 
 #define LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI "linux_networking_control.fwd_to_vsi"
-#define LNW_ACTION_SET_EGRESS_PORT_PARAM_PORT "port"
+#define LNW_ACTION_FWD_TO_VSI_PARAM_PORT "port"
 
 // NOP TODO
 /* L2_FWD_RX_WITH_TUNNEL_TABLE */
@@ -177,8 +174,7 @@ extern "C" {
 #define LNW_ECMP_HASH_TABLE_KEY_HOST_INFO_TX_EXT_FLEX \
   "user_meta.cmeta.flex[15:0]"
 #define LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH "vmeta.common.hash[2:0]"
-#define LNW_ECMP_HASH_TABLE_KEY_USER_META_BIT32_ZEROS \
-  "user_meta.cmeta.bit32_zeros[15:3]"
+#define LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING "zero_padding"
 
 #define LNW_ECMP_HASH_TABLE_ACTION_SET_NEXTHOP_ID \
   "linux_networking_control.set_nexthop_id"
@@ -197,6 +193,8 @@ extern "C" {
 
 #define LNW_TX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
   "linux_networking_control.set_egress_port"
+
+#define ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT "egress_port"
 
 #define LNW_LAG_HASH_SIZE 65536
 
