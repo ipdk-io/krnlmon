@@ -60,7 +60,7 @@ extern "C" {
 /*** LAG information ***/
 typedef struct switch_api_lag_info_s {
   uint32_t lag_ifindex;
-  uint32_t lag_mode;
+  uint8_t bond_mode;
   uint32_t active_slave;
   switch_handle_t rmac_handle;
 } switch_api_lag_info_t;
@@ -70,6 +70,7 @@ typedef struct switch_lag_info_s {
   switch_list_t lag_members;
   switch_handle_t lag_handle;
   switch_handle_t active_lag_member;
+  uint8_t active_num_ports;
 } switch_lag_info_t;
 
 /*** LAG member information ***/
@@ -77,6 +78,8 @@ typedef struct switch_api_lag_member_info_s {
   uint32_t lag_member_ifindex;
   uint8_t slave_state;
   uint32_t port_id;
+  bool oper_state;
+  switch_handle_t lag_h;
 } switch_api_lag_member_info_t;
 
 typedef struct switch_lag_member_info_s {
@@ -84,6 +87,17 @@ typedef struct switch_lag_member_info_s {
   switch_handle_t lag_member_handle;
   switch_node_t node;
 } switch_lag_member_info_t;
+
+// Different modes of LAG
+typedef enum {
+  SWITCHAPI_BOND_MODE_BALANCE_RR,
+  SWITCHAPI_BOND_MODE_ACTIVE_BACKUP,
+  SWITCHAPI_BOND_MODE_BALANCE_XOR,
+  SWITCHAPI_BOND_MODE_BROADCAST,
+  SWITCHAPI_BOND_MODE_LACP,
+  SWITCHAPI_BOND_MODE_BALANCE_TLB,
+  SWITCHAPI_BOND_MODE_BALANCE_ALB,
+} switchapi_bond_mode_t;
 
 // Switchapi method to allocate LAG handles
 switch_status_t switch_lag_init(switch_device_t device);
@@ -113,6 +127,11 @@ switch_status_t switch_api_lag_member_delete(switch_device_t device,
 switch_status_t switch_api_lag_update(const switch_device_t device,
                                       const switch_handle_t lag_handle,
                                       const switch_handle_t lag_member_handle);
+
+// Switchapi method to update LAG member structure
+switch_status_t switch_api_lag_member_update(
+    const switch_device_t device, const switch_handle_t lag_member_handle,
+    bool oper_state);
 
 // Switchapi method to get LAG attributes
 switch_status_t switch_api_lag_attribute_get(

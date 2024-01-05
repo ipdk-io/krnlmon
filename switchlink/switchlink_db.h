@@ -137,6 +137,7 @@ typedef struct switchlink_db_lag_member_info_ {
   switchlink_handle_t lag_h;
   switchlink_mac_addr_t mac_addr;
   switchlink_mac_addr_t perm_hwaddr;
+  bool is_lacp_member;
 } switchlink_db_lag_member_info_t;
 
 /*** interface ***/
@@ -256,6 +257,9 @@ extern switchlink_db_status_t switchlink_db_add_lag_member(
     switchlink_db_lag_member_info_t* lag_member_info);
 
 extern switchlink_db_status_t switchlink_db_delete_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info);
+
+extern switchlink_db_status_t switchlink_db_update_lag_member_oper_state(
     switchlink_db_lag_member_info_t* lag_member_info);
 
 extern switchlink_db_status_t switchlink_db_get_lag_member_info(

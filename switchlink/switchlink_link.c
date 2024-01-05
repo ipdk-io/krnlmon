@@ -61,6 +61,7 @@ struct link_attrs {
   switchlink_mac_addr_t perm_hwaddr;
   // lag member attributes
   uint8_t slave_state;
+  uint16_t aggr_id;
 };
 
 static const switchlink_mac_addr_t null_mac = {0, 0, 0, 0, 0, 0};
@@ -236,6 +237,11 @@ static void process_info_lag_member_data_attr(
                nla_len(infoslavedata));
       }
       break;
+    case IFLA_BOND_SLAVE_AD_AGGREGATOR_ID:
+      attrs->aggr_id = nla_get_u16(infoslavedata);
+      krnlmon_log_debug("IFLA Bond Slave AD Aggregator ID: %d\n",
+                        attrs->aggr_id);
+      break;
     default:
       break;
   }
@@ -362,7 +368,8 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         intf_info.active_slave = attrs.active_slave;
         intf_info.link_type = SWITCHLINK_LINK_TYPE_BOND;
         intf_info.intf_type = SWITCHLINK_INTF_TYPE_L3;
-        if (intf_info.bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP) {
+        if (intf_info.bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP ||
+            intf_info.bond_mode == SWITCHLINK_BOND_MODE_LACP) {
           switchlink_create_lag(&intf_info);
         } else {
           krnlmon_log_debug("bond mode:%d isn't supported\n",
@@ -426,6 +433,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         lag_member_info.ifindex = ifmsg->ifi_index;
         lag_member_info.oper_state = attrs.oper_state;
         lag_member_info.slave_state = attrs.slave_state;
+        if (attrs.aggr_id != 0) lag_member_info.is_lacp_member = true;
         memcpy(&(lag_member_info.mac_addr), &(attrs.mac_addr),
                sizeof(switchlink_mac_addr_t));
         memcpy(&(lag_member_info.perm_hwaddr), &(attrs.perm_hwaddr),
