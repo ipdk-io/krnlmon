@@ -132,7 +132,7 @@ static int set_lag_attribute(const switchlink_db_interface_info_t* lag_info,
 
 /**
  * Routine Description:
- *    SAI call to set lag member attribute
+ *    Calls SAI to set lag member attribute
  *
  * Arguments:
  *    [in] lag_member_info - lag member info
@@ -149,10 +149,7 @@ static int set_lag_member_attribute(
   memset(&attr, 0, sizeof(attr));
 
   attr.id = SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE;
-  if (oper_state == IF_OPER_DOWN)
-    attr.value.booldata = false;
-  else
-    attr.value.booldata = true;
+  attr.value.booldata = (oper_state == IF_OPER_DOWN) ? false : true;
   return sai_lag_api->set_lag_member_attribute(lag_member_info->lag_member_h,
                                                &attr);
 }
@@ -304,9 +301,9 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
       }
     }
 
-    if (memcmp(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+    if (memcmp(&lag_info.mac_addr, &lag_intf->mac_addr,
                sizeof(switchlink_mac_addr_t))) {
-      memcpy(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+      memcpy(&lag_info.mac_addr, &lag_intf->mac_addr,
              sizeof(switchlink_mac_addr_t));
 
       // Delete if RMAC is configured previously, and create this new RMAC.

@@ -60,7 +60,7 @@ extern "C" {
 /*** LAG information ***/
 typedef struct switch_api_lag_info_s {
   uint32_t lag_ifindex;
-  uint8_t bond_mode;
+  uint8_t bond_mode;  // see switchapi_bond_mode_t for values
   uint32_t active_slave;
   switch_handle_t rmac_handle;
 } switch_api_lag_info_t;
@@ -70,7 +70,7 @@ typedef struct switch_lag_info_s {
   switch_list_t lag_members;
   switch_handle_t lag_handle;
   switch_handle_t active_lag_member;
-  uint8_t active_num_ports;
+  uint8_t num_active_ports;
 } switch_lag_info_t;
 
 /*** LAG member information ***/
