@@ -60,7 +60,7 @@ static switchlink_handle_t process_ecmp(uint8_t family, struct nlattr* attr,
         gateway.ip.v4addr.s_addr = ntohl(*((uint32_t*)RTA_DATA(rta)));
         gateway.prefix_len = 32;
       } else {
-        memcpy(&(gateway.ip.v6addr), (struct in6_addr *) RTA_DATA(rta),
+        memcpy(&(gateway.ip.v6addr), (struct in6_addr*)RTA_DATA(rta),
                sizeof(struct in6_addr));
         gateway.prefix_len = 128;
       }
