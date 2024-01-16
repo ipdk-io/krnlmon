@@ -90,9 +90,13 @@ void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg, int msgtype) {
           if (nbh->ndm_family == AF_INET) {
             ipaddr.ip.v4addr.s_addr = ntohl(nla_get_u32(attr));
             ipaddr.prefix_len = 32;
-          } else {
+          } else if (nbh->ndm_family == AF_INET6) {
             memcpy(&(ipaddr.ip.v6addr), nla_data(attr), nla_len(attr));
             ipaddr.prefix_len = 128;
+          } else {
+            krnlmon_log_error("Invalid NDM family type, for attribute %d\n",
+                              attr_type);
+            return;
           }
         } else {
           krnlmon_log_debug(

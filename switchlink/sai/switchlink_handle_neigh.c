@@ -200,9 +200,23 @@ static int delete_neighbor(const switchlink_db_neigh_info_t* neigh_info) {
   sai_neighbor_entry_t neighbor_entry;
   memset(&neighbor_entry, 0, sizeof(neighbor_entry));
   neighbor_entry.rif_id = neigh_info->intf_h;
-  neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
-  neighbor_entry.ip_address.addr.ip4 =
-      htonl(neigh_info->ip_addr.ip.v4addr.s_addr);
+
+  if (neigh_info->ip_addr.family == AF_INET) {
+    neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV4;
+    neighbor_entry.ip_address.addr.ip4 =
+        htonl(neigh_info->ip_addr.ip.v4addr.s_addr);
+    krnlmon_log_info("Delete a neighbor entry: 0x%x",
+                     neigh_info->ip_addr.ip.v4addr.s_addr);
+  } else {
+    neighbor_entry.ip_address.addr_family = SAI_IP_ADDR_FAMILY_IPV6;
+    memcpy(neighbor_entry.ip_address.addr.ip6, &(neigh_info->ip_addr.ip.v6addr),
+           sizeof(sai_ip6_t));
+    krnlmon_log_info("Delete a neighbor entry: 0x%x:0x%x:0x%x:0x%x",
+                     neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[0],
+                     neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[1],
+                     neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[2],
+                     neigh_info->ip_addr.ip.v6addr.__in6_u.__u6_addr32[3]);
+  }
 
   status = sai_neigh_api->remove_neighbor_entry(&neighbor_entry);
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
