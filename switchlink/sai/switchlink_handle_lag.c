@@ -410,7 +410,14 @@ void switchlink_create_lag_member(
       }
       // update the oper_state in the switchlink db
       lag_member_info.oper_state = lag_member_intf->oper_state;
-      switchlink_db_update_lag_member_oper_state(&lag_member_info);
+      status = switchlink_db_update_lag_member_oper_state(&lag_member_info);
+      if (status) {
+        krnlmon_log_error(
+            "newlink: Failed to update oper state of lag member: %s, error: "
+            "%d\n",
+            lag_member_intf->ifname, status);
+        return;
+      }
       lag_member_intf->lag_member_h = lag_member_info.lag_member_h;
     }
   }
