@@ -1135,6 +1135,34 @@ switchlink_db_status_t switchlink_db_delete_lag_member(
 
 /**
  * Routine Description:
+ *    Updates oper_state of lag member in switchlink database
+ *
+ * Arguments:
+ *    [in] lag_member_info - switchlink database lag member info
+ *
+ * Return Values:
+ *    SWITCHLINK_DB_STATUS_SUCCESS on success
+ *    SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND otherwise
+ */
+switchlink_db_status_t switchlink_db_update_lag_member_oper_state(
+    switchlink_db_lag_member_info_t* lag_member_info) {
+  krnlmon_assert(lag_member_info != NULL);
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_member_obj_list);
+  while (node) {
+    switchlink_db_lag_member_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((lag_member_info->ifindex == obj->lag_member_info.ifindex)) {
+      obj->lag_member_info.oper_state = lag_member_info->oper_state;
+      return SWITCHLINK_DB_STATUS_SUCCESS;
+    }
+  }
+
+  return SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND;
+}
+
+/**
+ * Routine Description:
  *    Get lag member info from switchlink database
  *
  * Arguments:
