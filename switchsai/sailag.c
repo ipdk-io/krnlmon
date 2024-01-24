@@ -149,6 +149,16 @@ static sai_status_t sai_create_lag(_Out_ sai_object_id_t* lag_id,
 
   lag_h = attribute->value.oid;
 
+  attribute =
+      get_attr_from_list(SAI_LAG_ATTR_PORT_VLAN_ID, attr_list, attr_count);
+  if (attribute == NULL) {
+    status = SAI_STATUS_INVALID_PARAMETER;
+    krnlmon_log_error("missing attribute %s", sai_status_to_string(status));
+    return status;
+  }
+
+  api_lag_info.bond_mode = attribute->value.u8;
+
   // This means lag interface already created, adding RMAC now
   if (lag_h) {
     switch_api_lag_attribute_get(switch_id, lag_h, &api_lag_info);
@@ -260,6 +270,7 @@ static sai_status_t sai_create_lag_member(
   }
 
   lag_h = attribute->value.oid;
+  api_lag_member_info.lag_h = lag_h;
 
   attribute =
       get_attr_from_list(SAI_LAG_MEMBER_ATTR_PORT_ID, attr_list, attr_count);
@@ -270,6 +281,16 @@ static sai_status_t sai_create_lag_member(
   }
 
   api_lag_member_info.port_id = attribute->value.u32;
+
+  attribute = get_attr_from_list(SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE, attr_list,
+                                 attr_count);
+  if (attribute == NULL) {
+    status = SAI_STATUS_INVALID_PARAMETER;
+    krnlmon_log_error("missing attribute %s", sai_status_to_string(status));
+    return status;
+  }
+
+  api_lag_member_info.oper_state = attribute->value.booldata;
 
   switch_status = switch_api_lag_member_create(switch_id, &api_lag_member_info,
                                                &lag_member_h);
@@ -349,6 +370,35 @@ static sai_status_t sai_set_lag_attribute(_In_ sai_object_id_t lag_id,
 }
 
 /**
+ * Routine Description:
+ *    Set LAG member attribute.
+ *
+ * Arguments:
+ *    [in] lag_member_id - LAG member ID
+ *    [in] attr - SAI attribute of LAG object
+ *
+ * Return Values:
+ *    SAI_STATUS_SUCCESS on success
+ *    Failure status code on error
+ */
+static sai_status_t sai_set_lag_member_attribute(
+    _In_ sai_object_id_t lag_member_id, _In_ const sai_attribute_t* attr) {
+  sai_status_t status = SAI_STATUS_SUCCESS;
+  switch_status_t switch_status = SWITCH_STATUS_SUCCESS;
+  switch_handle_t lag_member_h = lag_member_id;
+  bool oper_state = attr->value.booldata;
+
+  switch_status = switch_api_lag_member_update(0, lag_member_h, oper_state);
+  status = sai_switch_status_to_sai_status(switch_status);
+  if (status != SAI_STATUS_SUCCESS) {
+    krnlmon_log_error("Failed to update lag member, error: %s",
+                      sai_status_to_string(status));
+  }
+
+  return (sai_status_t)status;
+}
+
+/**
  *  LAG methods table retrieved with sai_api_query()
  */
 sai_lag_api_t lag_api = {
@@ -357,6 +407,7 @@ sai_lag_api_t lag_api = {
     .create_lag_member = sai_create_lag_member,
     .remove_lag_member = sai_remove_lag_member,
     .set_lag_attribute = sai_set_lag_attribute,
+    .set_lag_member_attribute = sai_set_lag_member_attribute,
 };
 
 sai_status_t sai_lag_initialize(sai_api_service_t* sai_api_service) {

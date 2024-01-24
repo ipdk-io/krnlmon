@@ -35,6 +35,14 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
                                              const switch_lag_info_t* lag_info,
                                              bool entry_add);
 
+// Method to program the tx_lag_table on Tx side for LACP mode
+switch_status_t switch_pd_tx_lacp_lag_table_entry(
+    switch_device_t device, const switch_lag_info_t* lag_info, bool oper_state);
+
+// Method to program the rx_lag_table on Rx side for LACP mode
+switch_status_t switch_pd_rx_lacp_lag_table_entry(
+    switch_device_t device, const switch_lag_info_t* lag_info, bool oper_state);
+
 #ifdef __cplusplus
 }
 #endif

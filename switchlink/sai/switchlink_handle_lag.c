@@ -77,6 +77,11 @@ static int create_lag(const switchlink_db_interface_info_t* lag_intf,
       attr_list[ac].value.oid = *lag_h;
     }
     ac++;
+
+    attr_list[ac].id = SAI_LAG_ATTR_PORT_VLAN_ID;
+    attr_list[ac].value.u8 = lag_intf->bond_mode;
+    ac++;
+
     status = sai_lag_api->create_lag(lag_h, 0, ac, attr_list);
   }
   return ((status == SAI_STATUS_SUCCESS) ? 0 : -1);
@@ -127,6 +132,30 @@ static int set_lag_attribute(const switchlink_db_interface_info_t* lag_info,
 
 /**
  * Routine Description:
+ *    Calls SAI to set lag member attribute
+ *
+ * Arguments:
+ *    [in] lag_member_info - lag member info
+ *    [out] oper_state - oper state
+ *
+ * Return Values:
+ *    0 on success
+ *   -1 in case of error
+ */
+static int set_lag_member_attribute(
+    const switchlink_db_lag_member_info_t* lag_member_info,
+    uint8_t oper_state) {
+  sai_attribute_t attr;
+  memset(&attr, 0, sizeof(attr));
+
+  attr.id = SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE;
+  attr.value.booldata = (oper_state == IF_OPER_DOWN) ? false : true;
+  return sai_lag_api->set_lag_member_attribute(lag_member_info->lag_member_h,
+                                               &attr);
+}
+
+/**
+ * Routine Description:
  *    SAI call to create lag member
  *
  * Arguments:
@@ -170,6 +199,14 @@ static int create_lag_member(
 
   attr_list[ac].id = SAI_LAG_MEMBER_ATTR_PORT_ID;
   attr_list[ac].value.u32 = port_id;
+  ac++;
+
+  // this SAI attribute is used to propagate oper state to switchapi module.
+  attr_list[ac].id = SAI_LAG_MEMBER_ATTR_EGRESS_DISABLE;
+  if (lag_member_intf->oper_state == IF_OPER_DOWN)
+    attr_list[ac].value.booldata = false;
+  else
+    attr_list[ac].value.booldata = true;
   ac++;
 
   return sai_lag_api->create_lag_member(lag_member_h, 0, ac, attr_list);
@@ -227,19 +264,30 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
   } else {
     krnlmon_log_debug("Switchlink DB already has LAG config: %s",
                       lag_intf->ifname);
-    // check if active_slave attribute is updated.
-    if ((lag_intf->active_slave != lag_info.active_slave) ||
-        (lag_intf->oper_state != lag_info.oper_state)) {
-      // need to program MEV-TS with new active_slave info
-      // get the lag member handle with ifindex = active_slave
-      if ((lag_intf->active_slave != 0) &&
-          (lag_intf->oper_state == IF_OPER_UP)) {
-        switchlink_db_lag_member_info_t lag_member_info;
-        memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
-        lag_member_info.ifindex = lag_intf->active_slave;
-        status = switchlink_db_get_lag_member_info(&lag_member_info);
-        if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
-          status = set_lag_attribute(&lag_info, lag_member_info.lag_member_h);
+    if (lag_intf->bond_mode == SWITCHLINK_BOND_MODE_ACTIVE_BACKUP) {
+      // check if active_slave attribute is updated.
+      if ((lag_intf->active_slave != lag_info.active_slave) ||
+          (lag_intf->oper_state != lag_info.oper_state)) {
+        // need to program MEV-TS with new active_slave info
+        // get the lag member handle with ifindex = active_slave
+        if ((lag_intf->active_slave != 0) &&
+            (lag_intf->oper_state == IF_OPER_UP)) {
+          switchlink_db_lag_member_info_t lag_member_info;
+          memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
+          lag_member_info.ifindex = lag_intf->active_slave;
+          status = switchlink_db_get_lag_member_info(&lag_member_info);
+          if (status == SWITCHLINK_DB_STATUS_SUCCESS) {
+            status = set_lag_attribute(&lag_info, lag_member_info.lag_member_h);
+            if (status) {
+              krnlmon_log_error(
+                  "newlink: Failed to update switchlink lag: %s, error: %d\n",
+                  lag_intf->ifname, status);
+              return;
+            }
+          }
+        } else if ((lag_intf->active_slave == 0) ||
+                   (lag_intf->oper_state == IF_OPER_DOWN)) {
+          status = set_lag_attribute(&lag_info, 0);
           if (status) {
             krnlmon_log_error(
                 "newlink: Failed to update switchlink lag: %s, error: %d\n",
@@ -247,24 +295,15 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
             return;
           }
         }
-      } else if ((lag_intf->active_slave == 0) ||
-                 (lag_intf->oper_state == IF_OPER_DOWN)) {
-        status = set_lag_attribute(&lag_info, 0);
-        if (status) {
-          krnlmon_log_error(
-              "newlink: Failed to update switchlink lag: %s, error: %d\n",
-              lag_intf->ifname, status);
-          return;
-        }
-      }
 
-      lag_info.oper_state = lag_intf->oper_state;
-      lag_info.active_slave = lag_intf->active_slave;
+        lag_info.oper_state = lag_intf->oper_state;
+        lag_info.active_slave = lag_intf->active_slave;
+      }
     }
 
-    if (memcmp(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+    if (memcmp(&lag_info.mac_addr, &lag_intf->mac_addr,
                sizeof(switchlink_mac_addr_t))) {
-      memcpy(&(lag_info.mac_addr), &(lag_intf->mac_addr),
+      memcpy(&lag_info.mac_addr, &lag_intf->mac_addr,
              sizeof(switchlink_mac_addr_t));
 
       // Delete if RMAC is configured previously, and create this new RMAC.
@@ -357,6 +396,32 @@ void switchlink_create_lag_member(
   // lag member has already been created
   krnlmon_log_debug("Switchlink DB already has LAG Member config: %s",
                     lag_member_intf->ifname);
+
+  if (lag_member_intf->is_lacp_member) {
+    // check if lag member oper_state has changed
+    if (lag_member_info.oper_state != lag_member_intf->oper_state) {
+      status = set_lag_member_attribute(&lag_member_info,
+                                        lag_member_intf->oper_state);
+      if (status) {
+        krnlmon_log_error(
+            "newlink: Failed to update switchlink lag member: %s, error: %d\n",
+            lag_member_intf->ifname, status);
+        return;
+      }
+      // update the oper_state in the switchlink db
+      lag_member_info.oper_state = lag_member_intf->oper_state;
+      status = switchlink_db_update_lag_member_oper_state(&lag_member_info);
+      if (status) {
+        krnlmon_log_error(
+            "newlink: Failed to update oper state of lag member: %s, error: "
+            "%d\n",
+            lag_member_intf->ifname, status);
+        return;
+      }
+      lag_member_intf->lag_member_h = lag_member_info.lag_member_h;
+    }
+  }
+
   return;
 }
 
