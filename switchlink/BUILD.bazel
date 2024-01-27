@@ -7,6 +7,30 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
+cc_import(
+    name = "libnl-3",
+    hdrs = glob(["netlink/**/*.h"]),
+    includes = ["/usr/include/libnl3"],
+    system_provided = 1,
+    visibility = ["//visibility:public"],
+)
+
+cc_import(
+    name = "libnl-genl-3",
+    hdrs = glob(["netlink/**/*.h"]),
+    includes = ["/usr/include/libnl3"],
+    system_provided = 1,
+    visibility = ["//visibility:public"],
+)
+
+cc_import(
+    name = "libnl-route-3",
+    hdrs = glob(["netlink/**/*.h"]),
+    includes = ["/usr/include/libnl3"],
+    system_provided = 1,
+    visibility = ["//visibility:public"],
+)
+
 cc_library(
     name = "switchlink_main",
     srcs = ["switchlink_main.c"],
@@ -15,6 +39,7 @@ cc_library(
         "switchlink_int.h",
         "switchlink_main.h",
     ],
+    deps = [":libnl-3"],
 )
 
 cc_library(
@@ -25,4 +50,5 @@ cc_library(
         "switchlink_int.h",
         "switchlink_route.h",
     ],
+    deps = [":libnl-3"],
 )
