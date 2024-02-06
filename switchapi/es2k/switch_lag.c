@@ -16,7 +16,7 @@
 
 #include "switchapi/switch_lag.h"
 
-#include "bf_types.h"
+#include "tdi_types/tdi_types.h"
 #include "switch_pd_utils.h"
 #include "switchapi/es2k/switch_pd_lag.h"
 #include "switchapi/switch_base_types.h"

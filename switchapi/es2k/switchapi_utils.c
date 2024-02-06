@@ -564,7 +564,7 @@ switch_status_t switch_pd_status_to_status(bf_status_t pd_status) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
   switch (pd_status) {
-    case BF_SUCCESS:
+    case TDI_SUCCESS:
       status = SWITCH_STATUS_SUCCESS;
       break;
 

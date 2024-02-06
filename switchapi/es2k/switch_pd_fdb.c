@@ -17,8 +17,8 @@
 
 #include "switch_pd_fdb.h"
 
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
+#include "tdi_types/tdi_types.h"
+#include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"

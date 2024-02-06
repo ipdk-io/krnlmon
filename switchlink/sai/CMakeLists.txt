@@ -5,7 +5,6 @@
 
 add_library(switchlink_sai_o OBJECT
    switchlink_handle_ecmp.c
-   switchlink_handle_lag.c
    switchlink_handle_link.c
    switchlink_handle_neigh.c
    switchlink_handle_nexthop.c
@@ -14,6 +13,10 @@ add_library(switchlink_sai_o OBJECT
    switchlink_init_sai.c
    switchlink_init_sai.h
 )
+
+if(ES2K_TARGET)
+  target_sources(switchlink_sai_o PRIVATE switchlink_handle_lag.c)
+endif()
 
 target_include_directories(switchlink_sai_o PRIVATE
     ${SDE_INSTALL_DIR}/include
