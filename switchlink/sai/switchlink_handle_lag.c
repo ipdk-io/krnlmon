@@ -17,10 +17,10 @@
 #include <linux/if.h>
 
 #include "ipu_pal/port_intf.h"
-#include "tdi_rt/tdi_rt_common.h"
-#include "tdi_types/tdi_types.h"
 #include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switchlink_init_sai.h"
+#include "tdi_rt/tdi_rt_common.h"
+#include "tdi_types/tdi_types.h"
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16

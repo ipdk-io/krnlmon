@@ -17,7 +17,6 @@
 
 #include "switch_pd_fdb.h"
 
-#include "tdi_types/tdi_types.h"
 #include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_utils.h"
@@ -25,6 +24,7 @@
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rif_int.h"
+#include "tdi_types/tdi_types.h"
 
 switch_status_t switch_pd_l2_tx_forward_table_entry(
     switch_device_t device, const switch_api_l2_info_t* api_l2_tx_info,

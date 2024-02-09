@@ -19,13 +19,13 @@
 
 #include <net/if.h>
 
-#include "tdi_rt/tdi_rt_common.h"
-#include "tdi_types/tdi_types.h"
 #include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rmac_int.h"
+#include "tdi_rt/tdi_rt_common.h"
+#include "tdi_types/tdi_types.h"
 
 switch_status_t switch_pd_get_physical_port_id(switch_device_t device,
                                                uint32_t netdev_port_id,
