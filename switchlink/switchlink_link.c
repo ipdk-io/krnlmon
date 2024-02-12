@@ -359,6 +359,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
       case SWITCHLINK_LINK_TYPE_TEAM:
         krnlmon_log_info("LAG via teaming driver isn't supported\n");
         break;
+#ifdef ES2K_TARGET
       case SWITCHLINK_LINK_TYPE_BOND:
         snprintf(intf_info.ifname, sizeof(intf_info.ifname), "%s",
                  attrs.ifname);
@@ -376,6 +377,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
                             intf_info.bond_mode);
         }
         break;
+#endif
       case SWITCHLINK_LINK_TYPE_ETH:
         break;
 
@@ -427,6 +429,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         break;
     }
     switch (slave_link_type) {
+#ifdef ES2K_TARGET
       case SWITCHLINK_LINK_TYPE_BOND:
         snprintf(lag_member_info.ifname, sizeof(lag_member_info.ifname), "%s",
                  attrs.ifname);
@@ -442,6 +445,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
           switchlink_create_lag_member(&lag_member_info);
         }
         break;
+#endif
       default:
         break;
     }
@@ -461,7 +465,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     } else {
       krnlmon_log_debug("Unhandled link type");
     }
-
+#ifdef ES2K_TARGET
     if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
       switchlink_delete_lag(ifmsg->ifi_index);
       return;
@@ -471,6 +475,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
       switchlink_delete_lag_member(ifmsg->ifi_index);
       return;
     }
+#endif
   }
   return;
 }

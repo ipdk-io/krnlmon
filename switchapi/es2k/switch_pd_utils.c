@@ -19,9 +19,7 @@
 
 #include <net/if.h>
 
-#include "bf_rt/bf_rt_common.h"
-#include "bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
+#include "ipu_types/ipu_types.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
@@ -371,14 +369,14 @@ void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
   switch_rmac_info_t* rmac_info = NULL;
   switch_rmac_entry_t* rmac_entry = NULL;
   switch_node_t* node = NULL;
-  bf_dev_id_t bf_dev_id = 0;
+  ipu_dev_id_t ipu_dev_id = 0;
   static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
-  bf_status_t bf_status;
+  ipu_status_t ipu_status;
   uint32_t port_id = 0;
 
   /*rmac_handle will have source mac info. get rmac_info from rmac_handle */
   rmac_handle = port_rif_info->rmac_handle;
-  status = switch_rmac_get(bf_dev_id, rmac_handle, &rmac_info);
+  status = switch_rmac_get(ipu_dev_id, rmac_handle, &rmac_info);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error("Cannot get rmac info for handle 0x%x, error: %d",
                       rmac_handle, status);
@@ -399,8 +397,8 @@ void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
            rmac_entry->mac.mac_addr[4], rmac_entry->mac.mac_addr[5]);
   mac_str[SWITCH_PD_MAC_STR_LENGTH - 1] = '\0';
 
-  bf_status = bf_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
-  if (bf_status != BF_SUCCESS) {
+  ipu_status = ipu_pal_get_port_id_from_mac(ipu_dev_id, mac_str, &port_id);
+  if (ipu_status != TDI_SUCCESS) {
     // First SWITCH_PD_TARGET_VPORT_OFFSET entries are reserved for
     // MEV h/w ports. Hence VSI ID/Port ID should be offset with
     // SWITCH_PD_TARGET_VPORT_OFFSET
@@ -413,7 +411,7 @@ void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
         "Failed to get the port ID, error: %d, Deriving "
         "port ID from second byte of MAC address: "
         "%s",
-        bf_status, mac_str);
+        ipu_status, mac_str);
   }
 
   port_rif_info->port_id = port_id;

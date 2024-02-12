@@ -18,7 +18,7 @@
 #include <net/if.h>
 
 /* Local header includes */
-#include "bf_types.h"
+#include "ipu_types/ipu_types.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"

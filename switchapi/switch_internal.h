@@ -23,7 +23,6 @@
 #include "switchapi/switch_device_int.h"
 #include "switchapi/switch_handle_int.h"
 #include "switchapi/switch_status.h"
-//#include "bf_types.h"
 #include "switchutils/switch_utils.h"
 #include "tdi/common/tdi_defs.h"
 

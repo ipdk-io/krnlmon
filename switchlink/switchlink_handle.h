@@ -32,11 +32,13 @@ extern void switchlink_create_tunnel_interface(
 extern void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
 // SWITCHLINK_LINK_TYPE_BOND handlers
+#ifdef ES2K_TARGET
 extern void switchlink_create_lag(switchlink_db_interface_info_t* lag_info);
 extern void switchlink_delete_lag(uint32_t ifindex);
 extern void switchlink_create_lag_member(
     switchlink_db_lag_member_info_t* lag_member_info);
 extern void switchlink_delete_lag_member(uint32_t ifindex);
+#endif
 
 // SWITCHLINK_LINK_TYPE_TUN handlers
 extern void switchlink_create_interface(switchlink_db_interface_info_t* intf);

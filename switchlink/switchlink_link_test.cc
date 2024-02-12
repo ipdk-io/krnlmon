@@ -72,11 +72,13 @@ std::vector<test_results> results(2);
 // Test doubles (dummy functions)
 //----------------------------------------------------------------------
 
+#ifdef ES2K_TARGET
 void switchlink_create_lag(switchlink_db_interface_info_t* lag_info) {}
 void switchlink_delete_lag(uint32_t ifindex) {}
 void switchlink_create_lag_member(
     switchlink_db_lag_member_info_t* lag_member_info) {}
 void switchlink_delete_lag_member(uint32_t ifindex) {}
+#endif
 
 void switchlink_create_interface(switchlink_db_interface_info_t* intf) {
   struct test_results temp = {0};
