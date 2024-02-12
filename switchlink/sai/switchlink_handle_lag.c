@@ -17,10 +17,9 @@
 #include <linux/if.h>
 
 #include "ipu_pal/port_intf.h"
+#include "ipu_types/ipu_types.h"
 #include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switchlink_init_sai.h"
-#include "tdi_rt/tdi_rt_common.h"
-#include "tdi_types/tdi_types.h"
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16
@@ -171,9 +170,9 @@ static int create_lag_member(
     switchlink_handle_t* lag_member_h) {
   sai_attribute_t attr_list[5];
   int ac = 0;
-  tdi_status_t tdi_status;
+  ipu_status_t ipu_status;
   uint32_t port_id = 0;
-  tdi_dev_id_t bf_dev_id = 0;
+  ipu_dev_id_t ipu_dev_id = 0;
   static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
 
   snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
@@ -182,14 +181,14 @@ static int create_lag_member(
            lag_member_intf->perm_hwaddr[4], lag_member_intf->perm_hwaddr[5]);
   mac_str[SWITCH_PD_MAC_STR_LENGTH - 1] = '\0';
 
-  tdi_status = ipu_pal_get_port_id_from_mac(bf_dev_id, mac_str, &port_id);
-  if (tdi_status != TDI_SUCCESS) {
+  ipu_status = ipu_pal_get_port_id_from_mac(ipu_dev_id, mac_str, &port_id);
+  if (ipu_status != IPU_SUCCESS) {
     port_id = lag_member_intf->perm_hwaddr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
     krnlmon_log_info(
         "Failed to get the port ID, error: %d, Deriving "
         "port ID from second byte of MAC address: "
         "%s",
-        tdi_status, mac_str);
+        ipu_status, mac_str);
   }
 
   memset(attr_list, 0, sizeof(attr_list));

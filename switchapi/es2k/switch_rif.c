@@ -18,6 +18,7 @@
 #include <net/if.h>
 
 /* Local header includes */
+#include "ipu_types/ipu_types.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"
@@ -25,7 +26,6 @@
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_status.h"
-#include "tdi_types/tdi_types.h"
 
 /*
  * Routine Description:

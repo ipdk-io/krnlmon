@@ -19,12 +19,11 @@
 #define __SWITCH_PD_UTILS_H__
 
 #include "ipu_pal/port_intf.h"
+#include "ipu_types/ipu_types.h"
 #include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
-#include "tdi_rt/tdi_rt_common.h"
-#include "tdi_types/tdi_types.h"
 
 // clang-format off
 // tdi_info.h does not include the header files it depends on,
@@ -63,13 +62,15 @@ tdi_status_t switch_pd_get_bridge_id(switch_device_t device,
                                      uint8_t physical_port_id,
                                      uint8_t* bridge_id);
 
-tdi_status_t switch_pd_allocate_handle_session(
-    const tdi_dev_id_t device_id, const char* pipeline_name,
-    tdi_rt_info_hdl** bfrt_info_hdl_t, tdi_rt_session_hdl** session_t);
+ipu_status_t switch_pd_allocate_handle_session(const ipu_dev_id_t device_id,
+                                               const char* pipeline_name,
+                                               tdi_info_hdl** bfrt_info_hdl_t,
+                                               tdi_session_hdl** session_t);
 
-tdi_status_t switch_pd_deallocate_handle_session(
-    tdi_rt_table_key_hdl* key_hdl_t, tdi_rt_table_data_hdl* data_hdl_t,
-    tdi_rt_session_hdl* session_t, bool entry_type);
+ipu_status_t switch_pd_deallocate_handle_session(tdi_table_key_hdl* key_hdl_t,
+                                                 tdi_table_data_hdl* data_hdl_t,
+                                                 tdi_session_hdl* session_t,
+                                                 bool entry_type);
 
 void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info);
 
