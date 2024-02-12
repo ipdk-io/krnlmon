@@ -17,7 +17,6 @@
 
 #include "switch_pd_routing.h"
 
-#include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"

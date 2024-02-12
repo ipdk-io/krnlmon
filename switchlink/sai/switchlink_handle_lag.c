@@ -18,7 +18,6 @@
 
 #include "ipu_pal/port_intf.h"
 #include "ipu_types/ipu_types.h"
-#include "port_mgr/dpdk/dpdk_port_if.h"
 #include "switchlink_init_sai.h"
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
