@@ -1,6 +1,6 @@
-# switchlink/BUILD.bazel
+# //switchlink/BUILD.bazel
 
-# Copyright 2023 Intel Corporation
+# Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
@@ -12,7 +12,6 @@ cc_import(
     hdrs = glob(["netlink/**/*.h"]),
     includes = ["/usr/include/libnl3"],
     system_provided = 1,
-    visibility = ["//visibility:public"],
 )
 
 cc_import(
@@ -20,7 +19,6 @@ cc_import(
     hdrs = glob(["netlink/**/*.h"]),
     includes = ["/usr/include/libnl3"],
     system_provided = 1,
-    visibility = ["//visibility:public"],
 )
 
 cc_import(
@@ -28,27 +26,66 @@ cc_import(
     hdrs = glob(["netlink/**/*.h"]),
     includes = ["/usr/include/libnl3"],
     system_provided = 1,
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
-    name = "switchlink_main",
-    srcs = ["switchlink_main.c"],
-    hdrs = [
-        "switchlink.h",
-        "switchlink_int.h",
-        "switchlink_main.h",
-    ],
-    deps = [":libnl-3"],
+    name = "switchlink",
+    hdrs = ["switchlink.h"],
+    deps = ["//switchutils:switch_utils"],
 )
 
 cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
-    hdrs = [
-        "switchlink_handle.h",
-        "switchlink_int.h",
-        "switchlink_route.h",
+    deps = [
+        ":libnl-3",
+        ":switchlink_handle",
+        ":switchlink_int",
+        ":switchlink_route",
     ],
-    deps = [":libnl-3"],
+)
+
+cc_library(
+    name = "switchlink_db",
+    hdrs = ["switchlink_db.h"],
+    deps = [
+        ":switchlink",
+        ":switchlink_link",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle",
+    hdrs = ["switchlink_handle.h"],
+    deps = [
+        ":switchlink",
+        ":switchlink_db",
+    ],
+)
+
+cc_library(
+    name = "switchlink_int",
+    hdrs = ["switchlink_int.h"],
+)
+
+cc_library(
+    name = "switchlink_link",
+    hdrs = ["switchlink_link.h"],
+)
+
+cc_library(
+    name = "switchlink_main",
+    srcs = ["switchlink_main.c"],
+    hdrs = ["switchlink_main.h"],
+    deps = [
+        ":libnl-3",
+        ":switchlink",
+        ":switchlink_int",
+    ],
+)
+
+cc_library(
+    name = "switchlink_route",
+    hdrs = ["switchlink_route.h"],
+    deps = [":switchlink_handle"],
 )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022 Intel Corporation.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,11 @@
 #define __KRNLMON_UTILS_H__
 
 #include <assert.h>
+
 #include "switch_log.h"
 
-#define krnlmon_assert                  assert
-#define krnlmon_snprintf                snprintf
-#define krnlmon_assert_perror           assert_perror
+#define krnlmon_assert assert
+#define krnlmon_snprintf snprintf
+#define krnlmon_assert_perror assert_perror
 
 #endif /* __KRNLMON_UTILS_H__*/

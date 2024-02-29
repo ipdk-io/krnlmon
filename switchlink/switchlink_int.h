@@ -21,17 +21,18 @@
 #define __SWITCHLINK_INT_H__
 
 struct nlmsghdr;
+
 extern void switchlink_init_db(void);
 extern void switchlink_init_api(void);
 extern void switchlink_init_link(void);
 
-extern void switchlink_process_link_msg(const struct nlmsghdr *nlmsg,
+extern void switchlink_process_link_msg(const struct nlmsghdr* nlmsg,
                                         int msgtype);
-extern void switchlink_process_neigh_msg(const struct nlmsghdr *nlmsg,
+extern void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg,
                                          int msgtype);
-extern void switchlink_process_address_msg(const struct nlmsghdr *nlmsg,
+extern void switchlink_process_address_msg(const struct nlmsghdr* nlmsg,
                                            int msgtype);
-extern void switchlink_process_route_msg(const struct nlmsghdr *nlmsg,
+extern void switchlink_process_route_msg(const struct nlmsghdr* nlmsg,
                                          int msgtype);
 
 #endif /* __SWITCHLINK_INT_H__ */

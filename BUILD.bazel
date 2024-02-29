@@ -1,9 +1,11 @@
-# BUILD.bazel
+# //BUILD.bazel
 
-# Copyright 2023 Intel Corporation
+# Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "krnlmon_main",
@@ -12,5 +14,16 @@ cc_library(
     deps = [
         "//switchlink:switchlink_main",
         "@com_google_absl//absl/synchronization",
+        # @bf_sal
     ],
 )
+
+# absl
+# bf_pal, bf_rt, bf_sal, bf_switchd, bf_types, port_mgr/dpdk
+# id
+# judy-1.0.5
+# netlink
+# sai
+# tdi
+# tommyds
+# xxHash

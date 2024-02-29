@@ -1,5 +1,22 @@
-#ifndef KRNLMON_LOG_INCLUDED
-#define KRNLMON_LOG_INCLUDED
+/*
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef __KRNLMON_LOG_H__
+#define __KRNLMON_LOG_H__
 
 #include "bf_sal/bf_sys_intf.h"
 #include "bf_sal/bf_sys_log.h"
@@ -21,4 +38,4 @@ bf_sys_log_and_trace(KRNLMON, BF_LOG_DBG, __VA_ARGS__)
 
 #define krnlmon_log krnlmon_log_debug
 
-#endif  // KRNLMON_LOG_INCUDED
+#endif  // __KRNLMON_LOG_H__

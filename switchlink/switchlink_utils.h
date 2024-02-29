@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,4 +27,5 @@
 
 uint32_t ipv4_prefix_len_to_mask(uint32_t prefix_len);
 struct in6_addr ipv6_prefix_len_to_mask(uint32_t prefix_len);
+
 #endif /* __SWITCHLINK_UTILS_H__ */
