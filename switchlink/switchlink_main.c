@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -40,6 +40,7 @@
 
 #include "switchlink.h"
 #include "switchlink_int.h"
+#include "switchutils/switch_log.h"
 
 static struct nl_sock *g_nlsk = NULL;
 static pthread_t switchlink_thread;

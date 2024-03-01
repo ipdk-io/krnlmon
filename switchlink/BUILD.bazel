@@ -31,7 +31,9 @@ cc_import(
 cc_library(
     name = "switchlink",
     hdrs = ["switchlink.h"],
-    deps = ["//switchutils:switch_utils"],
+    deps = [
+        "//switchutils:switch_utils",
+    ],
 )
 
 cc_library(
@@ -42,6 +44,7 @@ cc_library(
         ":switchlink_handle",
         ":switchlink_int",
         ":switchlink_route",
+        "@local_dpdk_bin//:dpdk_hdrs",
     ],
 )
 
@@ -81,6 +84,7 @@ cc_library(
         ":libnl-3",
         ":switchlink",
         ":switchlink_int",
+        "//switchutils:switch_log",
     ],
 )
 

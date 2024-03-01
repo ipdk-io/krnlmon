@@ -25,3 +25,6 @@ http_archive(
     strip_prefix = "abseil-cpp-20220623.0",
     sha256 = "4208129b49006089ba1d6710845a45e31c59b0ab6bff9e5788a87f55c5abd602",
 )
+
+load("//bazel:dpdk.bzl", "dpdk_configure")
+dpdk_configure(name = "local_dpdk_bin")

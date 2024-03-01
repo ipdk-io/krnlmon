@@ -10,10 +10,13 @@ package(default_visibility = ["//visibility:public"])
 cc_library(
     name = "switch_log",
     hdrs = ["switch_log.h"],
+    deps = [
+        "@local_dpdk_bin//:dpdk_hdrs",
+    ],
+
 )
 
 cc_library(
     name = "switch_utils",
     hdrs = ["switch_utils.h"],
-    deps = [":switch_log"],
 )
