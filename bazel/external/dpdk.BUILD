@@ -16,7 +16,6 @@ cc_library(
         "dpdk-bin/lib/libbf_switchd_lib.so*",
         "dpdk-bin/lib/libclish.so",
         "dpdk-bin/lib/libdriver.so",
-        "dpdk-bin/lib/libtarget_sys.so",
         "dpdk-bin/lib/libtdi.so*",
         "dpdk-bin/lib/libtdi_json_parser.so*",
     ]),
@@ -40,8 +39,6 @@ cc_library(
         "dpdk-bin/include/osdep/*.h",
         "dpdk-bin/include/pipe_mgr/*.h",
         "dpdk-bin/include/port_mgr/**/*.h",
-        "dpdk-bin/include/target-sys/**/*.h",
-        "dpdk-bin/include/target-utils/**/*.h",
         "dpdk-bin/include/tdi/**/*.h",
         "dpdk-bin/include/tdi/**/*.hpp",
         "dpdk-bin/include/tdi_rt/**/*.h",
@@ -65,7 +62,40 @@ cc_library(
 
 cc_library(
     name = "target_sys",
-    srcs = glob([
-        "dpdk-bin/lib/libtarget_sys.so",
+    srcs = glob(["dpdk-bin/lib/libtarget_sys.so"]),
+    hdrs = glob(["dpdk-bin/include/target-sys/**/*.h"]),
+    linkopts = [
+        "-lpthread",
+        "-lm",
+        "-ldl",
+    ],
+    strip_include_prefix = "dpdk-bin/include/target-sys",
+)
+
+cc_library(
+    name = "target_utils",
+    srcs = glob(["dpdk-bin/lib/libtarget_utils.so"]),
+    hdrs = glob(["dpdk-bin/include/target-utils/**/*.h"]),
+    linkopts = [
+        "-lpthread",
+        "-lm",
+        "-ldl",
+    ],
+    strip_include_prefix = "dpdk-bin/include/target-utils",
+)
+
+cc_library(
+    name = "tommyds",
+    hdrs = glob([
+        "dpdk-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
     ]),
+    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/tommyds",
+)
+
+cc_library(
+    name = "xxhash",
+    hdrs = glob([
+        "dpdk-bin/include/target-utils/third-party/xxHash/xxHash/*.h",
+    ]),
+    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/xxHash",
 )
