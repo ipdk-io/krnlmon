@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-#ifndef _switch_internal_h_
-#define _switch_internal_h_
+#ifndef _SWITCH_INTERNAL_H_
+#define _SWITCH_INTERNAL_H_
 
 #include <stdio.h>
 #include "switchapi/switch_status.h"
 #include "switchapi/switch_device_int.h"
 #include "switchapi/switch_handle_int.h"
-//#include "bf_types.h"
 #include "tdi/common/tdi_defs.h"
+#include "switchutils/switch_log.h"
 #include "switchutils/switch_utils.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_API_BUFFER_SIZE 512
 
@@ -232,4 +232,4 @@ char *switch_handle_type_to_string(switch_handle_type_t handle_type);
 }
 #endif
 
-#endif /* _switch_internal_h_ */
+#endif /* _SWITCH_INTERNAL_H_ */

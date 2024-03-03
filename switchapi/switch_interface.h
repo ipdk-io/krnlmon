@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@
 #include "switch_base_types.h"
 #include "switch_handle.h"
 #include "switch_tunnel.h"
+#include "switchutils/switch_log.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /** @defgroup Interface Interface configuration API
  *  API functions listed to configure the interfaces

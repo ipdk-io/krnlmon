@@ -18,8 +18,8 @@
 #ifndef __KRNLMON_LOG_H__
 #define __KRNLMON_LOG_H__
 
-#include "target-sys/bf_sal/bf_sys_intf.h"
-#include "target-sys/bf_sal/bf_sys_log.h"
+#include "bf_sal/bf_sys_intf.h"
+#include "bf_sal/bf_sys_log.h"
 
 #define krnlmon_log_critical(...) \
 bf_sys_log_and_trace(KRNLMON, BF_LOG_CRIT, __VA_ARGS__)

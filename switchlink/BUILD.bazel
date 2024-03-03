@@ -29,60 +29,98 @@ cc_import(
 )
 
 cc_library(
-    name = "switchlink",
-    hdrs = ["switchlink.h"],
+    name = "switchlink_address",
+    srcs = ["switchlink_address.c"],
+    deps = [
+        ":switchlink_handle",
+        ":switchlink_int",
+        "//switchutils:switch_log",
+        "@local_dpdk_bin//:target_sys",
+    ],
+)
+
+cc_library(
+    name = "switchlink_db",
+    srcs = [
+        "switchlink_db.c",
+        "switchlink_db.h",
+        "switchlink_db_int.h",
+    ],
+    deps = [
+        ":switchlink_hdr",
+        ":switchlink_int",
+        ":switchlink_types",
+        "@local_dpdk_bin//:tommyds",
+        "@local_dpdk_bin//:xxhash",
+    ],
+)
+
+cc_library(
+    name = "switchlink_globals",
+    srcs = ["switchlink_globals.c"],
+    deps = [
+        ":switchlink_hdr",
+    ],
+)
+
+cc_library(
+    name = "switchlink_hdr",
+    srcs = ["switchlink.h"],
     deps = [
         "//switchutils:switch_utils",
     ],
 )
 
 cc_library(
-    name = "switchlink_address",
-    srcs = ["switchlink_address.c"],
+    name = "switchlink_handle",
+    srcs = ["switchlink_handle.h"],
     deps = [
         ":libnl-3",
-        ":switchlink_handle",
-        ":switchlink_int",
-        ":switchlink_route",
-        "@local_dpdk_bin//:dpdk_hdrs",
-    ],
-)
-
-cc_library(
-    name = "switchlink_db",
-    hdrs = ["switchlink_db.h"],
-    deps = [
-        ":switchlink",
-        ":switchlink_link",
-    ],
-)
-
-cc_library(
-    name = "switchlink_handle",
-    hdrs = ["switchlink_handle.h"],
-    deps = [
-        ":switchlink",
         ":switchlink_db",
+        ":switchlink_hdr",
     ],
 )
 
 cc_library(
     name = "switchlink_int",
-    hdrs = ["switchlink_int.h"],
+    srcs = ["switchlink_int.h"],
 )
 
 cc_library(
     name = "switchlink_link",
-    hdrs = ["switchlink_link.h"],
+    srcs = [
+        "switchlink_link.c",
+    ],
+    deps = [
+        ":switchlink_handle",
+        ":switchlink_hdr",
+        ":switchlink_int",
+        ":switchlink_types",
+        "//switchutils:switch_log",
+    ],
 )
 
 cc_library(
     name = "switchlink_main",
-    srcs = ["switchlink_main.c"],
-    hdrs = ["switchlink_main.h"],
+    srcs = [
+        "switchlink_main.c",
+        "switchlink_main.h",
+    ],
     deps = [
         ":libnl-3",
-        ":switchlink",
+        ":switchlink_hdr",
+        ":switchlink_int",
+        "//switchutils:switch_log",
+        "@local_dpdk_bin//:target_sys",
+    ],
+)
+
+cc_library(
+    name = "switchlink_neigh",
+    srcs = ["switchlink_neigh.c"],
+    deps = [
+        ":switchlink_handle",
+        ":switchlink_hdr",
         ":switchlink_int",
         "//switchutils:switch_log",
     ],
@@ -90,6 +128,24 @@ cc_library(
 
 cc_library(
     name = "switchlink_route",
-    hdrs = ["switchlink_route.h"],
-    deps = [":switchlink_handle"],
+    srcs = ["switchlink_route.c"],
+    deps = [
+        ":switchlink_handle",
+        ":switchlink_int",
+        "//switchutils:switch_log",
+    ],
+)
+
+cc_library(
+    name = "switchlink_types",
+    srcs = ["switchlink_link.h"],
+)
+
+cc_library(
+    name = "switchlink_utils",
+    srcs = ["switchlink_utils.c"],
+    hdrs = ["switchlink_utils.h"],
+    deps = [
+        "//switchutils:switch_utils",
+    ],
 )

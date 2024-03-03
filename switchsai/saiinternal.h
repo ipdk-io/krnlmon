@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright (c) 2022 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+#ifndef __SAIINTERNAL_H_
+#define __SAIINTERNAL_H_
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <syslog.h>
@@ -24,10 +27,8 @@
 #include "saitypes.h"
 #include "sai.h"
 #include "switchapi/switch_base_types.h"
+#include "switchutils/switch_log.h"
 #include "switchutils/switch_utils.h"
-
-#ifndef __SAIINTERNAL_H_
-#define __SAIINTERNAL_H_
 
 #define SAI_MAX_ENTRY_STRING_LEN 200
 

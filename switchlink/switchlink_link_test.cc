@@ -1,14 +1,12 @@
-// Copyright 2023 Intel Corporation
+// Copyright 2023-2024 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
 #include <linux/if_arp.h>
 #include <memory.h>
 #include <netlink/msg.h>
-
 #include <vector>
 
 #include "gtest/gtest.h"
-#include "netlink/msg.h"
 
 extern "C" {
 #include "switchlink/switchlink_handle.h"

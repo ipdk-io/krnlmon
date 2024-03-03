@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache 2.0
  *
@@ -27,6 +27,7 @@
 #include "switchlink_int.h"
 #include "switchlink_link.h"
 #include "switchlink_handle.h"
+#include "switchutils/switch_log.h"
 
 #if defined(ES2K_TARGET)
   // ES2K creates netdevs from idpf driver/SR-IOVs.

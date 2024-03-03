@@ -11,7 +11,7 @@ cc_library(
     name = "switch_log",
     hdrs = ["switch_log.h"],
     deps = [
-        "@local_dpdk_bin//:dpdk_hdrs",
+        "@local_dpdk_bin//:target_sys",
     ],
 
 )
