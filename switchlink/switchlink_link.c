@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-#include "switchlink_link.h"
-
 #include <fcntl.h>
 #include <linux/errno.h>
 #include <linux/ethtool.h>
@@ -35,6 +33,7 @@
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
+#include "switchlink_link_types.h"
 #include "switchlink_utils.h"
 
 #if defined(ES2K_TARGET)

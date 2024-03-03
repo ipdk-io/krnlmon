@@ -12,7 +12,7 @@ extern "C" {
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
-#include "switchlink_link.h"
+#include "switchlink_link_types.h"
 }
 
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
