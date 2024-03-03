@@ -24,7 +24,7 @@
 #include <netlink/msg.h>
 
 #include "switchlink.h"
-#include "switchlink_handle.h"
+#include "switchlink_handlers.h"
 
 /*
  * Routine Description:

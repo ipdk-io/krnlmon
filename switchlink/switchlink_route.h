@@ -22,7 +22,7 @@
 
 #include <netlink/netlink.h>
 
-#include "switchlink_handle.h"
+#include "switchlink_handlers.h"
 
 void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype);
 

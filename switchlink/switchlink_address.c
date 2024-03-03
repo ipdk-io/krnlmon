@@ -19,7 +19,7 @@
 
 #include <netlink/msg.h>
 
-#include "switchlink_handle.h"
+#include "switchlink_handlers.h"
 #include "switchlink_int.h"
 #include "switchlink_route.h"
 

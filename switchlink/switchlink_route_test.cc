@@ -7,7 +7,7 @@
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "switchlink/switchlink_handle.h"
+#include "switchlink/switchlink_handlers.h"
 #include "switchlink/switchlink_int.h"
 #include "switchlink/switchlink_route.h"
 }
