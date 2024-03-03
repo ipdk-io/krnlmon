@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache 2.0
  */
 
-#include "switchlink.h"
+#include "switchlink_globals.h"
 
 switchlink_handle_t g_default_vrf_h = 0;
 switchlink_handle_t g_default_bridge_h = 0;

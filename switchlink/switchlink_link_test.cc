@@ -1,18 +1,18 @@
-// Copyright 2023 Intel Corporation
+// Copyright 2023-2024 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
 #include <linux/if_arp.h>
 #include <memory.h>
 #include <netlink/msg.h>
-
 #include <vector>
 
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "switchlink/switchlink_handlers.h"
-#include "switchlink/switchlink_int.h"
-#include "switchlink/switchlink_link.h"
+#include "switchlink_globals.h"
+#include "switchlink_handlers.h"
+#include "switchlink_int.h"
+#include "switchlink_link.h"
 }
 
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))

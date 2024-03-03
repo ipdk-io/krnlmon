@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +16,13 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handlers.h"
 #include "switchlink_init_sai.h"
+#include "switchlink/switchlink_globals.h"
+#include "switchlink/switchlink_handlers.h"
 
 static sai_neighbor_api_t* sai_neigh_api = NULL;
 static sai_fdb_api_t* sai_fdb_api = NULL;
+
 /*
  * Routine Description:
  *    Initialize Neighbor SAI API
