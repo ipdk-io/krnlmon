@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handlers.h"
+#include "switchlink_init_sai.h"
 
 static sai_next_hop_group_api_t* sai_nhop_group_api = NULL;
 
