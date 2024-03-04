@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-#include "switchlink_neigh.h"
-
 #include <linux/if_ether.h>
 #include <net/if.h>
 #include <netlink/msg.h>
 
 #include "switchlink.h"
+#include "switchlink_int.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 
