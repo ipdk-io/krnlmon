@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_globals.h"
 #include "switchlink/switchlink_handlers.h"
+#include "switchlink_init_sai.h"
 
 static sai_neighbor_api_t* sai_neigh_api = NULL;
 static sai_fdb_api_t* sai_fdb_api = NULL;

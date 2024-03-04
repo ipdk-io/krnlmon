@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handlers.h"
+#include "switchlink_init_sai.h"
 
 static sai_virtual_router_api_t* sai_vrf_api = NULL;
 static sai_router_interface_api_t* sai_rintf_api = NULL;

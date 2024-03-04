@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#include "switchlink_init_sai.h"
 #include "switchlink/switchlink_handlers.h"
+#include "switchlink_init_sai.h"
 
 static sai_tunnel_api_t* sai_tunnel_intf_api = NULL;
 
