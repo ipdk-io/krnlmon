@@ -14,16 +14,5 @@ cc_library(
     deps = [
         "//switchlink:switchlink_main",
         "@com_google_absl//absl/synchronization",
-        "@local_dpdk_bin//:dpdk_hdrs",
     ],
 )
-
-# absl
-# bf_pal, bf_rt, bf_sal, bf_switchd, bf_types, port_mgr/dpdk
-# id
-# judy-1.0.5
-# netlink
-# sai
-# tdi
-# tommyds
-# xxHash

@@ -28,3 +28,8 @@ http_archive(
 
 load("//bazel:dpdk.bzl", "dpdk_configure")
 dpdk_configure(name = "local_dpdk_bin")
+
+# TODO:
+# - googletest (loaded by abseil)
+# - netlink (generalize)
+# - sai
