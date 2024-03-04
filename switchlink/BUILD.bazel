@@ -32,6 +32,16 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "switchlink_address_test",
+    srcs = ["switchlink_address_test.cc"],
+    deps = [
+        ":switchlink_address",
+        ":switchlink_globals",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "switchlink_db",
     srcs = [
@@ -52,9 +62,7 @@ cc_library(
 cc_library(
     name = "switchlink_globals",
     srcs = ["switchlink_globals.c"],
-    deps = [
-        ":switchlink_types",
-    ],
+    deps = [":switchlink_types"],
 )
 
 cc_library(
@@ -83,9 +91,7 @@ cc_library(
 
 cc_library(
     name = "switchlink_link",
-    srcs = [
-        "switchlink_link.c",
-    ],
+    srcs = ["switchlink_link.c"],
     deps = [
         ":switchlink_handlers",
         ":switchlink_int",
@@ -97,9 +103,7 @@ cc_library(
 
 cc_test(
     name = "switchlink_link_test",
-    srcs = [
-        "switchlink_link_test.cc",
-    ],
+    srcs = ["switchlink_link_test.cc"],
     deps = [
         ":switchlink_globals",
         ":switchlink_handlers",
@@ -140,6 +144,16 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "switchlink_neigh_test",
+    srcs = ["switchlink_neigh_test.cc"],
+    deps = [
+        ":switchlink_neigh",
+        ":switchlink_globals",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "switchlink_route",
     srcs = ["switchlink_route.c"],
@@ -147,6 +161,16 @@ cc_library(
         ":switchlink_handlers",
         ":switchlink_int",
         "//switchutils:switch_log",
+    ],
+)
+
+cc_test(
+    name = "switchlink_route_test",
+    srcs = ["switchlink_route_test.cc"],
+    deps = [
+        ":switchlink_route",
+        ":switchlink_globals",
+        "@com_google_googletest//:gtest_main",
     ],
 )
 

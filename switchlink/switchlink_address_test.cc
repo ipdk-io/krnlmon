@@ -186,7 +186,7 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, ADD_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET);
@@ -233,7 +233,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET);
@@ -283,7 +283,7 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, ADD_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);
@@ -336,7 +336,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);

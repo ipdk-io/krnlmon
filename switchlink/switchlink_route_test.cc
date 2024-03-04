@@ -612,9 +612,9 @@ TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
 
   inet_pton(AF_INET6, "2001::1", &gateway_addr6);
   // Word 0 of IPv6 address.
-  const uint16_t GATEWAY_V6ADDR_0 = htons(0x2001);
+  //const uint16_t GATEWAY_V6ADDR_0 = htons(0x2001);
   // Word 7 of IPv6 address.
-  const uint16_t GATEWAY_V6ADDR_7 = htons(0x0001);
+  //const uint16_t GATEWAY_V6ADDR_7 = htons(0x0001);
 
   inet_pton(AF_INET6, "2001::2", &dst_addr6);
   // Word 0 of IPv6 address.
@@ -681,7 +681,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
   };
 
   const uint32_t gateway_addr1 = IPV4_ADDR(20, 20, 20, 1);
-  const uint32_t oifindex = 1;
+//const uint32_t oifindex = 1;
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);
@@ -739,7 +739,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpCreatev4Nexthop) {
   };
 
   const uint32_t gateway_addr1 = IPV4_ADDR(20, 20, 20, 1);
-  const uint32_t oifindex = 1;
+//const uint32_t oifindex = 1;
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);
