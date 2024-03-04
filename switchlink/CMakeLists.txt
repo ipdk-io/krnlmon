@@ -19,7 +19,7 @@ add_library(switchlink_o OBJECT
     switchlink_handlers.h
     switchlink_int.h
     switchlink_link.c
-    switchlink_link.h
+    switchlink_link_types.h
     switchlink_main.c
     switchlink_main.h
     switchlink_neigh.c
