@@ -74,7 +74,7 @@ sai_status_t sai_init_fdb_api() {
  */
 
 bool validate_delete_nexthop(uint32_t using_by,
-                             switchlink_nhop_using_by_e type) {
+                             enum switchlink_nhop_using_by type) {
   return (using_by & ~(type)) ? false : true;
 }
 

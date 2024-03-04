@@ -81,6 +81,6 @@ extern int switchlink_create_vrf(switchlink_handle_t* vrf_h);
 
 // General utility function
 extern bool validate_delete_nexthop(uint32_t using_by,
-                                    switchlink_nhop_using_by_e type);
+                                    enum switchlink_nhop_using_by type);
 
 #endif /* __SWITCHLINK_HANDLERS_H__ */
