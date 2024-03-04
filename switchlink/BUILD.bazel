@@ -8,7 +8,7 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 package(default_visibility = ["//visibility:public"])
 
 cc_import(
-    name = "libnl-3",
+    name = "nl-3",
     hdrs = glob(["netlink/**/*.h"]),
     includes = ["/usr/include/libnl3"],
     system_provided = 1,
@@ -50,8 +50,9 @@ cc_library(
         ":switchlink_int",
         ":switchlink_link_types",
         ":switchlink_types",
-        "@local_dpdk_bin//:tommyds",
-        "@local_dpdk_bin//:xxhash",
+        "@local_dpdk_bin//:target_utils",
+        "@local_dpdk_bin//:tommyds_hdrs",
+        "@local_dpdk_bin//:xxhash_hdrs",
     ],
 )
 
@@ -75,10 +76,11 @@ cc_library(
     name = "switchlink_handlers",
     srcs = ["switchlink_handle.h"],  # rename
     deps = [
-        ":libnl-3",
+        ":nl-3",
         ":switchlink_db",
         ":switchlink_types",
     ],
+    linkopts = ["-lnl-3"],
 )
 
 cc_library(
@@ -100,6 +102,19 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "switchlink_link_test",
+    srcs = [
+        "switchlink_link_test.cc",
+    ],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_link",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
 cc_library(
     name = "switchlink_link_types",
     srcs = ["switchlink_link.h"],  # rename
@@ -112,12 +127,13 @@ cc_library(
         "switchlink_main.h",
     ],
     deps = [
-        ":libnl-3",
+        ":nl-3",
         ":switchlink_int",
         ":switchlink_types",
         "//switchutils:switch_log",
         "@local_dpdk_bin//:target_sys",
     ],
+    linkopts = ["-lnl-3"],
 )
 
 cc_library(

@@ -26,10 +26,16 @@ http_archive(
     sha256 = "4208129b49006089ba1d6710845a45e31c59b0ab6bff9e5788a87f55c5abd602",
 )
 
+http_archive(
+    name = "com_google_googletest",
+    sha256 = "d3d307a240e129bb57da8aae64f3b0099bf1b8efff7249df993b619b8641ec77",
+    strip_prefix = "googletest-a3460d1aeeaa43fdf137a6adefef10ba0b59fe4b",
+    urls = ["https://github.com/google/googletest/archive/a3460d1aeeaa43fdf137a6adefef10ba0b59fe4b.zip"],
+)
+
 load("//bazel:dpdk.bzl", "dpdk_configure")
 dpdk_configure(name = "local_dpdk_bin")
 
 # TODO:
-# - googletest (loaded by abseil)
 # - netlink (generalize)
 # - sai

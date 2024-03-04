@@ -76,6 +76,7 @@ cc_library(
     name = "target_utils",
     srcs = glob(["dpdk-bin/lib/libtarget_utils.so"]),
     hdrs = glob(["dpdk-bin/include/target-utils/**/*.h"]),
+    deps = [":target_sys"],
     linkopts = [
         "-lpthread",
         "-lm",
@@ -85,7 +86,7 @@ cc_library(
 )
 
 cc_library(
-    name = "tommyds",
+    name = "tommyds_hdrs",
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
     ]),
@@ -93,7 +94,7 @@ cc_library(
 )
 
 cc_library(
-    name = "xxhash",
+    name = "xxhash_hdrs",
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/xxHash/xxHash/*.h",
     ]),
