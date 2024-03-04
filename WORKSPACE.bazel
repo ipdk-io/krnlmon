@@ -1,9 +1,9 @@
 # WORKSPACE.bazel
 
-# Copyright 2023 Intel Corporation
+# Copyright 2023-2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-workspace(name = "com_github_idpk_io_krnlmon")
+workspace(name = "io_ipdk_krnlmon")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -37,5 +37,4 @@ load("//bazel:dpdk.bzl", "dpdk_configure")
 dpdk_configure(name = "local_dpdk_bin")
 
 # TODO:
-# - netlink (generalize)
 # - sai

@@ -15,14 +15,7 @@ cc_import(
 )
 
 cc_import(
-    name = "libnl-genl-3",
-    hdrs = glob(["netlink/**/*.h"]),
-    includes = ["/usr/include/libnl3"],
-    system_provided = 1,
-)
-
-cc_import(
-    name = "libnl-route-3",
+    name = "nl-route-3",
     hdrs = glob(["netlink/**/*.h"]),
     includes = ["/usr/include/libnl3"],
     system_provided = 1,

@@ -1,4 +1,1 @@
-bazel-bin
-bazel-krnlmon
-bazel-out
-bazel-testlogs
+/bazel-*
