@@ -7,20 +7,6 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-cc_import(
-    name = "nl-3",
-    hdrs = glob(["netlink/**/*.h"]),
-    includes = ["/usr/include/libnl3"],
-    system_provided = 1,
-)
-
-cc_import(
-    name = "nl-route-3",
-    hdrs = glob(["netlink/**/*.h"]),
-    includes = ["/usr/include/libnl3"],
-    system_provided = 1,
-)
-
 cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
@@ -77,7 +63,7 @@ cc_library(
     name = "switchlink_handlers",
     srcs = ["switchlink_handle.h"],  # rename
     deps = [
-        ":nl-3",
+        "@nl-3",
         ":switchlink_db",
         ":switchlink_types",
     ],
@@ -124,7 +110,7 @@ cc_library(
         "switchlink_main.h",
     ],
     deps = [
-        ":nl-3",
+        "@nl-3",
         ":switchlink_int",
         ":switchlink_types",
         "//switchutils:switch_log",
