@@ -76,13 +76,13 @@ cc_library(
     name = "target_utils",
     srcs = glob(["dpdk-bin/lib/libtarget_utils.so"]),
     hdrs = glob(["dpdk-bin/include/target-utils/**/*.h"]),
-    deps = [":target_sys"],
     linkopts = [
         "-lpthread",
         "-lm",
         "-ldl",
     ],
     strip_include_prefix = "dpdk-bin/include/target-utils",
+    deps = [":target_sys"],
 )
 
 cc_library(
