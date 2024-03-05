@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache 2.0
  *
@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-#include "switchlink_route.h"
+#include <stdbool.h>
 
-#include <netlink/attr.h>
-#include <netlink/msg.h>
-#include <netlink/netlink.h>
+#include "switchlink_handle.h"
+#include "switchlink_int.h"
+#include "switchutils/switch_log.h"
 
 /*
  * Routine Description:
@@ -136,7 +136,6 @@ void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
   struct nlattr* attr;
   struct rtmsg* rmsg;
-  bool src_valid = false;
   bool dst_valid = false;
   bool gateway_valid = false;
   switchlink_handle_t ecmp_h = 0;
@@ -148,9 +147,6 @@ void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   uint8_t af = AF_UNSPEC;
   bool oif_valid = false;
   uint32_t oif = 0;
-
-  bool iif_valid = false;
-  uint32_t iif = 0;
 
   krnlmon_assert((msgtype == RTM_NEWROUTE) || (msgtype == RTM_DELROUTE));
   rmsg = nlmsg_data(nlmsg);
@@ -187,7 +183,6 @@ void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     int attr_type = nla_type(attr);
     switch (attr_type) {
       case RTA_SRC:
-        src_valid = true;
         memset(&src_addr, 0, sizeof(switchlink_ip_addr_t));
         src_addr.family = af;
         src_addr.prefix_len = rmsg->rtm_src_len;
@@ -226,10 +221,6 @@ void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype) {
       case RTA_OIF:
         oif_valid = true;
         oif = nla_get_u32(attr);
-        break;
-      case RTA_IIF:
-        iif_valid = true;
-        iif = nla_get_u32(attr);
         break;
       default:
         break;

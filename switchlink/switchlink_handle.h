@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@
 #ifndef __SWITCHLINK_HANDLE_H__
 #define __SWITCHLINK_HANDLE_H__
 
+#include <netlink/msg.h>
+#include <netlink/netlink.h>
+#include <netlink/route/neighbour.h>
+#include <netlink/route/nexthop.h>
 #include <stdbool.h>
 #include <stdint.h>
 

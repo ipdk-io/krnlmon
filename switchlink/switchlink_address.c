@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache 2.0
  *
@@ -21,7 +21,7 @@
 
 #include "switchlink_handle.h"
 #include "switchlink_int.h"
-#include "switchlink_route.h"
+#include "switchutils/switch_log.h"
 
 /*
  * Routine Description:

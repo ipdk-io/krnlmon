@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache 2.0
  *
@@ -20,9 +20,7 @@
 #ifndef __SWITCHLINK_ROUTE_H__
 #define __SWITCHLINK_ROUTE_H__
 
-#include <netlink/netlink.h>
-
-#include "switchlink_handle.h"
+struct nlmsghdr;
 
 void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype);
 
