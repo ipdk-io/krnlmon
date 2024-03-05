@@ -1,6 +1,6 @@
 # WORKSPACE.bazel
 
-# Copyright 2023-2024 Intel Corporation
+# Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 workspace(name = "io_ipdk_krnlmon")
@@ -51,4 +51,10 @@ load("//bazel:dpdk.bzl", "dpdk_configure")
 dpdk_configure(name = "local_dpdk_bin")
 
 # TODO:
-# - sai
+# - SAI (https://github.com/opencomputeproject/SAI)
+#   - version in use:   8e1fb379cc8eab2654632265c8f7d3ac9cb00f7a
+#   - date: 26-Aug-2021
+#   - prior release:    7cd3a7ed84db3fc9cec13496a5339b6fe1888bb7 (v1.8.1)
+#   - date: 5-Apr-2021
+#   - next release:     2ebde24c1de6d930c5bbc20e7eb89d9f0867d4bc (v1.9.0)
+#   - date: 20-Sep-2021

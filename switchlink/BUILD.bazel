@@ -64,12 +64,12 @@ cc_library(
 cc_library(
     name = "switchlink_handlers",
     srcs = ["switchlink_handlers.h"],
+    linkopts = ["-lnl-3"],
     deps = [
-        "@nl-3",
         ":switchlink_db",
         ":switchlink_types",
+        "@nl-3",
     ],
-    linkopts = ["-lnl-3"],
 )
 
 cc_library(
@@ -112,14 +112,14 @@ cc_library(
         "switchlink_main.c",
         "switchlink_main.h",
     ],
+    linkopts = ["-lnl-3"],
     deps = [
-        "@nl-3",
         ":switchlink_int",
         ":switchlink_types",
         "//switchutils:switch_log",
         "@local_dpdk_bin//:target_sys",
+        "@nl-3",
     ],
-    linkopts = ["-lnl-3"],
 )
 
 cc_library(
@@ -138,8 +138,8 @@ cc_test(
     name = "switchlink_neigh_test",
     srcs = ["switchlink_neigh_test.cc"],
     deps = [
-        ":switchlink_neigh",
         ":switchlink_globals",
+        ":switchlink_neigh",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -159,8 +159,8 @@ cc_test(
     name = "switchlink_route_test",
     srcs = ["switchlink_route_test.cc"],
     deps = [
-        ":switchlink_route",
         ":switchlink_globals",
+        ":switchlink_route",
         "@com_google_googletest//:gtest_main",
     ],
 )

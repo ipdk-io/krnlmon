@@ -13,7 +13,6 @@ cc_library(
     deps = [
         "@local_dpdk_bin//:target_sys",
     ],
-
 )
 
 cc_library(
