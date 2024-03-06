@@ -7,6 +7,9 @@ workspace(name = "io_ipdk_krnlmon")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# ---------------------------------------------------------------------------
+#       Skylib
+# ---------------------------------------------------------------------------
 http_archive(
     name = "bazel_skylib",
     sha256 = "66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa",
@@ -20,6 +23,9 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
 
+# ---------------------------------------------------------------------------
+#       Abseil
+# ---------------------------------------------------------------------------
 http_archive(
     name = "com_google_absl",
     sha256 = "4208129b49006089ba1d6710845a45e31c59b0ab6bff9e5788a87f55c5abd602",
@@ -27,6 +33,9 @@ http_archive(
     urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20220623.0.tar.gz"],
 )
 
+# ---------------------------------------------------------------------------
+#       GoogleTest
+# ---------------------------------------------------------------------------
 http_archive(
     name = "com_google_googletest",
     sha256 = "d3d307a240e129bb57da8aae64f3b0099bf1b8efff7249df993b619b8641ec77",
@@ -34,6 +43,19 @@ http_archive(
     urls = ["https://github.com/google/googletest/archive/a3460d1aeeaa43fdf137a6adefef10ba0b59fe4b.zip"],
 )
 
+# ---------------------------------------------------------------------------
+#       Switch Abstraction Interface (SAI)
+# ---------------------------------------------------------------------------
+http_archive(
+    name = "sai",
+    strip_prefix = "SAI-1.9.0",
+    urls = ["https://github.com/opencomputeproject/SAI/archive/refs/tags/v1.9.0.zip"],
+    build_file = "//bazel:external/sai.BUILD",
+)
+
+# ---------------------------------------------------------------------------
+#       Netlink libraries
+# ---------------------------------------------------------------------------
 new_local_repository(
     name = "nl-3",
     build_file = "//bazel:external/nl-3.BUILD",
@@ -46,15 +68,9 @@ new_local_repository(
     path = "/usr",
 )
 
+# ---------------------------------------------------------------------------
+#       DPDK SDE
+# ---------------------------------------------------------------------------
 load("//bazel:dpdk.bzl", "dpdk_configure")
 
 dpdk_configure(name = "local_dpdk_bin")
-
-# TODO:
-# - SAI (https://github.com/opencomputeproject/SAI)
-#   - version in use:   8e1fb379cc8eab2654632265c8f7d3ac9cb00f7a
-#   - date: 26-Aug-2021
-#   - prior release:    7cd3a7ed84db3fc9cec13496a5339b6fe1888bb7 (v1.8.1)
-#   - date: 5-Apr-2021
-#   - next release:     2ebde24c1de6d930c5bbc20e7eb89d9f0867d4bc (v1.9.0)
-#   - date: 20-Sep-2021

@@ -110,11 +110,11 @@ cc_library(
         "switchlink_main.h",
     ],
     deps = [
-        "@nl-3",
         ":switchlink_int",
         ":switchlink_types",
         "//switchutils:switch_log",
         "@local_dpdk_bin//:target_sys",
+        "@nl-3",
     ],
     linkopts = ["-lnl-3"],
 )
