@@ -86,6 +86,14 @@ cc_library(
 )
 
 cc_library(
+    name = "judy_hdrs",
+    hdrs = glob([
+        "dpdk-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
+    ]),
+    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/",
+)
+
+cc_library(
     name = "tommyds_hdrs",
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
