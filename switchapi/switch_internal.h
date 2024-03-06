@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +30,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_API_BUFFER_SIZE 512
 
@@ -218,7 +219,7 @@ char* switch_handle_type_to_string(switch_handle_type_t handle_type);
 #define IPV4_TABLE_SIZE 1024
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* _switch_internal_h_ */
