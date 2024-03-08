@@ -1,0 +1,27 @@
+# //BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "dpdk_target",
+    define_values = {
+        "target": "dpdk",
+    },
+)
+
+config_setting(
+    name = "es2k_target",
+    define_values = {
+        "target": "es2k",
+    },
+)
+
+config_setting(
+    name = "tofino_target",
+    define_values = {
+        "target": "tofino",
+    },
+)
