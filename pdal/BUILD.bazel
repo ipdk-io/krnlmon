@@ -1,0 +1,25 @@
+# //pdal/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+SDE_HDRS = ["@local_dpdk_bin//:dpdk_hdrs"]
+
+cc_library(
+    name = "pdal",
+    srcs = ["pdal_legacy.c"],
+    hdrs = ["pdal.h"],
+    deps = [
+        "@local_dpdk_bin//:target_sys",
+    ] + SDE_HDRS,
+)
+
+cc_library(
+    name = "pdal_status",
+    srcs = ["pdal_status.c"],
+    hdrs = ["pdal_status.h"],
+)
