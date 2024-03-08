@@ -18,10 +18,3 @@ config_setting(
         "target": "es2k",
     },
 )
-
-config_setting(
-    name = "tofino_target",
-    define_values = {
-        "target": "tofino",
-    },
-)
