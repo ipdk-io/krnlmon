@@ -35,26 +35,6 @@ typedef int pdal_status_t;
 #define PDAL_STATUS_DEFINED_
 #endif
 
-#define P4_SDE_TABLE_NAME_LEN 64
-#define P4_SDE_NAME_LEN 64
-#define P4_SDE_PROG_NAME_LEN 50
-#define P4_SDE_VERSION_LEN 3
-#define P4_SDE_MAX_SESSIONS 16
-#define P4_SDE_NAME_SUFFIX 16
-#define P4_SDE_ARCH_NAME_LEN 4
-#define P4_SDE_COUNTER_TARGET_LEN (P4_SDE_TABLE_NAME_LEN + 8)
-
-#define MAC_FORMAT "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx"
-
-#define MAC_FORMAT_VALUE(var) \
-  (int)var[0], (int)var[1], (int)var[2], (int)var[3], (int)var[4], (int)var[5]
-
-#define IP_FORMAT "%u.%u.%u.%u"
-
-#define IP_FORMAT_VALUE(var)                            \
-  ((unsigned char*)&var)[3], ((unsigned char*)&var)[2], \
-      ((unsigned char*)&var)[1], ((unsigned char*)&var)[0]
-
 struct port_info_t;
 
 pdal_status_t pdal_pal_get_port_id_from_mac(pdal_dev_id_t dev_id, char* mac,
