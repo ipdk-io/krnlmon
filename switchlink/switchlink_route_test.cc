@@ -1,3 +1,6 @@
+// Copyright 2023-2024 Intel Corporation
+// SPDX-License-Identifier: Apache-2.0
+
 #include <arpa/inet.h>
 #include <memory.h>
 #include <netlink/msg.h>
@@ -7,9 +10,9 @@
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "switchlink/switchlink_handle.h"
-#include "switchlink/switchlink_int.h"
-#include "switchlink/switchlink_route.h"
+#include "switchlink_globals.h"
+#include "switchlink_handlers.h"
+#include "switchlink_int.h"
 }
 
 using namespace std;
