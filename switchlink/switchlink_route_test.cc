@@ -1,5 +1,19 @@
-// Copyright 2023-2024 Intel Corporation
-// SPDX-License-Identifier: Apache-2.0
+/*
+ * Copyright 2023-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <arpa/inet.h>
 #include <memory.h>
@@ -596,9 +610,9 @@ TEST_F(SwitchlinkRouteTest, deleteIPv6Route) {
 
   inet_pton(AF_INET6, "2001::1", &gateway_addr6);
   // Word 0 of IPv6 address.
-  const uint16_t GATEWAY_V6ADDR_0 = htons(0x2001);
+  // const uint16_t GATEWAY_V6ADDR_0 = htons(0x2001);
   // Word 7 of IPv6 address.
-  const uint16_t GATEWAY_V6ADDR_7 = htons(0x0001);
+  // const uint16_t GATEWAY_V6ADDR_7 = htons(0x0001);
 
   inet_pton(AF_INET6, "2001::2", &dst_addr6);
   // Word 0 of IPv6 address.
@@ -665,7 +679,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpUpdatev4Nexthop) {
   };
 
   const uint32_t gateway_addr1 = IPV4_ADDR(20, 20, 20, 1);
-  const uint32_t oifindex = 1;
+  // const uint32_t oifindex = 1;
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);
@@ -723,7 +737,7 @@ TEST_F(SwitchlinkRouteTest, processEcmpCreatev4Nexthop) {
   };
 
   const uint32_t gateway_addr1 = IPV4_ADDR(20, 20, 20, 1);
-  const uint32_t oifindex = 1;
+  // const uint32_t oifindex = 1;
 
   // Arrange
   nlmsg_ = nlmsg_alloc_size(1024);

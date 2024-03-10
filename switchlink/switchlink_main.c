@@ -38,6 +38,7 @@
 
 #include "switchlink.h"
 #include "switchlink_int.h"
+#include "switchutils/switch_log.h"
 
 static struct nl_sock* g_nlsk = NULL;
 static pthread_t switchlink_thread;

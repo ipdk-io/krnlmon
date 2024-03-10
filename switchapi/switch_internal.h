@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include "switchapi/switch_device_int.h"
 #include "switchapi/switch_handle_int.h"
 #include "switchapi/switch_status.h"
+#include "switchutils/switch_log.h"
 #include "switchutils/switch_utils.h"
 #include "tdi/common/tdi_defs.h"
 
