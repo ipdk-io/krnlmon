@@ -21,6 +21,7 @@
 #define __SWITCHLINK_INT_H__
 
 struct nlmsghdr;
+
 extern void switchlink_init_db(void);
 extern void switchlink_init_api(void);
 extern void switchlink_init_link(void);
