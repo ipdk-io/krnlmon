@@ -20,7 +20,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_CONFIG
 switch_config_info_t config_info;
@@ -122,5 +122,5 @@ switch_status_t switch_config_table_sizes_get(switch_device_t device,
 }
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
