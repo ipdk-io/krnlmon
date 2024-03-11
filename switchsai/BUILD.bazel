@@ -7,12 +7,146 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
+TARGET_DEFINES = select(
+    {
+        "//:dpdk_target": ["DPDK_TARGET"],
+        "//:es2k_target": ["ES2K_TARGET"],
+    },
+    no_match_error = "must specify --define target={dpdk|es2k}",
+)
+
+cc_library(
+    name = "sai",
+    srcs = ["sai.c"],
+    defines = TARGET_DEFINES,
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_base_types",
+        "//switchapi:switch_handle",
+        "//switchapi:switch_nhop",
+    ],
+)
+
+cc_library(
+    name = "saifdb",
+    srcs = ["saifdb.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_device",
+        "//switchapi:switch_fdb",
+        "//switchapi:switch_interface",
+    ],
+)
+
 cc_library(
     name = "saiinternal",
-    srcs = ["saiinternal.h"],
+    hdrs = ["saiinternal.h"],
     deps = [
         "//switchapi:switch_base_types",
         "//switchutils:switch_log",
+        "//switchutils:switch_utils",
         "@sai//:sai_hdrs",
+    ],
+)
+
+cc_library(
+    name = "saineighbor",
+    srcs = ["saineighbor.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_l3",
+        "//switchapi:switch_neighbor",
+        "//switchapi:switch_nhop",
+        "//switchapi:switch_rif",
+    ],
+)
+
+cc_library(
+    name = "sainexthop",
+    srcs = ["sainexthop.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_nhop",
+        "//switchapi:switch_rif",
+        "//switchapi:switch_tunnel",
+    ],
+)
+
+cc_library(
+    name = "sainexthopgroup",
+    srcs = ["sainexthopgroup.c"],
+    defines = TARGET_DEFINES,
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_device",
+        "//switchapi:switch_nhop",
+        "@sai//:sai_hdrs",
+    ],
+)
+
+cc_library(
+    name = "sailag",
+    srcs = ["sailag.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_device",
+        "//switchapi:switch_lag",
+        "//switchapi:switch_rmac",
+        "//switchapi:switch_status",
+    ],
+)
+
+cc_library(
+    name = "sairoute",
+    srcs = ["sairoute.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_device",
+        "//switchapi:switch_interface",
+        "//switchapi:switch_l3",
+        "//switchapi:switch_rif",
+    ],
+)
+
+cc_library(
+    name = "sairouterinterface",
+    srcs = ["sairouterinterface.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_device",
+        "//switchapi:switch_interface",
+        "//switchapi:switch_l3",
+        "//switchapi:switch_rif",
+        "//switchapi:switch_rmac",
+    ],
+)
+
+cc_library(
+    name = "saitunnel",
+    srcs = ["saitunnel.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_base_types",
+        "//switchapi:switch_status",
+        "//switchapi:switch_tunnel",
+    ],
+)
+
+cc_library(
+    name = "saiutils",
+    srcs = ["saiutils.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_base_types",
+    ],
+)
+
+cc_library(
+    name = "saivirtualrouter",
+    srcs = ["saivirtualrouter.c"],
+    deps = [
+        ":saiinternal",
+        "//switchapi:switch_base_types",
+        "//switchapi:switch_vrf",
     ],
 )

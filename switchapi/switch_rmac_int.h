@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
+#ifndef __SWITCH_RMAC_INT_H__
+#define __SWITCH_RMAC_INT_H__
+
 #include "switch_id.h"
 #include "switch_rmac.h"
 #include "switch_types_int.h"
 
-#ifndef __SWITCH_RMAC_INT_H__
-#define __SWITCH_RMAC_INT_H__
-
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define switch_rmac_handle_create(_device)               \
   switch_handle_create(_device, SWITCH_HANDLE_TYPE_RMAC, \
@@ -99,7 +99,7 @@ switch_status_t switch_rmac_default_entries_add(switch_device_t device);
 switch_status_t switch_rmac_default_entries_delete(switch_device_t device);
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* __SWITCH_RMAC_INT_H__ */

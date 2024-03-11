@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
 
 #ifndef __SWITCH_PD_P4_NAME_MAPPING__
 #define __SWITCH_PD_P4_NAME_MAPPING__
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 /* List of tables and corresponding actions */
 
@@ -147,8 +143,5 @@ extern "C" {
 
 #define LNW_ACTION_MAX_GROUP_SIZE "$MAX_GROUP_SIZE"
 #define LNW_SELECTOR_ACTION_ID 0
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __SWITCH_PD_P4_NAME_MAPPING__ */

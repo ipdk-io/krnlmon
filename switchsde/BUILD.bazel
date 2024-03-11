@@ -11,7 +11,8 @@ SDE_PORT_INTF_SRCS = select(
     {
         "//:dpdk_target": ["sde_legacy_port_intf.c"],
         "//:es2k_target": ["sde_es2k_port_intf.c"],
-    }
+    },
+    no_match_error = "must specify --define target={dpdk|es2k}",
 )
 
 cc_library(
@@ -27,17 +28,11 @@ cc_library(
 
 cc_library(
     name = "sde_status",
-    hdrs = ["sde_status.h"],
-)
-
-cc_library(
-    name = "sde_status_o",
     srcs = ["sde_status.c"],
-    deps = [":sde_status"],
+    hdrs = ["sde_status.h"],
 )
 
 cc_library(
     name = "sde_types",
     hdrs = ["sde_types.h"],
 )
-

@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License_Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +20,11 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
+#include "switch_pd_routing.h"
 #include "switch_rif.h"
 #include "switch_types_int.h"
-
-#if defined(DPDK_TARGET)
-#include "dpdk/switch_pd_routing.h"
-#elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
-#endif
 
 #define switch_neighbor_handle_create(_device)               \
   switch_handle_create(_device, SWITCH_HANDLE_TYPE_NEIGHBOR, \
@@ -70,4 +66,4 @@ switch_status_t switch_neighbor_default_entries_delete(switch_device_t device);
 }
 #endif
 
-#endif /* _switch_neighbor_int_h_ */
+#endif  // __SWITCH_NEIGHBOR_INT_H__

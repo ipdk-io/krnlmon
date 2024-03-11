@@ -1,7 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
+ * Copyright 2022-2024 Intel Corporation.
  * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +20,7 @@
 #define __SWITCH_TABLE_H__
 
 #include "switch_base_types.h"
+#include "switchutils/switch_log.h"
 
 #ifdef __cplusplus
 extern "C" {
