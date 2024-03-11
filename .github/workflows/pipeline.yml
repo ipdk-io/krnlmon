@@ -2,9 +2,12 @@ name: "Krnlmon CI Pipeline"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - bazelize-*
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
   workflow_dispatch:
 
