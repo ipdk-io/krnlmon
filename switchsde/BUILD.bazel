@@ -1,0 +1,43 @@
+# //switchsde/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+SDE_PORT_INTF_SRCS = select(
+    {
+        "//:dpdk_target": ["sde_legacy_port_intf.c"],
+        "//:es2k_target": ["sde_es2k_port_intf.c"],
+    }
+)
+
+cc_library(
+    name = "sde_port_intf",
+    srcs = SDE_PORT_INTF_SRCS,
+    hdrs = ["sde_port_intf.h"],
+    deps = [
+        ":sde_types",
+        "@local_dpdk_bin//:dpdk_hdrs",
+        "@local_dpdk_bin//:target_sys",
+    ],
+)
+
+cc_library(
+    name = "sde_status",
+    hdrs = ["sde_status.h"],
+)
+
+cc_library(
+    name = "sde_status_o",
+    srcs = ["sde_status.c"],
+    deps = [":sde_status"],
+)
+
+cc_library(
+    name = "sde_types",
+    hdrs = ["sde_types.h"],
+)
+
