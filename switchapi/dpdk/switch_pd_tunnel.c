@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@
 #include "switch_pd_utils.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_tunnel.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_pd_tunnel_entry(
     switch_device_t device, const switch_api_tunnel_info_t* api_tunnel_info_t,

@@ -11,7 +11,7 @@ SDE_PORT_INTF_SRCS = select(
     {
         "//:dpdk_target": ["sde_legacy_port_intf.c"],
         "//:es2k_target": ["sde_es2k_port_intf.c"],
-    }
+    },
 )
 
 cc_library(
@@ -40,4 +40,3 @@ cc_library(
     name = "sde_types",
     hdrs = ["sde_types.h"],
 )
-
