@@ -1,0 +1,19 @@
+# //switchapi/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "switch_base_types",
+    hdrs = ["switch_base_types.h"],
+    deps = [
+        "@local_dpdk_bin//:dpdk_sde",
+        "@local_dpdk_bin//:judy_hdrs",
+        "@local_dpdk_bin//:target_sys",
+        "@local_dpdk_bin//:tommyds_hdrs",
+    ],
+)

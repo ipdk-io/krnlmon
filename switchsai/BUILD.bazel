@@ -1,0 +1,18 @@
+# //switchsai/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "saiinternal",
+    srcs = ["saiinternal.h"],
+    deps = [
+        "//switchapi:switch_base_types",
+        "//switchutils:switch_log",
+        "@sai//:sai_hdrs",
+    ],
+)

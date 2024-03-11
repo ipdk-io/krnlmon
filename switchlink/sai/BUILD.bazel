@@ -1,0 +1,90 @@
+# //switchlink/sai/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "switchlink_handle_ecmp",
+    srcs = ["switchlink_handle_ecmp.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_db",
+        "//switchlink:switchlink_handlers",
+        "//switchlink:switchlink_types",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle_lag",
+    srcs = ["switchlink_handle_lag.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchsde:sde_port_intf",
+        "//switchsde:sde_status",
+        "//switchsde:sde_types",
+        "@local_dpdk_bin//:dpdk_sde",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle_link",
+    srcs = ["switchlink_handle_link.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_handlers",
+    ],
+)
+
+cc_library(
+    name ="switchlink_handle_neigh",
+    srcs = ["switchlink_handle_neigh.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_globals",
+        "//switchlink:switchlink_handlers",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle_nexthop",
+    srcs = ["switchlink_handle_nexthop.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_handlers",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle_route",
+    srcs = ["switchlink_handle_route.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_globals",
+        "//switchlink:switchlink_handlers",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handle_tunnel",
+    srcs = ["switchlink_handle_tunnel.c"],
+    deps = [
+        ":switchlink_init_sai",
+        "//switchlink:switchlink_handlers",
+    ],
+)
+
+cc_library(
+    name = "switchlink_init_sai",
+    srcs = ["switchlink_init_sai.c"],
+    hdrs = ["switchlink_init_sai.h"],
+    deps = [
+        "//switchlink:switchlink_types",
+        "//switchlink:switchlink_db",
+        "//switchlink:switchlink_utils",
+        "//switchsai:saiinternal",
+    ],
+)
