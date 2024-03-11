@@ -69,7 +69,7 @@ cc_library(
         "-lm",
         "-ldl",
     ],
-    strip_include_prefix = "dpdk-bin/include/target-sys",
+    strip_include_prefix = "dpdk-bin/include",
 )
 
 cc_library(

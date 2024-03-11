@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@
 /**
  * Third party includes
  */
-#include "bf_sal/bf_sys_mem.h"
-#include "bf_sal/bf_sys_timer.h"
 #include "judy-1.0.5/src/Judy.h"
+#include "target-sys/bf_sal/bf_sys_mem.h"
+#include "target-sys/bf_sal/bf_sys_timer.h"
 #include "tommyds/tommyhashtbl.h"
 #include "tommyds/tommylist.h"
 #ifdef STATIC_LINK_LIB
 #include "bf_switchd/bf_switchd.h"
-#endif  // STATIC_LINK_LIB
+#endif
 
 /**
  * standard includes
@@ -40,7 +40,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /***************************************************************************
  * DEFINES
