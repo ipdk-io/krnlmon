@@ -37,6 +37,17 @@ cc_library(
     hdrs = ["sde_types.h"],
 )
 
+cc_test(
+    name = "switchsde_dpdk_test",
+    srcs = ["switchsde_dpdk_test.cc"],
+    deps = [
+        ":sde_status",
+        ":sde_types",
+        "@com_google_googletest//:gtest_main",
+        "@local_dpdk_bin//:dpdk_hdrs",
+    ],
+)
+
 filegroup(
     name = "switchsde-libs",
     srcs = [
