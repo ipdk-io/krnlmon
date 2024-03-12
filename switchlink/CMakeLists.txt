@@ -1,6 +1,6 @@
 # CMake build file for krnlmon/switchlink
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 include(FindGTest)
@@ -15,10 +15,11 @@ add_library(switchlink_o OBJECT
     switchlink_db_int.h
     switchlink.h
     switchlink_globals.c
-    switchlink_handle.h
+    switchlink_globals.h
+    switchlink_handlers.h
     switchlink_int.h
     switchlink_link.c
-    switchlink_link.h
+    switchlink_link_types.h
     switchlink_main.c
     switchlink_main.h
     switchlink_neigh.c

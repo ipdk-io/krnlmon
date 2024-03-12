@@ -1,7 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
+ * Copyright 2022-2024 Intel Corporation.
  * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +16,6 @@
  * limitations under the License.
  */
 
-#include "switchlink_link.h"
-
 #include <fcntl.h>
 #include <linux/errno.h>
 #include <linux/ethtool.h>
@@ -33,8 +30,10 @@
 #include <unistd.h>
 
 #include "switchlink.h"
-#include "switchlink_handle.h"
+#include "switchlink_globals.h"
+#include "switchlink_handlers.h"
 #include "switchlink_int.h"
+#include "switchlink_link_types.h"
 #include "switchlink_utils.h"
 
 #if defined(ES2K_TARGET)

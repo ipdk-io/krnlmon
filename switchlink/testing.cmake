@@ -42,7 +42,7 @@ add_executable(switchlink_link_test
     switchlink_link_test.cc
     switchlink_globals.c
     switchlink_link.c
-    switchlink_link.h
+    switchlink_link_types.h
 )
 
 define_switchlink_test(switchlink_link_test)
