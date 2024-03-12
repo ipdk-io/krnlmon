@@ -1,7 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
- * SPDX-License-Identifier: Apache 2.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef __SWITCHLINK_GLOBALS_H__
