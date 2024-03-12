@@ -31,7 +31,7 @@ cc_library(
     name = "switch_config",
     hdrs = ["switch_config.h"],
     deps = [
-        "switch_config_int",
+        ":switch_config_int",
         ":switch_base_types",
         ":switch_handle",
         ":switch_table",

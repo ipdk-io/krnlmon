@@ -8,6 +8,8 @@ load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
+OVSP4RT_SUPPORT = []
+
 cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
@@ -176,5 +178,19 @@ cc_library(
     hdrs = ["switchlink_utils.h"],
     deps = [
         "//switchutils:switch_utils",
+    ],
+)
+
+filegroup(
+    name = "switchlink-libs",
+    srcs = [
+        ":switchlink_address",
+        ":switchlink_db",
+        ":switchlink_globals",
+        ":switchlink_main",
+        ":switchlink_link",
+        ":switchlink_neigh",
+        ":switchlink_route",
+        ":switchlink_utils",
     ],
 )

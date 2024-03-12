@@ -36,3 +36,11 @@ cc_library(
     name = "sde_types",
     hdrs = ["sde_types.h"],
 )
+
+filegroup(
+    name = "switchsde-libs",
+    srcs = [
+        ":sde_port_intf",
+        ":sde_status",
+    ],
+)

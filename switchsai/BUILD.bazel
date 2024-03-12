@@ -8,6 +8,13 @@ load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
+SAI_TARGET_LIBS = select(
+    {
+        "//:es2k_target": [":sailag"],
+        "//conditions:default": [],
+    }
+)
+
 cc_library(
     name = "sai",
     srcs = ["sai.c"],
@@ -142,4 +149,20 @@ cc_library(
         "//switchapi:switch_base_types",
         "//switchapi:switch_vrf",
     ],
+)
+
+filegroup(
+    name = "switchsai-libs",
+    srcs = [
+        ":sai",
+        ":saifdb",
+        ":saineighbor",
+        ":sainexthop",
+        ":sainexthopgroup",
+        ":sairoute",
+        ":sairouterinterface",
+        ":saitunnel",
+        ":saiutils",
+        ":saivirtualrouter",
+    ] + SAI_TARGET_LIBS,
 )
