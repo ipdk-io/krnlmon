@@ -3,9 +3,6 @@
 # Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-include(FindGTest)
-mark_as_advanced(GTest_DIR)
-
 add_subdirectory(sai)
 
 add_library(switchlink_o OBJECT
@@ -45,6 +42,53 @@ target_include_directories(switchlink_o PRIVATE
     ${SAI_INCLUDE_DIR}
 )
 
-if(BUILD_TESTING)
-    include(testing.cmake)
-endif()
+########################
+# switchlink_link_test #
+########################
+
+add_executable(switchlink_link_test
+    switchlink_link_test.cc
+    switchlink_globals.c
+    switchlink_int.h
+    switchlink_link.c
+    switchlink_link_types.h
+)
+
+define_unit_test(switchlink_link_test)
+
+###########################
+# switchlink_address_test #
+###########################
+
+add_executable(switchlink_address_test
+    switchlink_address_test.cc
+    switchlink_address.c
+    switchlink_globals.c
+)
+
+define_unit_test(switchlink_address_test)
+
+############################
+# switchlink_neighbor_test #
+############################
+
+add_executable(switchlink_neighbor_test
+    switchlink_neigh_test.cc
+    switchlink_globals.c
+    switchlink_int.h
+    switchlink_neigh.c
+)
+
+define_unit_test(switchlink_neighbor_test)
+
+#########################
+# switchlink_route_test #
+#########################
+
+add_executable(switchlink_route_test
+    switchlink_route_test.cc
+    switchlink_route.c
+    switchlink_int.h
+)
+
+define_unit_test(switchlink_route_test)
