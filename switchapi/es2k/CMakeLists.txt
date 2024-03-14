@@ -3,7 +3,9 @@
 # Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-add_library(switchapi_target_o OBJECT
+add_subdirectory(lnw_v3)
+
+add_library(switchapi_target_o SHARED
   switch_config.c
   switch_device.c
   switch_fdb.c
@@ -14,11 +16,7 @@ add_library(switchapi_target_o OBJECT
   switch_neighbor.c
   switch_nhop.c
   switch_pd_fdb.c
-  switch_pd_lag.h
-  switch_pd_lag.c
   switch_pd_p4_name_mapping.h
-  switch_pd_routing.c
-  switch_pd_routing.h
   switch_pd_tunnel.c
   switch_pd_utils.c
   switch_pd_utils.h
@@ -28,7 +26,9 @@ add_library(switchapi_target_o OBJECT
   switch_tunnel.c
   switch_vrf.c
   switchapi_utils.c
+  $<TARGET_OBJECTS:switchapi_lnwv3_target_o>
 )
+
 
 target_include_directories(switchapi_target_o PRIVATE
   ${SDE_INSTALL_DIR}/include

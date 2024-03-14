@@ -18,7 +18,7 @@
 
 #include "ipu_types/ipu_types.h"
 #include "switch_pd_utils.h"
-#include "switchapi/es2k/switch_pd_lag.h"
+#include "switchapi/es2k/lnw_v3/switch_pd_lag.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
