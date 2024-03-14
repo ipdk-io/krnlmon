@@ -1,7 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
+ * Copyright 2022-2024 Intel Corporation.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,7 +58,6 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-// Currently we don't want to dump any existing kernel data when target is DPDK
 static void nl_sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
@@ -305,10 +303,6 @@ static void nl_process_event_loop(void) {
       }
     }
   }
-}
-
-struct nl_sock* switchlink_get_nl_sock(void) {
-  return g_nlsk;
 }
 
 // start_routine if running in a thread

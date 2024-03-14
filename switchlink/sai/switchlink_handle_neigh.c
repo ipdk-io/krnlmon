@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache 2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +16,13 @@
  * limitations under the License.
  */
 
-#include "switchlink/switchlink_handle.h"
+#include "switchlink/switchlink_globals.h"
+#include "switchlink/switchlink_handlers.h"
 #include "switchlink_init_sai.h"
 
 static sai_neighbor_api_t* sai_neigh_api = NULL;
 static sai_fdb_api_t* sai_fdb_api = NULL;
+
 /*
  * Routine Description:
  *    Initialize Neighbor SAI API
@@ -71,7 +74,7 @@ sai_status_t sai_init_fdb_api() {
  */
 
 bool validate_delete_nexthop(uint32_t using_by,
-                             switchlink_nhop_using_by_e type) {
+                             enum switchlink_nhop_using_by type) {
   return (using_by & ~(type)) ? false : true;
 }
 

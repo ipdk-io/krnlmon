@@ -42,7 +42,7 @@ add_executable(switchlink_link_test
     switchlink_link_test.cc
     switchlink_globals.c
     switchlink_link.c
-    switchlink_link.h
+    switchlink_link_types.h
 )
 
 define_switchlink_test(switchlink_link_test)
@@ -67,7 +67,6 @@ add_executable(switchlink_neighbor_test
     switchlink_neigh_test.cc
     switchlink_globals.c
     switchlink_neigh.c
-    switchlink_neigh.h
 )
 
 define_switchlink_test(switchlink_neighbor_test)
@@ -79,7 +78,6 @@ define_switchlink_test(switchlink_neighbor_test)
 add_executable(switchlink_route_test
     switchlink_route_test.cc
     switchlink_route.c
-    switchlink_route.h
 )
 
 define_switchlink_test(switchlink_route_test)
