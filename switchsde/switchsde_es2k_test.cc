@@ -1,6 +1,11 @@
 // Copyright 2024 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
+// clang-format off
+// clang-format -n reports the following error:
+//   error: code should be clang-formatted [-Wclang-format-violations]
+// This appears to be a bug. The file has already been been clang-formatted,
+// and clang-format only reports the error if -n is specified.
 #include "ipu_types/ipu_types.h"
 #include "gtest/gtest.h"
 #include "sde_status.h"
