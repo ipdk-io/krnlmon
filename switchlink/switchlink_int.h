@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,6 +20,8 @@
 #ifndef __SWITCHLINK_INT_H__
 #define __SWITCHLINK_INT_H__
 
+#include <stdbool.h>
+
 struct nlmsghdr;
 
 extern void switchlink_init_db(void);
@@ -34,5 +36,7 @@ extern void switchlink_process_address_msg(const struct nlmsghdr* nlmsg,
                                            int msgtype);
 extern void switchlink_process_route_msg(const struct nlmsghdr* nlmsg,
                                          int msgtype);
+
+bool switchlink_validate_driver(const char* ifname);
 
 #endif /* __SWITCHLINK_INT_H__ */

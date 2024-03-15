@@ -15,19 +15,15 @@
  * limitations under the License.
  */
 
-#ifndef __SDE_PORT_INTF_H__
-#define __SDE_PORT_INTF_H__
-
-#include <stdint.h>
-
-#include "sde_types.h"
-
-struct port_info_t;
+#include "ipu_pal/port_intf.h"
+#include "sde_port_intf.h"
 
 sde_status_t sde_pal_get_port_id_from_mac(sde_dev_id_t dev_id, char* mac,
-                                          uint32_t* port_id);
+                                          uint32_t* port_id) {
+  return ipu_pal_get_port_id_from_mac(dev_id, mac, port_id);
+}
 
 sde_status_t sde_pal_port_info_get(sde_dev_id_t dev_id, sde_dev_port_t dev_port,
-                                   struct port_info_t** port_info);
-
-#endif  // __SDE_PORT_INTF_H__
+                                   struct port_info_t** port_info) {
+  return ipu_pal_port_info_get(dev_id, dev_port, port_info);
+}

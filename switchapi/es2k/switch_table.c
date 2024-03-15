@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2023 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +20,9 @@
 
 #include "switchapi/switch_internal.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define __FILE_ID__ SWITCH_TABLE
 
-static char* switch_table_id_to_string(switch_table_id_t table_id) {
+static const char* switch_table_id_to_string(switch_table_id_t table_id) {
   switch (table_id) {
     case SWITCH_TABLE_INGRESS_PORT_MAPPING:
       return "ingress port mapping";
@@ -285,7 +282,7 @@ switch_status_t switch_table_init(switch_device_t device,
   switch_table_t* table_info = NULL;
   switch_uint32_t index = 0;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
-  switch_char_t* table_str = NULL;
+  const switch_char_t* table_str = NULL;
 
   status = switch_device_table_get(device, &table_info);
   if (status != SWITCH_STATUS_SUCCESS) {
@@ -790,10 +787,6 @@ switch_status_t switch_table_default_sizes_get(switch_size_t* table_sizes) {
 
   return status;
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 switch_status_t switch_api_table_size_get(switch_device_t device,
                                           switch_table_id_t table_id,

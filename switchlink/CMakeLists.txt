@@ -26,6 +26,10 @@ add_library(switchlink_o OBJECT
     $<TARGET_OBJECTS:switchlink_sai_o>
 )
 
+if(ES2K_TARGET)
+    target_sources(switchlink_o PRIVATE switchlink_validate_driver.c)
+endif()
+
 target_compile_options(switchlink_o PRIVATE -DHAVE_NLA_BITFIELD32)
 
 if(WITH_OVSP4RT)

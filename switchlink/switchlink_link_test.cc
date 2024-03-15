@@ -119,6 +119,8 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
 // a link error.
 int switchlink_create_vrf(switchlink_handle_t* vrf_h) { return 0; }
 
+bool switchlink_validate_driver(const char* ifname) { return true; }
+
 //----------------------------------------------------------------------
 // Test fixture
 //----------------------------------------------------------------------

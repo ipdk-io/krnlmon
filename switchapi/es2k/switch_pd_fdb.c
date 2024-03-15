@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rif_int.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_pd_l2_tx_forward_table_entry(
     switch_device_t device, const switch_api_l2_info_t* api_l2_tx_info,

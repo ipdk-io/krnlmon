@@ -18,3 +18,28 @@ config_setting(
         "target": "es2k",
     },
 )
+
+cc_shared_library(
+    name = "krnlmon",
+    user_link_flags = [
+        "-lpthread",
+        "-lnl-3",
+    ],
+    deps = [
+        "//switchapi",
+        "//switchlink",
+        "//switchlink/sai",
+        "//switchsai",
+        "//switchsde",
+    ],
+)
+
+cc_library(
+    name = "krnlmon_main",
+    srcs = ["krnlmon_main.cc"],
+    hdrs = ["krnlmon_main.h"],
+    deps = [
+        "//switchlink:switchlink_main",
+        "@com_google_absl//absl/synchronization",
+    ],
+)

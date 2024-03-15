@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +28,14 @@
 #include "switchapi/switch_rmac_int.h"
 #include "switchapi/switch_table.h"
 #include "switchapi/switch_vrf.h"
+#include "switchutils/switch_log.h"
 
 #undef __MODULE__
 #define __MODULE__ SWITCH_API_TYPE_DEVICE
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_DEVICE
 
@@ -607,7 +609,7 @@ switch_status_t switch_api_device_tunnel_dmac_get(switch_device_t device,
   return status;
 }
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 switch_status_t switch_api_device_remove(switch_device_t device) {

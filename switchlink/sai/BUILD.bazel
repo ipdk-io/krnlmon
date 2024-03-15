@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:sde.bzl", "TARGET_SDE")
 load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
@@ -12,7 +13,7 @@ SWITCHLINK_SAI_TARGET_LIBS = select(
     {
         "//:es2k_target": [":switchlink_handle_lag"],
         "//conditions:default": [],
-    }
+    },
 )
 
 cc_library(
@@ -34,8 +35,7 @@ cc_library(
         "//switchsde:sde_port_intf",
         "//switchsde:sde_status",
         "//switchsde:sde_types",
-        "@local_dpdk_bin//:dpdk_sde",
-    ],
+    ] + TARGET_SDE,
 )
 
 cc_library(
@@ -99,8 +99,8 @@ cc_library(
     ],
 )
 
-filegroup(
-    name = "switchlink-sai-libs",
+cc_library(
+    name = "sai",
     srcs = [
         ":switchlink_handle_ecmp",
         ":switchlink_handle_link",

@@ -4,6 +4,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load(
+    "//bazel:sde.bzl",
+    "JUDY",
+    "TARGET_SYS",
+    "TARGET_UTILS",
+    "TOMMYDS",
+    "XXHASH",
+)
 load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
@@ -18,12 +26,12 @@ cc_library(
         ":switchlink_handlers",
         ":switchlink_int",
         "//switchutils:switch_log",
-        "@local_dpdk_bin//:target_sys",
-    ],
+    ] + TARGET_SYS,
 )
 
 cc_test(
     name = "switchlink_address_test",
+    size = "small",
     srcs = ["switchlink_address_test.cc"],
     deps = [
         ":switchlink_address",
@@ -44,10 +52,7 @@ cc_library(
         ":switchlink_int",
         ":switchlink_link_types",
         ":switchlink_types",
-        "@local_dpdk_bin//:target_utils",
-        "@local_dpdk_bin//:tommyds_hdrs",
-        "@local_dpdk_bin//:xxhash_hdrs",
-    ],
+    ] + TARGET_UTILS + TOMMYDS + XXHASH,
 )
 
 cc_library(
@@ -98,6 +103,7 @@ cc_library(
 
 cc_test(
     name = "switchlink_link_test",
+    size = "small",
     srcs = ["switchlink_link_test.cc"],
     defines = TARGET_DEFINES,
     deps = [
@@ -119,14 +125,16 @@ cc_library(
         "switchlink_main.c",
         "switchlink_main.h",
     ],
-    linkopts = ["-lnl-3"],
+    linkopts = [
+        "-lnl-3",
+        "-lpthread",
+    ],
     deps = [
         ":switchlink_int",
         ":switchlink_types",
         "//switchutils:switch_log",
-        "@local_dpdk_bin//:target_sys",
         "@nl-3",
-    ],
+    ] + TARGET_SYS,
 )
 
 cc_library(
@@ -143,6 +151,7 @@ cc_library(
 
 cc_test(
     name = "switchlink_neigh_test",
+    size = "small",
     srcs = ["switchlink_neigh_test.cc"],
     deps = [
         ":switchlink_globals",
@@ -164,6 +173,7 @@ cc_library(
 
 cc_test(
     name = "switchlink_route_test",
+    size = "small",
     srcs = ["switchlink_route_test.cc"],
     deps = [
         ":switchlink_globals",
@@ -181,16 +191,27 @@ cc_library(
     ],
 )
 
-filegroup(
-    name = "switchlink-libs",
+cc_library(
+    name = "switchlink_validate_driver",
+    srcs = ["switchlink_validate_driver.c"],
+    deps = [
+        ":switchlink_int",
+    ],
+)
+
+cc_library(
+    name = "switchlink",
     srcs = [
         ":switchlink_address",
         ":switchlink_db",
         ":switchlink_globals",
-        ":switchlink_main",
         ":switchlink_link",
+        ":switchlink_main",
         ":switchlink_neigh",
         ":switchlink_route",
         ":switchlink_utils",
-    ],
+    ] + select({
+        "//:es2k_target": [":switchlink_validate_driver"],
+        "//conditions:default": [],
+    }),
 )

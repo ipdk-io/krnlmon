@@ -1,4 +1,4 @@
-# //switchapi/dpdk/BUILD.bazel
+# //switchapi/es2k/BUILD.bazel
 
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
@@ -7,7 +7,7 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-TARGET_DEFINES = ["DPDK_TARGET"]
+TARGET_DEFINES = ["ES2K_TARGET"]
 
 cc_library(
     name = "switch_config",
@@ -85,6 +85,15 @@ cc_library(
 )
 
 cc_library(
+    name = "switch_lag",
+    srcs = ["switch_lag.c"],
+    deps = [
+        ":switch_pd_lag",
+        "//switchapi:switch_lag",
+    ],
+)
+
+cc_library(
     name = "switch_neighbor",
     srcs = ["switch_neighbor.c"],
     deps = [
@@ -123,7 +132,22 @@ cc_library(
         "//switchapi:switch_rif_int",
         "//switchapi:switch_table",
         "//switchapi:switch_tunnel",
-        "@local_dpdk_bin//:sde_hdrs",
+        "@local_es2k_bin//:sde_hdrs",
+    ],
+)
+
+cc_library(
+    name = "switch_pd_lag",
+    srcs = ["switch_pd_lag.c"],
+    hdrs = ["switch_pd_lag.h"],
+    deps = [
+        ":switch_pd_p4_name_mapping",
+        ":switch_pd_utils",
+        "//switchapi:switch_device",
+        "//switchapi:switch_handle",
+        "//switchapi:switch_internal",
+        "//switchapi:switch_lag",
+        "@local_es2k_bin//:sde_hdrs",
     ],
 )
 
@@ -163,16 +187,18 @@ cc_library(
     srcs = ["switch_pd_utils.c"],
     hdrs = ["switch_pd_utils.h"],
     deps = [
+        ":switch_pd_p4_name_mapping",
         "//switchapi:switch_base_types",
         "//switchapi:switch_device",
         "//switchapi:switch_handle",
         "//switchapi:switch_internal",
         "//switchapi:switch_rif",
+        "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
-        "@local_dpdk_bin//:sde_hdrs",
-        "@local_dpdk_bin//:target_sys",
-        "@local_dpdk_bin//:target_utils",
-        "@local_dpdk_bin//:tdi",
+        "@local_es2k_bin//:sde_hdrs",
+        "@local_es2k_bin//:target_sys",
+        "@local_es2k_bin//:target_utils",
+        "@local_es2k_bin//:tdi",
     ],
 )
 
@@ -182,7 +208,7 @@ cc_library(
     deps = [
         ":switch_pd_utils",
         "//switchapi:switch_rif_int",
-        "@local_dpdk_bin//:sde_hdrs",
+        "@local_es2k_bin//:sde_hdrs",
     ],
 )
 
@@ -254,6 +280,7 @@ cc_library(
         ":switch_handle",
         ":switch_id",
         ":switch_l3",
+        ":switch_lag",
         ":switch_neighbor",
         ":switch_nhop",
         ":switch_pd_fdb",

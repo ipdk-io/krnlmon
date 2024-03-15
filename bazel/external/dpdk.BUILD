@@ -11,7 +11,7 @@ package(
 )
 
 cc_library(
-    name = "dpdk_libs",
+    name = "sde_libs",
     srcs = glob([
         "dpdk-bin/lib/libbf_switchd_lib.so*",
         "dpdk-bin/lib/libclish.so",
@@ -27,7 +27,7 @@ cc_library(
 )
 
 cc_library(
-    name = "dpdk_hdrs",
+    name = "sde_hdrs",
     hdrs = glob([
         "dpdk-bin/include/bf_pal/*.h",
         "dpdk-bin/include/bf_rt/**/*.h",
@@ -45,10 +45,10 @@ cc_library(
 )
 
 cc_library(
-    name = "dpdk_sde",
+    name = "sde",
     deps = [
-        ":dpdk_hdrs",
-        ":dpdk_libs",
+        ":sde_hdrs",
+        ":sde_libs",
     ],
 )
 
@@ -58,7 +58,8 @@ cc_library(
 )
 
 cc_library(
-    name = "judy_hdrs",
+    name = "judy",
+    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
     ]),
@@ -67,7 +68,7 @@ cc_library(
 
 cc_library(
     name = "target_sys",
-    srcs = glob(["dpdk-bin/lib/libtarget_sys.so"]),
+    srcs = ["dpdk-bin/lib/libtarget_sys.so"],
     hdrs = glob(["dpdk-bin/include/target-sys/**/*.h"]),
     linkopts = [
         "-lpthread",
@@ -79,7 +80,7 @@ cc_library(
 
 cc_library(
     name = "target_utils",
-    srcs = glob(["dpdk-bin/lib/libtarget_utils.so"]),
+    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
     hdrs = glob(["dpdk-bin/include/target-utils/**/*.h"]),
     linkopts = [
         "-lpthread",
@@ -91,7 +92,7 @@ cc_library(
 )
 
 cc_library(
-    name = "tdi_hdrs",
+    name = "tdi",
     hdrs = glob([
         "dpdk-bin/include/tdi/**/*.h",
         "dpdk-bin/include/tdi/**/*.hpp",
@@ -102,7 +103,8 @@ cc_library(
 )
 
 cc_library(
-    name = "tommyds_hdrs",
+    name = "tommyds",
+    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
     ]),
@@ -110,7 +112,8 @@ cc_library(
 )
 
 cc_library(
-    name = "xxhash_hdrs",
+    name = "xxhash",
+    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
     hdrs = glob([
         "dpdk-bin/include/target-utils/third-party/xxHash/xxHash/*.h",
     ]),

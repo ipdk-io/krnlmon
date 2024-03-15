@@ -75,3 +75,10 @@ new_local_repository(
 load("//bazel:dpdk.bzl", "dpdk_configure")
 
 dpdk_configure(name = "local_dpdk_bin")
+
+# ---------------------------------------------------------------------------
+#       ES2K SDE
+# ---------------------------------------------------------------------------
+load("//bazel:es2k.bzl", "es2k_configure")
+
+es2k_configure(name = "local_es2k_bin")
