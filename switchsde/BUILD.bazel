@@ -4,22 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:sde.bzl", "TARGET_SDE_HDRS")
 
 package(default_visibility = ["//visibility:public"])
-
-TARGET_SDE_HDRS = select(
-    {
-        "//:dpdk_target": [
-            "@local_dpdk_bin//:sde_hdrs",
-            "@local_dpdk_bin//:target_sys",
-        ],
-        "//:es2k_target": [
-            "@local_es2k_bin//:sde_hdrs",
-            "@local_es2k_bin//:target_sys",
-        ],
-    },
-    no_match_error = "must specify --define target={dpdk|es2k}",
-)
 
 TARGET_UNIT_TEST = select(
     {
@@ -38,6 +25,7 @@ cc_library(
     hdrs = ["sde_port_intf.h"],
     deps = [
         ":sde_types",
+        "@target_sys//:target_sys",
     ] + TARGET_SDE_HDRS,
 )
 

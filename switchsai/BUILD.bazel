@@ -21,7 +21,7 @@ cc_library(
     defines = TARGET_DEFINES,
     deps = [
         ":saiinternal",
-        "//switchapi:switch_base_types",
+        "//switchapi:switch_device",
         "//switchapi:switch_handle",
         "//switchapi:switch_nhop",
     ],

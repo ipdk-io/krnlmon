@@ -170,8 +170,7 @@ cc_library(
         "//switchapi:switch_rif",
         "//switchapi:switch_table",
         "@local_dpdk_bin//:sde_hdrs",
-        "@local_dpdk_bin//:target_sys",
-        "@local_dpdk_bin//:target_utils",
+        "@target_sys//:target_sys",
         "@local_dpdk_bin//:tdi",
     ],
 )

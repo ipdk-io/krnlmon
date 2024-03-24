@@ -4,14 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load(
-    "//bazel:sde.bzl",
-    "JUDY",
-    "TARGET_SDE",
-    "TARGET_SYS",
-    "TARGET_UTILS",
-    "TOMMYDS",
-)
+load("//bazel:sde.bzl", "TARGET_SDE")
 load("//bazel:variables.bzl", "NO_MATCH_ERROR", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
@@ -27,7 +20,11 @@ PD_ROUTING_DEPS = select(
 cc_library(
     name = "switch_base_types",
     hdrs = ["switch_base_types.h"],
-    deps = TARGET_SDE + TARGET_SYS + JUDY + TOMMYDS,
+    deps = [
+        "@target_sys//:target_sys",
+        "@target_utils//:judy",
+        "@target_utils//:tommyds",
+    ],
 )
 
 cc_library(
@@ -95,7 +92,7 @@ cc_library(
     defines = TARGET_DEFINES,
     deps = [
         # ":switch_internal",
-        "@local_dpdk_bin//:target_utils",
+        "@target_utils//:target_utils",
     ],
 )
 

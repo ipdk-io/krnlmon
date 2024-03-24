@@ -4,14 +4,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load(
-    "//bazel:sde.bzl",
-    "JUDY",
-    "TARGET_SYS",
-    "TARGET_UTILS",
-    "TOMMYDS",
-    "XXHASH",
-)
 load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
@@ -26,7 +18,8 @@ cc_library(
         ":switchlink_handlers",
         ":switchlink_int",
         "//switchutils:switch_log",
-    ] + TARGET_SYS,
+        "@target_sys//:target_sys",
+    ],
 )
 
 cc_test(
@@ -52,7 +45,10 @@ cc_library(
         ":switchlink_int",
         ":switchlink_link_types",
         ":switchlink_types",
-    ] + TARGET_UTILS + TOMMYDS + XXHASH,
+        "@target_utils//:target_utils",
+        "@target_utils//:tommyds",
+        "@target_utils//:xxhash",
+    ],
 )
 
 cc_library(
@@ -134,7 +130,8 @@ cc_library(
         ":switchlink_types",
         "//switchutils:switch_log",
         "@nl-3",
-    ] + TARGET_SYS,
+        "@target_sys//:target_sys",
+    ],
 )
 
 cc_library(

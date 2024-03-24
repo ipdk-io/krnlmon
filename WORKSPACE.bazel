@@ -82,3 +82,17 @@ dpdk_configure(name = "local_dpdk_bin")
 load("//bazel:es2k.bzl", "es2k_configure")
 
 es2k_configure(name = "local_es2k_bin")
+
+# ---------------------------------------------------------------------------
+#       TARGET_SYS
+# ---------------------------------------------------------------------------
+load("//bazel:external/target_sys.bzl", "configure_target_sys")
+
+configure_target_sys(name = "target_sys")
+
+# ---------------------------------------------------------------------------
+#       TARGET_UTILS
+# ---------------------------------------------------------------------------
+load("//bazel:external/target_utils.bzl", "configure_target_utils")
+
+configure_target_utils(name = "target_utils")

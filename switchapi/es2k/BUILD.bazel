@@ -196,8 +196,7 @@ cc_library(
         "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
         "@local_es2k_bin//:sde_hdrs",
-        "@local_es2k_bin//:target_sys",
-        "@local_es2k_bin//:target_utils",
+        "@target_sys//:target_sys",
         "@local_es2k_bin//:tdi",
     ],
 )

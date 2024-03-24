@@ -4,6 +4,7 @@
 
 # CMake
 /build/
+/install/
 
 # VS Code
 /.vscode/

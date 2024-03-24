@@ -15,15 +15,17 @@ cc_library(
     srcs = glob([
         "dpdk-bin/lib/libbf_switchd_lib.so*",
         "dpdk-bin/lib/libclish.so",
-        "dpdk-bin/lib/libdriver.so",
-        "dpdk-bin/lib/libtdi.so*",
-        "dpdk-bin/lib/libtdi_json_parser.so*",
+        "dpdk-bin/lib/libdriver.so*",
+        "dpdk-bin/lib/libpython3.10.so*",
     ]),
     linkopts = [
         "-lpthread",
         "-lm",
         "-ldl",
     ],
+    deps = [
+        "@target_sys//:target_sys",
+    ]
 )
 
 cc_library(
@@ -33,7 +35,6 @@ cc_library(
         "dpdk-bin/include/bf_rt/**/*.h",
         "dpdk-bin/include/bf_switchd/**/*.h",
         "dpdk-bin/include/bf_types/*.h",
-        "dpdk-bin/include/cjson/*.h",
         "dpdk-bin/include/dvm/*.h",
         "dpdk-bin/include/fixed_function/*.h",
         "dpdk-bin/include/lld/*.h",
@@ -58,41 +59,11 @@ cc_library(
 )
 
 cc_library(
-    name = "judy",
-    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "dpdk-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
-    ]),
-    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/",
-)
-
-cc_library(
-    name = "target_sys",
-    srcs = ["dpdk-bin/lib/libtarget_sys.so"],
-    hdrs = glob(["dpdk-bin/include/target-sys/**/*.h"]),
-    linkopts = [
-        "-lpthread",
-        "-lm",
-        "-ldl",
-    ],
-    strip_include_prefix = "dpdk-bin/include",
-)
-
-cc_library(
-    name = "target_utils",
-    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
-    hdrs = glob(["dpdk-bin/include/target-utils/**/*.h"]),
-    linkopts = [
-        "-lpthread",
-        "-lm",
-        "-ldl",
-    ],
-    strip_include_prefix = "dpdk-bin/include",
-    deps = [":target_sys"],
-)
-
-cc_library(
     name = "tdi",
+    srcs = glob([
+        "es2k-bin/lib/libtdi.so*",
+        "es2k-bin/lib/libtdi_json_parser.so*",
+    ]),
     hdrs = glob([
         "dpdk-bin/include/tdi/**/*.h",
         "dpdk-bin/include/tdi/**/*.hpp",
@@ -100,22 +71,4 @@ cc_library(
         "dpdk-bin/include/tdi_rt/**/*.hpp",
     ]),
     strip_include_prefix = "dpdk-bin/include",
-)
-
-cc_library(
-    name = "tommyds",
-    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "dpdk-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
-    ]),
-    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/tommyds",
-)
-
-cc_library(
-    name = "xxhash",
-    srcs = ["dpdk-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "dpdk-bin/include/target-utils/third-party/xxHash/xxHash/*.h",
-    ]),
-    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/xxHash",
 )
