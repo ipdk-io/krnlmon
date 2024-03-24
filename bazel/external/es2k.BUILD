@@ -13,6 +13,7 @@ cc_library(
     name = "sde_libs",
     srcs = glob([
         # "es2k-bin/lib/libacccp.so",
+        "es2k-bin/lib/libcar.so",
         "es2k-bin/lib/libclish.so",
         "es2k-bin/lib/libcpf.so",
         "es2k-bin/lib/libcpf_pmd_infra.so",
@@ -31,8 +32,8 @@ cc_library(
         "-ldl",
     ],
     deps = [
-        "@target_sys//:target_sys",
-    ]
+        "@target_sys",
+    ],
 )
 
 cc_library(

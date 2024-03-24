@@ -14,9 +14,11 @@ cc_library(
     name = "sde_libs",
     srcs = glob([
         "dpdk-bin/lib/libbf_switchd_lib.so*",
-        "dpdk-bin/lib/libclish.so",
+        "dpdk-bin/lib/libclish.so*",
+        "dpdk-bin/lib/libdpdk_infra.so*",
         "dpdk-bin/lib/libdriver.so*",
         "dpdk-bin/lib/libpython3.10.so*",
+        "dpdk-bin/lib/x86_64-linux-gnu/*.so*",
     ]),
     linkopts = [
         "-lpthread",
@@ -24,8 +26,8 @@ cc_library(
         "-ldl",
     ],
     deps = [
-        "@target_sys//:target_sys",
-    ]
+        "@target_sys",
+    ],
 )
 
 cc_library(
@@ -54,15 +56,11 @@ cc_library(
 )
 
 cc_library(
-    name = "dpdk_rte",
-    srcs = glob(["dpdk-bin/lib/x86_64-linux-gnu/*.so*"]),
-)
-
-cc_library(
     name = "tdi",
     srcs = glob([
-        "es2k-bin/lib/libtdi.so*",
-        "es2k-bin/lib/libtdi_json_parser.so*",
+        "dpdk-bin/lib/libtdi.so*",
+        "dpdk-bin/lib/libtdi_json_parser.so*",
+        "dpdk-bin/lib/libtdi_pna.so*",
     ]),
     hdrs = glob([
         "dpdk-bin/include/tdi/**/*.h",

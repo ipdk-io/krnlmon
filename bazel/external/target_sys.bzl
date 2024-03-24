@@ -9,7 +9,9 @@ def _impl(repository_ctx):
         return
     repository_ctx.symlink(install_path, "target-sys")
     repository_ctx.symlink(
-        Label("@//bazel:external/target_sys.BUILD"), "BUILD.bazel")
+        Label("@//bazel:external/target_sys.BUILD"),
+        "BUILD.bazel",
+    )
 
 configure_target_sys = repository_rule(
     implementation = _impl,

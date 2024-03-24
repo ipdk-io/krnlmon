@@ -11,8 +11,8 @@ package(default_visibility = ["//visibility:public"])
 
 PD_ROUTING_DEPS = select(
     {
-        "//:dpdk_target": ["//switchapi/dpdk:switch_pd_routing"],
-        "//:es2k_target": ["//switchapi/es2k:switch_pd_routing"],
+        "//:dpdk_target": ["//switchapi/dpdk:switch_pd_routing_hdr"],
+        "//:es2k_target": ["//switchapi/es2k:switch_pd_routing_hdr"],
     },
     no_match_error = NO_MATCH_ERROR,
 )
@@ -21,7 +21,7 @@ cc_library(
     name = "switch_base_types",
     hdrs = ["switch_base_types.h"],
     deps = [
-        "@target_sys//:target_sys",
+        "@target_sys",
         "@target_utils//:judy",
         "@target_utils//:tommyds",
     ],
@@ -91,8 +91,7 @@ cc_library(
     hdrs = ["switch_handle_int.h"],
     defines = TARGET_DEFINES,
     deps = [
-        # ":switch_internal",
-        "@target_utils//:target_utils",
+        "@target_utils",
     ],
 )
 
@@ -192,6 +191,7 @@ cc_library(
     defines = TARGET_DEFINES,
     deps = [
         ":switch_nhop",
+        ":switch_pd_routing",
         ":switch_types_int",
     ],
 )

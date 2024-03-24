@@ -20,7 +20,7 @@ cc_library(
         "-ldl",
     ],
     strip_include_prefix = "target-utils/include",
-    deps = ["@target_sys//:target_sys"],
+    deps = ["@target_sys"],
 )
 
 cc_library(

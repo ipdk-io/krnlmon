@@ -5,6 +5,8 @@
 
 package(default_visibility = ["//visibility:public"])
 
+load("//bazel:sde.bzl", "TARGET_SDE_LIBS", "TARGET_TDI")
+
 config_setting(
     name = "dpdk_target",
     define_values = {
@@ -42,4 +44,22 @@ cc_library(
         "//switchlink:switchlink_main",
         "@com_google_absl//absl/synchronization",
     ],
+)
+
+cc_binary(
+    name = "dummy",
+    srcs = [
+        "dummy.cc",
+        ":krnlmon",
+    ],
+    linkopts = [
+        "-lbsd",
+    ],
+    deps = [
+        ":krnlmon_main",
+        "@com_google_absl//absl/synchronization",
+        "@target_utils//:judy",
+        "@target_utils//:tommyds",
+        "@target_utils//:xxhash",
+    ] + TARGET_SDE_LIBS + TARGET_TDI,
 )

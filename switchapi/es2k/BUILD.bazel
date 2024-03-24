@@ -28,6 +28,7 @@ cc_library(
         "//switchapi:switch_config_int",
         "//switchapi:switch_fdb",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_neighbor_int",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_rmac_int",
@@ -53,8 +54,10 @@ cc_library(
         "//switchapi:switch_device",
         "//switchapi:switch_handle",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_pd_routing",
+        "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
         "//switchapi:switch_types_int",
     ],
@@ -78,8 +81,10 @@ cc_library(
     deps = [
         "//switchapi:switch_device",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_pd_routing",
+        "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
     ],
 )
@@ -98,6 +103,7 @@ cc_library(
     srcs = ["switch_neighbor.c"],
     deps = [
         ":switch_pd_fdb",
+        "//switchapi:switch_l3",
         "//switchapi:switch_neighbor",
         "//switchapi:switch_nhop_int",
     ],
@@ -157,14 +163,23 @@ cc_library(
 )
 
 cc_library(
-    name = "switch_pd_routing",
+    name = "switch_pd_routing_hdr",
     hdrs = ["switch_pd_routing.h"],
+)
+
+cc_library(
+    name = "switch_pd_routing",
+    srcs = ["switch_pd_routing.c"],
     defines = TARGET_DEFINES,
     deps = [
+        ":switch_pd_p4_name_mapping",
+        ":switch_pd_routing_hdr",
+        ":switch_pd_utils",
         "//switchapi:switch_base_types",
         "//switchapi:switch_handle",
         "//switchapi:switch_l3",
         "//switchapi:switch_nhop",
+        "//switchapi:switch_nhop_int",
         "//switchapi:switch_rmac_int",
     ],
 )
@@ -196,8 +211,8 @@ cc_library(
         "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
         "@local_es2k_bin//:sde_hdrs",
-        "@target_sys//:target_sys",
         "@local_es2k_bin//:tdi",
+        "@target_sys",
     ],
 )
 
@@ -283,6 +298,8 @@ cc_library(
         ":switch_neighbor",
         ":switch_nhop",
         ":switch_pd_fdb",
+        ":switch_pd_lag",
+        ":switch_pd_routing",
         ":switch_pd_tunnel",
         ":switch_pd_utils",
         ":switch_rif",

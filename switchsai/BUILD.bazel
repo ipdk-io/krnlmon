@@ -58,6 +58,7 @@ cc_library(
         "//switchapi:switch_neighbor",
         "//switchapi:switch_nhop",
         "//switchapi:switch_rif",
+        "//switchapi:switch_rmac_int",
     ],
 )
 

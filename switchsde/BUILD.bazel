@@ -25,7 +25,7 @@ cc_library(
     hdrs = ["sde_port_intf.h"],
     deps = [
         ":sde_types",
-        "@target_sys//:target_sys",
+        "@target_sys",
     ] + TARGET_SDE_HDRS,
 )
 

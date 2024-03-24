@@ -18,7 +18,7 @@ cc_library(
         ":switchlink_handlers",
         ":switchlink_int",
         "//switchutils:switch_log",
-        "@target_sys//:target_sys",
+        "@target_sys",
     ],
 )
 
@@ -45,7 +45,7 @@ cc_library(
         ":switchlink_int",
         ":switchlink_link_types",
         ":switchlink_types",
-        "@target_utils//:target_utils",
+        "@target_utils",
         "@target_utils//:tommyds",
         "@target_utils//:xxhash",
     ],
@@ -130,7 +130,7 @@ cc_library(
         ":switchlink_types",
         "//switchutils:switch_log",
         "@nl-3",
-        "@target_sys//:target_sys",
+        "@target_sys",
     ],
 )
 
