@@ -4,21 +4,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:variables.bzl", "TARGET_DEFINES")
+load("//bazel:rules.bzl", "target_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
 SAI_TARGET_LIBS = select(
     {
-        "//:es2k_target": [":sailag"],
+        "//bazel:es2k_target": [":sailag"],
         "//conditions:default": [],
     },
 )
 
-cc_library(
+target_cc_library(
     name = "sai",
     srcs = ["sai.c"],
-    defines = TARGET_DEFINES,
     deps = [
         ":saiinternal",
         "//switchapi:switch_device",
@@ -27,7 +26,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saifdb",
     srcs = ["saifdb.c"],
     deps = [
@@ -38,7 +37,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saiinternal",
     hdrs = ["saiinternal.h"],
     deps = [
@@ -49,7 +48,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saineighbor",
     srcs = ["saineighbor.c"],
     deps = [
@@ -62,7 +61,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "sainexthop",
     srcs = ["sainexthop.c"],
     deps = [
@@ -73,10 +72,9 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "sainexthopgroup",
     srcs = ["sainexthopgroup.c"],
-    defines = TARGET_DEFINES,
     deps = [
         ":saiinternal",
         "//switchapi:switch_device",
@@ -85,7 +83,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "sailag",
     srcs = ["sailag.c"],
     deps = [
@@ -97,7 +95,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "sairoute",
     srcs = ["sairoute.c"],
     deps = [
@@ -109,7 +107,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "sairouterinterface",
     srcs = ["sairouterinterface.c"],
     deps = [
@@ -122,7 +120,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saitunnel",
     srcs = ["saitunnel.c"],
     deps = [
@@ -133,7 +131,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saiutils",
     srcs = ["saiutils.c"],
     deps = [
@@ -142,7 +140,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "saivirtualrouter",
     srcs = ["saivirtualrouter.c"],
     deps = [

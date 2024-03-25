@@ -7,20 +7,6 @@ package(default_visibility = ["//visibility:public"])
 
 load("//bazel:sde.bzl", "TARGET_SDE_LIBS", "TARGET_TDI")
 
-config_setting(
-    name = "dpdk_target",
-    define_values = {
-        "target": "dpdk",
-    },
-)
-
-config_setting(
-    name = "es2k_target",
-    define_values = {
-        "target": "es2k",
-    },
-)
-
 cc_shared_library(
     name = "krnlmon",
     user_link_flags = [

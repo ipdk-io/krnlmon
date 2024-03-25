@@ -4,12 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:rules.bzl", "target_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-TARGET_DEFINES = ["DPDK_TARGET"]
-
-cc_library(
+target_cc_library(
     name = "switch_config",
     srcs = ["switch_config.c"],
     deps = [
@@ -20,7 +19,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_device",
     srcs = ["switch_device.c"],
     deps = [
@@ -38,7 +37,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_fdb",
     srcs = ["switch_fdb.c"],
     deps = [
@@ -47,7 +46,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_handle",
     srcs = ["switch_handle.c"],
     deps = [
@@ -63,7 +62,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_id",
     srcs = ["switch_id.c"],
     deps = [
@@ -75,7 +74,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_l3",
     srcs = ["switch_l3.c"],
     deps = [
@@ -89,7 +88,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_neighbor",
     srcs = ["switch_neighbor.c"],
     deps = [
@@ -101,7 +100,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_nhop",
     srcs = ["switch_nhop.c"],
     deps = [
@@ -117,7 +116,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_fdb",
     srcs = ["switch_pd_fdb.c"],
     hdrs = ["switch_pd_fdb.h"],
@@ -134,20 +133,19 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_p4_name_mapping",
     hdrs = ["switch_pd_p4_name_mapping.h"],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_routing_hdr",
     hdrs = ["switch_pd_routing.h"],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_routing",
     srcs = ["switch_pd_routing.c"],
-    defines = TARGET_DEFINES,
     deps = [
         ":switch_pd_p4_name_mapping",
         ":switch_pd_routing_hdr",
@@ -162,7 +160,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_tunnel",
     srcs = ["switch_pd_tunnel.c"],
     hdrs = ["switch_pd_tunnel.h"],
@@ -175,7 +173,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_utils",
     srcs = ["switch_pd_utils.c"],
     hdrs = ["switch_pd_utils.h"],
@@ -192,7 +190,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_rif",
     srcs = ["switch_rif.c"],
     deps = [
@@ -202,7 +200,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_rmac",
     srcs = ["switch_rmac.c"],
     deps = [
@@ -214,7 +212,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_table",
     srcs = ["switch_table.c"],
     deps = [
@@ -226,7 +224,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_tunnel",
     srcs = ["switch_tunnel.c"],
     deps = [
@@ -238,7 +236,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_vrf",
     srcs = ["switch_vrf.c"],
     deps = [
@@ -249,7 +247,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchapi_utils",
     srcs = ["switchapi_utils.c"],
     deps = [
