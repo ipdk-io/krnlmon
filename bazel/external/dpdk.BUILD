@@ -61,6 +61,14 @@ cc_library(
 )
 
 cc_library(
+    name = "judy_hdrs",
+    hdrs = glob([
+        "dpdk-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
+    ]),
+    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/",
+)
+
+cc_library(
     name = "target_sys",
     srcs = glob(["dpdk-bin/lib/libtarget_sys.so"]),
     hdrs = glob(["dpdk-bin/include/target-sys/**/*.h"]),
@@ -83,14 +91,6 @@ cc_library(
     ],
     strip_include_prefix = "dpdk-bin/include/target-utils",
     deps = [":target_sys"],
-)
-
-cc_library(
-    name = "judy_hdrs",
-    hdrs = glob([
-        "dpdk-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
-    ]),
-    strip_include_prefix = "dpdk-bin/include/target-utils/third-party/",
 )
 
 cc_library(

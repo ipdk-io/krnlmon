@@ -2,9 +2,12 @@ name: "Krnlmon CI Pipeline"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - bazel-support-*
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
   workflow_dispatch:
 

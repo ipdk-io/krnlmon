@@ -37,6 +37,7 @@ include_directories(.)
 add_subdirectory(switchapi)
 add_subdirectory(switchlink)
 add_subdirectory(switchsai)
+add_subdirectory(switchsde)
 add_subdirectory(switchutils)
 
 add_library(krnlmon SHARED
@@ -45,6 +46,7 @@ add_library(krnlmon SHARED
   $<TARGET_OBJECTS:switchlink_o>
   $<TARGET_OBJECTS:switchlink_sai_o>
   $<TARGET_OBJECTS:switchsai_o>
+  $<TARGET_OBJECTS:switchsde_o>
   $<TARGET_OBJECTS:switchutils_o>
   krnlmon_main.cc
   krnlmon_main.h
