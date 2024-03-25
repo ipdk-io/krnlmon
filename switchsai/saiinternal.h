@@ -18,6 +18,9 @@
 #ifndef __SAIINTERNAL_H_
 #define __SAIINTERNAL_H_
 
+#ifndef __SAIINTERNAL_H_
+#define __SAIINTERNAL_H_
+
 #include <arpa/inet.h>
 #include <stdarg.h>
 #include <stdio.h>
