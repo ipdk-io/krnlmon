@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +27,7 @@
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rmac_int.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_neighbor_init(switch_device_t device) {
   switch_neighbor_context_t* neighbor_ctx = NULL;

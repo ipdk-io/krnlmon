@@ -35,14 +35,11 @@ cc_library(
         "dpdk-bin/include/bf_types/*.h",
         "dpdk-bin/include/cjson/*.h",
         "dpdk-bin/include/dvm/*.h",
+        "dpdk-bin/include/fixed_function/*.h",
         "dpdk-bin/include/lld/*.h",
         "dpdk-bin/include/osdep/*.h",
-        "dpdk-bin/include/pipe_mgr/*.h",
+        "dpdk-bin/include/pipe_mgr/**/*.h",
         "dpdk-bin/include/port_mgr/**/*.h",
-        "dpdk-bin/include/tdi/**/*.h",
-        "dpdk-bin/include/tdi/**/*.hpp",
-        "dpdk-bin/include/tdi_rt/**/*.h",
-        "dpdk-bin/include/tdi_rt/**/*.hpp",
     ]),
     strip_include_prefix = "dpdk-bin/include",
 )
@@ -89,8 +86,19 @@ cc_library(
         "-lm",
         "-ldl",
     ],
-    strip_include_prefix = "dpdk-bin/include/target-utils",
+    strip_include_prefix = "dpdk-bin/include",
     deps = [":target_sys"],
+)
+
+cc_library(
+    name = "tdi_hdrs",
+    hdrs = glob([
+        "dpdk-bin/include/tdi/**/*.h",
+        "dpdk-bin/include/tdi/**/*.hpp",
+        "dpdk-bin/include/tdi_rt/**/*.h",
+        "dpdk-bin/include/tdi_rt/**/*.hpp",
+    ]),
+    strip_include_prefix = "dpdk-bin/include",
 )
 
 cc_library(

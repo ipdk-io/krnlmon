@@ -18,9 +18,11 @@
 #ifndef __SWITCH_BASE_TYPES_H__
 #define __SWITCH_BASE_TYPES_H__
 
-/**
- * Third party includes
- */
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "judy-1.0.5/src/Judy.h"
 #include "target-sys/bf_sal/bf_sys_mem.h"
 #include "target-sys/bf_sal/bf_sys_timer.h"
@@ -29,14 +31,6 @@
 #ifdef STATIC_LINK_LIB
 #include "bf_switchd/bf_switchd.h"
 #endif
-
-/**
- * standard includes
- */
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -12,10 +12,10 @@ def _impl(repository_ctx):
     elif "SDE_INSTALL" in repository_ctx.os.environ:
         dpdk_sde_path = repository_ctx.os.environ["SDE_INSTALL"]
     else:
-        repository_ctx.file("BUILD", "")
+        repository_ctx.file("BUILD.bazel", "")
         return
     repository_ctx.symlink(dpdk_sde_path, "dpdk-bin")
-    repository_ctx.symlink(Label("@//bazel:external/dpdk.BUILD"), "BUILD")
+    repository_ctx.symlink(Label("@//bazel:external/dpdk.BUILD"), "BUILD.bazel")
 
 dpdk_configure = repository_rule(
     implementation = _impl,

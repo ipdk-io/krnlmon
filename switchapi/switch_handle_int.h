@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 #ifndef __SWITCH_HANDLE_INT_H__
 #define __SWITCH_HANDLE_INT_H__
 
-#include "id/id.h"
-#include "switch_internal.h"
+#include "target-utils/id/id.h"
+//#include "switch_internal.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 /** get id from handle */
 #define handle_to_id(x) (x & ((1 << SWITCH_HANDLE_TYPE_SHIFT) - 1))
@@ -335,7 +335,7 @@ switch_status_t switch_api_handle_count_get(switch_device_t device,
   }
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* __SWITCH_HANDLE_INT_H__ */

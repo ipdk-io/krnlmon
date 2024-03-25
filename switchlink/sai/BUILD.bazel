@@ -7,6 +7,14 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
+TARGET_DEFINES = select(
+    {
+        "//:dpdk_target": ["DPDK_TARGET"],
+        "//:es2k_target": ["ES2K_TARGET"],
+    },
+    no_match_error = "must specify --define target={dpdk|es2k}",
+)
+
 cc_library(
     name = "switchlink_handle_ecmp",
     srcs = ["switchlink_handle_ecmp.c"],
@@ -40,8 +48,9 @@ cc_library(
 )
 
 cc_library(
-    name ="switchlink_handle_neigh",
+    name = "switchlink_handle_neigh",
     srcs = ["switchlink_handle_neigh.c"],
+    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_init_sai",
         "//switchlink:switchlink_globals",
@@ -52,6 +61,7 @@ cc_library(
 cc_library(
     name = "switchlink_handle_nexthop",
     srcs = ["switchlink_handle_nexthop.c"],
+    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_init_sai",
         "//switchlink:switchlink_handlers",
@@ -82,8 +92,8 @@ cc_library(
     srcs = ["switchlink_init_sai.c"],
     hdrs = ["switchlink_init_sai.h"],
     deps = [
-        "//switchlink:switchlink_types",
         "//switchlink:switchlink_db",
+        "//switchlink:switchlink_types",
         "//switchlink:switchlink_utils",
         "//switchsai:saiinternal",
     ],

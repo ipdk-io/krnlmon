@@ -7,6 +7,14 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
+TARGET_DEFINES = select(
+    {
+        "//:dpdk_target": ["DPDK_TARGET"],
+        "//:es2k_target": ["ES2K_TARGET"],
+    },
+    no_match_error = "must specify --define target={dpdk|es2k}",
+)
+
 cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
@@ -36,6 +44,7 @@ cc_library(
         "switchlink_db.h",
         "switchlink_db_int.h",
     ],
+    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_int",
         ":switchlink_link_types",
@@ -64,6 +73,7 @@ cc_library(
 cc_library(
     name = "switchlink_handlers",
     srcs = ["switchlink_handlers.h"],
+    defines = TARGET_DEFINES,
     linkopts = ["-lnl-3"],
     deps = [
         ":switchlink_db",
@@ -80,6 +90,7 @@ cc_library(
 cc_library(
     name = "switchlink_link",
     srcs = ["switchlink_link.c"],
+    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_globals",
         ":switchlink_handlers",
@@ -93,6 +104,7 @@ cc_library(
 cc_test(
     name = "switchlink_link_test",
     srcs = ["switchlink_link_test.cc"],
+    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_globals",
         ":switchlink_handlers",

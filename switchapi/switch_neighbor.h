@@ -24,7 +24,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 typedef enum switch_neighbor_type_s {
   SWITCH_NEIGHBOR_TYPE_IP = 0x0,

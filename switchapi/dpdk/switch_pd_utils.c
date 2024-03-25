@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +21,11 @@
 #include <net/if.h>
 
 #include "bf_rt/bf_rt_common.h"
-#include "bf_types.h"
+#include "bf_types/bf_types.h"
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
+#include "switchutils/switch_log.h"
 
 void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
   char if_name[16] = {0};
