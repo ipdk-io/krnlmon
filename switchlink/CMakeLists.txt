@@ -48,7 +48,7 @@ target_include_directories(switchlink_o PRIVATE
     ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash
-    ${SDE_INSTALL_DIR}/include/target-sys
+    ${SDE_INSTALL_DIR}/include
     ${SAI_INCLUDE_DIR}
 )
 

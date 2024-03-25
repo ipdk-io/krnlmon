@@ -1,6 +1,6 @@
 # CMake build file for Kernel Monitor
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 #
 
@@ -28,6 +28,7 @@ endif()
 # Find netlink libraries
 pkg_check_modules(nl3 REQUIRED IMPORTED_TARGET libnl-3.0)
 pkg_check_modules(nl3-route REQUIRED IMPORTED_TARGET libnl-route-3.0)
+include_directories(${nl3_INCLUDE_DIRS})
 
 add_compile_options(-Werror)
 

@@ -9,5 +9,5 @@ add_library(switchutils_o OBJECT
 )
 
 target_include_directories(switchutils_o PRIVATE
-    ${SDE_INSTALL_DIR}/include/target-sys # zlog
+    ${SDE_INSTALL_DIR}/include
 )

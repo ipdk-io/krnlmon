@@ -1,0 +1,175 @@
+# //switchlink/BUILD.bazel
+
+# Copyright 2024 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "switchlink_address",
+    srcs = ["switchlink_address.c"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_int",
+        "//switchutils:switch_log",
+        "@local_dpdk_bin//:target_sys",
+    ],
+)
+
+cc_test(
+    name = "switchlink_address_test",
+    srcs = ["switchlink_address_test.cc"],
+    deps = [
+        ":switchlink_address",
+        ":switchlink_globals",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "switchlink_db",
+    srcs = [
+        "switchlink_db.c",
+        "switchlink_db.h",
+        "switchlink_db_int.h",
+    ],
+    deps = [
+        ":switchlink_int",
+        ":switchlink_link_types",
+        ":switchlink_types",
+        "@local_dpdk_bin//:target_utils",
+        "@local_dpdk_bin//:tommyds_hdrs",
+        "@local_dpdk_bin//:xxhash_hdrs",
+    ],
+)
+
+cc_library(
+    name = "switchlink_globals",
+    srcs = ["switchlink_globals.c"],
+    hdrs = ["switchlink_globals.h"],
+    deps = [":switchlink_types"],
+)
+
+cc_library(
+    name = "switchlink_types",
+    srcs = ["switchlink.h"],  # rename
+    deps = [
+        "//switchutils:switch_utils",
+    ],
+)
+
+cc_library(
+    name = "switchlink_handlers",
+    srcs = ["switchlink_handlers.h"],
+    linkopts = ["-lnl-3"],
+    deps = [
+        ":switchlink_db",
+        ":switchlink_types",
+        "@nl-3",
+    ],
+)
+
+cc_library(
+    name = "switchlink_int",
+    srcs = ["switchlink_int.h"],
+)
+
+cc_library(
+    name = "switchlink_link",
+    srcs = ["switchlink_link.c"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_int",
+        ":switchlink_link_types",
+        ":switchlink_types",
+        "//switchutils:switch_log",
+    ],
+)
+
+cc_test(
+    name = "switchlink_link_test",
+    srcs = ["switchlink_link_test.cc"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_link",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "switchlink_link_types",
+    srcs = ["switchlink_link_types.h"],
+)
+
+cc_library(
+    name = "switchlink_main",
+    srcs = [
+        "switchlink_main.c",
+        "switchlink_main.h",
+    ],
+    linkopts = ["-lnl-3"],
+    deps = [
+        ":switchlink_int",
+        ":switchlink_types",
+        "//switchutils:switch_log",
+        "@local_dpdk_bin//:target_sys",
+        "@nl-3",
+    ],
+)
+
+cc_library(
+    name = "switchlink_neigh",
+    srcs = ["switchlink_neigh.c"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_int",
+        ":switchlink_types",
+        "//switchutils:switch_log",
+    ],
+)
+
+cc_test(
+    name = "switchlink_neigh_test",
+    srcs = ["switchlink_neigh_test.cc"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_neigh",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "switchlink_route",
+    srcs = ["switchlink_route.c"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_handlers",
+        ":switchlink_int",
+        "//switchutils:switch_log",
+    ],
+)
+
+cc_test(
+    name = "switchlink_route_test",
+    srcs = ["switchlink_route_test.cc"],
+    deps = [
+        ":switchlink_globals",
+        ":switchlink_route",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_library(
+    name = "switchlink_utils",
+    srcs = ["switchlink_utils.c"],
+    hdrs = ["switchlink_utils.h"],
+    deps = [
+        "//switchutils:switch_utils",
+    ],
+)
