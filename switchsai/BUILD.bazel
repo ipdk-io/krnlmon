@@ -85,40 +85,6 @@ cc_library(
 )
 
 cc_library(
-    name = "saineighbor",
-    srcs = ["saineighbor.c"],
-    deps = [
-        ":saiinternal",
-        "//switchapi:switch_l3",
-        "//switchapi:switch_neighbor",
-        "//switchapi:switch_nhop",
-        "//switchapi:switch_rif",
-    ],
-)
-
-cc_library(
-    name = "sainexthop",
-    srcs = ["sainexthop.c"],
-    deps = [
-        ":saiinternal",
-        "//switchapi:switch_nhop",
-        "//switchapi:switch_rif",
-        "//switchapi:switch_tunnel",
-    ],
-)
-
-cc_library(
-    name = "sainexthopgroup",
-    srcs = ["sainexthopgroup.c"],
-    defines = TARGET_DEFINES,
-    deps = [
-        ":saiinternal",
-        "//switchapi:switch_device",
-        "//switchapi:switch_nhop",
-        "@sai//:sai_hdrs",
-    ],
-)
-
     name = "sailag",
     srcs = ["sailag.c"],
     deps = [
