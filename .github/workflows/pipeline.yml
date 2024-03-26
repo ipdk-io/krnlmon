@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - bazel-support-*
   pull_request:
     branches:
       - main
