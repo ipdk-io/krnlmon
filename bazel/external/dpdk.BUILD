@@ -62,7 +62,7 @@ cc_library(
         "dpdk-bin/lib/libtdi_json_parser.so*",
         "dpdk-bin/lib/libtdi_pna.so*",
     ]),
-    hdrs = glob([
+   hdrs = glob([
         "dpdk-bin/include/tdi/**/*.h",
         "dpdk-bin/include/tdi/**/*.hpp",
         "dpdk-bin/include/tdi_rt/**/*.h",
