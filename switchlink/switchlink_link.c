@@ -224,8 +224,9 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   switchlink_db_interface_info_t intf_info = {0};
   switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
-  switchlink_db_lag_member_info_t lag_member_info = {0};
+#ifdef ES2K_TARGET
   bool create_lag_member = false;
+#endif
 
   krnlmon_assert((msgtype == RTM_NEWLINK) || (msgtype == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
@@ -278,7 +279,9 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
               break;
             case IFLA_INFO_SLAVE_DATA:
               if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
+#ifdef ES2K_TARGET
                 create_lag_member = true;
+#endif
                 nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
                   process_info_lag_member_data_attr(infoslavedata, &attrs);
                 }
@@ -385,7 +388,8 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     }
     switch (slave_link_type) {
 #ifdef ES2K_TARGET
-      case SWITCHLINK_LINK_TYPE_BOND:
+      case SWITCHLINK_LINK_TYPE_BOND: {
+        switchlink_db_lag_member_info_t lag_member_info = {0};
         snprintf(lag_member_info.ifname, sizeof(lag_member_info.ifname), "%s",
                  attrs.ifname);
         lag_member_info.ifindex = ifmsg->ifi_index;
@@ -400,6 +404,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
           switchlink_create_lag_member(&lag_member_info);
         }
         break;
+      }
 #endif
       default:
         break;

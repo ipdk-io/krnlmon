@@ -4,15 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
-TARGET_DEFINES = select(
+SAI_TARGET_LIBS = select(
     {
-        "//:dpdk_target": ["DPDK_TARGET"],
-        "//:es2k_target": ["ES2K_TARGET"],
-    },
-    no_match_error = "must specify --define target={dpdk|es2k}",
+        "//:es2k_target": [":sailag"],
+        "//conditions:default": [],
+    }
 )
 
 cc_library(
@@ -149,4 +149,20 @@ cc_library(
         "//switchapi:switch_base_types",
         "//switchapi:switch_vrf",
     ],
+)
+
+filegroup(
+    name = "switchsai-libs",
+    srcs = [
+        ":sai",
+        ":saifdb",
+        ":saineighbor",
+        ":sainexthop",
+        ":sainexthopgroup",
+        ":sairoute",
+        ":sairouterinterface",
+        ":saitunnel",
+        ":saiutils",
+        ":saivirtualrouter",
+    ] + SAI_TARGET_LIBS,
 )

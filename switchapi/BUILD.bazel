@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -11,14 +12,6 @@ PD_ROUTING_DEPS = select(
     {
         "//:dpdk_target": ["//switchapi/dpdk:switch_pd_routing"],
         "//:es2k_target": ["//switchapi/es2k:switch_pd_routing"],
-    },
-    no_match_error = "must specify --define target={dpdk|es2k}",
-)
-
-TARGET_DEFINES = select(
-    {
-        "//:dpdk_target": ["DPDK_TARGET"],
-        "//:es2k_target": ["ES2K_TARGET"],
     },
     no_match_error = "must specify --define target={dpdk|es2k}",
 )
@@ -38,7 +31,7 @@ cc_library(
     name = "switch_config",
     hdrs = ["switch_config.h"],
     deps = [
-        "switch_config_int",
+        ":switch_config_int",
         ":switch_base_types",
         ":switch_handle",
         ":switch_table",

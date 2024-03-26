@@ -281,11 +281,9 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
 
 switch_status_t switch_api_l3_route_add(
     switch_device_t device, switch_api_route_entry_t* api_route_entry) {
-  switch_handle_t nhop_group_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_route_info_t* route_info = NULL;
-  switch_nhop_group_info_t* nhop_group_info = NULL;
   switch_route_entry_t route_entry;
   switch_handle_t route_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t vrf_handle = SWITCH_API_INVALID_HANDLE;

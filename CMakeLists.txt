@@ -34,6 +34,10 @@ add_compile_options(-Werror)
 
 include_directories(.)
 
+if(BUILD_TESTING)
+  include(cmake/testing.cmake)
+endif()
+
 add_subdirectory(switchapi)
 add_subdirectory(switchlink)
 add_subdirectory(switchsai)

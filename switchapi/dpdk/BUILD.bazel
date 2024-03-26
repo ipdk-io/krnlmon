@@ -44,6 +44,15 @@ cc_library(
 )
 
 cc_library(
+    name = "switch_fdb",
+    srcs = ["switch_fdb.c"],
+    deps = [
+        ":switch_pd_fdb",
+        ":switch_pd_utils",
+    ],
+)
+
+cc_library(
     name = "switch_handle",
     srcs = ["switch_handle.c"],
     deps = [
@@ -92,6 +101,22 @@ cc_library(
 )
 
 cc_library(
+    name = "switch_nhop",
+    srcs = ["switch_nhop.c"],
+    deps = [
+        ":switch_pd_routing",
+        "//switchapi:switch_device",
+        "//switchapi:switch_handle_int",
+        "//switchapi:switch_internal",
+        "//switchapi:switch_neighbor_int",
+        "//switchapi:switch_nhop",
+        "//switchapi:switch_nhop_int",
+        "//switchapi:switch_rif_int",
+        "//switchapi:switch_table",
+    ],
+)
+
+cc_library(
     name = "switch_pd_fdb",
     srcs = ["switch_pd_fdb.c"],
     hdrs = ["switch_pd_fdb.h"],
@@ -128,7 +153,15 @@ cc_library(
 
 cc_library(
     name = "switch_pd_tunnel",
+    srcs = ["switch_pd_tunnel.c"],
     hdrs = ["switch_pd_tunnel.h"],
+    deps = [
+        ":switch_pd_p4_name_mapping",
+        ":switch_pd_utils",
+        "//switchapi:switch_base_types",
+        "//switchapi:switch_handle",
+        "//switchapi:switch_tunnel",
+    ],
 )
 
 cc_library(
@@ -215,5 +248,29 @@ cc_library(
         "//switchapi:switch_internal",
         "//switchapi:switch_table",
         "//switchapi:switch_types_int",
+    ],
+)
+
+filegroup(
+    name = "switchapi-dpdk-libs",
+    srcs = [
+        ":switch_config",
+        ":switch_device",
+        ":switch_fdb",
+        ":switch_handle",
+        ":switch_id",
+        ":switch_l3",
+        ":switch_neighbor",
+        ":switch_nhop",
+        ":switch_pd_fdb",
+        ":switch_pd_routing",
+        ":switch_pd_tunnel",
+        ":switch_pd_utils",
+        ":switch_rif",
+        ":switch_rmac",
+        ":switch_table",
+        ":switch_tunnel",
+        ":switch_vrf",
+        ":switchapi_utils",
     ],
 )

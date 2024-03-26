@@ -22,3 +22,39 @@ elseif(ES2K_TARGET)
 endif()
 
 target_include_directories(switchsde_o PUBLIC ${SDE_INSTALL_DIR}/include)
+
+if(DPDK_TARGET)
+#######################
+# switchsde_dpdk_test #
+#######################
+
+add_executable(switchsde_dpdk_test
+  switchsde_dpdk_test.cc
+  sde_status.h
+  sde_types.h
+)
+
+target_include_directories(switchsde_dpdk_test PRIVATE
+  ${SDE_INSTALL_DIR}/include
+)
+
+define_unit_test(switchsde_dpdk_test)
+endif(DPDK_TARGET)
+
+if(ES2K_TARGET)
+#######################
+# switchsde_es2k_test #
+#######################
+
+add_executable(switchsde_es2k_test
+  switchsde_es2k_test.cc
+  sde_status.h
+  sde_types.h
+)
+
+target_include_directories(switchsde_es2k_test PRIVATE
+  ${SDE_INSTALL_DIR}/include
+)
+
+define_unit_test(switchsde_es2k_test)
+endif(ES2K_TARGET)
