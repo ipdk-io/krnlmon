@@ -32,7 +32,6 @@ void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
   int i = 0;
   bf_dev_id_t bf_dev_id = 0;
   bf_dev_port_t bf_dev_port;
-  bf_status_t bf_status;
 
   if (!if_indextoname(port_rif_info->rif_ifindex, if_name)) {
     krnlmon_log_error("Failed to get ifname for the index: %d",
@@ -43,7 +42,7 @@ void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
   for (i = 0; i < MAX_NO_OF_PORTS; i++) {
     struct port_info_t* port_info = NULL;
     bf_dev_port = (bf_dev_port_t)i;
-    bf_status = (bf_pal_port_info_get(bf_dev_id, bf_dev_port, &port_info));
+    bf_pal_port_info_get(bf_dev_id, bf_dev_port, &port_info);
     if (port_info == NULL) continue;
 
     if (!strcmp((port_info)->port_attrib.port_name, if_name)) {

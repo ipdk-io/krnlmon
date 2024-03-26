@@ -444,7 +444,7 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable) {
   return SWITCH_STATUS_SUCCESS;
 }
 
-char* switch_error_to_string(switch_status_t status) {
+const char* switch_error_to_string(switch_status_t status) {
   switch (status) {
     case SWITCH_STATUS_ITEM_NOT_FOUND:
       return "err: entry not found";
@@ -958,7 +958,7 @@ switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   }
 }
 
-char* switch_api_type_to_string(switch_api_type_t api_type) {
+const char* switch_api_type_to_string(switch_api_type_t api_type) {
   switch (api_type) {
     case SWITCH_API_TYPE_PORT:
       return "port";

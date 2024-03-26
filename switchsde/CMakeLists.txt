@@ -16,7 +16,7 @@ add_library(switchsde_o OBJECT
 )
 
 if(DPDK_TARGET)
-  target_sources(switchsde_o PRIVATE sde_legacy_port_intf.c)
+  target_sources(switchsde_o PRIVATE sde_dpdk_port_intf.c)
 elseif(ES2K_TARGET)
   target_sources(switchsde_o PRIVATE sde_es2k_port_intf.c)
 endif()

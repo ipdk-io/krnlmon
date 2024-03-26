@@ -17,13 +17,10 @@
  */
 
 #include <fcntl.h>
-#include <linux/if.h>
-#include <linux/if_bridge.h>
 #include <linux/version.h>
 #include <netlink/attr.h>
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
-#include <unistd.h>
 
 #include "switchlink.h"
 #include "switchlink_globals.h"
@@ -31,10 +28,6 @@
 #include "switchlink_int.h"
 #include "switchlink_link_types.h"
 #include "switchutils/switch_log.h"
-
-#ifdef ES2K_TARGET
-#include "switchlink_es2k_utils.h"
-#endif
 
 #if defined(ES2K_TARGET)
 // ES2K creates netdevs from idpf driver/SR-IOVs.

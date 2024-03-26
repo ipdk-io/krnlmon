@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +20,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCHAPI_UTILS
 
@@ -153,8 +154,6 @@ switch_status_t SWITCH_ARRAY_DELETE(switch_array_t* array,
 }
 
 switch_status_t SWITCH_LIST_INIT(switch_list_t* list) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(list != NULL);
 
   tommy_list_init(&list->list);
@@ -164,8 +163,6 @@ switch_status_t SWITCH_LIST_INIT(switch_list_t* list) {
 
 switch_status_t SWITCH_LIST_SORT(switch_list_t* list,
                                  switch_list_compare_func_t compare_func) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(list != NULL);
 
   tommy_list_sort(&list->list, compare_func);
@@ -173,7 +170,6 @@ switch_status_t SWITCH_LIST_SORT(switch_list_t* list,
 }
 
 bool SWITCH_LIST_EMPTY(switch_list_t* list) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
   bool is_empty = false;
 
   SWITCH_ASSERT(list != NULL);
@@ -190,8 +186,6 @@ switch_size_t SWITCH_LIST_COUNT(switch_list_t* list) {
 
 switch_status_t SWITCH_LIST_INSERT(switch_list_t* list, switch_node_t* node,
                                    void* data) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(list != NULL);
   SWITCH_ASSERT(node != NULL);
   SWITCH_ASSERT(data != NULL);
@@ -202,8 +196,6 @@ switch_status_t SWITCH_LIST_INSERT(switch_list_t* list, switch_node_t* node,
 }
 
 switch_status_t SWITCH_LIST_DELETE(switch_list_t* list, switch_node_t* node) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(list != NULL);
   SWITCH_ASSERT(node != NULL);
 
@@ -213,8 +205,6 @@ switch_status_t SWITCH_LIST_DELETE(switch_list_t* list, switch_node_t* node) {
 }
 
 switch_status_t SWITCH_HASHTABLE_INIT(switch_hashtable_t* hashtable) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(hashtable->size != 0);
 
@@ -293,8 +283,6 @@ switch_status_t SWITCH_HASHTABLE_DELETE(switch_hashtable_t* hashtable,
 
 switch_status_t SWITCH_HASHTABLE_DELETE_NODE(switch_hashtable_t* hashtable,
                                              switch_hashnode_t* node) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(node != NULL);
 
@@ -336,8 +324,6 @@ switch_status_t SWITCH_HASHTABLE_SEARCH(switch_hashtable_t* hashtable,
 
 switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t* hashtable,
                                              void* func, void* arg) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(hashtable != NULL);
   SWITCH_ASSERT(func != NULL);
   SWITCH_ASSERT(arg != NULL);
@@ -348,15 +334,13 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t* hashtable,
 }
 
 switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   SWITCH_ASSERT(hashtable != NULL);
 
   tommy_hashtable_done(&hashtable->table);
   return SWITCH_STATUS_SUCCESS;
 }
 
-char* switch_error_to_string(switch_status_t status) {
+const char* switch_error_to_string(switch_status_t status) {
   switch (status) {
     case SWITCH_STATUS_ITEM_NOT_FOUND:
       return "err: entry not found";
@@ -609,52 +593,40 @@ switch_status_t switch_pd_status_to_status(bf_status_t pd_status) {
 #endif
 
 switch_status_t switch_pd_tdi_status_to_status(tdi_status_t pd_status) {
-  switch_status_t status = SWITCH_STATUS_SUCCESS;
-
   switch (pd_status) {
     case TDI_SUCCESS:
-      status = SWITCH_STATUS_SUCCESS;
-      break;
+      return SWITCH_STATUS_SUCCESS;
 
     case TDI_NO_SYS_RESOURCES:
-      status = SWITCH_STATUS_INSUFFICIENT_RESOURCES;
-      break;
+      return SWITCH_STATUS_INSUFFICIENT_RESOURCES;
 
     case TDI_ALREADY_EXISTS:
-      status = SWITCH_STATUS_ITEM_ALREADY_EXISTS;
-      break;
+      return SWITCH_STATUS_ITEM_ALREADY_EXISTS;
 
     case TDI_IN_USE:
-      status = SWITCH_STATUS_RESOURCE_IN_USE;
-      break;
+      return SWITCH_STATUS_RESOURCE_IN_USE;
 
     case TDI_HW_COMM_FAIL:
-      status = SWITCH_STATUS_HW_FAILURE;
-      break;
+      return SWITCH_STATUS_HW_FAILURE;
 
     case TDI_OBJECT_NOT_FOUND:
-      status = SWITCH_STATUS_ITEM_NOT_FOUND;
-      break;
+      return SWITCH_STATUS_ITEM_NOT_FOUND;
 
     case TDI_NOT_IMPLEMENTED:
-      status = SWITCH_STATUS_NOT_IMPLEMENTED;
-      break;
+      return SWITCH_STATUS_NOT_IMPLEMENTED;
 
     case TDI_INVALID_ARG:
-      status = SWITCH_STATUS_INVALID_PARAMETER;
-      break;
+      return SWITCH_STATUS_INVALID_PARAMETER;
 
     case TDI_NO_SPACE:
-      status = SWITCH_STATUS_TABLE_FULL;
-      break;
+      return SWITCH_STATUS_TABLE_FULL;
 
     default:
-      status = SWITCH_STATUS_PD_FAILURE;
-      break;
+      return SWITCH_STATUS_PD_FAILURE;
   }
-  return status;
 }
 
+#if 0
 static bool switch_l3_host_entry(const switch_ip_addr_t* ip_addr) {
   SWITCH_ASSERT(ip_addr != NULL);
 
@@ -666,6 +638,7 @@ static bool switch_l3_host_entry(const switch_ip_addr_t* ip_addr) {
                                                                     : FALSE;
   }
 }
+#endif
 
 switch_status_t switch_ipv4_to_string(switch_ip4_t ip4, char* buffer,
                                       switch_int32_t buffer_size,
@@ -708,6 +681,7 @@ switch_status_t switch_mac_to_string(switch_mac_addr_t* mac, char* buffer,
   return SWITCH_STATUS_SUCCESS;
 }
 
+#if 0
 static switch_status_t switch_ipv4_prefix_to_mask(switch_uint32_t prefix,
                                                   switch_uint32_t* mask) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
@@ -745,6 +719,7 @@ static switch_status_t switch_ipv6_prefix_to_mask(switch_uint32_t prefix,
   mask[index] = mask[index] & 0xFF;
   return SWITCH_STATUS_SUCCESS;
 }
+#endif
 
 switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   switch (table_id) {
@@ -866,7 +841,7 @@ switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   }
 }
 
-char* switch_api_type_to_string(switch_api_type_t api_type) {
+const char* switch_api_type_to_string(switch_api_type_t api_type) {
   switch (api_type) {
     case SWITCH_API_TYPE_PORT:
       return "port";
@@ -948,6 +923,7 @@ char* switch_api_type_to_string(switch_api_type_t api_type) {
   }
 }
 
+#if 0
 static char* switch_packet_type_to_string(switch_packet_type_t packet_type) {
   switch (packet_type) {
     case SWITCH_PACKET_TYPE_UNICAST:
@@ -961,6 +937,7 @@ static char* switch_packet_type_to_string(switch_packet_type_t packet_type) {
       return "unknown";
   }
 }
+#endif
 
 switch_int32_t switch_convert_string_to_ipv4(const char* v4_string,
                                              switch_ip4_t* ip) {
@@ -996,5 +973,5 @@ switch_int32_t switch_convert_string_to_ipv6(const char* v6_string,
 }
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif

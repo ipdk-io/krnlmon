@@ -1,6 +1,6 @@
 /*
  * Copyright 2023-2024 Intel Corporation.
- * SPDX-License-Identifier: Apache 2.0
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-#include "switchlink_es2k_utils.h"
-
 #include <linux/errno.h>
 #include <linux/ethtool.h>
 #include <linux/if.h>
+#include <linux/if_bridge.h>
 #include <linux/sockios.h>
-#include <stdbool.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+
+#include "switchlink_int.h"
 
 /*
  * Routine Description:

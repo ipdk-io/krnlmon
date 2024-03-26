@@ -34,8 +34,6 @@ extern "C" {
 
 #define SWITCH_API_BUFFER_SIZE 512
 
-char* switch_error_to_string(switch_status_t status);
-
 switch_status_t SWITCH_ARRAY_INIT(switch_array_t* array);
 
 switch_uint32_t SWITCH_ARRAY_COUNT(switch_array_t* array);
@@ -87,13 +85,13 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t* hashtable,
 
 switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable);
 
-char* switch_error_to_string(switch_status_t status);
+const char* switch_error_to_string(switch_status_t status);
 
 // char *switch_table_id_to_string(switch_table_id_t table_id);
 
 switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id);
 
-char* switch_api_type_to_string(switch_api_type_t api_type);
+const char* switch_api_type_to_string(switch_api_type_t api_type);
 
 switch_int32_t switch_convert_string_to_ipv4(const char* v4_string,
                                              switch_ip4_t* ip);

@@ -223,7 +223,6 @@ switch_status_t switch_api_neighbor_create(
 switch_status_t switch_api_neighbor_delete(switch_device_t device,
                                            switch_handle_t neighbor_handle) {
   switch_neighbor_info_t* neighbor_info = NULL;
-  switch_api_neighbor_info_t* api_neighbor_info = NULL;
   switch_handle_t nhop_handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -246,7 +245,6 @@ switch_status_t switch_api_neighbor_delete(switch_device_t device,
   }
 
   nhop_handle = neighbor_info->nhop_handle;
-  api_neighbor_info = &neighbor_info->api_neighbor_info;
 
   if (SWITCH_NHOP_HANDLE(nhop_handle)) {
     status = switch_routing_table_entry(

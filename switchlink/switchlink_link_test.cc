@@ -14,9 +14,6 @@ extern "C" {
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
 #include "switchlink_link_types.h"
-#ifdef ES2K_TARGET
-#include "switchlink_es2k_utils.h"
-#endif
 }
 
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))

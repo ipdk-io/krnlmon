@@ -4,7 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:variables.bzl", "TARGET_DEFINES")
+load(
+    "//bazel:sde.bzl",
+    "JUDY",
+    "TARGET_SDE",
+    "TARGET_SYS",
+    "TARGET_UTILS",
+    "TOMMYDS",
+)
+load("//bazel:variables.bzl", "NO_MATCH_ERROR", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -13,26 +21,21 @@ PD_ROUTING_DEPS = select(
         "//:dpdk_target": ["//switchapi/dpdk:switch_pd_routing"],
         "//:es2k_target": ["//switchapi/es2k:switch_pd_routing"],
     },
-    no_match_error = "must specify --define target={dpdk|es2k}",
+    no_match_error = NO_MATCH_ERROR,
 )
 
 cc_library(
     name = "switch_base_types",
     hdrs = ["switch_base_types.h"],
-    deps = [
-        "@local_dpdk_bin//:dpdk_sde",
-        "@local_dpdk_bin//:judy_hdrs",
-        "@local_dpdk_bin//:target_sys",
-        "@local_dpdk_bin//:tommyds_hdrs",
-    ],
+    deps = TARGET_SDE + TARGET_SYS + JUDY + TOMMYDS,
 )
 
 cc_library(
     name = "switch_config",
     hdrs = ["switch_config.h"],
     deps = [
-        ":switch_config_int",
         ":switch_base_types",
+        ":switch_config_int",
         ":switch_handle",
         ":switch_table",
     ],
@@ -54,6 +57,7 @@ cc_library(
     hdrs = ["switch_device.h"],
     deps = [
         ":switch_base_types",
+        ":switch_lag",
     ],
 )
 
@@ -122,7 +126,7 @@ cc_library(
         ":switch_status",
         "//switchutils:switch_log",
         "//switchutils:switch_utils",
-        "@local_dpdk_bin//:tdi_hdrs",
+        "@local_dpdk_bin//:tdi",
     ],
 )
 
@@ -147,6 +151,7 @@ cc_library(
 cc_library(
     name = "switch_lag",
     hdrs = ["switch_lag.h"],
+    defines = TARGET_DEFINES,
     deps = [
         ":switch_base_types",
         ":switch_types_int",
@@ -290,4 +295,15 @@ cc_library(
         ":switch_handle",
         ":switch_interface",
     ],
+)
+
+alias(
+    name = "switchapi",
+    actual = select(
+        {
+            "//:dpdk_target": "//switchapi/dpdk:switchapi",
+            "//:es2k_target": "//switchapi/es2k:switchapi",
+        },
+        no_match_error = NO_MATCH_ERROR,
+    ),
 )
