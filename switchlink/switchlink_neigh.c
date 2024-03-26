@@ -130,13 +130,6 @@ void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   }
 
   if (msgtype == RTM_NEWNEIGH) {
-    if (bridge_h && mac_addr_valid) {
-      switchlink_create_mac(mac_addr, bridge_h, intf_h);
-    } else if (mac_addr_valid && ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L3) {
-      /* Here we are creating FDB entry from neighbor table, check for
-       * type as SWITCHLINK_INTF_TYPE_L3 */
-      switchlink_create_mac(mac_addr, bridge_h, intf_h);
-    }
     if (ipaddr_valid) {
       if (mac_addr_valid) {
         switchlink_create_neigh(g_default_vrf_h, &ipaddr, mac_addr, intf_h);
