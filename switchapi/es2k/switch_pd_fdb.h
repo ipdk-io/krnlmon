@@ -21,6 +21,7 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_handle.h"
+#include "switchapi/switch_tunnel.h"
 
 #ifdef __cplusplus
 extern "C" {

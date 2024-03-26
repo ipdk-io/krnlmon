@@ -20,7 +20,6 @@
 
 #include <stdint.h>
 
-#include "bf_pal/bf_pal_port_intf.h"
 #include "sde_types.h"
 
 struct port_info_t;
