@@ -37,6 +37,6 @@ extern void switchlink_process_address_msg(const struct nlmsghdr* nlmsg,
 extern void switchlink_process_route_msg(const struct nlmsghdr* nlmsg,
                                          int msgtype);
 
-bool switchlink_validate_driver(const char* ifname);
+extern bool switchlink_validate_driver(const char* ifname);
 
 #endif /* __SWITCHLINK_INT_H__ */

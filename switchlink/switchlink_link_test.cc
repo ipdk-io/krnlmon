@@ -14,9 +14,6 @@ extern "C" {
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
 #include "switchlink_link_types.h"
-#ifdef ES2K_TARGET
-#include "switchlink_es2k_utils.h"
-#endif
 }
 
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
@@ -124,8 +121,6 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
 // function in the same source file. We provide a definition to avoid
 // a link error.
 int switchlink_create_vrf(switchlink_handle_t* vrf_h) { return 0; }
-
-bool switchlink_validate_driver(const char* ifname) { return true; }
 
 //----------------------------------------------------------------------
 // Test fixture
