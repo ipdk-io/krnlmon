@@ -4,12 +4,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:rules.bzl", "target_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-TARGET_DEFINES = ["ES2K_TARGET"]
-
-cc_library(
+target_cc_library(
     name = "switch_config",
     srcs = ["switch_config.c"],
     deps = [
@@ -20,7 +19,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_device",
     srcs = ["switch_device.c"],
     deps = [
@@ -28,6 +27,7 @@ cc_library(
         "//switchapi:switch_config_int",
         "//switchapi:switch_fdb",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_neighbor_int",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_rmac_int",
@@ -37,7 +37,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_fdb",
     srcs = ["switch_fdb.c"],
     deps = [
@@ -46,21 +46,23 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_handle",
     srcs = ["switch_handle.c"],
     deps = [
         "//switchapi:switch_device",
         "//switchapi:switch_handle",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_pd_routing",
+        "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
         "//switchapi:switch_types_int",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_id",
     srcs = ["switch_id.c"],
     deps = [
@@ -72,19 +74,21 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_l3",
     srcs = ["switch_l3.c"],
     deps = [
         "//switchapi:switch_device",
         "//switchapi:switch_internal",
+        "//switchapi:switch_l3",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_pd_routing",
+        "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_lag",
     srcs = ["switch_lag.c"],
     deps = [
@@ -93,17 +97,18 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_neighbor",
     srcs = ["switch_neighbor.c"],
     deps = [
         ":switch_pd_fdb",
+        "//switchapi:switch_l3",
         "//switchapi:switch_neighbor",
         "//switchapi:switch_nhop_int",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_nhop",
     srcs = ["switch_nhop.c"],
     deps = [
@@ -119,7 +124,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_fdb",
     srcs = ["switch_pd_fdb.c"],
     hdrs = ["switch_pd_fdb.h"],
@@ -136,7 +141,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_lag",
     srcs = ["switch_pd_lag.c"],
     hdrs = ["switch_pd_lag.h"],
@@ -151,25 +156,33 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_p4_name_mapping",
     hdrs = ["switch_pd_p4_name_mapping.h"],
 )
 
-cc_library(
-    name = "switch_pd_routing",
+target_cc_library(
+    name = "switch_pd_routing_hdr",
     hdrs = ["switch_pd_routing.h"],
-    defines = TARGET_DEFINES,
+)
+
+target_cc_library(
+    name = "switch_pd_routing",
+    srcs = ["switch_pd_routing.c"],
     deps = [
+        ":switch_pd_p4_name_mapping",
+        ":switch_pd_routing_hdr",
+        ":switch_pd_utils",
         "//switchapi:switch_base_types",
         "//switchapi:switch_handle",
         "//switchapi:switch_l3",
         "//switchapi:switch_nhop",
+        "//switchapi:switch_nhop_int",
         "//switchapi:switch_rmac_int",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_tunnel",
     srcs = ["switch_pd_tunnel.c"],
     hdrs = ["switch_pd_tunnel.h"],
@@ -182,7 +195,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_pd_utils",
     srcs = ["switch_pd_utils.c"],
     hdrs = ["switch_pd_utils.h"],
@@ -196,13 +209,12 @@ cc_library(
         "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
         "@local_es2k_bin//:sde_hdrs",
-        "@local_es2k_bin//:target_sys",
-        "@local_es2k_bin//:target_utils",
         "@local_es2k_bin//:tdi",
+        "@target_sys",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_rif",
     srcs = ["switch_rif.c"],
     deps = [
@@ -212,7 +224,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_rmac",
     srcs = ["switch_rmac.c"],
     deps = [
@@ -224,7 +236,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_table",
     srcs = ["switch_table.c"],
     deps = [
@@ -236,7 +248,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_tunnel",
     srcs = ["switch_tunnel.c"],
     deps = [
@@ -248,7 +260,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switch_vrf",
     srcs = ["switch_vrf.c"],
     deps = [
@@ -259,7 +271,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchapi_utils",
     srcs = ["switchapi_utils.c"],
     deps = [
@@ -284,6 +296,8 @@ cc_library(
         ":switch_neighbor",
         ":switch_nhop",
         ":switch_pd_fdb",
+        ":switch_pd_lag",
+        ":switch_pd_routing",
         ":switch_pd_tunnel",
         ":switch_pd_utils",
         ":switch_rif",

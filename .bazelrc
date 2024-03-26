@@ -9,6 +9,14 @@ build --cxxopt='-std=gnu++11'
 # General test options
 test --test_output=errors
 
+# DPDK target
+build:dpdk --define target=dpdk
+test:dpdk  --define target=dpdk
+
+# ES2K target
+build:es2k --define target=es2k
+test:es2k  --define target=es2k
+
 # LTO on clang
 build:lto --copt -Wno-unused-command-line-argument
 build:lto --copt -flto

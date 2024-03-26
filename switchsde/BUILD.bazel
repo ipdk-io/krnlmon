@@ -4,50 +4,39 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:sde.bzl", "TARGET_SDE_HDRS")
 
 package(default_visibility = ["//visibility:public"])
 
-TARGET_SDE_HDRS = select(
-    {
-        "//:dpdk_target": [
-            "@local_dpdk_bin//:sde_hdrs",
-            "@local_dpdk_bin//:target_sys",
-        ],
-        "//:es2k_target": [
-            "@local_es2k_bin//:sde_hdrs",
-            "@local_es2k_bin//:target_sys",
-        ],
-    },
-    no_match_error = "must specify --define target={dpdk|es2k}",
-)
-
 TARGET_UNIT_TEST = select(
     {
-        "//:dpdk_target": ["switchsde_dpdk_test.cc"],
-        "//:es2k_target": ["switchsde_es2k_test.cc"],
+        "//bazel:dpdk_target": ["switchsde_dpdk_test.cc"],
+        "//bazel:es2k_target": ["switchsde_es2k_test.cc"],
     },
     no_match_error = "must specify --define target={dpdk|es2k}",
 )
 
-cc_library(
+target_cc_library(
     name = "sde_port_intf",
     srcs = select({
-        "//:dpdk_target": ["sde_dpdk_port_intf.c"],
-        "//:es2k_target": ["sde_es2k_port_intf.c"],
+        "//bazel:dpdk_target": ["sde_dpdk_port_intf.c"],
+        "//bazel:es2k_target": ["sde_es2k_port_intf.c"],
     }),
     hdrs = ["sde_port_intf.h"],
     deps = [
         ":sde_types",
+        "@target_sys",
     ] + TARGET_SDE_HDRS,
 )
 
-cc_library(
+target_cc_library(
     name = "sde_status",
     srcs = ["sde_status.c"],
     hdrs = ["sde_status.h"],
 )
 
-cc_library(
+target_cc_library(
     name = "sde_types",
     hdrs = ["sde_types.h"],
 )

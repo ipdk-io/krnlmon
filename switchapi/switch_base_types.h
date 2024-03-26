@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +29,6 @@
 #include "target-sys/bf_sal/bf_sys_timer.h"
 #include "tommyds/tommyhashtbl.h"
 #include "tommyds/tommylist.h"
-#ifdef STATIC_LINK_LIB
-#include "bf_switchd/bf_switchd.h"
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -405,30 +403,6 @@ typedef struct switch_counter_s {
   switch_uint64_t num_bytes;
 
 } switch_counter_t;
-
-/* init */
-#if 0
-#ifdef STATIC_LINK_LIB
-switch_status_t switch_api_init(switch_device_t device,
-                                unsigned int num_ports,
-                                char *cpu_port,
-                                bool add_ports,
-                                void *rpc_server_cookie);
-
-switch_status_t switch_api_init_handlers_register(bf_switchd_context_t *ctx);
-
-#else   // STATIC_LINK_LIB
-switch_status_t switch_api_init(switch_device_t device,
-                                unsigned int num_ports,
-                                char *cpu_port,
-                                bool add_ports);
-#endif  // STATIC_LINK_LIB
-#endif
-
-switch_status_t switch_api_init(switch_device_t device);
-
-switch_status_t switch_mirror_on_drop_set(switch_device_t device,
-                                          bool mirror_on_drop);
 
 #ifdef __cplusplus
 }

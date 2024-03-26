@@ -4,14 +4,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:sde.bzl", "TARGET_SYS")
 
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "switch_log",
     hdrs = ["switch_log.h"],
-    deps = TARGET_SYS,
+    deps = [
+        "@target_sys",
+    ],
 )
 
 cc_library(

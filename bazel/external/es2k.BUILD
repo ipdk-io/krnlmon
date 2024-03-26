@@ -13,6 +13,7 @@ cc_library(
     name = "sde_libs",
     srcs = glob([
         # "es2k-bin/lib/libacccp.so",
+        "es2k-bin/lib/libcar.so",
         "es2k-bin/lib/libclish.so",
         "es2k-bin/lib/libcpf.so",
         "es2k-bin/lib/libcpf_pmd_infra.so",
@@ -30,12 +31,14 @@ cc_library(
         "-lm",
         "-ldl",
     ],
+    deps = [
+        "@target_sys",
+    ],
 )
 
 cc_library(
     name = "sde_hdrs",
     hdrs = glob([
-        "es2k-bin/include/cjson/*.h",
         "es2k-bin/include/dvm/*.h",
         "es2k-bin/include/ipu_p4d/**/*.h",
         "es2k-bin/include/ipu_pal/*.h",
@@ -55,63 +58,16 @@ cc_library(
 )
 
 cc_library(
-    name = "judy",
-    srcs = ["es2k-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "es2k-bin/include/target-utils/third-party/judy-1.0.5/src/*.h",
-    ]),
-    strip_include_prefix = "es2k-bin/include/target-utils/third-party/",
-)
-
-cc_library(
-    name = "target_sys",
-    srcs = ["es2k-bin/lib/libtarget_sys.so"],
-    hdrs = glob(["es2k-bin/include/target-sys/**/*.h"]),
-    strip_include_prefix = "es2k-bin/include",
-)
-
-cc_library(
-    name = "target_utils",
-    srcs = ["es2k-bin/lib/libtarget_utils.so"],
-    hdrs = glob(["es2k-bin/include/target-utils/**/*.h"]),
-    linkopts = [
-        "-lpthread",
-        "-lm",
-        "-ldl",
-    ],
-    strip_include_prefix = "es2k-bin/include",
-    deps = [":target_sys"],
-)
-
-cc_library(
     name = "tdi",
-    srcs = [
-        "es2k-bin/lib/libtdi.so",
-        "es2k-bin/lib/libtdi_json_parser.so",
-        "es2k-bin/lib/libtdi_pna.so",
-    ],
+    srcs = glob([
+        "es2k-bin/lib/libtdi.so*",
+        "es2k-bin/lib/libtdi_json_parser.so*",
+        "es2k-bin/lib/libtdi_pna.so*",
+    ]),
     hdrs = glob([
         "es2k-bin/include/tdi/**/*.h",
         "es2k-bin/include/tdi/**/*.hpp",
         "es2k-bin/include/tdi_rt/*.h",
     ]),
     strip_include_prefix = "es2k-bin/include",
-)
-
-cc_library(
-    name = "tommyds",
-    srcs = ["es2k-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "es2k-bin/include/target-utils/third-party/tommyds/tommyds/*.h",
-    ]),
-    strip_include_prefix = "es2k-bin/include/target-utils/third-party/tommyds",
-)
-
-cc_library(
-    name = "xxhash",
-    srcs = ["es2k-bin/lib/libtarget_utils.so"],
-    hdrs = glob([
-        "es2k-bin/include/target-utils/third-party/xxHash/xxHash/*.h",
-    ]),
-    strip_include_prefix = "es2k-bin/include/target-utils/third-party/xxHash",
 )

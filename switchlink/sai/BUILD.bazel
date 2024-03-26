@@ -4,19 +4,19 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:rules.bzl", "target_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE")
-load("//bazel:variables.bzl", "TARGET_DEFINES")
 
 package(default_visibility = ["//visibility:public"])
 
 SWITCHLINK_SAI_TARGET_LIBS = select(
     {
-        "//:es2k_target": [":switchlink_handle_lag"],
+        "//bazel:es2k_target": [":switchlink_handle_lag"],
         "//conditions:default": [],
     },
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_ecmp",
     srcs = ["switchlink_handle_ecmp.c"],
     deps = [
@@ -27,7 +27,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_lag",
     srcs = ["switchlink_handle_lag.c"],
     deps = [
@@ -38,7 +38,7 @@ cc_library(
     ] + TARGET_SDE,
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_link",
     srcs = ["switchlink_handle_link.c"],
     deps = [
@@ -47,10 +47,9 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_neigh",
     srcs = ["switchlink_handle_neigh.c"],
-    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_init_sai",
         "//switchlink:switchlink_globals",
@@ -58,17 +57,16 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_nexthop",
     srcs = ["switchlink_handle_nexthop.c"],
-    defines = TARGET_DEFINES,
     deps = [
         ":switchlink_init_sai",
         "//switchlink:switchlink_handlers",
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_route",
     srcs = ["switchlink_handle_route.c"],
     deps = [
@@ -78,7 +76,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_handle_tunnel",
     srcs = ["switchlink_handle_tunnel.c"],
     deps = [
@@ -87,7 +85,7 @@ cc_library(
     ],
 )
 
-cc_library(
+target_cc_library(
     name = "switchlink_init_sai",
     srcs = ["switchlink_init_sai.c"],
     hdrs = ["switchlink_init_sai.h"],
