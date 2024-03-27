@@ -33,9 +33,9 @@ cc_library(
 )
 
 cc_binary(
-    name = "dummy",
+    name = "dummy_krnlmon",
     srcs = [
-        "dummy.cc",
+        "dummy_main.cc",
         ":krnlmon",
     ],
     linkopts = [
