@@ -1,6 +1,6 @@
 /*
  * Copyright 2023-2024 Intel Corporation.
- * SPDX-License-Identifier: Apache 2.0
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 
 #include <linux/if.h>
 
-#include "ipu_pal/port_intf.h"
-#include "ipu_types/ipu_types.h"
 #include "switchlink_init_sai.h"
+#include "switchsde/sde_port_intf.h"
+#include "switchsde/sde_status.h"
+#include "switchsde/sde_types.h"
 
 #define SWITCH_PD_MAC_STR_LENGTH 18
 #define SWITCH_PD_TARGET_VPORT_OFFSET 16
@@ -170,9 +171,9 @@ static int create_lag_member(
     switchlink_handle_t* lag_member_h) {
   sai_attribute_t attr_list[5];
   int ac = 0;
-  ipu_status_t ipu_status;
+  sde_status_t sde_status;
   uint32_t port_id = 0;
-  ipu_dev_id_t ipu_dev_id = 0;
+  sde_dev_id_t sde_dev_id = 0;
   static char mac_str[SWITCH_PD_MAC_STR_LENGTH];
 
   snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
@@ -181,14 +182,14 @@ static int create_lag_member(
            lag_member_intf->perm_hwaddr[4], lag_member_intf->perm_hwaddr[5]);
   mac_str[SWITCH_PD_MAC_STR_LENGTH - 1] = '\0';
 
-  ipu_status = ipu_pal_get_port_id_from_mac(ipu_dev_id, mac_str, &port_id);
-  if (ipu_status != IPU_SUCCESS) {
+  sde_status = sde_pal_get_port_id_from_mac(sde_dev_id, mac_str, &port_id);
+  if (sde_status != SDE_SUCCESS) {
     port_id = lag_member_intf->perm_hwaddr[1] + SWITCH_PD_TARGET_VPORT_OFFSET;
     krnlmon_log_info(
         "Failed to get the port ID, error: %d, Deriving "
         "port ID from second byte of MAC address: "
         "%s",
-        ipu_status, mac_str);
+        sde_status, mac_str);
   }
 
   memset(attr_list, 0, sizeof(attr_list));

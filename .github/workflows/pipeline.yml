@@ -2,9 +2,11 @@ name: "Krnlmon CI Pipeline"
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
   workflow_dispatch:
 
@@ -134,7 +136,7 @@ jobs:
 
       - name: Get list of changed Files
         id: changed
-        uses: tj-actions/changed-files@v42
+        uses: tj-actions/changed-files@v43
         with:
           files: |
             **.c

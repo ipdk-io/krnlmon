@@ -1,7 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
- * SPDX-License-Identifier: Apache 2.0
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,17 @@
  */
 
 #include <fcntl.h>
-#include <linux/errno.h>
-#include <linux/ethtool.h>
-#include <linux/if.h>
-#include <linux/if_bridge.h>
-#include <linux/sockios.h>
 #include <linux/version.h>
 #include <netlink/attr.h>
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 #include "switchlink.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
 #include "switchlink_link_types.h"
-#include "switchlink_utils.h"
+#include "switchutils/switch_log.h"
 
 #if defined(ES2K_TARGET)
 // ES2K creates netdevs from idpf driver/SR-IOVs.
@@ -92,50 +85,6 @@ static switchlink_link_type_t get_link_type(const char* info_kind) {
 
   return link_type;
 }
-
-#if defined(ES2K_TARGET)
-/*
- * Routine Description:
- *    Check if the interface driver is valid for our use case
- *
- * Arguments:
- *    [in] ifname - Interface name
- *
- * Return Values:
- *    boolean
- */
-bool validate_driver_name(char* ifname) {
-  struct ethtool_drvinfo drv = {0};
-  char drvname[32] = {0};
-  struct ifreq ifr = {0};
-  int fd, r = 0;
-
-  fd = socket(AF_INET, SOCK_DGRAM, 0);
-  if (fd < 0) {
-    return false;
-  }
-
-  drv.cmd = ETHTOOL_GDRVINFO;
-  strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-  ifr.ifr_data = (void*)&drv;
-
-  r = ioctl(fd, SIOCETHTOOL, &ifr);
-  if (r) {
-    goto end;
-  }
-
-  strncpy(drvname, drv.driver, sizeof(drvname));
-
-  if (!memcmp(drvname, "openvswitch", strlen(drvname)) ||
-      !memcmp(drvname, "idpf", strlen(drvname))) {
-    close(fd);
-    return true;
-  }
-end:
-  close(fd);
-  return false;
-}
-#endif
 
 /*
  * Routine Description:
@@ -268,8 +217,9 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   switchlink_db_interface_info_t intf_info = {0};
   switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
-  switchlink_db_lag_member_info_t lag_member_info = {0};
+#ifdef ES2K_TARGET
   bool create_lag_member = false;
+#endif
 
   krnlmon_assert((msgtype == RTM_NEWLINK) || (msgtype == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
@@ -322,7 +272,9 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
               break;
             case IFLA_INFO_SLAVE_DATA:
               if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
+#ifdef ES2K_TARGET
                 create_lag_member = true;
+#endif
                 nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
                   process_info_lag_member_data_attr(infoslavedata, &attrs);
                 }
@@ -407,7 +359,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         }
 
 #if defined(ES2K_TARGET)
-        if (!validate_driver_name(attrs.ifname)) {
+        if (!switchlink_validate_driver(attrs.ifname)) {
           krnlmon_log_info(
               "Ignoring interface: %s which is not created"
               " by openvswitch or idpf driver",
@@ -429,7 +381,8 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     }
     switch (slave_link_type) {
 #ifdef ES2K_TARGET
-      case SWITCHLINK_LINK_TYPE_BOND:
+      case SWITCHLINK_LINK_TYPE_BOND: {
+        switchlink_db_lag_member_info_t lag_member_info = {0};
         snprintf(lag_member_info.ifname, sizeof(lag_member_info.ifname), "%s",
                  attrs.ifname);
         lag_member_info.ifindex = ifmsg->ifi_index;
@@ -444,6 +397,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
           switchlink_create_lag_member(&lag_member_info);
         }
         break;
+      }
 #endif
       default:
         break;

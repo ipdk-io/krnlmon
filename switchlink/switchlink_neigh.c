@@ -1,7 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
- * SPDX-License-Identifier: Apache 2.0
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
+#include "switchutils/switch_log.h"
 
 /*
  * Routine Description:

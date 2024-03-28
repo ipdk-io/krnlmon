@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +24,7 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_routing_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
@@ -797,7 +799,6 @@ switch_status_t switch_pd_handle_member(
   tdi_table_data_hdl* data_hdl = NULL;
   const tdi_table_hdl* table_hdl = NULL;
   const tdi_table_info_hdl* table_info_hdl = NULL;
-  uint32_t network_byte_order;
 
   krnlmon_log_debug("%s", __func__);
 

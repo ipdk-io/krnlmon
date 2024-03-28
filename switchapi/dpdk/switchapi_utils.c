@@ -444,7 +444,7 @@ switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable) {
   return SWITCH_STATUS_SUCCESS;
 }
 
-char* switch_error_to_string(switch_status_t status) {
+const char* switch_error_to_string(switch_status_t status) {
   switch (status) {
     case SWITCH_STATUS_ITEM_NOT_FOUND:
       return "err: entry not found";
@@ -743,6 +743,7 @@ switch_status_t switch_pd_tdi_status_to_status(tdi_status_t pd_status) {
   return status;
 }
 
+#if 0
 static bool switch_l3_host_entry(const switch_ip_addr_t* ip_addr) {
   SWITCH_ASSERT(ip_addr != NULL);
 
@@ -754,6 +755,7 @@ static bool switch_l3_host_entry(const switch_ip_addr_t* ip_addr) {
                                                                     : FALSE;
   }
 }
+#endif
 
 switch_status_t switch_ipv4_to_string(switch_ip4_t ip4, char* buffer,
                                       switch_int32_t buffer_size,
@@ -796,6 +798,7 @@ switch_status_t switch_mac_to_string(switch_mac_addr_t* mac, char* buffer,
   return SWITCH_STATUS_SUCCESS;
 }
 
+#if 0
 static switch_status_t switch_ipv4_prefix_to_mask(switch_uint32_t prefix,
                                                   switch_uint32_t* mask) {
   switch_status_t status = SWITCH_STATUS_SUCCESS;
@@ -833,6 +836,7 @@ static switch_status_t switch_ipv6_prefix_to_mask(switch_uint32_t prefix,
   mask[index] = mask[index] & 0xFF;
   return SWITCH_STATUS_SUCCESS;
 }
+#endif
 
 switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   switch (table_id) {
@@ -954,7 +958,7 @@ switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id) {
   }
 }
 
-char* switch_api_type_to_string(switch_api_type_t api_type) {
+const char* switch_api_type_to_string(switch_api_type_t api_type) {
   switch (api_type) {
     case SWITCH_API_TYPE_PORT:
       return "port";
@@ -1036,6 +1040,7 @@ char* switch_api_type_to_string(switch_api_type_t api_type) {
   }
 }
 
+#if 0
 static char* switch_packet_type_to_string(switch_packet_type_t packet_type) {
   switch (packet_type) {
     case SWITCH_PACKET_TYPE_UNICAST:
@@ -1049,6 +1054,7 @@ static char* switch_packet_type_to_string(switch_packet_type_t packet_type) {
       return "unknown";
   }
 }
+#endif
 
 switch_int32_t switch_convert_string_to_ipv4(const char* v4_string,
                                              switch_ip4_t* ip) {

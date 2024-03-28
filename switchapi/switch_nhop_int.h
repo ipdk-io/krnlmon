@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,16 @@
  * limitations under the License.
  */
 
-#include "switch_nhop.h"
-#include "switch_types_int.h"
-
-#if defined(DPDK_TARGET)
-#include "dpdk/switch_pd_routing.h"
-#elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
-#endif
-
 #ifndef __SWITCH_NHOP_INT_H__
 #define __SWITCH_NHOP_INT_H__
 
+#include "switch_nhop.h"
+#include "switch_pd_routing.h"
+#include "switch_types_int.h"
+
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_NHOP_HASH_SEED 0x12345678
 
@@ -241,7 +236,7 @@ switch_status_t switch_nhop_member_get_from_nhop(
     const switch_handle_t nhop_handle, switch_nhop_member_t** nhop_member);
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* __SWITCH_NHOP_INT_H__ */

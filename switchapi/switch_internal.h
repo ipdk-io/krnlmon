@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +24,15 @@
 #include "switchapi/switch_device_int.h"
 #include "switchapi/switch_handle_int.h"
 #include "switchapi/switch_status.h"
+#include "switchutils/switch_log.h"
 #include "switchutils/switch_utils.h"
 #include "tdi/common/tdi_defs.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_API_BUFFER_SIZE 512
-
-char* switch_error_to_string(switch_status_t status);
 
 switch_status_t SWITCH_ARRAY_INIT(switch_array_t* array);
 
@@ -85,13 +85,13 @@ switch_status_t SWITCH_HASHTABLE_FOREACH_ARG(switch_hashtable_t* hashtable,
 
 switch_status_t SWITCH_HASHTABLE_DONE(switch_hashtable_t* hashtable);
 
-char* switch_error_to_string(switch_status_t status);
+const char* switch_error_to_string(switch_status_t status);
 
 // char *switch_table_id_to_string(switch_table_id_t table_id);
 
 switch_direction_t switch_table_id_to_direction(switch_table_id_t table_id);
 
-char* switch_api_type_to_string(switch_api_type_t api_type);
+const char* switch_api_type_to_string(switch_api_type_t api_type);
 
 switch_int32_t switch_convert_string_to_ipv4(const char* v4_string,
                                              switch_ip4_t* ip);
@@ -217,7 +217,7 @@ char* switch_handle_type_to_string(switch_handle_type_t handle_type);
 #define IPV4_TABLE_SIZE 1024
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* _switch_internal_h_ */

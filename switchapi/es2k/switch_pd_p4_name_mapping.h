@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2013-2021 Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
+ * Copyright 2022-2024 Intel Corporation.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,11 +19,8 @@
 #ifndef __SWITCH_PD_P4_NAME_MAPPING__
 #define __SWITCH_PD_P4_NAME_MAPPING__
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
+
 /* List of tables and corresponding actions */
 
 /* VXLAN_ENCAP_MOD_TABLE */
@@ -264,9 +260,5 @@ extern "C" {
   "linux_networking_control.set_bridge_id"
 
 #define LNW_SOURCE_PORT_TO_BRIDGE_MAP_TABLE_ACTION_PARAM_BRIDGE_ID "bridge_id"
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __SWITCH_PD_P4_NAME_MAPPING__ */

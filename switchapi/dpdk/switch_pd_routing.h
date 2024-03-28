@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ extern "C" {
 
 /** enum to decide the proper key and action based on ecmp or nhop
  * */
-typedef enum switch_pv4_table_action_s {
+typedef enum switch_ipv4_table_action_s {
   SWITCH_ACTION_NHOP = 0,
   SWITCH_ACTION_NHOP_GROUP = 1,
   SWITCH_ACTION_NONE = 2
@@ -74,6 +74,7 @@ switch_status_t switch_pd_rif_mod_entry(switch_device_t device,
 switch_status_t switch_pd_ipv4_table_entry(
     switch_device_t device, const switch_api_route_entry_t* api_route_entry,
     bool entry_add, switch_ipv4_table_action_t action);
+
 switch_status_t switch_routing_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
     bool entry_type);

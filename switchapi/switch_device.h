@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 typedef struct switch_api_device_info_s {
   /** default vrf id */
@@ -96,6 +97,8 @@ typedef struct switch_api_device_info_s {
 
 } switch_api_device_info_t;
 
+switch_status_t switch_api_init(switch_device_t device);
+
 switch_status_t switch_api_device_add(switch_device_t device);
 
 switch_status_t switch_api_device_remove(switch_device_t device);
@@ -108,8 +111,9 @@ switch_status_t switch_api_get_default_nhop_group(
 
 switch_status_t switch_api_device_tunnel_dmac_get(switch_device_t device,
                                                   switch_mac_addr_t* mac_addr);
+
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* __SWITCH_DEVICE_H__ */
