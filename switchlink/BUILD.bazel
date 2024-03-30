@@ -8,7 +8,10 @@ load("//bazel:rules.bzl", "target_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-OVSP4RT_SUPPORT = []
+OVS_DEFINES = select({
+    "//flags:ovs_enabled": ["OVS_DEFINES"],
+    "//conditions:default": [],
+})
 
 target_cc_library(
     name = "switchlink_address",
@@ -84,6 +87,7 @@ target_cc_library(
 target_cc_library(
     name = "switchlink_link",
     srcs = ["switchlink_link.c"],
+    defines = OVS_DEFINES,
     deps = [
         ":switchlink_globals",
         ":switchlink_handlers",
@@ -204,7 +208,7 @@ cc_library(
         ":switchlink_route",
         ":switchlink_utils",
     ] + select({
-        "//bazel:es2k_target": [":switchlink_validate_driver"],
+        "//flags:es2k_target": [":switchlink_validate_driver"],
         "//conditions:default": [],
     }),
 )
