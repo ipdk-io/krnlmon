@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include "krnlmon_options.h"
 #include "saiinternal.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_handle.h"
@@ -441,7 +442,7 @@ sai_status_t sai_initialize(void) {
   sai_virtual_router_initialize(&sai_api_service);
   sai_neighbor_initialize(&sai_api_service);
   sai_tunnel_initialize(&sai_api_service);
-#if defined(ES2K_TARGET)
+#ifdef ES2K_LAG_OPTION
   sai_lag_initialize(&sai_api_service);
 #endif
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "krnlmon_options.h"
 #include "sai.h"
 #include "switchlink/switchlink.h"
 #include "switchlink/switchlink_db.h"
@@ -37,7 +39,7 @@ sai_status_t sai_init_neigh_api();
 sai_status_t sai_init_route_api();
 sai_status_t sai_init_nhop_api();
 sai_status_t sai_init_nhop_group_api();
-#ifdef ES2K_TARGET
+#ifdef ES2K_LAG_OPTION
 sai_status_t sai_init_lag_api();
 #endif
 
@@ -46,8 +48,8 @@ void switchlink_create_tunnel_interface(
     switchlink_db_tunnel_interface_info_t* tnl_intf);
 void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
+#ifdef ES2K_LAG_OPTION
 // SWITCHLINK_LINK_TYPE_BOND handlers
-#ifdef ES2K_TARGET
 void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf);
 void switchlink_delete_lag(uint32_t ifindex);
 void switchlink_create_lag_member(

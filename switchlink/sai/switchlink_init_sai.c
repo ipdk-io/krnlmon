@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@
 
 #include "switchlink_init_sai.h"
 
+#include "krnlmon_options.h"
 #include "sai.h"
 
 extern sai_status_t sai_initialize(void);
@@ -54,7 +56,7 @@ void switchlink_init_api(void) {
   krnlmon_assert(status == SAI_STATUS_SUCCESS);
   status = sai_init_nhop_group_api();
   krnlmon_assert(status == SAI_STATUS_SUCCESS);
-#ifdef ES2K_TARGET
+#ifdef ES2K_LAG_OPTION
   status = sai_init_lag_api();
   krnlmon_assert(status == SAI_STATUS_SUCCESS);
 #endif

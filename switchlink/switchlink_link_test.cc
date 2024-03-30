@@ -10,6 +10,7 @@
 #include "gtest/gtest.h"
 
 extern "C" {
+#include "krnlmon_options.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
@@ -73,15 +74,16 @@ std::vector<test_results> results(2);
 // Test doubles (dummy functions)
 //----------------------------------------------------------------------
 
-#ifdef ES2K_TARGET
+#ifdef ES2K_LAG_OPTION
 void switchlink_create_lag(switchlink_db_interface_info_t* lag_info) {}
 void switchlink_delete_lag(uint32_t ifindex) {}
 void switchlink_create_lag_member(
     switchlink_db_lag_member_info_t* lag_member_info) {}
 void switchlink_delete_lag_member(uint32_t ifindex) {}
+#endif
 
+#if defined(ES2K_TARGET)
 bool switchlink_validate_driver(const char* ifname) { return true; }
-
 #endif
 
 void switchlink_create_interface(switchlink_db_interface_info_t* intf) {
