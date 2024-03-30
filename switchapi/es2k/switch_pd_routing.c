@@ -23,6 +23,7 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
+#include "switchapi/switch_tdi.h"
 #include "switchutils/switch_log.h"
 
 // Table match type definitions.

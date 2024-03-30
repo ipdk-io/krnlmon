@@ -24,6 +24,7 @@
 #include "switchapi/switch_fdb.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rif_int.h"
+#include "switchapi/switch_tdi.h"
 #include "switchutils/switch_log.h"
 
 switch_status_t switch_pd_l2_tx_forward_table_entry(

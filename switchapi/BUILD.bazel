@@ -261,6 +261,11 @@ target_cc_library(
 )
 
 target_cc_library(
+    name = "switch_tdi",
+    hdrs = ["switch_tdi.h"],
+)
+
+target_cc_library(
     name = "switch_tunnel",
     hdrs = ["switch_tunnel.h"],
     deps = [
