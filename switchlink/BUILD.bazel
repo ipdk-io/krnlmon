@@ -9,7 +9,7 @@ load("//bazel:rules.bzl", "target_cc_library")
 package(default_visibility = ["//visibility:public"])
 
 OVS_DEFINES = select({
-    "//flags:ovs_enabled": ["OVS_DEFINES"],
+    "//flags:ovs_enabled": ["OVSP4RT_SUPPORT"],
     "//conditions:default": [],
 })
 
