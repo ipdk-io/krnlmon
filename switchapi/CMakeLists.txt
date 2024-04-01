@@ -28,6 +28,7 @@ add_library(switchapi_o OBJECT
   switch_lag.h
   switch_neighbor.h
   switch_neighbor_int.h
+  switch_pd_routing.h
   switch_nhop.h
   switch_nhop_int.h
   switch_port_int.h

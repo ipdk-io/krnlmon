@@ -1,15 +1,18 @@
 # Switchlink unit tests
 #
-# Copyright 2023 Intel Corporation
+# Copyright 2023-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 option(TEST_COVERAGE OFF "Measure unit test code coverage")
 
-##########################
-# define_switchlink_test #
-##########################
+include(FindGTest)
+mark_as_advanced(GTest_DIR)
 
-function(define_switchlink_test test_name)
+####################
+# define_unit_test #
+####################
+
+function(define_unit_test test_name)
     target_link_libraries(${test_name} PUBLIC
         GTest::gtest
         GTest::gtest_main
@@ -34,62 +37,25 @@ function(define_switchlink_test test_name)
     add_test(NAME ${test_name} COMMAND ${test_name})
 endfunction()
 
-########################
-# switchlink_link_test #
-########################
-
-add_executable(switchlink_link_test
-    switchlink_link_test.cc
-    switchlink_globals.c
-    switchlink_link.c
-    switchlink_link.h
-)
-
-define_switchlink_test(switchlink_link_test)
-
-###########################
-# switchlink_address_test #
-###########################
-
-add_executable(switchlink_address_test
-    switchlink_address_test.cc
-    switchlink_address.c
-    switchlink_globals.c
-)
-
-define_switchlink_test(switchlink_address_test)
-
-############################
-# switchlink_neighbor_test #
-############################
-
-add_executable(switchlink_neighbor_test
-    switchlink_neigh_test.cc
-    switchlink_globals.c
-    switchlink_neigh.c
-    switchlink_neigh.h
-)
-
-define_switchlink_test(switchlink_neighbor_test)
-
-#########################
-# switchlink_route_test #
-#########################
-
-add_executable(switchlink_route_test
-    switchlink_route_test.cc
-    switchlink_route.c
-    switchlink_route.h
-)
-
-define_switchlink_test(switchlink_route_test)
-
 ################
 # krnlmon-test #
 ################
 
 if(TEST_COVERAGE)
-    set(test_options -T test -T coverage)
+  set(test_options -T test -T coverage)
+endif()
+
+set(test_targets
+  switchlink_link_test
+  switchlink_address_test
+  switchlink_neighbor_test
+  switchlink_route_test
+)
+
+if(DPDK_TARGET)
+  list(APPEND test_targets switchsde_dpdk_test)
+elseif(ES2K_TARGET)
+  list(APPEND test_targets switchsde_es2k_test)
 endif()
 
 # On-demand target to build and run the krnlmon tests with a
@@ -98,15 +64,13 @@ add_custom_target(krnlmon-test
   COMMAND
     ctest ${test_options}
   DEPENDS
-    switchlink_link_test
-    switchlink_address_test
-    switchlink_neighbor_test
-    switchlink_route_test
+    ${test_targets}
   WORKING_DIRECTORY
     ${CMAKE_BINARY_DIR}
 )
 
 unset(test_options)
+unset(test_targets)
 
 set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
@@ -115,6 +79,7 @@ set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 ####################
 
 add_custom_target(krnlmon-coverage
+  COMMAND
     lcov --capture --directory ${CMAKE_BINARY_DIR}
     --output-file krnlmon.info
     --exclude '/opt/deps/*'

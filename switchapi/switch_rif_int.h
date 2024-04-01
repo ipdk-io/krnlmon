@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "switch_rif.h"
 #ifndef __SWITCH_RIF_INT_H__
 #define __SWITCH_RIF_INT_H__
 
+#include "switch_rif.h"
+
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define SWITCH_RIF_MAX 16384
 
@@ -57,7 +57,7 @@ typedef struct switch_rif_info_s {
 #define SWITCH_RIF_TYPE(_rif_info) _rif_info->api_rif_info.rif_type
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
 #endif /* __SWITCH_RIF_INT_H__ */

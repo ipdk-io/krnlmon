@@ -253,7 +253,6 @@ static sai_status_t sai_create_lag_member(
     _Out_ sai_object_id_t* lag_member_id, _In_ sai_object_id_t switch_id,
     _In_ uint32_t attr_count, _In_ const sai_attribute_t* attr_list) {
   switch_api_lag_member_info_t api_lag_member_info = {0};
-  switch_lag_info_t lag_info = {0};
   switch_handle_t lag_member_h = SWITCH_API_INVALID_HANDLE;
   switch_handle_t lag_h = SWITCH_API_INVALID_HANDLE;
 

@@ -1,6 +1,6 @@
 # CMake build file for Kernel Monitor
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 #
 
@@ -28,14 +28,20 @@ endif()
 # Find netlink libraries
 pkg_check_modules(nl3 REQUIRED IMPORTED_TARGET libnl-3.0)
 pkg_check_modules(nl3-route REQUIRED IMPORTED_TARGET libnl-route-3.0)
+include_directories(${nl3_INCLUDE_DIRS})
 
 add_compile_options(-Werror)
 
 include_directories(.)
 
+if(BUILD_TESTING)
+  include(cmake/testing.cmake)
+endif()
+
 add_subdirectory(switchapi)
 add_subdirectory(switchlink)
 add_subdirectory(switchsai)
+add_subdirectory(switchsde)
 add_subdirectory(switchutils)
 
 add_library(krnlmon SHARED
@@ -45,6 +51,7 @@ add_library(krnlmon SHARED
   $<TARGET_OBJECTS:switchlink_o>
   $<TARGET_OBJECTS:switchlink_sai_o>
   $<TARGET_OBJECTS:switchsai_o>
+  $<TARGET_OBJECTS:switchsde_o>
   $<TARGET_OBJECTS:switchutils_o>
   krnlmon_main.cc
   krnlmon_main.h

@@ -1,4 +1,4 @@
-// Copyright 2023 Intel Corporation
+// Copyright 2023-2024 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
 #include <linux/if_arp.h>
@@ -10,9 +10,10 @@
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "switchlink/switchlink_handle.h"
-#include "switchlink/switchlink_int.h"
-#include "switchlink/switchlink_link.h"
+#include "switchlink_globals.h"
+#include "switchlink_handlers.h"
+#include "switchlink_int.h"
+#include "switchlink_link_types.h"
 }
 
 #define IPV4_ADDR(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
@@ -78,6 +79,9 @@ void switchlink_delete_lag(uint32_t ifindex) {}
 void switchlink_create_lag_member(
     switchlink_db_lag_member_info_t* lag_member_info) {}
 void switchlink_delete_lag_member(uint32_t ifindex) {}
+
+bool switchlink_validate_driver(const char* ifname) { return true; }
+
 #endif
 
 void switchlink_create_interface(switchlink_db_interface_info_t* intf) {

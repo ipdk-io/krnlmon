@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 
 #include "switchapi/switch_config_int.h"
 #include "switchapi/switch_internal.h"
+#include "switchutils/switch_log.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
 #define __FILE_ID__ SWITCH_CONFIG
 switch_config_info_t config_info;
@@ -122,5 +123,5 @@ switch_status_t switch_config_table_sizes_get(switch_device_t device,
 }
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif

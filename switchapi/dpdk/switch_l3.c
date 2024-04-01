@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_route_table_entry_key_init(void* args,
                                                   switch_uint8_t* key,
@@ -279,11 +281,9 @@ switch_status_t switch_route_hashtable_remove(switch_device_t device,
 
 switch_status_t switch_api_l3_route_add(
     switch_device_t device, switch_api_route_entry_t* api_route_entry) {
-  switch_handle_t nhop_group_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
   switch_route_info_t* route_info = NULL;
-  switch_nhop_group_info_t* nhop_group_info = NULL;
   switch_route_entry_t route_entry;
   switch_handle_t route_handle = SWITCH_API_INVALID_HANDLE;
   switch_handle_t vrf_handle = SWITCH_API_INVALID_HANDLE;

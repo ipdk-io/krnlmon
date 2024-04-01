@@ -1,3 +1,20 @@
+/*
+ * Copyright 2023-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <arpa/inet.h>
 #include <linux/if_arp.h>
 #include <memory.h>
@@ -8,9 +25,8 @@
 #include "gtest/gtest.h"
 
 extern "C" {
-#include "switchlink/switchlink_handle.h"
-#include "switchlink/switchlink_int.h"
-#include "switchlink/switchlink_route.h"
+#include "switchlink_handlers.h"
+#include "switchlink_int.h"
 }
 
 using namespace std;
@@ -170,7 +186,7 @@ TEST_F(SwitchlinkAddressTest, addIpv4Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, ADD_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET);
@@ -217,7 +233,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv4Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET);
@@ -267,7 +283,7 @@ TEST_F(SwitchlinkAddressTest, addIpv6Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, ADD_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);
@@ -320,7 +336,7 @@ TEST_F(SwitchlinkAddressTest, deleteIpv6Address) {
 
   // Assert
   EXPECT_EQ(results.size(), 2);
-  for (int i = 0; i < results.size(); i++) {
+  for (size_t i = 0; i < results.size(); i++) {
     EXPECT_EQ(results[i].num_handler_calls, 1);
     EXPECT_EQ(results[i].opType, DELETE_ADDRESS);
     EXPECT_EQ(results[i].addr.family, AF_INET6);

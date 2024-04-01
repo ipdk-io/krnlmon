@@ -1,8 +1,6 @@
 /*
- * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
- * SPDX-License-Identifier: Apache 2.0
+ * Copyright 2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +15,15 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_ROUTE_H__
-#define __SWITCHLINK_ROUTE_H__
+#include "ipu_pal/port_intf.h"
+#include "sde_port_intf.h"
 
-#include <netlink/netlink.h>
+sde_status_t sde_pal_get_port_id_from_mac(sde_dev_id_t dev_id, char* mac,
+                                          uint32_t* port_id) {
+  return ipu_pal_get_port_id_from_mac(dev_id, mac, port_id);
+}
 
-#include "switchlink_handle.h"
-
-void switchlink_process_route_msg(const struct nlmsghdr* nlmsg, int msgtype);
-
-#endif /* __SWITCHLINK_ROUTE_H__ */
+sde_status_t sde_pal_port_info_get(sde_dev_id_t dev_id, sde_dev_port_t dev_port,
+                                   struct port_info_t** port_info) {
+  return ipu_pal_port_info_get(dev_id, dev_port, port_info);
+}

@@ -63,7 +63,6 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
   uint32_t lag_list = 0;
   uint8_t port_count = 0;
 
-  switch_node_t* node = NULL;
   switch_lag_member_info_t* lag_member = NULL;
   switch_handle_t lag_h = SWITCH_API_INVALID_HANDLE;
   switch_handle_t lag_member_h = SWITCH_API_INVALID_HANDLE;
@@ -405,7 +404,6 @@ switch_status_t switch_pd_rx_lag_table_entry(switch_device_t device,
     }
 
     if (entry_add) {
-      uint32_t active_port_id = 0;
       switch_lag_member_info_t* active_lag_member_info = NULL;
       status = switch_lag_member_get(device, lag_info->active_lag_member,
                                      &active_lag_member_info);

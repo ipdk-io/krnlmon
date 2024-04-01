@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +27,7 @@
 #include "switchapi/switch_nhop_int.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_rmac_int.h"
+#include "switchutils/switch_log.h"
 
 switch_status_t switch_neighbor_init(switch_device_t device) {
   switch_neighbor_context_t* neighbor_ctx = NULL;
@@ -221,7 +223,6 @@ switch_status_t switch_api_neighbor_create(
 switch_status_t switch_api_neighbor_delete(switch_device_t device,
                                            switch_handle_t neighbor_handle) {
   switch_neighbor_info_t* neighbor_info = NULL;
-  switch_api_neighbor_info_t* api_neighbor_info = NULL;
   switch_handle_t nhop_handle = SWITCH_API_INVALID_HANDLE;
   switch_status_t status = SWITCH_STATUS_SUCCESS;
 
@@ -244,7 +245,6 @@ switch_status_t switch_api_neighbor_delete(switch_device_t device,
   }
 
   nhop_handle = neighbor_info->nhop_handle;
-  api_neighbor_info = &neighbor_info->api_neighbor_info;
 
   if (SWITCH_NHOP_HANDLE(nhop_handle)) {
     status = switch_routing_table_entry(

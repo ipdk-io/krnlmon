@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +22,7 @@
 #include <stdbool.h>
 
 #include "switchlink.h"
-#include "switchlink_link.h"
+#include "switchlink_link_types.h"
 
 #define SWITCHLINK_INTERFACE_NAME_LEN_MAX 32
 #define SWITCHLINK_ECMP_NUM_MEMBERS_MAX 16

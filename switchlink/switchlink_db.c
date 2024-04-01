@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +26,7 @@
 #include "switchlink.h"
 #include "switchlink_db_int.h"
 #include "switchlink_int.h"
-#include "switchlink_link.h"
-#include "switchlink_neigh.h"
-#include "switchlink_route.h"
+#include "switchlink_link_types.h"
 #include "xxHash/xxhash.h"
 
 #define SWITCHLINK_MAC_KEY_LEN 14
