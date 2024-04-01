@@ -136,7 +136,7 @@ jobs:
 
       - name: Get list of changed Files
         id: changed
-        uses: tj-actions/changed-files@v43
+        uses: tj-actions/changed-files@v44
         with:
           files: |
             **.c
