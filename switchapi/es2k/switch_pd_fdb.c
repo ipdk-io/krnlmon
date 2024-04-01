@@ -18,7 +18,6 @@
 
 #include "switch_pd_fdb.h"
 
-#include "ipu_types/ipu_types.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
