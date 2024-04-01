@@ -26,13 +26,6 @@ extern "C" {
 #include "switch_rif.h"
 #include "switch_types_int.h"
 
-//TODO Nupur: Check with Derek
-#if defined(DPDK_TARGET)
-#include "dpdk/switch_pd_routing.h"
-#elif defined(ES2K_TARGET)
-#include "es2k/lnw_v3/switch_pd_routing.h"
-#endif
-
 #define switch_neighbor_handle_create(_device)               \
   switch_handle_create(_device, SWITCH_HANDLE_TYPE_NEIGHBOR, \
                        sizeof(switch_neighbor_info_t))

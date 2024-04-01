@@ -1,8 +1,7 @@
 /*
  * Copyright (c) 2013-2021 Barefoot Networks, Inc.
  * Copyright 2022-2023 Intel Corporation.
- *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: Apache-2.0 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +18,6 @@
 
 #ifndef __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
 #define __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#define MAC_BASE 0
-#define MAC_LOW_BYTES  4
-#define MAC_HIGH_BYTES 2
-#define MAC_HIGH_OFFSET MAC_BASE + MAC_HIGH_BYTES
 
 #define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 /* List of tables and corresponding actions */
@@ -76,14 +66,14 @@ extern "C" {
   "linux_networking_control.set_nexthop_info_dmac"
 #define LNW_ACTION_SET_NEXTHOP_PARAM_RIF "router_interface_id"
 #define LNW_ACTION_SET_NEXTHOP_PARAM_EGRESS_PORT "egress_port"
-#define	LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_HIGH "dmac_high"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_LOW "dmac_low" 
+#define LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_HIGH "dmac_high"
+#define LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_LOW "dmac_low"
 
 #define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG \
   "linux_networking_control.set_nexthop_lag"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF "router_interface_id"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_HIGH "dmac_high"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_LOW "dmac_low"	
+#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_LOW "dmac_low"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID "lag_group_id"
 
 /* ECMP_NEXTHOP_TABLE */
@@ -168,9 +158,5 @@ extern "C" {
 
 #define LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION \
   "linux_networking_control.ecmp_v6_hash_action"
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __SWITCH_PD_P4_NAME_ROUTING_MAPPING__ */

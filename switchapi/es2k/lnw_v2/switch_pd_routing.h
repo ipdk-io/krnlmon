@@ -18,12 +18,13 @@
 #ifndef __SWITCH_PD_ROUTING_H__
 #define __SWITCH_PD_ROUTING_H__
 
+#include "switch_pd_p4_name_routing.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_l3.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rmac_int.h"
-#include "switch_pd_p4_name_routing.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

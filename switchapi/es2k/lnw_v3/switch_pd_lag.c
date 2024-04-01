@@ -1,5 +1,6 @@
 /*
- * Copyright 2023 Intel Corporation.
+ * Copyright 2023-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,7 +177,8 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
          (lag_list < LNW_LAG_PER_GROUP_HASH_SIZE)) {
     port_count = 0;
 
-    status = tdi_key_field_set_value_and_mask(key_hdl, field_id_lag_id, lag_id, 0xFF);
+    status = tdi_key_field_set_value_and_mask(key_hdl, field_id_lag_id, lag_id,
+                                              0xFF);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
           "Unable to set value for key ID: %d for tx_lag_table"
@@ -185,8 +187,8 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
       goto dealloc_resources;
     }
 
-    status =
-        tdi_key_field_set_value_and_mask(key_hdl, field_id_hash, lag_list + port_count, 0x3);
+    status = tdi_key_field_set_value_and_mask(key_hdl, field_id_hash,
+                                              lag_list + port_count, 0x3);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
           "Unable to set value for key ID: %d for tx_lag_table"

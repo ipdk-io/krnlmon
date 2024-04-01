@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +19,12 @@
 #ifndef __SWITCH_PD_ROUTING_H__
 #define __SWITCH_PD_ROUTING_H__
 
+#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_l3.h"
 #include "switchapi/switch_nhop.h"
 #include "switchapi/switch_rmac_int.h"
-#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +24,11 @@
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
 
+#define MAC_BASE 0
+#define MAC_LOW_BYTES 4
+#define MAC_HIGH_BYTES 2
+#define MAC_HIGH_OFFSET MAC_BASE + MAC_HIGH_BYTES
+
 switch_status_t switch_routing_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
     bool entry_type) {
@@ -38,7 +44,8 @@ switch_status_t switch_routing_table_entry(
   }
 
   // update ecmp_nexthop_table - switch_pd_ecmp_nexthop_table_entry
-  status = switch_pd_ecmp_nexthop_table_entry(device, api_routing_info, entry_type);
+  status =
+      switch_pd_ecmp_nexthop_table_entry(device, api_routing_info, entry_type);
   if (status != SWITCH_STATUS_SUCCESS) {
     krnlmon_log_error(" ecmp nexthop table update failed, error: %d", status);
     return status;
@@ -89,8 +96,7 @@ switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
 switch_status_t switch_pd_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add) {
-
-// New function in lnw_v3
+  // New function in lnw_v3
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -196,7 +202,7 @@ switch_status_t switch_pd_nexthop_table_entry(
 
   if (entry_add && SWITCH_RIF_HANDLE(api_nexthop_pd_info->rif_handle)) {
     /* Add an entry to target */
-        //TODO Nupur: Fix the log to print rif id and dmac
+    // TODO Nupur: Fix the log to print rif id and dmac
     krnlmon_log_info(
         "Populate set_nexthop_neigh_info action with neighbor id: 0x%x in"
         " nexthop_neigh_table for nexthop_id 0x%x",
@@ -257,7 +263,7 @@ switch_status_t switch_pd_nexthop_table_entry(
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
         (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
-                MAC_HIGH_BYTES);
+        MAC_HIGH_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
@@ -275,8 +281,9 @@ switch_status_t switch_pd_nexthop_table_entry(
 
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_HIGH_OFFSET,
-                MAC_LOW_BYTES);
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
+            MAC_HIGH_OFFSET,
+        MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
@@ -333,7 +340,6 @@ switch_status_t switch_pd_nexthop_table_entry(
       goto dealloc_resources;
     }
 
-
     status = tdi_data_field_id_with_action_get(
         table_info_hdl, LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF, action_id,
         &data_field_id);
@@ -366,8 +372,9 @@ switch_status_t switch_pd_nexthop_table_entry(
 
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_HIGH_OFFSET,
-                MAC_HIGH_BYTES);
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
+            MAC_HIGH_OFFSET,
+        MAC_HIGH_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
@@ -386,7 +393,7 @@ switch_status_t switch_pd_nexthop_table_entry(
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
         (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
-                MAC_LOW_BYTES);
+        MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
@@ -439,17 +446,15 @@ switch_status_t switch_pd_nexthop_table_entry(
   }
 
 dealloc_resources:
-  tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl,
-                                              data_hdl, session, entry_add);
+  tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl, data_hdl,
+                                     session, entry_add);
   return switch_pd_tdi_status_to_status(status);
 }
-
 
 switch_status_t switch_pd_ecmp_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add) {
-
-// New function in lnw_v3
+  // New function in lnw_v3
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -500,7 +505,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     krnlmon_log_error("Failed to create tdi session, error: %d", status);
     goto dealloc_resources;
   }
-  status = tdi_table_from_name_get(info_hdl, LNW_ECMP_NEXTHOP_TABLE, &table_hdl);
+  status =
+      tdi_table_from_name_get(info_hdl, LNW_ECMP_NEXTHOP_TABLE, &table_hdl);
   if (status != TDI_SUCCESS || !table_hdl) {
     krnlmon_log_error("Unable to get table handle for: %s, error: %d",
                       LNW_NEXTHOP_TABLE, status);
@@ -523,8 +529,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     goto dealloc_resources;
   }
 
-  status = tdi_key_field_id_get(table_info_hdl,
-                                LNW_ECMP_NEXTHOP_TABLE_KEY_ECMP_NEXTHOP_ID, &field_id);
+  status = tdi_key_field_id_get(
+      table_info_hdl, LNW_ECMP_NEXTHOP_TABLE_KEY_ECMP_NEXTHOP_ID, &field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
                       LNW_ECMP_NEXTHOP_TABLE_KEY_ECMP_NEXTHOP_ID, status);
@@ -548,7 +554,7 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
 
   if (entry_add && SWITCH_RIF_HANDLE(api_nexthop_pd_info->rif_handle)) {
     /* Add an entry to target */
-        //TODO Nupur: Fix the log to print rif id and dmac
+    // TODO Nupur: Fix the log to print rif id and dmac
     krnlmon_log_info(
         "Populate set_nexthop_neigh_info action with neighbor id: 0x%x in"
         " nexthop_neigh_table for nexthop_id 0x%x",
@@ -556,7 +562,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
         (unsigned int)api_nexthop_pd_info->nexthop_handle);
 
     status = tdi_action_name_to_id(
-        table_info_hdl, LNW_ECMP_NEXTHOP_TABLE_ACTION_SET_ECMP_NEXTHOP_INFO_DMAC, &action_id);
+        table_info_hdl,
+        LNW_ECMP_NEXTHOP_TABLE_ACTION_SET_ECMP_NEXTHOP_INFO_DMAC, &action_id);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
           "Unable to get action allocator ID for: %s, "
@@ -574,9 +581,9 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
       goto dealloc_resources;
     }
 
-    status = tdi_data_field_id_with_action_get(table_info_hdl,
-                                               LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_RIF,
-                                               action_id, &data_field_id);
+    status = tdi_data_field_id_with_action_get(
+        table_info_hdl, LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_RIF, action_id,
+        &data_field_id);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
           "Unable to get data field id param for: %s, "
@@ -608,8 +615,9 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     }
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_HIGH_OFFSET,
-                MAC_HIGH_BYTES);
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
+            MAC_HIGH_OFFSET,
+        MAC_HIGH_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
@@ -628,15 +636,15 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
         (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
-                MAC_LOW_BYTES);
+        MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
                         data_field_id, status);
       goto dealloc_resources;
     }
     status = tdi_data_field_id_with_action_get(
-        table_info_hdl, LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_EGRESS_PORT, action_id,
-        &data_field_id);
+        table_info_hdl, LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_EGRESS_PORT,
+        action_id, &data_field_id);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
                         LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_EGRESS_PORT, status);
@@ -654,8 +662,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     status = tdi_table_entry_add(table_hdl, session, target_hdl, flags_hdl,
                                  key_hdl, data_hdl);
     if (status != TDI_SUCCESS) {
-      krnlmon_log_error("Unable to add %s entry, error: %d", LNW_ECMP_NEXTHOP_TABLE,
-                        status);
+      krnlmon_log_error("Unable to add %s entry, error: %d",
+                        LNW_ECMP_NEXTHOP_TABLE, status);
       goto dealloc_resources;
     }
 
@@ -672,8 +680,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
   }
 
 dealloc_resources:
-  tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl,
-                                              data_hdl, session, entry_add);
+  tdi_switch_pd_deallocate_resources(flags_hdl, target_hdl, key_hdl, data_hdl,
+                                     session, entry_add);
   return switch_pd_tdi_status_to_status(status);
 }
 
