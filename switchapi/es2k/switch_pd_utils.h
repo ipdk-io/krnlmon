@@ -23,17 +23,7 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
-
-// clang-format off
-// tdi_info.h does not include the header files it depends on,
-// so we force tdi_defs.h to precede it.
 #include "tdi/common/tdi_defs.h"
-#include "tdi/common/c_frontend/tdi_info.h"
-#include "tdi/common/c_frontend/tdi_init.h"
-#include "tdi/common/c_frontend/tdi_session.h"
-#include "tdi/common/c_frontend/tdi_table.h"
-#include "tdi/common/c_frontend/tdi_table_info.h"
-// clang-format on
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,7 +83,7 @@ tdi_status_t tdi_deallocate_table_key(tdi_table_key_hdl* key_hdl);
 tdi_status_t tdi_deallocate_session(tdi_session_hdl* session);
 
 #ifdef __cplusplus
-}
+}  // extern "C"
 #endif
 
-#endif
+#endif  // __SWITCH_PD_UTILS_H__

@@ -156,6 +156,7 @@ target_cc_library(
         "//switchapi:switch_nhop",
         "//switchapi:switch_nhop_int",
         "//switchapi:switch_rmac_int",
+        "//switchapi:switch_tdi",
         "@local_dpdk_bin//:sde_hdrs",
     ],
 )
@@ -169,6 +170,7 @@ target_cc_library(
         ":switch_pd_utils",
         "//switchapi:switch_base_types",
         "//switchapi:switch_handle",
+        "//switchapi:switch_tdi",
         "//switchapi:switch_tunnel",
     ],
 )
@@ -184,6 +186,7 @@ target_cc_library(
         "//switchapi:switch_internal",
         "//switchapi:switch_rif",
         "//switchapi:switch_table",
+        "//switchapi:switch_tdi",
         "@local_dpdk_bin//:sde_hdrs",
         "@local_dpdk_bin//:tdi",
         "@target_sys",
