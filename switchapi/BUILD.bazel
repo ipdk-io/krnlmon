@@ -12,8 +12,8 @@ package(default_visibility = ["//visibility:public"])
 
 PD_ROUTING_DEPS = select(
     {
-        "//bazel:dpdk_target": ["//switchapi/dpdk:switch_pd_routing_hdr"],
-        "//bazel:es2k_target": ["//switchapi/es2k:switch_pd_routing_hdr"],
+        "//flags:dpdk_target": ["//switchapi/dpdk:switch_pd_routing_hdr"],
+        "//flags:es2k_target": ["//switchapi/es2k:switch_pd_routing_hdr"],
     },
     no_match_error = NO_MATCH_ERROR,
 )
@@ -294,8 +294,8 @@ alias(
     name = "switchapi",
     actual = select(
         {
-            "//bazel:dpdk_target": "//switchapi/dpdk:switchapi",
-            "//bazel:es2k_target": "//switchapi/es2k:switchapi",
+            "//flags:dpdk_target": "//switchapi/dpdk:switchapi",
+            "//flags:es2k_target": "//switchapi/es2k:switchapi",
         },
         no_match_error = NO_MATCH_ERROR,
     ),
