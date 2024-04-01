@@ -18,8 +18,9 @@
 #ifndef __SWITCH_TDI_H__
 #define __SWITCH_TDI_H__
 
-// tdi_info.h does not include the header files it depends on,
-// so we force tdi_defs.h to precede it.
+// Disable clang-format so it doesn't alphabetize the #includes.
+// tdi_defs.h must precede the other header files because one or
+// more of them depend on tdi_defs.h but don't include it.
 // clang-format off
 #include "tdi/common/tdi_defs.h"
 #include "tdi/common/c_frontend/tdi_info.h"
