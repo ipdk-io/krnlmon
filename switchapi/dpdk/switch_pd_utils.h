@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +20,10 @@
 #define __SWITCH_PD_UTILS_H__
 
 #include "bf_pal/bf_pal_port_intf.h"
-#include "bf_rt/bf_rt_common.h"
-#include "bf_types/bf_types.h"
-#include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_rif.h"
-
-// clang-format off
-// tdi_info.h does not include the header files it depends on,
-// so we force tdi_defs.h to precede it.
 #include "tdi/common/tdi_defs.h"
-#include "tdi/common/c_frontend/tdi_info.h"
-#include "tdi/common/c_frontend/tdi_init.h"
-#include "tdi/common/c_frontend/tdi_session.h"
-#include "tdi/common/c_frontend/tdi_table.h"
-#include "tdi/common/c_frontend/tdi_table_info.h"
-// clang-format on
 
 #ifdef __cplusplus
 extern "C" {

@@ -7,8 +7,8 @@ NO_MATCH_ERROR = "must specify --define target={dpdk|es2k}"
 
 TARGET_DEFINES = select(
     {
-        "//bazel:dpdk_target": ["DPDK_TARGET"],
-        "//bazel:es2k_target": ["ES2K_TARGET"],
+        "//flags:dpdk_target": ["DPDK_TARGET"],
+        "//flags:es2k_target": ["ES2K_TARGET"],
     },
     no_match_error = NO_MATCH_ERROR,
 )

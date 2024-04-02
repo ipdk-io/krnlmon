@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(krnlmon VERSION 2.0 LANGUAGES C CXX)
 
+include(CMakePrintHelpers)
 include(FindPkgConfig)
 include(cmake/iwyu.cmake)
 

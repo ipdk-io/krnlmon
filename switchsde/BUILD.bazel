@@ -11,8 +11,8 @@ package(default_visibility = ["//visibility:public"])
 
 TARGET_UNIT_TEST = select(
     {
-        "//bazel:dpdk_target": ["switchsde_dpdk_test.cc"],
-        "//bazel:es2k_target": ["switchsde_es2k_test.cc"],
+        "//flags:dpdk_target": ["switchsde_dpdk_test.cc"],
+        "//flags:es2k_target": ["switchsde_es2k_test.cc"],
     },
     no_match_error = "must specify --define target={dpdk|es2k}",
 )
@@ -20,8 +20,8 @@ TARGET_UNIT_TEST = select(
 target_cc_library(
     name = "sde_port_intf",
     srcs = select({
-        "//bazel:dpdk_target": ["sde_dpdk_port_intf.c"],
-        "//bazel:es2k_target": ["sde_es2k_port_intf.c"],
+        "//flags:dpdk_target": ["sde_dpdk_port_intf.c"],
+        "//flags:es2k_target": ["sde_es2k_port_intf.c"],
     }),
     hdrs = ["sde_port_intf.h"],
     deps = [

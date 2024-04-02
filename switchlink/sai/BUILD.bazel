@@ -11,7 +11,7 @@ package(default_visibility = ["//visibility:public"])
 
 SWITCHLINK_SAI_TARGET_LIBS = select(
     {
-        "//bazel:es2k_target": [":switchlink_handle_lag"],
+        "//flags:es2k_target": [":switchlink_handle_lag"],
         "//conditions:default": [],
     },
 )

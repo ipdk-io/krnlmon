@@ -25,6 +25,7 @@
 #include "port_mgr/dpdk/bf_dpdk_port_if.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_tdi.h"
 #include "switchutils/switch_log.h"
 
 void switch_pd_to_get_port_id(switch_api_rif_info_t* port_rif_info) {
