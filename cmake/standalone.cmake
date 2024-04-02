@@ -1,6 +1,6 @@
 # standalone.cmake
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 #
 # Initializes for a standalone krnlmon build.
@@ -27,6 +27,13 @@ if(NOT CMAKE_BUILD_TYPE)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
     "Debug;MinSizeRel;Release;RelWithDebInfo")
 endif()
+
+#-----------------------------------------------------------------------
+# WITH_OVSPR4T option
+#-----------------------------------------------------------------------
+option(WITH_OVSP4RT "Enable OVS support" ON)
+
+cmake_print_variables(WITH_OVSP4RT)
 
 #-----------------------------------------------------------------------
 # Path definitions

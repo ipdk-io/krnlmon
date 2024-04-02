@@ -10,7 +10,7 @@ package(default_visibility = ["//visibility:public"])
 
 SAI_TARGET_LIBS = select(
     {
-        "//bazel:es2k_target": [":sailag"],
+        "//flags:es2k_target": [":sailag"],
         "//conditions:default": [],
     },
 )

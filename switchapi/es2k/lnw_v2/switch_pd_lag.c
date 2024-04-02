@@ -1,5 +1,6 @@
 /*
- * Copyright 2023 Intel Corporation.
+ * Copyright 2023-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@
 #include "switch_pd_utils.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
+#include "switchapi/switch_tdi.h"
 
 /**
  * Routine Description:

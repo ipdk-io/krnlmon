@@ -16,10 +16,15 @@
  * limitations under the License.
  */
 
+// We disable format checking for this file because of a bug in clang-format
+// that causes it to fail (without explanation) with:
+//   error: code should be clang-formatted [-Wclang-format-violations]
+// The file was clang-formatted before being pushed.
+
+// clang-format off
+
 #include <net/if.h>
 
-/* Local header includes */
-#include "ipu_types/ipu_types.h"
 #include "switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"

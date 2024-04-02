@@ -20,11 +20,13 @@
 
 #include <net/if.h>
 
+#include "ipu_pal/port_intf.h"
 #include "ipu_types/ipu_types.h"
 #include "switch_pd_p4_name_mapping.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_rmac_int.h"
+#include "switchapi/switch_tdi.h"
 #include "switchutils/switch_log.h"
 
 switch_status_t switch_pd_get_physical_port_id(switch_device_t device,

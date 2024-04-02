@@ -208,6 +208,7 @@ target_cc_library(
         "//switchapi:switch_rif",
         "//switchapi:switch_rmac_int",
         "//switchapi:switch_table",
+        "//switchapi:switch_tdi",
         "@local_es2k_bin//:sde_hdrs",
         "@local_es2k_bin//:tdi",
         "@target_sys",
