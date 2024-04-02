@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-#define PROGRAM_NAME "fxp-net_linux-networking-v2"
+#define PROGRAM_NAME "fxp-net_linux-networking-v3"
 
 // Currently this value is picked from dpdk_port_config.pb.txt
 #define MAX_NO_OF_PORTS 312

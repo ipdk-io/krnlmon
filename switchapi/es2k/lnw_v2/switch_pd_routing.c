@@ -18,8 +18,8 @@
 
 #include "switch_pd_routing.h"
 
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
+#include "switchapi/es2k/switch_pd_p4_name_mapping.h"
+#include "switchapi/es2k/switch_pd_utils.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"

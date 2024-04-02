@@ -446,9 +446,10 @@ tdi_status_t tdi_switch_pd_deallocate_resources(tdi_flags_hdl* flags_hdl,
   status = tdi_deallocate_table_key(key_hdl);
   if (!retval) retval = status;
 
-  status = tdi_deallocate_session(session);
-  if (!retval) retval = status;
-
+  if (session) {
+    status = tdi_deallocate_session(session);
+    if (!retval) retval = status;
+  }
   return retval;
 }
 

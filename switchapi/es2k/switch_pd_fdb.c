@@ -490,6 +490,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
     goto dealloc_resources;
   }
 
+#ifdef LNW_V2
   status = tdi_key_field_set_value_ptr(
       key_hdl, field_id, (const uint8_t*)&api_l2_rx_info->bridge_id, 1);
 
@@ -500,6 +501,7 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
                       LNW_L2_FWD_RX_TABLE_KEY_DST_MAC, status);
     goto dealloc_resources;
   }
+#endif
 
   status = tdi_key_field_set_value(key_hdl, field_id, 1);
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +19,7 @@
 #ifndef __SWITCH_PD_ROUTING_H__
 #define __SWITCH_PD_ROUTING_H__
 
+#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_l3.h"
@@ -57,9 +59,9 @@ switch_status_t switch_pd_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
 
-switch_status_t switch_pd_neighbor_table_entry(
-    switch_device_t device,
-    const switch_pd_routing_info_t* api_neighbor_pd_info, bool entry_add);
+switch_status_t switch_pd_ecmp_nexthop_table_entry(
+    switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
+    bool entry_add);
 
 switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
                                            switch_rmac_entry_t* rmac_entry,

@@ -18,11 +18,11 @@
 
 #include "switchapi/switch_nhop.h"
 
-#include "switch_pd_routing.h"
 #include "switchapi/switch_handle_int.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_neighbor_int.h"
 #include "switchapi/switch_nhop_int.h"
+#include "switchapi/switch_pd_routing.h"
 #include "switchapi/switch_rif.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchutils/switch_log.h"

@@ -1,7 +1,9 @@
 # CMake build file for krnlmon/switchapi/es2k
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
+
+add_subdirectory(lnw_v3)
 
 add_library(switchapi_target_o OBJECT
   switch_config.c
@@ -14,11 +16,7 @@ add_library(switchapi_target_o OBJECT
   switch_neighbor.c
   switch_nhop.c
   switch_pd_fdb.c
-  switch_pd_lag.h
-  switch_pd_lag.c
   switch_pd_p4_name_mapping.h
-  switch_pd_routing.c
-  switch_pd_routing.h
   switch_pd_tunnel.c
   switch_pd_utils.c
   switch_pd_utils.h

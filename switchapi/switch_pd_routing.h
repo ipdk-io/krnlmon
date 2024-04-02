@@ -27,7 +27,10 @@
 #if defined(DPDK_TARGET)
 #include "dpdk/switch_pd_routing.h"
 #elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
+#ifdef LNW_V2
+#include "es2k/lnw_v2/switch_pd_routing.h"
+#else  // LNW_V3
+#include "es2k/lnw_v3/switch_pd_routing.h"
+#endif  // LNW_V2
 #endif
-
 #endif  // __SWITCH_PD_ROUTING_WRAPPER_H__

@@ -18,8 +18,8 @@
 
 #include "switchapi/switch_rmac.h"
 
-#include "switch_pd_routing.h"
 #include "switchapi/switch_internal.h"
+#include "switchapi/switch_pd_routing.h"
 #include "switchapi/switch_rmac_int.h"
 #include "switchutils/switch_log.h"
 
