@@ -3,7 +3,7 @@
 # Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-add_library(switchapi_target_o OBJECT
+target_sources(switchapi_o PRIVATE
   switch_config.c
   switch_device.c
   switch_fdb.c
@@ -27,7 +27,7 @@ add_library(switchapi_target_o OBJECT
   switchapi_utils.c
 )
 
-target_include_directories(switchapi_target_o PRIVATE
+target_include_directories(switchapi_o PRIVATE
   ${SDE_INSTALL_DIR}/include
   ${SDE_INSTALL_DIR}/include/bf_types
   ${SDE_INSTALL_DIR}/include/target-utils # id
@@ -36,7 +36,7 @@ target_include_directories(switchapi_target_o PRIVATE
   ${SDE_INSTALL_DIR}/include/target-sys
 )
 
-target_link_libraries(switchapi_target_o PRIVATE
+target_link_libraries(switchapi_o PRIVATE
   sde::tdi
   sde::tdi_json_parser
 )

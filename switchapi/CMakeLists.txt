@@ -3,14 +3,6 @@
 # Copyright 2022-2023 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
-if(ES2K_TARGET)
-  add_subdirectory(es2k)
-elseif(DPDK_TARGET)
-  add_subdirectory(dpdk)
-else()
-  message(FATAL_ERROR "TDI target not defined!")
-endif()
-
 add_library(switchapi_o OBJECT
   switch_base_types.h
   switch_config.h
@@ -41,8 +33,15 @@ add_library(switchapi_o OBJECT
   switch_tunnel.h
   switch_types_int.h
   switch_vrf.h
-  $<TARGET_OBJECTS:switchapi_target_o>
 )
+
+if(ES2K_TARGET)
+  add_subdirectory(es2k)
+elseif(DPDK_TARGET)
+  add_subdirectory(dpdk)
+else()
+  message(FATAL_ERROR "TDI target not defined!")
+endif()
 
 target_include_directories(switchapi_o PRIVATE
     ${SDE_INSTALL_DIR}/include
