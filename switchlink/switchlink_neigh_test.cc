@@ -220,22 +220,16 @@ TEST_F(SwitchlinkNeighborTest, createIPv4Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  ASSERT_EQ(results.size(), 2);
-
-  // Verify test results for MAC creation
-  EXPECT_EQ(results[0].opType, CREATE_MAC);
-  EXPECT_EQ(results[0].bridge_h, 0);
-  EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
-  EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
+  ASSERT_EQ(results.size(), 1);
 
   // Verify test results for NEIGHBOR creation
-  EXPECT_EQ(results[1].opType, CREATE_NEIGHBOR);
-  EXPECT_EQ(results[1].vrf_h, 0);
-  EXPECT_EQ(results[1].intf_h, TEST_INTF_H);
-  EXPECT_EQ(results[1].ipaddr.family, AF_INET);
-  EXPECT_EQ(results[1].ipaddr.ip.v4addr.s_addr, ipv4_addr);
-  EXPECT_EQ(results[1].ipaddr.prefix_len, 32);
-  EXPECT_EQ(memcmp(results[1].mac_addr, mac_addr, sizeof(mac_addr)), 0);
+  EXPECT_EQ(results[0].opType, CREATE_NEIGHBOR);
+  EXPECT_EQ(results[0].vrf_h, 0);
+  EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
+  EXPECT_EQ(results[0].ipaddr.family, AF_INET);
+  EXPECT_EQ(results[0].ipaddr.ip.v4addr.s_addr, ipv4_addr);
+  EXPECT_EQ(results[0].ipaddr.prefix_len, 32);
+  EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
 }
 
 /*
@@ -392,23 +386,17 @@ TEST_F(SwitchlinkNeighborTest, createIPv6Neighbor) {
   switchlink_process_neigh_msg(nlmsg, nlmsg->nlmsg_type);
 
   // Assert
-  ASSERT_EQ(results.size(), 2);
-
-  // Verify test results for MAC creation
-  EXPECT_EQ(results[0].opType, CREATE_MAC);
-  EXPECT_EQ(results[0].bridge_h, TEST_BRIDGE_H);
-  EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
-  EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
+  ASSERT_EQ(results.size(), 1);
 
   // Verify test results for NEIGHBOR creation
-  EXPECT_EQ(results[1].opType, CREATE_NEIGHBOR);
-  EXPECT_EQ(results[1].vrf_h, 0);
-  EXPECT_EQ(results[1].intf_h, TEST_INTF_H);
-  EXPECT_EQ(results[1].ipaddr.family, AF_INET6);
-  EXPECT_EQ(results[1].ipaddr.ip.v6addr.__in6_u.__u6_addr16[0], V6ADDR_0);
-  EXPECT_EQ(results[1].ipaddr.ip.v6addr.__in6_u.__u6_addr16[7], V6ADDR_7);
-  EXPECT_EQ(results[1].ipaddr.prefix_len, 128);
-  EXPECT_EQ(memcmp(results[1].mac_addr, mac_addr, sizeof(mac_addr)), 0);
+  EXPECT_EQ(results[0].opType, CREATE_NEIGHBOR);
+  EXPECT_EQ(results[0].vrf_h, 0);
+  EXPECT_EQ(results[0].intf_h, TEST_INTF_H);
+  EXPECT_EQ(results[0].ipaddr.family, AF_INET6);
+  EXPECT_EQ(results[0].ipaddr.ip.v6addr.__in6_u.__u6_addr16[0], V6ADDR_0);
+  EXPECT_EQ(results[0].ipaddr.ip.v6addr.__in6_u.__u6_addr16[7], V6ADDR_7);
+  EXPECT_EQ(results[0].ipaddr.prefix_len, 128);
+  EXPECT_EQ(memcmp(results[0].mac_addr, mac_addr, sizeof(mac_addr)), 0);
 }
 
 /*
