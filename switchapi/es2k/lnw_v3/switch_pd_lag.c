@@ -21,10 +21,12 @@
 #include "switchapi/es2k/switch_pd_utils.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
+#include "switchapi/switch_tdi.h"
+#include "switchutils/switch_log.h"
 
 /**
  * Routine Description:
- *   @brief Program tx_lag_table in MEV-TS
+ *   @brief Program tx_lag_table in ES2K
  *
  * Arguments:
  *   @param[in] device - device

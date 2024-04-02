@@ -6,7 +6,10 @@
 add_library(switchapi_lnwv2_target_o OBJECT
   switch_pd_p4_name_routing.h
   switch_pd_routing.c
-  switch_pd_routing.h)
+  switch_pd_routing.h
+  switch_pd_lag.c
+  switch_pd_lag.h
+)
 
 target_include_directories(switchapi_lnwv2_target_o PRIVATE
   ${SDE_INSTALL_DIR}/include

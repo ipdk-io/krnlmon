@@ -28,7 +28,7 @@ extern "C" {
 /* List of tables and corresponding actions */
 
 /* RIF_MOD_TABLE */
-// Verified for MEV - 3 tables instead of 1
+// Verified for ES2K - 3 tables instead of 1
 #define LNW_RIF_MOD_TABLE_START "linux_networking_control.rif_mod_table_start"
 
 #define LNW_RIF_MOD_TABLE_START_KEY_RIF_MOD_MAP_ID0 "rif_mod_map_id0"
@@ -72,7 +72,7 @@ extern "C" {
 #define LNW_ACTION_FWD_TO_VSI_PARAM_PORT "port"
 
 /* NEXTHOP_TABLE */
-// Verified for MEV
+// Verified for ES2K
 #define LNW_NEXTHOP_TABLE "linux_networking_control.nexthop_table"
 
 #define LNW_NEXTHOP_TABLE_KEY_NEXTHOP_ID "user_meta.cmeta.nexthop_id"
@@ -126,7 +126,7 @@ extern "C" {
 /* IPV4_TABLE */
 #define LNW_IPV4_TABLE "linux_networking_control.ipv4_table"
 
-// TODO_LNW_MEV: One additional key for MEV(ipv4_table has 2 keys for MEV)
+// TODO_LNW_ES2K: One additional key for ES2K(ipv4_table has 2 keys for ES2K)
 #define LNW_IPV4_TABLE_KEY_IPV4_TABLE_LPM_ROOT "ipv4_table_lpm_root"
 
 #define LNW_IPV4_TABLE_KEY_IPV4_DST_MATCH "ipv4_dst_match"
@@ -145,7 +145,7 @@ extern "C" {
 /* IPV6_TABLE */
 #define LNW_IPV6_TABLE "linux_networking_control.ipv6_table"
 
-// TODO_LNW_MEV: One additional key for MEV(ipv6_table has 2 keys for MEV)
+// TODO_LNW_ES2K: One additional key for ES2K(ipv6_table has 2 keys for ES2K)
 #define LNW_IPV6_TABLE_KEY_IPV6_TABLE_LPM_ROOT "ipv6_table_lpm_root"
 
 #define LNW_IPV6_TABLE_KEY_IPV6_DST_MATCH "ipv6_dst_match"

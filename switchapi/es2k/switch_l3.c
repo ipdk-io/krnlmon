@@ -18,9 +18,9 @@
 
 #include "switchapi/switch_l3.h"
 
-#include "switchapi/es2k/lnw_v3/switch_pd_routing.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_nhop_int.h"
+#include "switchapi/switch_pd_routing.h"
 #include "switchutils/switch_log.h"
 
 switch_status_t switch_route_table_entry_key_init(void* args,
