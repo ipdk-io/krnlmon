@@ -45,6 +45,10 @@ add_subdirectory(switchsai)
 add_subdirectory(switchsde)
 add_subdirectory(switchutils)
 
+##############
+# libkrnlmon #
+##############
+
 add_library(krnlmon SHARED
   $<TARGET_OBJECTS:switchapi_o>
   $<TARGET_OBJECTS:switchlink_o>
@@ -62,6 +66,10 @@ set_target_properties(switchutils_o PROPERTIES LINKER_LANGUAGE "C")
 target_link_libraries(krnlmon PkgConfig::nl3 PkgConfig::nl3-route)
 target_link_libraries(krnlmon absl::synchronization)
 
+#################
+# libkrnlmon.pc #
+#################
+
 # TODO: Look into using configure_package_config_file()
 configure_file(libkrnlmon.pc.in
                ${CMAKE_CURRENT_BINARY_DIR}/libkrnlmon.pc @ONLY)
@@ -74,3 +82,19 @@ install(
   DESTINATION
     ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
+
+#################
+# dummy_krnlmon #
+#################
+
+add_executable(dummy_krnlmon EXCLUDE_FROM_ALL
+  dummy_main.cc
+)
+
+target_link_libraries(dummy_krnlmon PUBLIC krnlmon)
+
+if(DPDK_TARGET)
+  add_dpdk_target_libraries(dummy_krnlmon)
+elseif(ES2K_TARGET)
+  add_es2k_target_libraries(dummy_krnlmon)
+endif()
