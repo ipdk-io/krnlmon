@@ -5,7 +5,7 @@
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//bazel:defs.bzl", "NO_MATCH_ERROR")
-load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE")
 
 package(default_visibility = ["//visibility:public"])
@@ -18,7 +18,7 @@ PD_ROUTING_DEPS = select(
     no_match_error = NO_MATCH_ERROR,
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_base_types",
     hdrs = ["switch_base_types.h"],
     deps = [
@@ -28,7 +28,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_config",
     hdrs = ["switch_config.h"],
     deps = [
@@ -39,7 +39,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_config_int",
     hdrs = ["switch_config_int.h"],
     deps = [
@@ -50,7 +50,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_device",
     hdrs = ["switch_device.h"],
     deps = [
@@ -59,7 +59,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_device_int",
     hdrs = ["switch_device_int.h"],
     deps = [
@@ -67,7 +67,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_fdb",
     hdrs = ["switch_fdb.h"],
     deps = [
@@ -77,7 +77,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_handle",
     hdrs = ["switch_handle.h"],
     deps = [
@@ -87,7 +87,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_handle_int",
     hdrs = ["switch_handle_int.h"],
     deps = [
@@ -95,7 +95,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_id",
     hdrs = ["switch_id.h"],
     deps = [
@@ -103,7 +103,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_interface",
     hdrs = ["switch_interface.h"],
     deps = [
@@ -113,7 +113,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_internal",
     hdrs = ["switch_internal.h"],
     deps = [
@@ -126,7 +126,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_l3",
     hdrs = ["switch_l3.h"],
     deps = [
@@ -136,7 +136,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_l3_int",
     hdrs = ["switch_l3_int.h"],
     deps = [
@@ -144,7 +144,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_lag",
     hdrs = ["switch_lag.h"],
     deps = [
@@ -153,7 +153,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_neighbor",
     hdrs = ["switch_neighbor.h"],
     deps = [
@@ -163,7 +163,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_neighbor_int",
     hdrs = ["switch_neighbor_int.h"],
     deps = [
@@ -173,7 +173,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_nhop",
     hdrs = ["switch_nhop.h"],
     deps = [
@@ -183,7 +183,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_nhop_int",
     hdrs = ["switch_nhop_int.h"],
     deps = [
@@ -193,18 +193,18 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_pd_routing",
     hdrs = ["switch_pd_routing.h"],
     deps = PD_ROUTING_DEPS,
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_port_int",
     hdrs = ["switch_port_int.h"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_rif",
     hdrs = ["switch_rif.h"],
     deps = [
@@ -214,7 +214,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_rif_int",
     hdrs = ["switch_rif_int.h"],
     deps = [
@@ -224,7 +224,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_rmac",
     hdrs = ["switch_rmac.h"],
     deps = [
@@ -233,7 +233,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_rmac_int",
     hdrs = ["switch_rmac_int.h"],
     deps = [
@@ -243,7 +243,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_status",
     hdrs = ["switch_status.h"],
     deps = [
@@ -251,7 +251,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_table",
     hdrs = ["switch_table.h"],
     deps = [
@@ -260,12 +260,12 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_tdi",
     hdrs = ["switch_tdi.h"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_tunnel",
     hdrs = ["switch_tunnel.h"],
     deps = [
@@ -276,7 +276,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_types_int",
     hdrs = ["switch_types_int.h"],
     deps = [
@@ -285,7 +285,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switch_vrf",
     hdrs = ["switch_vrf.h"],
     deps = [

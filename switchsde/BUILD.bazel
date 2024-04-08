@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE_HDRS")
 
 package(default_visibility = ["//visibility:public"])
@@ -17,7 +17,7 @@ TARGET_UNIT_TEST = select(
     no_match_error = "must specify --define target={dpdk|es2k}",
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sde_port_intf",
     srcs = select({
         "//flags:dpdk_target": ["sde_dpdk_port_intf.c"],
@@ -30,13 +30,13 @@ target_cc_library(
     ] + TARGET_SDE_HDRS,
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sde_status",
     srcs = ["sde_status.c"],
     hdrs = ["sde_status.h"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sde_types",
     hdrs = ["sde_types.h"],
 )

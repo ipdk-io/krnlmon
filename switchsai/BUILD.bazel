@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -15,7 +15,7 @@ SAI_TARGET_LIBS = select(
     },
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sai",
     srcs = ["sai.c"],
     deps = [
@@ -26,7 +26,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saifdb",
     srcs = ["saifdb.c"],
     deps = [
@@ -37,7 +37,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saiinternal",
     hdrs = ["saiinternal.h"],
     deps = [
@@ -48,7 +48,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saineighbor",
     srcs = ["saineighbor.c"],
     deps = [
@@ -61,7 +61,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sainexthop",
     srcs = ["sainexthop.c"],
     deps = [
@@ -72,7 +72,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sainexthopgroup",
     srcs = ["sainexthopgroup.c"],
     deps = [
@@ -83,7 +83,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sailag",
     srcs = ["sailag.c"],
     deps = [
@@ -95,7 +95,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sairoute",
     srcs = ["sairoute.c"],
     deps = [
@@ -107,7 +107,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "sairouterinterface",
     srcs = ["sairouterinterface.c"],
     deps = [
@@ -120,7 +120,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saitunnel",
     srcs = ["saitunnel.c"],
     deps = [
@@ -131,7 +131,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saiutils",
     srcs = ["saiutils.c"],
     deps = [
@@ -140,7 +140,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "saivirtualrouter",
     srcs = ["saivirtualrouter.c"],
     deps = [

@@ -7,7 +7,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//bazel:defs.bzl", "TARGET_DEFINES")
 
-def target_cc_library(
+def krnlmon_cc_library(
         name,
         deps = None,
         srcs = None,
@@ -23,14 +23,13 @@ def target_cc_library(
         visibility = None,
         arches = None,
         linkopts = []):
-
     cc_library(
         name = name,
         deps = deps,
         srcs = srcs,
         data = data,
         hdrs = hdrs,
-#       alwayslink = alwayslink,
+        # alwayslink = alwayslink,
         copts = copts,
         defines = TARGET_DEFINES + defines,
         include_prefix = include_prefix,
