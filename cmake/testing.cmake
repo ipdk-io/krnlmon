@@ -63,9 +63,9 @@ endif()
 add_custom_target(krnlmon-test
   COMMAND
     ctest ${test_options}
+    --output-on-failure
   DEPENDS
     ${test_targets}
-    --output-on-failure
   WORKING_DIRECTORY
     ${CMAKE_BINARY_DIR}
 )
