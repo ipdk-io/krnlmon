@@ -5,6 +5,7 @@
 
 package(default_visibility = ["//visibility:public"])
 
+load("//bazel:defs.bzl", "TARGET_DEFINES")
 load("//bazel:sde.bzl", "TARGET_SDE_LIBS", "TARGET_TDI")
 
 cc_shared_library(
@@ -30,6 +31,12 @@ cc_library(
         "//switchlink:switchlink_main",
         "@com_google_absl//absl/synchronization",
     ],
+)
+
+cc_library(
+    name = "krnlmon_options",
+    srcs = ["krnlmon_options.h"],
+    defines = TARGET_DEFINES,
 )
 
 cc_binary(
