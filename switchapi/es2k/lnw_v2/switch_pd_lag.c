@@ -17,15 +17,16 @@
 
 #include "switch_pd_lag.h"
 
-#include "switch_pd_p4_name_mapping.h"
-#include "switch_pd_utils.h"
+#include "switchapi/es2k/switch_pd_p4_name_mapping.h"
+#include "switchapi/es2k/switch_pd_utils.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
 #include "switchapi/switch_tdi.h"
+#include "switchutils/switch_log.h"
 
 /**
  * Routine Description:
- *   @brief Program tx_lag_table in MEV-TS
+ *   @brief Program tx_lag_table in ES2K
  *
  * Arguments:
  *   @param[in] device - device
