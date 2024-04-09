@@ -32,6 +32,11 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "krnlmon_options",
+    srcs = ["krnlmon_options.h"],
+)
+
 cc_binary(
     name = "dummy_krnlmon",
     srcs = [

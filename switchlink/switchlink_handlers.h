@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
  * Copyright 2022-2024 Intel Corporation.
+ * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "krnlmon_options.h"
 #include "switchlink/switchlink.h"
 #include "switchlink/switchlink_db.h"
 
@@ -31,8 +33,8 @@ extern void switchlink_create_tunnel_interface(
     switchlink_db_tunnel_interface_info_t* tnl_intf);
 extern void switchlink_delete_tunnel_interface(uint32_t ifindex);
 
+#ifdef LAG_OPTION
 // SWITCHLINK_LINK_TYPE_BOND handlers
-#ifdef ES2K_TARGET
 extern void switchlink_create_lag(switchlink_db_interface_info_t* lag_info);
 extern void switchlink_delete_lag(uint32_t ifindex);
 extern void switchlink_create_lag_member(
