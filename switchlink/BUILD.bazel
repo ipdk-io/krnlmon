@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -13,7 +13,7 @@ OVS_DEFINES = select({
     "//conditions:default": [],
 })
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
     deps = [
@@ -36,7 +36,7 @@ cc_test(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_db",
     srcs = [
         "switchlink_db.c",
@@ -53,14 +53,14 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_globals",
     srcs = ["switchlink_globals.c"],
     hdrs = ["switchlink_globals.h"],
     deps = [":switchlink_types"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_types",
     srcs = ["switchlink.h"],  # rename
     deps = [
@@ -68,7 +68,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handlers",
     srcs = ["switchlink_handlers.h"],
     linkopts = ["-lnl-3"],
@@ -80,12 +80,12 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_int",
     srcs = ["switchlink_int.h"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_link",
     srcs = ["switchlink_link.c"],
     defines = OVS_DEFINES,
@@ -113,12 +113,12 @@ cc_test(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_link_types",
     srcs = ["switchlink_link_types.h"],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_main",
     srcs = [
         "switchlink_main.c",
@@ -137,7 +137,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_neigh",
     srcs = ["switchlink_neigh.c"],
     deps = [
@@ -160,7 +160,7 @@ cc_test(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_route",
     srcs = ["switchlink_route.c"],
     deps = [
@@ -182,7 +182,7 @@ cc_test(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_utils",
     srcs = ["switchlink_utils.c"],
     hdrs = ["switchlink_utils.h"],
@@ -191,7 +191,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_validate_driver",
     srcs = ["switchlink_validate_driver.c"],
     deps = [

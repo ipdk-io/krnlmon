@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:rules.bzl", "target_cc_library")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE")
 
 package(default_visibility = ["//visibility:public"])
@@ -16,7 +16,7 @@ SWITCHLINK_SAI_TARGET_LIBS = select(
     },
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_ecmp",
     srcs = ["switchlink_handle_ecmp.c"],
     deps = [
@@ -27,7 +27,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_lag",
     srcs = ["switchlink_handle_lag.c"],
     deps = [
@@ -38,7 +38,7 @@ target_cc_library(
     ] + TARGET_SDE,
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_link",
     srcs = ["switchlink_handle_link.c"],
     deps = [
@@ -47,7 +47,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_neigh",
     srcs = ["switchlink_handle_neigh.c"],
     deps = [
@@ -57,7 +57,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_nexthop",
     srcs = ["switchlink_handle_nexthop.c"],
     deps = [
@@ -66,7 +66,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_route",
     srcs = ["switchlink_handle_route.c"],
     deps = [
@@ -76,7 +76,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_handle_tunnel",
     srcs = ["switchlink_handle_tunnel.c"],
     deps = [
@@ -85,7 +85,7 @@ target_cc_library(
     ],
 )
 
-target_cc_library(
+krnlmon_cc_library(
     name = "switchlink_init_sai",
     srcs = ["switchlink_init_sai.c"],
     hdrs = ["switchlink_init_sai.h"],
