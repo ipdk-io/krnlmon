@@ -26,7 +26,7 @@
 #define LAG_OPTION 1
 
 #else
-#error "TDI target not specified"
+#error "Krnlmon only supports DPDK and ES2K"
 #endif
 
 #endif  // KRNLMON_OPTIONS_H_
