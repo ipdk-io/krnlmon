@@ -13,7 +13,6 @@ target_sources(switchapi_o PRIVATE
 
 target_include_directories(switchapi_o PRIVATE
   ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/ipu_types
   ${SDE_INSTALL_DIR}/include/target-utils/third-party
   ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
   ${SDE_INSTALL_DIR}/include/target-sys

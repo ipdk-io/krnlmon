@@ -20,8 +20,6 @@ endif()
 
 target_include_directories(switchlink_sai_o PRIVATE
     ${SDE_INSTALL_DIR}/include
-    ${SDE_INSTALL_DIR}/include/bf_types
-    ${SDE_INSTALL_DIR}/include/bf_pal
     ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash

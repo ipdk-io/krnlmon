@@ -34,7 +34,6 @@ endif()
 
 target_include_directories(switchapi_o PRIVATE
   ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/bf_types
   ${SDE_INSTALL_DIR}/include/target-utils # id
   ${SDE_INSTALL_DIR}/include/target-utils/third-party
   ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
