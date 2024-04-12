@@ -22,6 +22,7 @@
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
 
+#include "krnlmon_options.h"
 #include "switchlink.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
@@ -217,7 +218,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   switchlink_db_interface_info_t intf_info = {0};
   switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
-#ifdef ES2K_TARGET
+#ifdef LAG_OPTION
   bool create_lag_member = false;
 #endif
 
@@ -272,7 +273,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
               break;
             case IFLA_INFO_SLAVE_DATA:
               if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
-#ifdef ES2K_TARGET
+#ifdef LAG_OPTION
                 create_lag_member = true;
 #endif
                 nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
@@ -310,7 +311,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
       case SWITCHLINK_LINK_TYPE_TEAM:
         krnlmon_log_info("LAG via teaming driver isn't supported\n");
         break;
-#ifdef ES2K_TARGET
+#ifdef LAG_OPTION
       case SWITCHLINK_LINK_TYPE_BOND:
         snprintf(intf_info.ifname, sizeof(intf_info.ifname), "%s",
                  attrs.ifname);
@@ -380,7 +381,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         break;
     }
     switch (slave_link_type) {
-#ifdef ES2K_TARGET
+#ifdef LAG_OPTION
       case SWITCHLINK_LINK_TYPE_BOND: {
         switchlink_db_lag_member_info_t lag_member_info = {0};
         snprintf(lag_member_info.ifname, sizeof(lag_member_info.ifname), "%s",
@@ -418,7 +419,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     } else {
       krnlmon_log_debug("Unhandled link type");
     }
-#ifdef ES2K_TARGET
+#ifdef LAG_OPTION
     if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
       switchlink_delete_lag(ifmsg->ifi_index);
       return;

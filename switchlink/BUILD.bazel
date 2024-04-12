@@ -75,6 +75,7 @@ krnlmon_cc_library(
     deps = [
         ":switchlink_db",
         ":switchlink_types",
+        "//:krnlmon_options",
         "@nl-3",
     ],
 )
@@ -94,6 +95,7 @@ krnlmon_cc_library(
         ":switchlink_int",
         ":switchlink_link_types",
         ":switchlink_types",
+        "//:krnlmon_options",
         "//switchutils:switch_log",
     ],
 )
@@ -106,6 +108,7 @@ cc_test(
         ":switchlink_globals",
         ":switchlink_handlers",
         ":switchlink_link",
+        "//:krnlmon_options",
         "@com_google_googletest//:gtest_main",
     ],
 )

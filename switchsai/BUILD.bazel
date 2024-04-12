@@ -20,6 +20,7 @@ krnlmon_cc_library(
     srcs = ["sai.c"],
     deps = [
         ":saiinternal",
+        "//:krnlmon_options",
         "//switchapi:switch_device",
         "//switchapi:switch_handle",
         "//switchapi:switch_nhop",
