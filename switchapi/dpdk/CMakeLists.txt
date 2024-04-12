@@ -27,14 +27,6 @@ target_sources(switchapi_o PRIVATE
   switchapi_utils.c
 )
 
-target_include_directories(switchapi_o PRIVATE
-  ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/target-utils # id
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
-  ${SDE_INSTALL_DIR}/include/target-sys
-)
-
 target_link_libraries(switchapi_o PRIVATE
   sde::tdi
   sde::tdi_json_parser
