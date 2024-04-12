@@ -1,4 +1,4 @@
-# CMake build file for krnlmon/switchapi/es2k
+# CMake build file for switchapi/es2k
 #
 # Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0

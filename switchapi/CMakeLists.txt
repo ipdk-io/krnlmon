@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchapi
+# CMake build file for switchapi
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchapi_o OBJECT

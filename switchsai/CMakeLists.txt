@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchsai
+# CMake build file for switchsai
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchsai_o OBJECT
