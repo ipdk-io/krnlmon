@@ -19,7 +19,12 @@
 #ifndef __SWITCH_PD_ROUTING_H__
 #define __SWITCH_PD_ROUTING_H__
 
-#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"
+#if defined(LNW_V2)
+#include "lnw_v2/switch_pd_p4_name_routing.h"
+#elif defined(LNW_V3)
+#include "lnw_v3/switch_pd_p4_name_routing.h"
+#endif
+
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_handle.h"
 #include "switchapi/switch_l3.h"
@@ -59,9 +64,15 @@ switch_status_t switch_pd_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
 
+#if defined(LNW_V2)
+switch_status_t switch_pd_neighbor_table_entry(
+    switch_device_t device,
+    const switch_pd_routing_info_t* api_neighbor_pd_info, bool entry_add);
+#elif defined(LNW_V3)
 switch_status_t switch_pd_ecmp_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
+#endif
 
 switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
                                            switch_rmac_entry_t* rmac_entry,
