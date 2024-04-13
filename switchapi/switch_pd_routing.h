@@ -17,7 +17,7 @@
 
 // Proxy for the target-specific switch_pd_routing.h files.
 //
-// This header file encapsulates the fact that there are different
+// This header file encapsulates the knowledge that there are different
 // versions of the header file for DPDK and ES2K.
 //
 // Note that it must use a different include guard than the files it
