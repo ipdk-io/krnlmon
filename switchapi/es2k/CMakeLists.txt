@@ -14,6 +14,7 @@ target_sources(switchapi_o PRIVATE
   switch_neighbor.c
   switch_nhop.c
   switch_pd_fdb.c
+  switch_pd_lag.h
   switch_pd_p4_name_mapping.h
   switch_pd_tunnel.c
   switch_pd_utils.c
