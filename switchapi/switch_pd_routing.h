@@ -27,9 +27,11 @@
 #define __SWITCH_PD_ROUTING_WRAPPER_H__
 
 #if defined(DPDK_TARGET)
-#include "dpdk/switch_pd_routing.h"
+#include "switchapi/dpdk/switch_pd_routing.h"
 #elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
+#include "switchapi/es2k/switch_pd_routing.h"
+#else
+#error "ASSERT: Unknown TARGET type!"
 #endif
 
 #endif  // __SWITCH_PD_ROUTING_WRAPPER_H__

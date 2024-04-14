@@ -20,9 +20,11 @@
 #define __SWITCH_PD_ROUTING_H__
 
 #if defined(LNW_V2)
-#include "lnw_v2/switch_pd_p4_name_routing.h"
+#include "switchapi/es2k/lnw_v2/switch_pd_p4_name_routing.h"
 #elif defined(LNW_V3)
-#include "lnw_v3/switch_pd_p4_name_routing.h"
+#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"
+#else
+#error "ASSERT: Unknown LNW version!"
 #endif
 
 #include "switchapi/switch_base_types.h"
