@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2013-2021 Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
- *
+ * Copyright 2022-2024 Intel Corporation.
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +18,6 @@
 
 #ifndef __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
 #define __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 #define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 /* List of tables and corresponding actions */
@@ -158,9 +153,5 @@ extern "C" {
 
 #define LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION \
   "linux_networking_control.ecmp_v6_hash_action"
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* __SWITCH_PD_P4_NAME_ROUTING_MAPPING__ */
