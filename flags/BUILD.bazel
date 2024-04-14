@@ -11,7 +11,7 @@ load("//bazel:rules/lnw_version_flag.bzl", "lnw_version_flag")
 # Define "--//flags:ovs" command-line flag
 bool_flag(
     name = "ovs",
-    build_setting_default = True,
+    build_setting_default = False,
 )
 
 # Enabled by "--//flags:ovs=true"
