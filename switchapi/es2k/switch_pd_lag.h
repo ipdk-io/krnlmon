@@ -30,6 +30,8 @@
 #include "lnw_v2/switch_pd_lag.h"
 #elif defined(LNW_V3)
 #include "lnw_v3/switch_pd_lag.h"
+#else
+#error "Undefined or missing LNW conditional!"
 #endif
 
 #endif  // __SWITCH_PD_LAG_WRAPPER_H__
