@@ -3,6 +3,8 @@
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
+load("//bazel:rules.bzl", "krnlmon_cc_library")
+
 package(default_visibility = ["//visibility:public"])
 
 load("//bazel:defs.bzl", "TARGET_DEFINES")
@@ -23,7 +25,7 @@ cc_shared_library(
     ],
 )
 
-cc_library(
+krnlmon_cc_library(
     name = "krnlmon_main",
     srcs = ["krnlmon_main.cc"],
     hdrs = ["krnlmon_main.h"],
@@ -33,10 +35,9 @@ cc_library(
     ],
 )
 
-cc_library(
+krnlmon_cc_library(
     name = "krnlmon_options",
     srcs = ["krnlmon_options.h"],
-    defines = TARGET_DEFINES,
 )
 
 cc_binary(
