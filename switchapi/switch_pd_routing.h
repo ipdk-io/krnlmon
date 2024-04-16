@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
-// Proxy for the target-specific switch_pd_routing header files.
+// Proxy for the target-specific switch_pd_routing.h files.
 //
-// We use a unique include guard to avoid aliasing the ones in the
-// target-specific header files (which would cause their contents
-// to be ignored).
+// This header file encapsulates the knowledge that there are different
+// versions of the header file for DPDK and ES2K.
+//
+// Note that it must use a different include guard than the files it
+// includes (which both use the same name).
 
 #ifndef __SWITCH_PD_ROUTING_WRAPPER_H__
 #define __SWITCH_PD_ROUTING_WRAPPER_H__
@@ -27,10 +29,7 @@
 #if defined(DPDK_TARGET)
 #include "dpdk/switch_pd_routing.h"
 #elif defined(ES2K_TARGET)
-#ifdef LNW_V2
-#include "es2k/lnw_v2/switch_pd_routing.h"
-#else  // LNW_V3
-#include "es2k/lnw_v3/switch_pd_routing.h"
-#endif  // LNW_V2
+#include "es2k/switch_pd_routing.h"
 #endif
+
 #endif  // __SWITCH_PD_ROUTING_WRAPPER_H__
