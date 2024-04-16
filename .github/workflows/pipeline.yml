@@ -47,7 +47,7 @@ jobs:
           path: recipe
 
       - name: Install dpdk-sde
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           repository: ${{ env.SDE_REPOSITORY }}
           tag: ${{ env.SDE_TAG }}
@@ -57,7 +57,7 @@ jobs:
           rm $SDE_FILENAME
 
       - name: Install stratum-deps
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           repository: ${{ env.DEPS_REPOSITORY }}
           tag: ${{ env.DEPS_TAG }}
@@ -93,7 +93,7 @@ jobs:
           path: recipe
 
       - name: Install dpdk-sde
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           repository: ${{ env.SDE_REPOSITORY }}
           tag: ${{ env.SDE_TAG }}
@@ -103,7 +103,7 @@ jobs:
           rm $SDE_FILENAME
 
       - name: Install stratum-deps
-        uses: robinraju/release-downloader@v1.9
+        uses: robinraju/release-downloader@v1.10
         with:
           repository: ${{ env.DEPS_REPOSITORY }}
           tag: ${{ env.DEPS_TAG }}

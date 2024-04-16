@@ -15,21 +15,23 @@
  * limitations under the License.
  */
 
-// Proxy for the target-specific switch_pd_routing.h files.
+// Proxy for the version-specific switch_pd_lag.h files.
 //
 // This header file encapsulates the knowledge that there are different
-// versions of the header file for DPDK and ES2K.
+// versions of the header file.
 //
 // Note that it must use a different include guard than the files it
-// includes (which both use the same name).
+// includes.
 
-#ifndef __SWITCH_PD_ROUTING_WRAPPER_H__
-#define __SWITCH_PD_ROUTING_WRAPPER_H__
+#ifndef __SWITCH_PD_LAG_WRAPPER_H__
+#define __SWITCH_PD_LAG_WRAPPER_H__
 
-#if defined(DPDK_TARGET)
-#include "dpdk/switch_pd_routing.h"
-#elif defined(ES2K_TARGET)
-#include "es2k/switch_pd_routing.h"
+#if defined(LNW_V2)
+#include "lnw_v2/switch_pd_lag.h"
+#elif defined(LNW_V3)
+#include "lnw_v3/switch_pd_lag.h"
+#else
+#error "Undefined or missing LNW conditional!"
 #endif
 
-#endif  // __SWITCH_PD_ROUTING_WRAPPER_H__
+#endif  // __SWITCH_PD_LAG_WRAPPER_H__
