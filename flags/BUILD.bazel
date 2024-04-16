@@ -6,6 +6,7 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+load("//bazel:rules/lnw_version_flag.bzl", "lnw_version_flag")
 
 # Define "--//flags:ovs" command-line flag
 bool_flag(
@@ -34,5 +35,30 @@ config_setting(
     name = "es2k_target",
     define_values = {
         "target": "es2k",
+    },
+)
+
+lnw_version_flag(
+    name = "lnw_version",
+    build_setting_default = 3,
+)
+
+config_setting(
+    name = "lnw_v2",
+    define_values = {
+        "target": "es2k",
+    },
+    flag_values = {
+        "lnw_version": "2",
+    },
+)
+
+config_setting(
+    name = "lnw_v3",
+    define_values = {
+        "target": "es2k",
+    },
+    flag_values = {
+        "lnw_version": "3",
     },
 )
