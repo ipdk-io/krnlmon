@@ -98,7 +98,6 @@ switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
 switch_status_t switch_pd_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add) {
-  // New function in lnw_v3
   tdi_status_t status;
 
   tdi_id_t field_id = 0;
@@ -120,6 +119,7 @@ switch_status_t switch_pd_nexthop_table_entry(
   uint16_t lag_id = 0;
 
   krnlmon_log_debug("%s", __func__);
+
   status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
@@ -149,6 +149,7 @@ switch_status_t switch_pd_nexthop_table_entry(
     krnlmon_log_error("Failed to create tdi session, error: %d", status);
     goto dealloc_resources;
   }
+
   status = tdi_table_from_name_get(info_hdl, LNW_NEXTHOP_TABLE, &table_hdl);
   if (status != TDI_SUCCESS || !table_hdl) {
     krnlmon_log_error("Unable to get table handle for: %s, error: %d",
@@ -179,6 +180,7 @@ switch_status_t switch_pd_nexthop_table_entry(
                       LNW_NEXTHOP_TABLE_KEY_NEXTHOP_ID, status);
     goto dealloc_resources;
   }
+
 #if NEXTHOP_TABLE_TERNARY_MATCH
   // When Nexthop table is of type ternary Match
   status = tdi_key_field_set_value_and_mask(
@@ -475,7 +477,6 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
   const tdi_table_hdl* table_hdl = NULL;
   const tdi_table_info_hdl* table_info_hdl = NULL;
   uint16_t network_byte_order_rif_id = 0;
-  uint16_t lag_id = 0;
 
   krnlmon_log_debug("%s", __func__);
   status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);

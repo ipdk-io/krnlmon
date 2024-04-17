@@ -26,7 +26,7 @@
 #define LAG_OPTION 1
 
 #else
-#error "Krnlmon only supports DPDK and ES2K"
+#error "ASSERT: Unknown TARGET type!"
 #endif
 
 #endif  // KRNLMON_OPTIONS_H_
