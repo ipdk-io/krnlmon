@@ -1,4 +1,4 @@
-# CMake build file for krnlmon/switchapi/es2k/lnw_v3
+# CMake build file for switchapi/es2k/lnw_v3
 #
 # Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
@@ -8,16 +8,4 @@ target_sources(switchapi_o PRIVATE
   switch_pd_routing.c
   switch_pd_lag.c
   switch_pd_lag.h
-)
-
-target_include_directories(switchapi_o PRIVATE
-  ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
-  ${SDE_INSTALL_DIR}/include/target-sys
-)
-
-target_link_libraries(switchapi_o PRIVATE
-  sde::tdi
-  sde::tdi_json_parser
 )

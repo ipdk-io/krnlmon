@@ -1,4 +1,4 @@
-# CMake build file for krnlmon/switchsde
+# CMake build file for switchsde
 #
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0

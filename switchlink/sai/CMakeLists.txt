@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchlink/sai
+# CMake build file for switchlink/sai
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchlink_sai_o OBJECT
@@ -20,8 +20,6 @@ endif()
 
 target_include_directories(switchlink_sai_o PRIVATE
     ${SDE_INSTALL_DIR}/include
-    ${SDE_INSTALL_DIR}/include/bf_types
-    ${SDE_INSTALL_DIR}/include/bf_pal
     ${SDE_INSTALL_DIR}/include/target-utils/third-party  # judy
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/xxHash

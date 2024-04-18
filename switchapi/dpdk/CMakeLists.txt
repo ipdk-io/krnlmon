@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchapi/dpdk
+# CMake build file for switchapi/dpdk
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 target_sources(switchapi_o PRIVATE
@@ -25,15 +25,6 @@ target_sources(switchapi_o PRIVATE
   switch_tunnel.c
   switch_vrf.c
   switchapi_utils.c
-)
-
-target_include_directories(switchapi_o PRIVATE
-  ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/bf_types
-  ${SDE_INSTALL_DIR}/include/target-utils # id
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
-  ${SDE_INSTALL_DIR}/include/target-sys
 )
 
 target_link_libraries(switchapi_o PRIVATE

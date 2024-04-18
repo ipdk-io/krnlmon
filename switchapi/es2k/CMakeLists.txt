@@ -1,4 +1,4 @@
-# CMake build file for krnlmon/switchapi/es2k
+# CMake build file for switchapi/es2k
 #
 # Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
@@ -32,15 +32,6 @@ if(LNW_V2)
 elseif(LNW_V3)
   add_subdirectory(lnw_v3)
 endif()
-
-target_include_directories(switchapi_o PRIVATE
-  ${SDE_INSTALL_DIR}/include
-  ${SDE_INSTALL_DIR}/include/bf_types
-  ${SDE_INSTALL_DIR}/include/target-utils # id
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party
-  ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds
-  ${SDE_INSTALL_DIR}/include/target-sys
-)
 
 target_link_libraries(switchapi_o PRIVATE
   sde::tdi

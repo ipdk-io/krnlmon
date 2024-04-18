@@ -7,7 +7,7 @@ load("//bazel:rules.bzl", "krnlmon_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel:defs.bzl", "TARGET_DEFINES")
+load("//bazel:rules.bzl", "krnlmon_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE_LIBS", "TARGET_TDI")
 
 cc_shared_library(

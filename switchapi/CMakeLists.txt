@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchapi
+# CMake build file for switchapi
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchapi_o OBJECT
@@ -39,13 +39,10 @@ if(ES2K_TARGET)
   add_subdirectory(es2k)
 elseif(DPDK_TARGET)
   add_subdirectory(dpdk)
-else()
-  message(FATAL_ERROR "TDI target not defined!")
 endif()
 
 target_include_directories(switchapi_o PRIVATE
     ${SDE_INSTALL_DIR}/include
-    ${SDE_INSTALL_DIR}/include/bf_types
     ${SDE_INSTALL_DIR}/include/target-utils # id
     ${SDE_INSTALL_DIR}/include/target-utils/third-party
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds

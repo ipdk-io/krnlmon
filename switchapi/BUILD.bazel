@@ -3,7 +3,6 @@
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//bazel:defs.bzl", "NO_MATCH_ERROR")
 load("//bazel:rules.bzl", "krnlmon_cc_library")
 load("//bazel:sde.bzl", "TARGET_SDE")

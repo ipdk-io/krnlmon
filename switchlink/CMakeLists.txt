@@ -1,4 +1,4 @@
-# CMake build file for krnlmon/switchlink
+# CMake build file for switchlink
 #
 # Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0

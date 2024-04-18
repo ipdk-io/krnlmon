@@ -3,7 +3,7 @@
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-NO_MATCH_ERROR = "must specify --define target={dpdk|es2k}"
+NO_MATCH_ERROR = "Please specify --define target={dpdk|es2k}"
 
 TARGET_DEFINES = select(
     {

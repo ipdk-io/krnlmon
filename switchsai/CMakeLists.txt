@@ -1,6 +1,6 @@
-# CMake build file for krnlmon/switchsai
+# CMake build file for switchsai
 #
-# Copyright 2022-2023 Intel Corporation
+# Copyright 2022-2024 Intel Corporation
 # SPDX-License-Identifier: Apache 2.0
 
 add_library(switchsai_o OBJECT
@@ -24,7 +24,6 @@ endif()
 target_include_directories(switchsai_o PRIVATE
     ${SAI_INCLUDE_DIR}
     ${SDE_INSTALL_DIR}/include
-    ${SDE_INSTALL_DIR}/include/bf_types
     ${SDE_INSTALL_DIR}/include/target-utils # id
     ${SDE_INSTALL_DIR}/include/target-utils/third-party
     ${SDE_INSTALL_DIR}/include/target-utils/third-party/tommyds

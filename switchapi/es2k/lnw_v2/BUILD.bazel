@@ -21,8 +21,8 @@ krnlmon_cc_library(
         "//switchapi:switch_handle",
         "//switchapi:switch_internal",
         "//switchapi:switch_lag",
-        "//switchapi/es2k:switch_pd_utils",
         "//switchapi/es2k:switch_pd_p4_name_mapping",
+        "//switchapi/es2k:switch_pd_utils",
         "@local_es2k_bin//:sde_hdrs",
     ],
 )
