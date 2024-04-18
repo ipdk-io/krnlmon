@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "switch_pd_routing.h"
+#include "switchapi/es2k/switch_pd_routing.h"
 
 #include "switchapi/es2k/switch_pd_p4_name_mapping.h"
 #include "switchapi/es2k/switch_pd_utils.h"

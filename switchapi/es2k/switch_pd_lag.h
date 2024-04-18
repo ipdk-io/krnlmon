@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Intel Corporation.
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License_Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,23 @@
  * limitations under the License.
  */
 
-#ifndef KRNLMON_OPTIONS_H_
-#define KRNLMON_OPTIONS_H_
+// Proxy for the version-specific switch_pd_lag.h files.
+//
+// This header file encapsulates the knowledge that there are different
+// versions of the header file.
+//
+// Note that it must use a different include guard than the files it
+// includes.
 
-#if defined(DPDK_TARGET)
-// DPDK options
+#ifndef __SWITCH_PD_LAG_WRAPPER_H__
+#define __SWITCH_PD_LAG_WRAPPER_H__
 
-#elif defined(ES2K_TARGET)
-// ES2K options
-#define LAG_OPTION 1
-
+#if defined(LNW_V2)
+#include "switchapi/es2k/lnw_v2/switch_pd_lag.h"
+#elif defined(LNW_V3)
+#include "switchapi/es2k/lnw_v3/switch_pd_lag.h"
 #else
-#error "ASSERT: Unknown TARGET type!"
+#error "ASSERT: Unknown LNW version!"
 #endif
 
-#endif  // KRNLMON_OPTIONS_H_
+#endif  // __SWITCH_PD_LAG_WRAPPER_H__

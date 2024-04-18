@@ -3,6 +3,8 @@
 # Copyright 2024 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
+load("//bazel:rules.bzl", "krnlmon_cc_library")
+
 package(default_visibility = ["//visibility:public"])
 
 load("//bazel:rules.bzl", "krnlmon_cc_library")

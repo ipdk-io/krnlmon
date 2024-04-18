@@ -9,7 +9,7 @@ load("//bazel:sde.bzl", "TARGET_SDE")
 
 package(default_visibility = ["//visibility:public"])
 
-PD_ROUTING_DEPS = select(
+SWITCH_PD_ROUTING_HDR = select(
     {
         "//flags:dpdk_target": ["//switchapi/dpdk:switch_pd_routing_hdr"],
         "//flags:es2k_target": ["//switchapi/es2k:switch_pd_routing_hdr"],
@@ -195,7 +195,7 @@ krnlmon_cc_library(
 krnlmon_cc_library(
     name = "switch_pd_routing",
     hdrs = ["switch_pd_routing.h"],
-    deps = PD_ROUTING_DEPS,
+    deps = SWITCH_PD_ROUTING_HDR,
 )
 
 krnlmon_cc_library(
