@@ -135,7 +135,7 @@
 #define LNW_L2_FWD_TX_TABLE_KEY_BRIDGE_ID "user_meta.pmeta.bridge_id"
 #define LNW_L2_FWD_TX_TABLE_KEY_DST_MAC "dst_mac"
 
-#define LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd_tx"
+#define LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD "linux_networking_control.l2_fwd"
 
 #define LNW_L2_FWD_TX_TABLE_ACTION_L2_FWD_LAG \
   "linux_networking_control.l2_fwd_lag"
