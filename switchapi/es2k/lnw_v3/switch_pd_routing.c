@@ -1735,6 +1735,7 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
     goto dealloc_resources;
   }
 
+  /* LNWv3 does not have this parameter
   status =
       tdi_key_field_id_get(table_info_hdl, LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING,
                            &field_id_meta_bit32_zero);
@@ -1743,6 +1744,7 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
                       LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING, status);
     goto dealloc_resources;
   }
+  */
 
   status = tdi_action_name_to_id(
       table_info_hdl, LNW_ECMP_HASH_TABLE_ACTION_SET_NEXTHOP_ID, &action_id);
