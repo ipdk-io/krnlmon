@@ -1735,7 +1735,7 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
     goto dealloc_resources;
   }
 
-#if 0 // LNWv3 does not have this parameter
+#if 0  // LNWv3 does not have this parameter
   status =
       tdi_key_field_id_get(table_info_hdl, LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING,
                            &field_id_meta_bit32_zero);
