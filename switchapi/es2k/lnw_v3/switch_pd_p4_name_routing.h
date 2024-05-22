@@ -92,8 +92,7 @@
 /* ECMP_HASH_TABLE */
 #define LNW_ECMP_HASH_TABLE "linux_networking_control.ecmp_hash_table"
 
-#define LNW_ECMP_HASH_TABLE_KEY_HOST_INFO_TX_EXT_FLEX \
-  "flex"
+#define LNW_ECMP_HASH_TABLE_KEY_HOST_INFO_TX_EXT_FLEX "flex"
 #define LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH "hash"
 #define LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING "zero_padding"
 
