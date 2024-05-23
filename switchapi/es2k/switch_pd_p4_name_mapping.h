@@ -167,9 +167,14 @@
 /* ECMP_HASH_TABLE */
 #define LNW_ECMP_HASH_TABLE "linux_networking_control.ecmp_hash_table"
 
+#if defined(LNW_V2)
 #define LNW_ECMP_HASH_TABLE_KEY_HOST_INFO_TX_EXT_FLEX \
   "user_meta.cmeta.flex[15:0]"
 #define LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH "vmeta.common.hash[2:0]"
+#elif defined(LNW_V3)
+#define LNW_ECMP_HASH_TABLE_KEY_HOST_INFO_TX_EXT_FLEX "flex"
+#define LNW_ECMP_HASH_TABLE_KEY_META_COMMON_HASH "hash"
+#endif
 #define LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING "zero_padding"
 
 #define LNW_ECMP_HASH_TABLE_ACTION_SET_NEXTHOP_ID \
