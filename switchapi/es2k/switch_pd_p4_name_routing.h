@@ -19,10 +19,11 @@
 #ifndef __SWITCH_PD_P4_NAME_ROUTING_H__
 #define __SWITCH_PD_P4_NAME_ROUTING_H__
 
-#define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 /* List of tables and corresponding actions */
 
-/* RIF_MOD_TABLE */
+//----------------------------------------------------------------------
+// RIF_MOD_TABLE
+//----------------------------------------------------------------------
 // Verified for ES2K - 3 tables instead of 1
 #define LNW_RIF_MOD_TABLE_START "linux_networking_control.rif_mod_table_start"
 
@@ -47,7 +48,9 @@
 
 #define LNW_ACTION_SET_SRC_MAC_PARAM_SRC_MAC_ADDR "arg"
 
-/* RX_LAG_TABLE */
+//----------------------------------------------------------------------
+// RX_LAG_TABLE
+//----------------------------------------------------------------------
 #define LNW_RX_LAG_TABLE "linux_networking_control.rx_lag_table"
 
 #define LNW_RX_LAG_TABLE_KEY_PORT_ID "vmeta.common.port_id"
@@ -56,7 +59,9 @@
 #define LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI "linux_networking_control.fwd_to_vsi"
 #define LNW_ACTION_FWD_TO_VSI_PARAM_PORT "port"
 
-/* TX_LAG_TABLE */
+//----------------------------------------------------------------------
+// TX_LAG_TABLE
+//----------------------------------------------------------------------
 #define LNW_TX_LAG_TABLE "linux_networking_control.tx_lag_table"
 
 #define LNW_TX_LAG_TABLE_KEY_LAG_ID "user_meta.cmeta.lag_group_id"
@@ -69,14 +74,16 @@
 
 #define LNW_LAG_HASH_SIZE 65536
 
-/* Only 3 bits is allocated for hash size per group in LNW.p4
+/* Only 3 bits are allocated for hash size per group in LNW.p4
  * check LNW_TX_LAG_TABLE_KEY_VMETA_COMMON_HASH */
 #define LNW_LAG_PER_GROUP_HASH_SIZE 8
 
-/* IPV4_TABLE */
+//----------------------------------------------------------------------
+// IPV4_TABLE
+//----------------------------------------------------------------------
 #define LNW_IPV4_TABLE "linux_networking_control.ipv4_table"
 
-// TODO_LNW_ES2K: One additional key for ES2K(ipv4_table has 2 keys for ES2K)
+// TODO_LNW_ES2K: One additional key for ES2K (ipv4_table has 2 keys for ES2K)
 #define LNW_IPV4_TABLE_KEY_IPV4_TABLE_LPM_ROOT "ipv4_table_lpm_root"
 
 #define LNW_IPV4_TABLE_KEY_IPV4_DST_MATCH "ipv4_dst_match"
@@ -92,10 +99,12 @@
   "linux_networking_control.ecmp_hash_action"
 #define LNW_ACTION_ECMP_HASH_ACTION_PARAM_ECMP_GROUP_ID "ecmp_group_id"
 
-/* IPV6_TABLE */
+//----------------------------------------------------------------------
+// IPV6_TABLE
+//----------------------------------------------------------------------
 #define LNW_IPV6_TABLE "linux_networking_control.ipv6_table"
 
-// TODO_LNW_ES2K: One additional key for ES2K(ipv6_table has 2 keys for ES2K)
+// TODO_LNW_ES2K: One additional key for ES2K (ipv6_table has 2 keys for ES2K)
 #define LNW_IPV6_TABLE_KEY_IPV6_TABLE_LPM_ROOT "ipv6_table_lpm_root"
 
 #define LNW_IPV6_TABLE_KEY_IPV6_DST_MATCH "ipv6_dst_match"
