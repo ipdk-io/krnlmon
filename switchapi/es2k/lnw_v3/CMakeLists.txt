@@ -9,6 +9,5 @@ target_sources(switchapi_o PRIVATE
   lnw_nexthop_table.h
   switch_pd_lag.c
   switch_pd_lag.h
-  switch_pd_p4_name_routing.h
   switch_pd_routing.c
 )
