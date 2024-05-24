@@ -19,6 +19,7 @@
 #include "switchapi/es2k/switch_pd_routing.h"
 
 #include "switchapi/es2k/lnw_v2/lnw_ecmp_hash_table.h"
+#include "switchapi/es2k/lnw_v2/lnw_neighbor_mod_table.h"
 #include "switchapi/es2k/lnw_v2/lnw_nexthop_table.h"
 #include "switchapi/es2k/switch_pd_p4_name_mapping.h"
 #include "switchapi/es2k/switch_pd_utils.h"
