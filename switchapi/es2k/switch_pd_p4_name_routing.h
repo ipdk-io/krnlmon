@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
-#define __SWITCH_PD_P4_NAME_ROUTING_MAPPING__
+#ifndef __SWITCH_PD_P4_NAME_ROUTING_H__
+#define __SWITCH_PD_P4_NAME_ROUTING_H__
 
 #define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 /* List of tables and corresponding actions */
@@ -109,4 +109,4 @@
 #define LNW_IPV6_TABLE_ACTION_ECMP_V6_HASH_ACTION \
   "linux_networking_control.ecmp_v6_hash_action"
 
-#endif /* __SWITCH_PD_P4_NAME_ROUTING_MAPPING__ */
+#endif /* __SWITCH_PD_P4_NAME_ROUTING_H__ */
