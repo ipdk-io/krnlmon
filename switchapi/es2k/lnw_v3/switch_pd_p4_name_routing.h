@@ -56,39 +56,6 @@
 #define LNW_RX_LAG_TABLE_ACTION_FWD_TO_VSI "linux_networking_control.fwd_to_vsi"
 #define LNW_ACTION_FWD_TO_VSI_PARAM_PORT "port"
 
-/* NEXTHOP_TABLE */
-// Verified for ES2K
-#define LNW_NEXTHOP_TABLE "linux_networking_control.nexthop_table"
-
-#define LNW_NEXTHOP_TABLE_KEY_NEXTHOP_ID "user_meta.cmeta.nexthop_id"
-
-#define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_INFO \
-  "linux_networking_control.set_nexthop_info_dmac"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_RIF "router_interface_id"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_EGRESS_PORT "egress_port"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_HIGH "dmac_high"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_DMAC_LOW "dmac_low"
-
-#define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG \
-  "linux_networking_control.set_nexthop_lag"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF "router_interface_id"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_HIGH "dmac_high"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_LOW "dmac_low"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID "lag_group_id"
-
-/* ECMP_NEXTHOP_TABLE */
-// Verified for ES2K
-#define LNW_ECMP_NEXTHOP_TABLE "linux_networking_control.ecmp_nexthop_table"
-
-#define LNW_ECMP_NEXTHOP_TABLE_KEY_ECMP_NEXTHOP_ID "user_meta.cmeta.nexthop_id"
-
-#define LNW_ECMP_NEXTHOP_TABLE_ACTION_SET_ECMP_NEXTHOP_INFO_DMAC \
-  "linux_networking_control.ecmp_set_nexthop_info_dmac"
-#define LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_RIF "router_interface_id"
-#define LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_DMAC_HIGH "dmac_high"
-#define LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_DMAC_LOW "dmac_low"
-#define LNW_ACTION_SET_ECMP_NEXTHOP_PARAM_EGRESS_PORT "egress_port"
-
 /* TX_LAG_TABLE */
 #define LNW_TX_LAG_TABLE "linux_networking_control.tx_lag_table"
 
