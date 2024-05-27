@@ -21,8 +21,6 @@
 
 #define LNW_KEY_MATCH_PRIORITY "$MATCH_PRIORITY"
 
-/* List of tables and corresponding actions */
-
 //----------------------------------------------------------------------
 // VXLAN_ENCAP_MOD_TABLE
 //----------------------------------------------------------------------
