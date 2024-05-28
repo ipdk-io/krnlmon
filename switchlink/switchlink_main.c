@@ -59,7 +59,7 @@ enum {
   SWITCHLINK_MSG_MAX,
 } switchlink_msg_t;
 
-static void nl_sync_state(void) {
+static void sync_state(void) {
   static uint8_t msg_idx = SWITCHLINK_MSG_LINK;
   if (msg_idx == SWITCHLINK_MSG_MAX) {
     return;
@@ -147,7 +147,7 @@ static void nl_sync_state(void) {
  *    void
  */
 
-static void nl_process_message(struct nlmsghdr* nlmsg) {
+static void process_message(struct nlmsghdr* nlmsg) {
   /* TODO: P4OVS: Enabling callback for link msg type only and prints for
      few protocol families to avoid flood of messages. Enable, as needed.
   */
@@ -190,7 +190,6 @@ static void nl_process_message(struct nlmsghdr* nlmsg) {
     case RTM_DELMDB:
       break;
     case NLMSG_DONE:
-      // P4-OVS comment nl_sync_state();
       break;
     default:
       krnlmon_log_debug("Unknown netlink message(%d). Ignoring\n",
@@ -199,24 +198,24 @@ static void nl_process_message(struct nlmsghdr* nlmsg) {
   }
 }
 
-static int nl_recv_sock_msg(struct nl_msg* msg, void* arg) {
+static int receive_message(struct nl_msg* msg, void* arg) {
   struct nlmsghdr* nl_msg = nlmsg_hdr(msg);
   int nl_msg_sz = nlmsg_get_max_size(msg);
   while (nlmsg_ok(nl_msg, nl_msg_sz)) {
-    nl_process_message(nl_msg);
+    process_message(nl_msg);
     nl_msg = nlmsg_next(nl_msg, &nl_msg_sz);
   }
 
   return 0;
 }
 
-static void nl_cleanup_sock(void) {
+static void free_socket(void) {
   // free the socket
   nl_socket_free(g_nlsk);
   g_nlsk = NULL;
 }
 
-static void switchlink_nl_sock_intf_init(void) {
+static void init_socket(void) {
   int nlsk_fd, sock_flags;
 
   // allocate a new socket
@@ -232,15 +231,14 @@ static void switchlink_nl_sock_intf_init(void) {
   nl_socket_disable_seq_check(g_nlsk);
 
   // set the callback function
-  nl_socket_modify_cb(g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, nl_recv_sock_msg,
-                      NULL);
-  nl_socket_modify_cb(g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, nl_recv_sock_msg,
+  nl_socket_modify_cb(g_nlsk, NL_CB_VALID, NL_CB_CUSTOM, receive_message, NULL);
+  nl_socket_modify_cb(g_nlsk, NL_CB_FINISH, NL_CB_CUSTOM, receive_message,
                       NULL);
 
   // connect to the netlink route socket
   if (nl_connect(g_nlsk, NETLINK_ROUTE) < 0) {
     perror("nl_connect:NETLINK_ROUTE");
-    nl_cleanup_sock();
+    free_socket();
     return;
   }
 
@@ -259,21 +257,21 @@ static void switchlink_nl_sock_intf_init(void) {
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   if (nlsk_fd < 0) {
     perror("nl_socket_get_fd");
-    nl_cleanup_sock();
+    free_socket();
     return;
   }
   sock_flags = fcntl(nlsk_fd, F_GETFL, 0);
   if (fcntl(nlsk_fd, F_SETFL, sock_flags | O_NONBLOCK) < 0) {
     perror("fcntl");
-    nl_cleanup_sock();
+    free_socket();
     return;
   }
 
   // start building state from the kernel
-  nl_sync_state();
+  sync_state();
 }
 
-static void nl_process_event_loop(void) {
+static void receive_event_loop(void) {
   int nlsk_fd;
   nlsk_fd = nl_socket_get_fd(g_nlsk);
   krnlmon_assert(nlsk_fd > 0);
@@ -319,12 +317,12 @@ int switchlink_main(void) {
   switchlink_init_db();
   switchlink_init_api();
   switchlink_init_link();
-  switchlink_nl_sock_intf_init();
+  init_socket();
 
   if (g_nlsk) {
     usleep(20000);
-    nl_process_event_loop();
-    nl_cleanup_sock();
+    receive_event_loop();
+    free_socket();
   }
 
   return 0;
