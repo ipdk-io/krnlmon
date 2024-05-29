@@ -146,24 +146,6 @@
 #define LNW_ACTION_SET_TUNNEL_PARAM_TUNNEL_ID "tunnel_id"
 #define LNW_ACTION_SET_TUNNEL_PARAM_DST_ADDR "dst_addr"
 
-/* NEXTHOP_TABLE */
-// Verified for MEV
-#define LNW_NEXTHOP_TABLE "linux_networking_control.nexthop_table"
-
-#define LNW_NEXTHOP_TABLE_KEY_NEXTHOP_ID "user_meta.cmeta.nexthop_id"
-
-#define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP \
-  "linux_networking_control.set_nexthop"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_RIF "router_interface_id"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_NEIGHBOR_ID "neighbor_id"
-#define LNW_ACTION_SET_NEXTHOP_PARAM_EGRESS_PORT "egress_port"
-
-#define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG \
-  "linux_networking_control.set_nexthop_lag"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF "router_interface_id"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_NEIGHBOR_ID "neighbor_id"
-#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID "lag_group_id"
-
 /* TX_LAG_TABLE */
 #define LNW_TX_LAG_TABLE "linux_networking_control.tx_lag_table"
 

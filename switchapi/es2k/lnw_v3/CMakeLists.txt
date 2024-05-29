@@ -5,8 +5,10 @@
 
 target_sources(switchapi_o PRIVATE
   lnw_ecmp_hash_table.h
-  switch_pd_p4_name_routing.h
-  switch_pd_routing.c
+  lnw_ecmp_nexthop_table.h
+  lnw_nexthop_table.h
   switch_pd_lag.c
   switch_pd_lag.h
+  switch_pd_p4_name_routing.h
+  switch_pd_routing.c
 )
