@@ -18,6 +18,7 @@
 
 #include "switchlink/switchlink_globals.h"
 #include "switchlink/switchlink_handlers.h"
+#include "switchlink/switchlink_utils.h"
 #include "switchlink_init_sai.h"
 
 static sai_route_api_t* sai_route_api = NULL;

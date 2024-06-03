@@ -18,6 +18,7 @@
 #include <linux/if.h>
 
 #include "switchlink_init_sai.h"
+#include "switchlink/switchlink_db.h"
 #include "switchsde/sde_port_intf.h"
 #include "switchsde/sde_status.h"
 #include "switchsde/sde_types.h"
