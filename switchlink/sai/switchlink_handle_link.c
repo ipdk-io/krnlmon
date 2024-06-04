@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+#include <string.h>
+
 #include "switchlink/switchlink_handlers.h"
 #include "switchlink_init_sai.h"
 
