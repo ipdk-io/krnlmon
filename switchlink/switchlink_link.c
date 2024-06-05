@@ -261,8 +261,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
                 nla_for_each_nested(infodata, linkinfo, attrlen) {
                   process_info_data_attr(infodata, &attrs);
                 }
-              }
-              if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
+              } else if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
                 nla_for_each_nested(infodata, linkinfo, attrlen) {
                   process_info_lag_data_attr(infodata, &attrs);
                 }
