@@ -408,16 +408,6 @@ switch_status_t switch_pd_nexthop_table_entry(
       goto dealloc_resources;
     }
 
-    status = tdi_data_field_set_value(
-        data_hdl, data_field_id,
-        (api_nexthop_pd_info->neighbor_handle &
-         ~(SWITCH_HANDLE_TYPE_NEIGHBOR << SWITCH_HANDLE_TYPE_SHIFT)));
-    if (status != TDI_SUCCESS) {
-      krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
-                        data_field_id, status);
-      goto dealloc_resources;
-    }
-
     status = tdi_data_field_id_with_action_get(
         table_info_hdl, LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID, action_id,
         &data_field_id);
