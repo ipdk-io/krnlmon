@@ -18,6 +18,7 @@
 #include "switch_pd_lag.h"
 
 #include "switchapi/es2k/switch_pd_p4_name_mapping.h"
+#include "switchapi/es2k/switch_pd_p4_name_routing.h"
 #include "switchapi/es2k/switch_pd_utils.h"
 #include "switchapi/switch_internal.h"
 #include "switchapi/switch_lag.h"
