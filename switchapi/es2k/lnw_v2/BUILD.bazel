@@ -28,11 +28,6 @@ krnlmon_cc_library(
 )
 
 krnlmon_cc_library(
-    name = "switch_pd_p4_name_routing",
-    hdrs = ["switch_pd_p4_name_routing.h"],
-)
-
-krnlmon_cc_library(
     name = "switch_pd_routing",
     srcs = ["switch_pd_routing.c"],
     deps = [
