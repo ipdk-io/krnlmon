@@ -18,11 +18,6 @@ SWITCH_PD_LAG_HDR = select({
     "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_lag_hdr"],
 })
 
-SWITCH_PD_P4_NAME_ROUTING = select({
-    "//flags:lnw_v2": ["//switchapi/es2k/lnw_v2:switch_pd_p4_name_routing"],
-    "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_p4_name_routing"],
-})
-
 SWITCH_PD_ROUTING = select({
     "//flags:lnw_v2": ["//switchapi/es2k/lnw_v2:switch_pd_routing"],
     "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_routing"],
@@ -170,9 +165,16 @@ krnlmon_cc_library(
 )
 
 krnlmon_cc_library(
+    name = "switch_pd_p4_name_routing",
+    hdrs = ["switch_pd_p4_name_routing.h"],
+)
+
+krnlmon_cc_library(
     name = "switch_pd_routing_hdr",
     hdrs = ["switch_pd_routing.h"],
-    deps = SWITCH_PD_P4_NAME_ROUTING,
+    deps = [
+        ":switch_pd_p4_name_routing",
+    ],
 )
 
 krnlmon_cc_library(
