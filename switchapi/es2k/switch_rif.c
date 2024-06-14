@@ -16,12 +16,7 @@
  * limitations under the License.
  */
 
-// We disable format checking for this file because of a bug in clang-format
-// that causes it to fail (without explanation) with:
-//   error: code should be clang-formatted [-Wclang-format-violations]
-// The file was clang-formatted before being pushed.
-
-// clang-format off
+#include "switchapi/switch_rif.h"
 
 #include <net/if.h>
 
@@ -29,7 +24,6 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
-#include "switchapi/switch_rif.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_status.h"
 #include "switchutils/switch_log.h"
@@ -100,6 +94,34 @@ switch_status_t switch_api_rif_attribute_get(
 
   /* just get all attributes? */
   *api_rif_info = rif_info->api_rif_info;
+
+  return status;
+}
+
+switch_status_t switch_api_update_rif_rmac_handle(
+    const switch_device_t device, const switch_handle_t rif_handle,
+    const switch_handle_t rmac_handle) {
+  switch_rif_info_t* rif_info = NULL;
+  switch_status_t status = SWITCH_STATUS_SUCCESS;
+
+  if (!SWITCH_RIF_HANDLE(rif_handle)) {
+    status = SWITCH_STATUS_INVALID_PARAMETER;
+    krnlmon_log_error(
+        "rif attribute get: Invalid rif handle on device %d, "
+        "rif handle 0x%lx: "
+        "error: %s\n",
+        device, rif_handle, switch_error_to_string(status));
+    return status;
+  }
+
+  status = switch_rif_get(device, rif_handle, &rif_info);
+  CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+  /* just get all attributes? */
+  rif_info->api_rif_info.rmac_handle = rmac_handle;
+
+  /* Update port_id for RIF for the new RMAC */
+  switch_pd_to_get_port_id(&rif_info->api_rif_info);
 
   return status;
 }
