@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,6 +156,7 @@ static sai_status_t sai_create_router_interface(
       return status;
     }
 
+#if defined(ES2K_TARGET)
     status =
         switch_api_update_rif_rmac_handle(switch_id, intf_handle, rmac_handle);
     if (status != SAI_STATUS_SUCCESS) {
@@ -163,6 +164,7 @@ static sai_status_t sai_create_router_interface(
                         sai_status_to_string(status));
       return status;
     }
+#endif
   } else {
     *rif_id = SAI_NULL_OBJECT_ID;
 

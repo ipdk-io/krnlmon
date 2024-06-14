@@ -16,12 +16,7 @@
  * limitations under the License.
  */
 
-// We disable format checking for this file because of a bug in clang-format
-// that causes it to fail (without explanation) with:
-//   error: code should be clang-formatted [-Wclang-format-violations]
-// The file was clang-formatted before being pushed.
-
-// clang-format off
+#include "switchapi/switch_rif.h"
 
 #include <net/if.h>
 
@@ -29,7 +24,6 @@
 #include "switchapi/switch_base_types.h"
 #include "switchapi/switch_device.h"
 #include "switchapi/switch_internal.h"
-#include "switchapi/switch_rif.h"
 #include "switchapi/switch_rif_int.h"
 #include "switchapi/switch_status.h"
 #include "switchutils/switch_log.h"

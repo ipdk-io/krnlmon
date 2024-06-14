@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,11 @@ switch_status_t switch_api_rif_attribute_get(
     const switch_device_t device, const switch_handle_t rif_handle,
     const switch_uint64_t rif_flags, switch_api_rif_info_t* api_rif_info);
 
+#if defined(ES2K_TARGET)
 switch_status_t switch_api_update_rif_rmac_handle(
     const switch_device_t device, const switch_handle_t rif_handle,
     const switch_handle_t rmac_handle);
+#endif
 
 switch_status_t switch_api_rif_create(switch_device_t device,
                                       switch_api_rif_info_t* api_rif_info,
