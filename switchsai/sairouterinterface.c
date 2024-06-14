@@ -155,6 +155,14 @@ static sai_status_t sai_create_router_interface(
                         sai_status_to_string(status));
       return status;
     }
+
+    status =
+        switch_api_update_rif_rmac_handle(switch_id, intf_handle, rmac_handle);
+    if (status != SAI_STATUS_SUCCESS) {
+      krnlmon_log_error("Failed to update RMAC handle, error: %s",
+                        sai_status_to_string(status));
+      return status;
+    }
   } else {
     *rif_id = SAI_NULL_OBJECT_ID;
 

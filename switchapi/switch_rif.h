@@ -57,6 +57,10 @@ switch_status_t switch_api_rif_attribute_get(
     const switch_device_t device, const switch_handle_t rif_handle,
     const switch_uint64_t rif_flags, switch_api_rif_info_t* api_rif_info);
 
+switch_status_t switch_api_update_rif_rmac_handle(
+    const switch_device_t device, const switch_handle_t rif_handle,
+    const switch_handle_t rmac_handle);
+
 switch_status_t switch_api_rif_create(switch_device_t device,
                                       switch_api_rif_info_t* api_rif_info,
                                       switch_handle_t* rif_handle);

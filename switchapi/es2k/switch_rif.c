@@ -104,6 +104,34 @@ switch_status_t switch_api_rif_attribute_get(
   return status;
 }
 
+switch_status_t switch_api_update_rif_rmac_handle(
+    const switch_device_t device, const switch_handle_t rif_handle,
+    const switch_handle_t rmac_handle) {
+  switch_rif_info_t* rif_info = NULL;
+  switch_status_t status = SWITCH_STATUS_SUCCESS;
+
+  if (!SWITCH_RIF_HANDLE(rif_handle)) {
+    status = SWITCH_STATUS_INVALID_PARAMETER;
+    krnlmon_log_error(
+        "rif attribute get: Invalid rif handle on device %d, "
+        "rif handle 0x%lx: "
+        "error: %s\n",
+        device, rif_handle, switch_error_to_string(status));
+    return status;
+  }
+
+  status = switch_rif_get(device, rif_handle, &rif_info);
+  CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
+
+  /* just get all attributes? */
+  rif_info->api_rif_info.rmac_handle = rmac_handle;
+
+  /* Update port_id for RIF for the new RMAC */
+  switch_pd_to_get_port_id(&rif_info->api_rif_info);
+
+  return status;
+}
+
 switch_status_t switch_api_rif_create(switch_device_t device,
                                       switch_api_rif_info_t* api_rif_info,
                                       switch_handle_t* rif_handle) {
