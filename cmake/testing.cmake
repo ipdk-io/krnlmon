@@ -70,10 +70,18 @@ add_custom_target(krnlmon-test
     ${CMAKE_BINARY_DIR}
 )
 
+set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+#######################
+# build-krnlmon-tests #
+#######################
+
+add_custom_target(build-krnlmon-tests
+  DEPENDS ${test_targets}
+)
+
 unset(test_options)
 unset(test_targets)
-
-set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 ####################
 # krnlmon-coverage #
