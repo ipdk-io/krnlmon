@@ -328,6 +328,30 @@ void switchlink_create_lag(switchlink_db_interface_info_t* lag_intf) {
 
 /**
  * Routine Description:
+ *    Wrapper function to delete lag member
+ *
+ * Arguments:
+ *    [in] ifindex - lag member ifindex
+ *
+ * Return Values:
+ *    void
+ */
+void switchlink_delete_lag_member(uint32_t ifindex) {
+  switchlink_db_lag_member_info_t lag_member_info;
+  memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
+  lag_member_info.ifindex = ifindex;
+  if (switchlink_db_get_lag_member_info(&lag_member_info) ==
+      SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
+    return;
+  }
+
+  // delete the lag member from backend and DB
+  delete_lag_member(&lag_member_info, lag_member_info.lag_member_h);
+  switchlink_db_delete_lag_member(&lag_member_info);
+}
+
+/**
+ * Routine Description:
  *    Wrapper function to delete lag
  *
  * Arguments:
@@ -341,6 +365,17 @@ void switchlink_delete_lag(uint32_t ifindex) {
   if (switchlink_db_get_interface_info(ifindex, &lag_intf) ==
       SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
     return;
+  }
+
+  /* Delete LAG members for an LACP */
+  if (lag_intf.bond_mode == SWITCHLINK_BOND_MODE_LACP) {
+    uint32_t member_if_index = 0;
+    while (member_if_index != -1) {
+      member_if_index = switchlink_db_delete_lacp_member(lag_intf.lag_h);
+      if (member_if_index != -1) {
+        switchlink_delete_lag_member(member_if_index);
+      }
+    }
   }
 
   // delete the lag from backend and DB
@@ -424,28 +459,4 @@ void switchlink_create_lag_member(
   }
 
   return;
-}
-
-/**
- * Routine Description:
- *    Wrapper function to delete lag member
- *
- * Arguments:
- *    [in] ifindex - lag member ifindex
- *
- * Return Values:
- *    void
- */
-void switchlink_delete_lag_member(uint32_t ifindex) {
-  switchlink_db_lag_member_info_t lag_member_info;
-  memset(&lag_member_info, 0, sizeof(switchlink_db_lag_member_info_t));
-  lag_member_info.ifindex = ifindex;
-  if (switchlink_db_get_lag_member_info(&lag_member_info) ==
-      SWITCHLINK_DB_STATUS_ITEM_NOT_FOUND) {
-    return;
-  }
-
-  // delete the lag member from backend and DB
-  delete_lag_member(&lag_member_info, lag_member_info.lag_member_h);
-  switchlink_db_delete_lag_member(&lag_member_info);
 }

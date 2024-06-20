@@ -190,7 +190,7 @@ switch_status_t switch_pd_tx_lag_table_entry(switch_device_t device,
     }
 
     status = tdi_key_field_set_value_and_mask(key_hdl, field_id_hash,
-                                              lag_list + port_count, 0x3);
+                                              lag_list + port_count, 0x7);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error(
           "Unable to set value for key ID: %d for tx_lag_table"
@@ -604,7 +604,8 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
       CHECK_RET(status != SWITCH_STATUS_SUCCESS, status);
       status = switch_pd_get_physical_port_id(
           device, lag_member_info->api_lag_member_info.port_id, &egress_port);
-      status = tdi_key_field_set_value(key_hdl, field_id_lag_id, lag_id);
+      status = tdi_key_field_set_value_and_mask(key_hdl, field_id_lag_id,
+                                                lag_id, 0xFF);
       if (status != TDI_SUCCESS) {
         krnlmon_log_error(
             "Unable to set value for key ID: %d for tx_lag_table"
@@ -613,8 +614,8 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
         goto dealloc_resources;
       }
 
-      status = tdi_key_field_set_value(key_hdl, field_id_hash,
-                                       lag_list + port_count);
+      status = tdi_key_field_set_value_and_mask(key_hdl, field_id_hash,
+                                                lag_list + port_count, 0x7);
       if (status != TDI_SUCCESS) {
         krnlmon_log_error(
             "Unable to set value for key ID: %d for tx_lag_table"

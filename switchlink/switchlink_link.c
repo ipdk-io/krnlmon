@@ -415,8 +415,6 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
     if (link_type == SWITCHLINK_LINK_TYPE_TUN ||
         link_type == SWITCHLINK_LINK_TYPE_RIF) {
       switchlink_delete_interface(ifmsg->ifi_index);
-    } else {
-      krnlmon_log_debug("Unhandled link type");
     }
 #ifdef LAG_OPTION
     if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
