@@ -138,6 +138,11 @@ switch_status_t switch_api_lag_attribute_get(
     const switch_device_t device, const switch_handle_t lag_handle,
     switch_api_lag_info_t* api_lag_info);
 
+// Switchapi method to update RMAC handle for a LAG
+switch_status_t switch_api_lag_update_rmac_handle(const switch_device_t device,
+                                                  const switch_handle_t lag_h,
+                                                  const switch_handle_t rmac_h);
+
 // Switchapi method to program LAG tables in HW
 switch_status_t switch_api_program_lag_hw(const switch_device_t device,
                                           switch_handle_t lag_handle,

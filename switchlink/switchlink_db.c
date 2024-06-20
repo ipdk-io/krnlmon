@@ -1134,6 +1134,31 @@ switchlink_db_status_t switchlink_db_delete_lag_member(
 
 /**
  * Routine Description:
+ *    Lookup through LAG members and fetch the lag member which points to valid
+ *    LACP lag_h
+ *
+ * Arguments:
+ *    [in] lag_h - LACP LAG handle
+ *
+ * Return Values:
+ *    LAG member ifindex on success
+ *    -1 otherwise
+ */
+uint32_t switchlink_db_delete_lacp_member(switchlink_handle_t lag_h) {
+  tommy_node* node = tommy_list_head(&switchlink_db_lag_member_obj_list);
+  while (node) {
+    switchlink_db_lag_member_obj_t* obj = node->data;
+    krnlmon_assert(obj != NULL);
+    node = node->next;
+    if ((obj->lag_member_info.lag_h == lag_h)) {
+      return obj->lag_member_info.ifindex;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Routine Description:
  *    Updates oper_state of lag member in switchlink database
  *
  * Arguments:

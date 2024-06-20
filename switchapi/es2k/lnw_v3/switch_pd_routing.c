@@ -33,7 +33,7 @@
 #define MAC_BASE 0
 #define MAC_LOW_BYTES 4
 #define MAC_HIGH_BYTES 2
-#define MAC_HIGH_OFFSET MAC_BASE + MAC_HIGH_BYTES
+#define MAC_LOW_OFFSET MAC_BASE + MAC_HIGH_BYTES
 
 switch_status_t switch_routing_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_routing_info,
@@ -290,7 +290,7 @@ switch_status_t switch_pd_nexthop_table_entry(
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
         (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
-            MAC_HIGH_OFFSET,
+            MAC_LOW_OFFSET,
         MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
@@ -380,8 +380,7 @@ switch_status_t switch_pd_nexthop_table_entry(
 
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
-            MAC_HIGH_OFFSET,
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
         MAC_HIGH_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
@@ -400,7 +399,8 @@ switch_status_t switch_pd_nexthop_table_entry(
 
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
+            MAC_LOW_OFFSET,
         MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
@@ -473,6 +473,12 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
   uint16_t network_byte_order_rif_id = 0;
 
   krnlmon_log_debug("%s", __func__);
+
+  if (SWITCH_LAG_HANDLE(api_nexthop_pd_info->rif_handle)) {
+    // ECMP and LAG are mutually exclusive, we don't need to handle LAG case.
+    return SWITCH_STATUS_SUCCESS;
+  }
+
   status = tdi_info_get(dev_id, PROGRAM_NAME, &info_hdl);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Failed to get tdi info handle, error: %d", status);
@@ -612,8 +618,7 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
     }
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
-            MAC_HIGH_OFFSET,
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
         MAC_HIGH_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
@@ -632,7 +637,8 @@ switch_status_t switch_pd_ecmp_nexthop_table_entry(
 
     status = tdi_data_field_set_value_ptr(
         data_hdl, data_field_id,
-        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr + MAC_BASE,
+        (const uint8_t*)&api_nexthop_pd_info->dst_mac_addr.mac_addr +
+            MAC_LOW_OFFSET,
         MAC_LOW_BYTES);
     if (status != TDI_SUCCESS) {
       krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
