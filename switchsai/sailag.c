@@ -185,6 +185,15 @@ static sai_status_t sai_create_lag(_Out_ sai_object_id_t* lag_id,
                         sai_status_to_string(status));
       return status;
     }
+#if defined(ES2K_TARGET)
+    status = switch_api_lag_update_rmac_handle(switch_id, lag_h, rmac_handle);
+    if (status != SAI_STATUS_SUCCESS) {
+      krnlmon_log_error("Failed to update RMAC handle, error: %s",
+                        sai_status_to_string(status));
+      return status;
+    }
+#endif
+
   } else {
     *lag_id = SAI_NULL_OBJECT_ID;
 
