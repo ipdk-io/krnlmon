@@ -1735,17 +1735,6 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
     goto dealloc_resources;
   }
 
-#if 0  // LNWv3 does not have this parameter
-  status =
-      tdi_key_field_id_get(table_info_hdl, LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING,
-                           &field_id_meta_bit32_zero);
-  if (status != TDI_SUCCESS) {
-    krnlmon_log_error("Unable to get field ID for key: %s, error: %d",
-                      LNW_ECMP_HASH_TABLE_KEY_ZERO_PADDING, status);
-    goto dealloc_resources;
-  }
-#endif
-
   status = tdi_action_name_to_id(
       table_info_hdl, LNW_ECMP_HASH_TABLE_ACTION_SET_NEXTHOP_ID, &action_id);
   if (status != TDI_SUCCESS) {
@@ -1786,8 +1775,9 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
       ecmp_member = (switch_nhop_member_t*)node->data;
       nhop_handle = ecmp_member->nhop_handle;
 
-      status = tdi_key_field_set_value(key_hdl, field_id_group_id,
-                                       network_byte_order_ecmp_id);
+      /* Mask for ECMP group ID is 16 bits */
+      status = tdi_key_field_set_value_and_mask(
+          key_hdl, field_id_group_id, network_byte_order_ecmp_id, 0xFFFF);
       if (status != TDI_SUCCESS) {
         krnlmon_log_error(
             "Unable to set value for key ID: %d for ecmp_hash_table"
@@ -1796,22 +1786,14 @@ switch_status_t switch_pd_ecmp_hash_table_entry(
         goto dealloc_resources;
       }
 
-      status = tdi_key_field_set_value(key_hdl, field_id_meta_common_hash,
-                                       ecmp_list + nhop_count);
+      /* Mask for ECMP hash value is 3 bits */
+      status = tdi_key_field_set_value_and_mask(
+          key_hdl, field_id_meta_common_hash, ecmp_list + nhop_count, 0x7);
       if (status != TDI_SUCCESS) {
         krnlmon_log_error(
             "Unable to set value for key ID: %d for ecmp_hash_table"
             ", error: %d",
             field_id_meta_common_hash, status);
-        goto dealloc_resources;
-      }
-
-      status = tdi_key_field_set_value(key_hdl, field_id_meta_bit32_zero, 0);
-      if (status != TDI_SUCCESS) {
-        krnlmon_log_error(
-            "Unable to set value for key ID: %d for ecmp_hash_table"
-            ", error: %d",
-            field_id_meta_bit32_zero, status);
         goto dealloc_resources;
       }
 
