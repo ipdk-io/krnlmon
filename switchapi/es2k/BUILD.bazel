@@ -8,20 +8,11 @@ load("//bazel:rules.bzl", "krnlmon_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
-SWITCH_PD_LAG = select({
-    "//flags:lnw_v2": ["//switchapi/es2k/lnw_v2:switch_pd_lag"],
-    "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_lag"],
-})
+SWITCH_PD_LAG = ["//switchapi/es2k/lnw_v3:switch_pd_lag"]
 
-SWITCH_PD_LAG_HDR = select({
-    "//flags:lnw_v2": ["//switchapi/es2k/lnw_v2:switch_pd_lag_hdr"],
-    "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_lag_hdr"],
-})
+SWITCH_PD_LAG_HDR = ["//switchapi/es2k/lnw_v3:switch_pd_lag_hdr"]
 
-SWITCH_PD_ROUTING = select({
-    "//flags:lnw_v2": ["//switchapi/es2k/lnw_v2:switch_pd_routing"],
-    "//flags:lnw_v3": ["//switchapi/es2k/lnw_v3:switch_pd_routing"],
-})
+SWITCH_PD_ROUTING = ["//switchapi/es2k/lnw_v3:switch_pd_routing"]
 
 krnlmon_cc_library(
     name = "switch_config",

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@rules_cc//cc:defs.bzl", "cc_library")
-load("//bazel:defs.bzl", "LNW_DEFINES", "TARGET_DEFINES")
+load("//bazel:defs.bzl", "TARGET_DEFINES")
 
 def krnlmon_cc_library(
         name,
@@ -31,7 +31,7 @@ def krnlmon_cc_library(
         hdrs = hdrs,
         # alwayslink = alwayslink,
         copts = copts,
-        defines = TARGET_DEFINES + LNW_DEFINES + defines,
+        defines = TARGET_DEFINES + defines,
         include_prefix = include_prefix,
         includes = includes,
         strip_include_prefix = strip_include_prefix,
