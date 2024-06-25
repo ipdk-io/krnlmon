@@ -26,9 +26,7 @@
 #ifndef __SWITCH_PD_LAG_WRAPPER_H__
 #define __SWITCH_PD_LAG_WRAPPER_H__
 
-#if defined(LNW_V2)
-#include "switchapi/es2k/lnw_v2/switch_pd_lag.h"
-#elif defined(LNW_V3)
+#if defined(LNW_V3)
 #include "switchapi/es2k/lnw_v3/switch_pd_lag.h"
 #else
 #error "ASSERT: Unknown LNW version!"

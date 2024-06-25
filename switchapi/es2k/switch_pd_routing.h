@@ -59,15 +59,9 @@ switch_status_t switch_pd_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
 
-#if defined(LNW_V2)
-switch_status_t switch_pd_neighbor_table_entry(
-    switch_device_t device,
-    const switch_pd_routing_info_t* api_neighbor_pd_info, bool entry_add);
-#elif defined(LNW_V3)
 switch_status_t switch_pd_ecmp_nexthop_table_entry(
     switch_device_t device, const switch_pd_routing_info_t* api_nexthop_pd_info,
     bool entry_add);
-#endif
 
 switch_status_t switch_pd_rmac_table_entry(switch_device_t device,
                                            switch_rmac_entry_t* rmac_entry,
