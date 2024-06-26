@@ -29,11 +29,7 @@ target_sources(switchapi_o PRIVATE
   switchapi_utils.c
 )
 
-if(LNW_V2)
-  add_subdirectory(lnw_v2)
-elseif(LNW_V3)
-  add_subdirectory(lnw_v3)
-endif()
+add_subdirectory(lnw_v3)
 
 target_link_libraries(switchapi_o PRIVATE
   sde::tdi

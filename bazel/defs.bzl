@@ -12,11 +12,3 @@ TARGET_DEFINES = select(
     },
     no_match_error = NO_MATCH_ERROR,
 )
-
-LNW_DEFINES = select(
-    {
-        "//flags:lnw_v2": ["LNW_V2"],
-        "//flags:lnw_v3": ["LNW_V3"],
-        "//conditions:default": [],
-    },
-)
