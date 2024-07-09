@@ -66,6 +66,8 @@ set_target_properties(switchutils_o PROPERTIES LINKER_LANGUAGE "C")
 target_link_libraries(krnlmon PkgConfig::nl3 PkgConfig::nl3-route)
 target_link_libraries(krnlmon absl::synchronization)
 
+set_install_rpath(krnlmon ${DEP_ELEMENT})
+
 #################
 # libkrnlmon.pc #
 #################

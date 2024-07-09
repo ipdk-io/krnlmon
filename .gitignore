@@ -1,6 +1,8 @@
 # Bazel
 /bazel-*
 .bazelrc
+MODULE.bazel
+MODULE.bazel.lock
 
 # CMake
 /build/
