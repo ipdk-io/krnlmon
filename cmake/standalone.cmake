@@ -114,3 +114,8 @@ include(CompilerSettings)
 set_basic_compiler_options()
 set_legacy_security_options()
 #set_extended_security_options()
+
+#-----------------------------------------------------------------------
+# set_install_rpath()
+#-----------------------------------------------------------------------
+include(SetInstallRpath)
