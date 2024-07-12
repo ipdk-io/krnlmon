@@ -348,26 +348,8 @@ switch_status_t switch_pd_nexthop_table_entry(
       goto dealloc_resources;
     }
 
-    status = tdi_data_field_id_with_action_get(
-        table_info_hdl, LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF, action_id,
-        &data_field_id);
-    if (status != TDI_SUCCESS) {
-      krnlmon_log_error(
-          "Unable to get data field id param for: %s, "
-          "error: %d",
-          LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF, status);
-      goto dealloc_resources;
-    }
-
     lag_id = api_nexthop_pd_info->rif_handle &
              ~(SWITCH_HANDLE_TYPE_LAG << SWITCH_HANDLE_TYPE_SHIFT);
-
-    status = tdi_data_field_set_value(data_hdl, data_field_id, lag_id);
-    if (status != TDI_SUCCESS) {
-      krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
-                        data_field_id, status);
-      goto dealloc_resources;
-    }
 
     status = tdi_data_field_id_with_action_get(
         table_info_hdl, LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_HIGH, action_id,
