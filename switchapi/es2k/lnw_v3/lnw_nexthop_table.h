@@ -22,8 +22,8 @@
 
 #define LNW_NEXTHOP_TABLE_ACTION_SET_NEXTHOP_LAG \
   "linux_networking_control.set_nexthop_lag"
-//MEVTS1.7 this param removed from set_nexthop_lag action
-//#define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF "router_interface_id"
+// MEVTS1.7 this param removed from set_nexthop_lag action
+// #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_RIF "router_interface_id"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_HIGH "dmac_high"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_DMAC_LOW "dmac_low"
 #define LNW_ACTION_SET_NEXTHOP_LAG_PARAM_LAG_ID "lag_group_id"
