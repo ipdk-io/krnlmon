@@ -586,7 +586,7 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
       &rif_data_field_id);
   if (status != TDI_SUCCESS) {
     krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
-                      ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
+                      ACTION_SET_EGRESS_PORT_PARAM_ROUTER_INTF_ID, status);
     goto dealloc_resources;
   }
 
@@ -638,7 +638,7 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
         status = tdi_data_field_set_value(data_hdl, rif_data_field_id, lag_id);
         if (status != TDI_SUCCESS) {
           krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
-                            data_field_id, status);
+                            rif_data_field_id, status);
           goto dealloc_resources;
         }
 
