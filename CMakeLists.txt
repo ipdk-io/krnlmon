@@ -35,6 +35,9 @@ add_compile_options(-Werror)
 
 include_directories(.)
 
+# Set the "krnlmon" label on all tests in this directory.
+set_property(DIRECTORY PROPERTY LABELS krnlmon)
+
 if(BUILD_TESTING)
   include(cmake/testing.cmake)
 endif()
