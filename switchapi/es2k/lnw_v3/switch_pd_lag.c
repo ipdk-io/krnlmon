@@ -470,6 +470,7 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
   tdi_id_t field_id_hash = 0;
   tdi_id_t action_id = 0;
   tdi_id_t data_field_id = 0;
+  tdi_id_t rif_data_field_id = 0;
 
   tdi_dev_id_t dev_id = device;
 
@@ -581,6 +582,15 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
   }
 
   status = tdi_data_field_id_with_action_get(
+      table_info_hdl, ACTION_SET_EGRESS_PORT_PARAM_ROUTER_INTF_ID, action_id,
+      &rif_data_field_id);
+  if (status != TDI_SUCCESS) {
+    krnlmon_log_error("Unable to get data field id param for: %s, error: %d",
+                      ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, status);
+    goto dealloc_resources;
+  }
+
+  status = tdi_data_field_id_with_action_get(
       table_info_hdl, ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT, action_id,
       &data_field_id);
   if (status != TDI_SUCCESS) {
@@ -625,6 +635,13 @@ switch_status_t switch_pd_tx_lacp_lag_table_entry(
       }
 
       if (entry_add) {
+        status = tdi_data_field_set_value(data_hdl, rif_data_field_id, lag_id);
+        if (status != TDI_SUCCESS) {
+          krnlmon_log_error("Unable to set action value for ID: %d, error: %d",
+                            data_field_id, status);
+          goto dealloc_resources;
+        }
+
         status = tdi_data_field_set_value(data_hdl, data_field_id, egress_port);
         if (status != TDI_SUCCESS) {
           krnlmon_log_error("Unable to set action value for ID: %d, error: %d",

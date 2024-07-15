@@ -70,6 +70,7 @@
 #define LNW_TX_LAG_TABLE_ACTION_SET_EGRESS_PORT \
   "linux_networking_control.set_egress_port"
 
+#define ACTION_SET_EGRESS_PORT_PARAM_ROUTER_INTF_ID "router_interface_id"
 #define ACTION_SET_EGRESS_PORT_PARAM_EGRESS_PORT "egress_port"
 
 #define LNW_LAG_HASH_SIZE 65536
