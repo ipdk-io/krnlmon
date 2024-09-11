@@ -1,0 +1,2411 @@
+Scanning dependencies of target switchsde_o
+[  1%] Building C object switchsde/CMakeFiles/switchsde_o.dir/sde_status.c.o
+[  2%] Building C object switchsde/CMakeFiles/switchsde_o.dir/sde_es2k_port_intf.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsde/sde_es2k_port_intf.c should add these lines:
+#include <stdint.h>               // for uint32_t
+#include "switchsde/sde_types.h"  // for sde_dev_id_t, sde_status_t, sde_dev...
+struct port_info_t;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsde/sde_es2k_port_intf.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsde/sde_es2k_port_intf.c:
+#include <stdint.h>               // for uint32_t
+#include "ipu_pal/port_intf.h"    // for ipu_pal_get_port_id_from_mac, ipu_p...
+#include "sde_port_intf.h"        // for sde_pal_get_port_id_from_mac, sde_p...
+#include "switchsde/sde_types.h"  // for sde_dev_id_t, sde_status_t, sde_dev...
+struct port_info_t;
+---
+
+[  2%] Built target switchsde_o
+Scanning dependencies of target switchapi_o
+[  4%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_config.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_config.c should add these lines:
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_base_types.h"  // for switch_status_t, FALSE, swi...
+#include "switchapi/switch_config.h"      // for switch_config_t, switch_con...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_t
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for switch_table_default_sizes_get
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_config.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_config.c:
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_base_types.h"  // for switch_status_t, FALSE, swi...
+#include "switchapi/switch_config.h"      // for switch_config_t, switch_con...
+#include "switchapi/switch_config_int.h"  // for switch_config_info_t, SWITC...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_t
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for switch_table_default_sizes_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[  5%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_device.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_device.c should add these lines:
+#include <stdbool.h>                        // for false, true
+#include <stddef.h>                         // for NULL
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_d...
+#include "switchapi/switch_config.h"        // for switch_config_init, switc...
+#include "switchapi/switch_device.h"        // for switch_api_device_info_t
+#include "switchapi/switch_device_int.h"    // for switch_device_context_t
+#include "switchapi/switch_id.h"            // for switch_api_id_allocator_d...
+#include "switchapi/switch_l3_int.h"        // for switch_l3_init
+#include "switchapi/switch_nhop.h"          // for switch_api_create_nhop_group
+#include "switchapi/switch_rif.h"           // for switch_rif_free, switch_r...
+#include "switchapi/switch_rmac.h"          // for switch_api_router_mac_gro...
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_tunnel.h"        // for switch_tunnel_free, switc...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_device.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_device.c:
+#include <linux/if.h>                       // for IFNAMSIZ
+#include <stdbool.h>                        // for false, true
+#include <stddef.h>                         // for NULL
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_d...
+#include "switchapi/switch_config.h"        // for switch_config_init, switc...
+#include "switchapi/switch_config_int.h"    // for switch_config_device_cont...
+#include "switchapi/switch_device.h"        // for switch_api_device_info_t
+#include "switchapi/switch_device_int.h"    // for switch_device_context_t
+#include "switchapi/switch_fdb.h"           // for switch_l2_free, switch_l2...
+#include "switchapi/switch_id.h"            // for switch_api_id_allocator_d...
+#include "switchapi/switch_internal.h"      // for switch_error_to_string
+#include "switchapi/switch_l3_int.h"        // for switch_l3_init
+#include "switchapi/switch_lag.h"           // for switch_lag_free, switch_l...
+#include "switchapi/switch_neighbor_int.h"  // for switch_neighbor_free, swi...
+#include "switchapi/switch_nhop.h"          // for switch_api_create_nhop_group
+#include "switchapi/switch_nhop_int.h"      // for switch_nhop_free, switch_...
+#include "switchapi/switch_rif.h"           // for switch_rif_free, switch_r...
+#include "switchapi/switch_rmac.h"          // for switch_api_router_mac_gro...
+#include "switchapi/switch_rmac_int.h"      // for switch_rmac_free, switch_...
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_table.h"         // for switch_table_free, switch...
+#include "switchapi/switch_tunnel.h"        // for switch_tunnel_free, switc...
+#include "switchapi/switch_vrf.h"           // for switch_vrf_free, switch_v...
+#include "switchutils/switch_log.h"         // for krnlmon_log_error, krnlmo...
+---
+
+[  7%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_fdb.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_fdb.h should add these lines:
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint8_t
+#include "switchapi/switch_handle_int.h"  // for switch_handle_create, switc...
+#include "switchapi/switch_types_int.h"   // for switch_hashnode_t, switch_h...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_fdb.h should remove these lines:
+- #include "switch_interface.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_fdb.h:
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint8_t
+#include "switch_base_types.h"            // for switch_status_t, switch_dev...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_L2_FWD_RX
+#include "switchapi/switch_handle_int.h"  // for switch_handle_create, switc...
+#include "switchapi/switch_types_int.h"   // for switch_hashnode_t, switch_h...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_fdb.c should add these lines:
+#include <stdbool.h>                      // for false, true
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_L2_FWD_RX
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t
+#include "switchapi/switch_tunnel.h"      // for switch_tunnel_info_t, switc...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_fdb.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_fdb.c:
+#include "switchapi/switch_fdb.h"
+#include <stdbool.h>                      // for false, true
+#include "switch_pd_fdb.h"                // for switch_pd_l2_rx_forward_tab...
+#include "switch_pd_utils.h"              // for switch_pd_get_bridge_id
+#include "switchapi/switch_base_types.h"  // for switch_mac_addr_t, switch_s...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_L2_FWD_RX
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t
+#include "switchapi/switch_rif_int.h"     // for switch_rif_info_t, switch_r...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_tunnel.h"      // for switch_tunnel_info_t, switc...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[  8%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_handle.c.o
+Warning: include-what-you-use reported diagnostics:
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c:53:14: error: result of comparison of constant 256 with expression of type 'switch_device_t' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+  if (device > SWITCH_MAX_DEVICE) {
+      ~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c:131:14: error: result of comparison of constant 256 with expression of type 'switch_device_t' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+  if (device > SWITCH_MAX_DEVICE) {
+      ~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c:186:14: error: result of comparison of constant 256 with expression of type 'switch_device_t' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+  if (device > SWITCH_MAX_DEVICE) {
+      ~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c:249:14: error: result of comparison of constant 256 with expression of type 'switch_device_t' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+  if (device > SWITCH_MAX_DEVICE) {
+      ~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_handle.h should add these lines:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_handle.h should remove these lines:
+- #include "switch_id.h"  // lines 22-22
+- #include "switch_status.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_handle.h:
+#include "switch_base_types.h"  // for switch_handle_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c should add these lines:
+#include <stdbool.h>                      // for bool, false
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t
+#include "id/id.h"                        // for bf_id_allocator_destroy
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_info_t, SWITC...
+#include "switchapi/switch_id.h"          // for switch_api_id_allocator_des...
+#include "switchapi/switch_types_int.h"   // for switch_array_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c should remove these lines:
+- #include "switchapi/switch_nhop_int.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_handle.c:
+#include "switchapi/switch_handle.h"
+#include <stdbool.h>                      // for bool, false
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t
+#include "id/id.h"                        // for bf_id_allocator_destroy
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device_int.h"  // for switch_device_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_info_t, SWITC...
+#include "switchapi/switch_id.h"          // for switch_api_id_allocator_des...
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_types_int.h"   // for switch_array_t
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 10%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_id.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_id.h should add these lines:
+#include <stdbool.h>            // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_id.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_id.h:
+#include <stdbool.h>            // for bool
+#include "switch_base_types.h"  // for switch_device_t, switch_status_t, swi...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_id.c should add these lines:
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_base_types.h"  // for switch_uint32_t, switch_sta...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_id.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_id.c:
+#include "switchapi/switch_id.h"
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_base_types.h"  // for switch_uint32_t, switch_sta...
+#include "switchapi/switch_internal.h"    // for switch_error_to_string
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 11%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_l3.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_l3.h should add these lines:
+#include <stdbool.h>                     // for bool
+#include "switchapi/switch_types_int.h"  // for switch_hashnode_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_l3.h should remove these lines:
+- #include "switch_handle.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_l3.h:
+#include <stdbool.h>                     // for bool
+#include "switch_base_types.h"           // for switch_handle_t, switch_devi...
+#include "switch_l3_int.h"               // for switch_route_entry_t
+#include "switchapi/switch_types_int.h"  // for switch_hashnode_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_l3.c should add these lines:
+#include <string.h>                            // for NULL, memset
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_ecmp_hash_ta...
+#include "switchapi/switch_base_types.h"       // for switch_status_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for switch_handle_type_get
+#include "switchapi/switch_handle_int.h"       // for switch_handle_type_free
+#include "switchapi/switch_l3_int.h"           // for switch_route_entry_t
+#include "switchapi/switch_nhop.h"             // for switch_nhop_group_info_t
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_l3.c should remove these lines:
+- #include "switchapi/switch_pd_routing.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_l3.c:
+#include "switchapi/switch_l3.h"
+#include <string.h>                            // for NULL, memset
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_ecmp_hash_ta...
+#include "switchapi/switch_base_types.h"       // for switch_status_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for switch_handle_type_get
+#include "switchapi/switch_handle_int.h"       // for switch_handle_type_free
+#include "switchapi/switch_internal.h"         // for switch_error_to_string
+#include "switchapi/switch_l3_int.h"           // for switch_route_entry_t
+#include "switchapi/switch_nhop.h"             // for switch_nhop_group_info_t
+#include "switchapi/switch_nhop_int.h"         // for switch_nhop_get_group
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"            // for krnlmon_log_error
+---
+
+[ 13%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_lag.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_lag.h should add these lines:
+#include <stdbool.h>                      // for bool
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t, uint8_t
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_LAG, SWI...
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_lag.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_lag.h:
+#include <stdbool.h>                      // for bool
+#include <stddef.h>                       // for NULL
+#include <stdint.h>                       // for uint32_t, uint8_t
+#include "switch_base_types.h"            // for switch_handle_t, switch_dev...
+#include "switch_types_int.h"             // for switch_list_t, switch_node_t
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_LAG, SWI...
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_lag.c should add these lines:
+#include "switchapi/es2k/lnw_v3/switch_pd_lag.h"  // for switch_pd_rx_lag_ta...
+#include "switchutils/switch_log.h"               // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_lag.c should remove these lines:
+- #include "switch_pd_lag.h"  // lines 20-20
+- #include "switch_pd_utils.h"  // lines 21-21
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_lag.c:
+#include "switchapi/switch_lag.h"
+#include "switchapi/es2k/lnw_v3/switch_pd_lag.h"  // for switch_pd_rx_lag_ta...
+#include "switchapi/switch_base_types.h"          // for switch_status_t
+#include "switchapi/switch_device.h"              // for switch_api_device_d...
+#include "switchapi/switch_internal.h"            // for switch_error_to_string
+#include "switchapi/switch_status.h"              // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"               // for krnlmon_log_error
+---
+
+[ 14%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_neighbor.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_neighbor.h should add these lines:
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_routing_info_t
+#include "switchapi/switch_rif.h"              // for switch_rif_type_t
+#include "switchapi/switch_types_int.h"        // for switch_node_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_neighbor.h should remove these lines:
+- #include "switch_handle.h"  // lines 22-22
+- #include "switch_neighbor_int.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_neighbor.h:
+#include "switch_base_types.h"                 // for switch_handle_t, switc...
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_routing_info_t
+#include "switchapi/switch_rif.h"              // for switch_rif_type_t
+#include "switchapi/switch_types_int.h"        // for switch_node_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_neighbor.c should add these lines:
+#include <stdbool.h>                        // for true, false
+#include <string.h>                         // for NULL, memset
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_h...
+#include "switchapi/switch_device_int.h"    // for switch_device_api_context...
+#include "switchapi/switch_handle.h"        // for SWITCH_HANDLE_TYPE_NEIGHBOR
+#include "switchapi/switch_handle_int.h"    // for switch_handle_type_free
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_neighbor.c should remove these lines:
+- #include "switchapi/switch_nhop.h"  // lines 27-27
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_neighbor.c:
+#include "switchapi/switch_neighbor.h"
+#include <stdbool.h>                        // for true, false
+#include <string.h>                         // for NULL, memset
+#include "switch_pd_fdb.h"                  // for switch_pd_l2_rx_forward_t...
+#include "switch_pd_utils.h"                // for switch_pd_get_physical_po...
+#include "switchapi/switch_base_types.h"    // for switch_status_t, switch_h...
+#include "switchapi/switch_device_int.h"    // for switch_device_api_context...
+#include "switchapi/switch_fdb.h"           // for switch_api_l2_info_t
+#include "switchapi/switch_handle.h"        // for SWITCH_HANDLE_TYPE_NEIGHBOR
+#include "switchapi/switch_handle_int.h"    // for switch_handle_type_free
+#include "switchapi/switch_internal.h"      // for switch_error_to_string
+#include "switchapi/switch_lag.h"           // for switch_lag_info_t, switch...
+#include "switchapi/switch_neighbor_int.h"  // for switch_neighbor_context_t
+#include "switchapi/switch_nhop_int.h"      // for switch_nhop_info_t, switc...
+#include "switchapi/switch_rif_int.h"       // for switch_rif_info_t, switch...
+#include "switchapi/switch_rmac_int.h"      // for switch_rmac_entry_t, swit...
+#include "switchapi/switch_status.h"        // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"         // for krnlmon_log_error, krnlmo...
+---
+
+[ 15%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_nhop.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_nhop.h should add these lines:
+#include <stdbool.h>            // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_nhop.h should remove these lines:
+- #include "switch_handle.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_nhop.h:
+#include <stdbool.h>            // for bool
+#include "switch_base_types.h"  // for switch_handle_t, switch_status_t, swi...
+#include "switch_types_int.h"   // for switch_list_t, switch_node_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_nhop.c should add these lines:
+#include <string.h>                            // for NULL, memset
+#include "judy-1.0.5/src/Judy.h"               // for JLD, JLI, PJERR, PWord_t
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_routing_info_t
+#include "switchapi/switch_base_types.h"       // for switch_handle_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for SWITCH_HANDLE_TYPE_NHOP
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"        // for switch_node_t, switch_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_nhop.c should remove these lines:
+- #include "switchapi/switch_neighbor_int.h"  // lines 23-23
+- #include "switchapi/switch_pd_routing.h"  // lines 25-25
+- #include "switchapi/switch_rif.h"  // lines 26-26
+- #include "switchapi/switch_rif_int.h"  // lines 27-27
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_nhop.c:
+#include "switchapi/switch_nhop.h"
+#include <string.h>                            // for NULL, memset
+#include "judy-1.0.5/src/Judy.h"               // for JLD, JLI, PJERR, PWord_t
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_routing_info_t
+#include "switchapi/switch_base_types.h"       // for switch_handle_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for SWITCH_HANDLE_TYPE_NHOP
+#include "switchapi/switch_handle_int.h"       // for switch_handle_type_free
+#include "switchapi/switch_internal.h"         // for switch_error_to_string
+#include "switchapi/switch_nhop_int.h"         // for switch_nhop_info_t
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"        // for switch_node_t, switch_...
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+---
+
+[ 17%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_pd_fdb.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.h should add these lines:
+#include <stdbool.h>                      // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.h should remove these lines:
+- #include "switchapi/switch_handle.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.h:
+#include <stdbool.h>                      // for bool
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_fdb.h"         // for switch_api_l2_info_t
+#include "switchapi/switch_tunnel.h"      // for switch_api_tunnel_info_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.c should add these lines:
+#include <netinet/in.h>                            // for ntohl
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint8_t, uint32_t
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_action_d...
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_set...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_data_field_id_...
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_id_t
+#include "switchapi/switch_handle.h"               // for SWITCH_HANDLE_TYPE...
+#include "switchapi/switch_handle_int.h"           // for SWITCH_LAG_HANDLE
+#include "switchapi/switch_rif.h"                  // for switch_api_rif_info_t
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.c should remove these lines:
+- #include "switchapi/switch_internal.h"  // lines 25-25
+- #include "switchapi/switch_tdi.h"  // lines 27-27
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_fdb.c:
+#include "switch_pd_fdb.h"
+#include <netinet/in.h>                            // for ntohl
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint8_t, uint32_t
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_action_d...
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_set...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_data_field_id_...
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_id_t
+#include "switch_pd_p4_name_mapping.h"             // for LNW_L2_FWD_TX_TABLE
+#include "switch_pd_utils.h"                       // for switch_pd_tdi_stat...
+#include "switchapi/switch_base_types.h"           // for switch_status_t
+#include "switchapi/switch_fdb.h"                  // for switch_api_l2_info_t
+#include "switchapi/switch_handle.h"               // for SWITCH_HANDLE_TYPE...
+#include "switchapi/switch_handle_int.h"           // for SWITCH_LAG_HANDLE
+#include "switchapi/switch_rif.h"                  // for switch_api_rif_info_t
+#include "switchapi/switch_rif_int.h"              // for switch_rif_info_t
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+---
+
+[ 18%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_pd_tunnel.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.h should add these lines:
+#include <stdbool.h>                      // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.h should remove these lines:
+- #include "switchapi/switch_handle.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.h:
+#include <stdbool.h>                      // for bool
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_tunnel.h"      // for switch_api_tunnel_term_info_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.c should add these lines:
+#include <netinet/in.h>                            // for ntohl, ntohs
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint32_t, uint8_t
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_entry_add
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_set...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_data_field_id_...
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_id_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.c should remove these lines:
+- #include "switchapi/switch_internal.h"  // lines 23-23
+- #include "switchapi/switch_tdi.h"  // lines 24-24
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_tunnel.c:
+#include "switch_pd_tunnel.h"
+#include <netinet/in.h>                            // for ntohl, ntohs
+#include <stddef.h>                                // for NULL
+#include <stdint.h>                                // for uint32_t, uint8_t
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_entry_add
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_set...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_data_field_id_...
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_id_t
+#include "switch_pd_p4_name_mapping.h"             // for LNW_IPV4_TUNNEL_TE...
+#include "switch_pd_utils.h"                       // for switch_pd_tdi_stat...
+#include "switchapi/switch_tunnel.h"               // for switch_api_tunnel_...
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+---
+
+[ 20%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_pd_utils.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.h should add these lines:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint8_t, uint32_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.h should remove these lines:
+- #include "switchapi/switch_handle.h"  // lines 24-24
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.h:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint8_t, uint32_t
+#include "ipu_types/ipu_types.h"          // for ipu_status_t, ipu_dev_id_t
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t
+#include "tdi/common/tdi_defs.h"          // for tdi_status_t, tdi_session_hdl
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.c should add these lines:
+#include <stdio.h>                                 // for NULL, snprintf
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_action_d...
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_get...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_key_field_id_get
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_s...
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"            // for switch_node_t, swi...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.c should remove these lines:
+- #include <net/if.h>  // lines 21-21
+- #include "switchapi/switch_tdi.h"  // lines 29-29
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_utils.c:
+#include "switch_pd_utils.h"
+#include <stdio.h>                                 // for NULL, snprintf
+#include <tdi/common/c_frontend/tdi_info.h>        // for tdi_table_from_nam...
+#include <tdi/common/c_frontend/tdi_init.h>        // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>     // for tdi_session_create
+#include <tdi/common/c_frontend/tdi_table.h>       // for tdi_table_action_d...
+#include <tdi/common/c_frontend/tdi_table_data.h>  // for tdi_data_field_get...
+#include <tdi/common/c_frontend/tdi_table_info.h>  // for tdi_key_field_id_get
+#include <tdi/common/c_frontend/tdi_table_key.h>   // for tdi_key_field_set_...
+#include <tdi/common/tdi_defs.h>                   // for TDI_SUCCESS, tdi_s...
+#include "ipu_pal/port_intf.h"                     // for ipu_pal_get_port_i...
+#include "ipu_types/ipu_types.h"                   // for ipu_dev_id_t, ipu_...
+#include "switch_pd_p4_name_mapping.h"             // for LNW_SOURCE_PORT_TO...
+#include "switchapi/switch_base_types.h"           // for switch_mac_addr_t
+#include "switchapi/switch_internal.h"             // for SWITCH_LIST_GET_HEAD
+#include "switchapi/switch_rmac_int.h"             // for switch_rmac_entry_t
+#include "switchapi/switch_status.h"               // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"            // for switch_node_t, swi...
+#include "switchutils/switch_log.h"                // for krnlmon_log_error
+---
+
+[ 21%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_rif.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rif.c should add these lines:
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_RIF
+#include "switchapi/switch_handle_int.h"  // for switch_handle_type_free
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rif.c should remove these lines:
+- #include <net/if.h>  // lines 26-26
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rif.c:
+#include <stddef.h>                       // for NULL
+#include "switch_pd_utils.h"              // for switch_pd_to_get_port_id
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_RIF
+#include "switchapi/switch_handle_int.h"  // for switch_handle_type_free
+#include "switchapi/switch_internal.h"    // for CHECK_RET, switch_error_to_...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t, swit...
+#include "switchapi/switch_rif_int.h"     // for switch_rif_info_t, switch_r...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_debug, krnlmon_...
+---
+
+[ 23%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_rmac.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_rmac.h should add these lines:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_rmac.h should remove these lines:
+- #include "switch_status.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_rmac.h:
+#include "switch_base_types.h"  // for switch_handle_t, switch_device_t, swi...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rmac.c should add these lines:
+#include <stdbool.h>                           // for false, bool
+#include <stddef.h>                            // for NULL
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_rmac_table_e...
+#include "switchapi/switch_base_types.h"       // for switch_status_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for SWITCH_HANDLE_TYPE_RMAC
+#include "switchapi/switch_handle_int.h"       // for SWITCH_RMAC_HANDLE
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"        // for switch_macaddress_to_s...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rmac.c should remove these lines:
+- #include "switchapi/switch_pd_routing.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_rmac.c:
+#include "switchapi/switch_rmac.h"
+#include <stdbool.h>                           // for false, bool
+#include <stddef.h>                            // for NULL
+#include "switchapi/es2k/switch_pd_routing.h"  // for switch_pd_rmac_table_e...
+#include "switchapi/switch_base_types.h"       // for switch_status_t, switc...
+#include "switchapi/switch_device_int.h"       // for switch_device_api_cont...
+#include "switchapi/switch_handle.h"           // for SWITCH_HANDLE_TYPE_RMAC
+#include "switchapi/switch_handle_int.h"       // for SWITCH_RMAC_HANDLE
+#include "switchapi/switch_internal.h"         // for switch_error_to_string
+#include "switchapi/switch_rmac_int.h"         // for switch_rmac_entry_t
+#include "switchapi/switch_status.h"           // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"        // for switch_macaddress_to_s...
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+---
+
+[ 24%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_table.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_table.h should add these lines:
+#include <stdbool.h>            // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_table.h should remove these lines:
+- #include "switchutils/switch_log.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_table.h:
+#include <stdbool.h>            // for bool
+#include "switch_base_types.h"  // for switch_size_t, switch_status_t, switc...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_table.c should add these lines:
+#include <string.h>                       // for NULL, strlen
+#include "switchapi/switch_base_types.h"  // for switch_size_t, switch_status_t
+#include "switchapi/switch_device_int.h"  // for switch_device_table_get
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_table.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_table.c:
+#include "switchapi/switch_table.h"
+#include <string.h>                       // for NULL, strlen
+#include "switchapi/switch_base_types.h"  // for switch_size_t, switch_status_t
+#include "switchapi/switch_device_int.h"  // for switch_device_table_get
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 26%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_tunnel.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_tunnel.h should add these lines:
+#include <stddef.h>                       // for NULL
+#include "judy-1.0.5/src/Judy.h"          // for Pvoid_t
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
+#include "switchapi/switch_id.h"          // for switch_id_allocator_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_tunnel.h should remove these lines:
+- #include "switch_interface.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_tunnel.h:
+#include <stddef.h>                       // for NULL
+#include "judy-1.0.5/src/Judy.h"          // for Pvoid_t
+#include "switch_base_types.h"            // for switch_handle_t, switch_sta...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_TUNNEL
+#include "switch_types_int.h"             // for switch_hashtable_t, switch_...
+#include "switchapi/switch_handle_int.h"  // for switch_handle_get, switch_h...
+#include "switchapi/switch_id.h"          // for switch_id_allocator_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_tunnel.c should add these lines:
+#include <stdbool.h>                      // for false, true
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_set
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_TUNNEL
+#include "switchapi/switch_table.h"       // for switch_api_table_size_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_tunnel.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_tunnel.c:
+#include "switchapi/switch_tunnel.h"
+#include <stdbool.h>                      // for false, true
+#include "switch_pd_tunnel.h"             // for switch_pd_tunnel_entry, swi...
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_dev...
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_set
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_TUNNEL
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for switch_api_table_size_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 27%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switch_vrf.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_vrf.h should add these lines:
+#include <stddef.h>                       // for NULL
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_delete, switc...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"   // for switch_array_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_vrf.h should remove these lines:
+- #include "switch_interface.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/switch_vrf.h:
+#include <stddef.h>                       // for NULL
+#include "switch_base_types.h"            // for switch_device_t, switch_han...
+#include "switch_handle.h"                // for SWITCH_HANDLE_TYPE_VRF
+#include "switchapi/switch_device_int.h"  // for switch_device_api_context_get
+#include "switchapi/switch_handle_int.h"  // for switch_handle_delete, switc...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_types_int.h"   // for switch_array_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_vrf.c should add these lines:
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_VRF
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_vrf.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_vrf.c:
+#include "switchapi/switch_vrf.h"
+#include "switchapi/switch_base_types.h"  // for switch_status_t, SWITCH_API...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_VRF
+#include "switchapi/switch_internal.h"    // for switch_error_to_string, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 28%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/switchapi_utils.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switchapi_utils.c should add these lines:
+#include <arpa/inet.h>                    // for inet_ntop, inet_pton
+#include <netinet/in.h>                   // for htonl
+#include <stdbool.h>                      // for bool, false
+#include <stdint.h>                       // for uint32_t
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for NULL, strlen
+#include <sys/socket.h>                   // for AF_INET, AF_INET6
+#include <tdi/common/tdi_defs.h>          // for TDI_ALREADY_EXISTS, TDI_HW_...
+#include "judy-1.0.5/src/Judy.h"          // for Word_t, JLD, JLF, JLG, JLI
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_int...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_ACE, SWI...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for SWITCH_TABLE_ACL_STATS, SWI...
+#include "switchapi/switch_types_int.h"   // for switch_hashtable_t, switch_...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+#include "tommyds/tommyhashtbl.h"         // for tommy_hashtable_done, tommy...
+#include "tommyds/tommylist.h"            // for tommy_list_empty, tommy_lis...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switchapi_utils.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switchapi_utils.c:
+#include <arpa/inet.h>                    // for inet_ntop, inet_pton
+#include <netinet/in.h>                   // for htonl
+#include <stdbool.h>                      // for bool, false
+#include <stdint.h>                       // for uint32_t
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for NULL, strlen
+#include <sys/socket.h>                   // for AF_INET, AF_INET6
+#include <tdi/common/tdi_defs.h>          // for TDI_ALREADY_EXISTS, TDI_HW_...
+#include "judy-1.0.5/src/Judy.h"          // for Word_t, JLD, JLF, JLG, JLI
+#include "switchapi/switch_base_types.h"  // for switch_status_t, switch_int...
+#include "switchapi/switch_handle.h"      // for SWITCH_HANDLE_TYPE_ACE, SWI...
+#include "switchapi/switch_internal.h"    // for SWITCH_ASSERT, SWITCH_API_B...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_table.h"       // for SWITCH_TABLE_ACL_STATS, SWI...
+#include "switchapi/switch_types_int.h"   // for switch_hashtable_t, switch_...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+#include "tommyds/tommyhashtbl.h"         // for tommy_hashtable_done, tommy...
+#include "tommyds/tommylist.h"            // for tommy_list_empty, tommy_lis...
+---
+
+[ 30%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/lnw_v3/switch_pd_routing.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_routing.h should add these lines:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint8_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_routing.h should remove these lines:
+- #include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"  // lines 25-25
+- #include "switchapi/switch_handle.h"  // lines 31-31
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/switch_pd_routing.h:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint8_t
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_l3.h"          // for switch_api_route_entry_t
+#include "switchapi/switch_nhop.h"        // for switch_nhop_group_info_t
+#include "switchapi/switch_rmac_int.h"    // for switch_rmac_entry_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_routing.c should add these lines:
+#include <netinet/in.h>                                       // for ntohl
+#include <stddef.h>                                           // for NULL
+#include <tdi/common/c_frontend/tdi_info.h>                   // for tdi_tab...
+#include <tdi/common/c_frontend/tdi_init.h>                   // for tdi_dev...
+#include <tdi/common/c_frontend/tdi_session.h>                // for tdi_ses...
+#include <tdi/common/c_frontend/tdi_table.h>                  // for tdi_tab...
+#include <tdi/common/c_frontend/tdi_table_data.h>             // for tdi_dat...
+#include <tdi/common/c_frontend/tdi_table_info.h>             // for tdi_dat...
+#include <tdi/common/c_frontend/tdi_table_key.h>              // for tdi_key...
+#include <tdi/common/tdi_defs.h>                              // for TDI_SUC...
+#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"  // for LNW_ECM...
+#include "switchapi/switch_handle.h"                          // for SWITCH_...
+#include "switchapi/switch_handle_int.h"                      // for SWITCH_...
+#include "switchapi/switch_status.h"                          // for SWITCH_...
+#include "switchapi/switch_types_int.h"                       // for switch_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_routing.c should remove these lines:
+- #include "switchapi/switch_nhop_int.h"  // lines 25-25
+- #include "switchapi/switch_tdi.h"  // lines 26-26
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_routing.c:
+#include "switchapi/es2k/switch_pd_routing.h"
+#include <netinet/in.h>                                       // for ntohl
+#include <stddef.h>                                           // for NULL
+#include <tdi/common/c_frontend/tdi_info.h>                   // for tdi_tab...
+#include <tdi/common/c_frontend/tdi_init.h>                   // for tdi_dev...
+#include <tdi/common/c_frontend/tdi_session.h>                // for tdi_ses...
+#include <tdi/common/c_frontend/tdi_table.h>                  // for tdi_tab...
+#include <tdi/common/c_frontend/tdi_table_data.h>             // for tdi_dat...
+#include <tdi/common/c_frontend/tdi_table_info.h>             // for tdi_dat...
+#include <tdi/common/c_frontend/tdi_table_key.h>              // for tdi_key...
+#include <tdi/common/tdi_defs.h>                              // for TDI_SUC...
+#include "switchapi/es2k/lnw_v3/switch_pd_p4_name_routing.h"  // for LNW_ECM...
+#include "switchapi/es2k/switch_pd_p4_name_mapping.h"         // for LNW_NEX...
+#include "switchapi/es2k/switch_pd_utils.h"                   // for switch_...
+#include "switchapi/switch_base_types.h"                      // for switch_...
+#include "switchapi/switch_handle.h"                          // for SWITCH_...
+#include "switchapi/switch_handle_int.h"                      // for SWITCH_...
+#include "switchapi/switch_internal.h"                        // for FOR_EAC...
+#include "switchapi/switch_status.h"                          // for SWITCH_...
+#include "switchapi/switch_types_int.h"                       // for switch_...
+#include "switchutils/switch_log.h"                           // for krnlmon...
+---
+
+[ 31%] Building C object switchapi/CMakeFiles/switchapi_o.dir/es2k/lnw_v3/switch_pd_lag.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.h should add these lines:
+#include <stdbool.h>                      // for bool
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.h should remove these lines:
+- #include "switchapi/switch_handle.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.h:
+#include <stdbool.h>                      // for bool
+#include "switchapi/switch_base_types.h"  // for switch_device_t, switch_sta...
+#include "switchapi/switch_lag.h"         // for switch_lag_info_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.c should add these lines:
+#include <stddef.h>                                    // for NULL
+#include <stdint.h>                                    // for uint8_t, uint32_t
+#include <tdi/common/c_frontend/tdi_info.h>            // for tdi_table_from...
+#include <tdi/common/c_frontend/tdi_init.h>            // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>         // for tdi_session_cr...
+#include <tdi/common/c_frontend/tdi_table.h>           // for tdi_table_acti...
+#include <tdi/common/c_frontend/tdi_table_data.h>      // for tdi_data_field...
+#include <tdi/common/c_frontend/tdi_table_info.h>      // for tdi_key_field_...
+#include <tdi/common/c_frontend/tdi_table_key.h>       // for tdi_key_field_...
+#include <tdi/common/tdi_defs.h>                       // for TDI_SUCCESS
+#include "switchapi/switch_handle.h"                   // for SWITCH_HANDLE_...
+#include "switchapi/switch_status.h"                   // for SWITCH_STATUS_...
+#include "switchapi/switch_types_int.h"                // for switch_list_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.c should remove these lines:
+- #include "switchapi/switch_tdi.h"  // lines 24-24
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchapi/es2k/lnw_v3/switch_pd_lag.c:
+#include "switch_pd_lag.h"
+#include <stddef.h>                                    // for NULL
+#include <stdint.h>                                    // for uint8_t, uint32_t
+#include <tdi/common/c_frontend/tdi_info.h>            // for tdi_table_from...
+#include <tdi/common/c_frontend/tdi_init.h>            // for tdi_device_get
+#include <tdi/common/c_frontend/tdi_session.h>         // for tdi_session_cr...
+#include <tdi/common/c_frontend/tdi_table.h>           // for tdi_table_acti...
+#include <tdi/common/c_frontend/tdi_table_data.h>      // for tdi_data_field...
+#include <tdi/common/c_frontend/tdi_table_info.h>      // for tdi_key_field_...
+#include <tdi/common/c_frontend/tdi_table_key.h>       // for tdi_key_field_...
+#include <tdi/common/tdi_defs.h>                       // for TDI_SUCCESS
+#include "switchapi/es2k/switch_pd_p4_name_mapping.h"  // for LNW_RX_LAG_TABLE
+#include "switchapi/es2k/switch_pd_utils.h"            // for switch_pd_get_...
+#include "switchapi/switch_handle.h"                   // for SWITCH_HANDLE_...
+#include "switchapi/switch_internal.h"                 // for CHECK_RET, FOR...
+#include "switchapi/switch_lag.h"                      // for switch_lag_mem...
+#include "switchapi/switch_status.h"                   // for SWITCH_STATUS_...
+#include "switchapi/switch_types_int.h"                // for switch_list_t
+#include "switchutils/switch_log.h"                    // for krnlmon_log_error
+---
+
+[ 31%] Built target switchapi_o
+Scanning dependencies of target switchlink_sai_o
+[ 33%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_ecmp.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_ecmp.c should add these lines:
+#include <stdint.h>                          // for uint8_t, int32_t, uint32_t
+#include <string.h>                          // for memset, NULL
+#include "sai.h"                             // for sai_api_query, SAI_API_N...
+#include "sainexthopgroup.h"                 // for sai_next_hop_group_api_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_sta...
+#include "switchlink/switchlink.h"           // for switchlink_handle_t, SWI...
+#include "switchlink/switchlink_db.h"        // for switchlink_db_ecmp_info_t
+#include "switchutils/switch_log.h"          // for krnlmon_log_error, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_ecmp.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_ecmp.c:
+#include <stdint.h>                          // for uint8_t, int32_t, uint32_t
+#include <string.h>                          // for memset, NULL
+#include "sai.h"                             // for sai_api_query, SAI_API_N...
+#include "sainexthopgroup.h"                 // for sai_next_hop_group_api_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_sta...
+#include "switchlink/switchlink.h"           // for switchlink_handle_t, SWI...
+#include "switchlink/switchlink_db.h"        // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_handlers.h"  // for switchlink_create_ecmp
+#include "switchlink_init_sai.h"             // for switchlink_delete_nexthop
+#include "switchutils/switch_log.h"          // for krnlmon_log_error, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+---
+
+[ 34%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_link.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_link.c should add these lines:
+#include <stdbool.h>                           // for true
+#include <stdint.h>                            // for uint32_t
+#include <string.h>                            // for memcpy, memset, memcmp
+#include "sai.h"                               // for sai_api_query, SAI_API...
+#include "sairouterinterface.h"                // for sai_router_interface_a...
+#include "saistatus.h"                         // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                          // for sai_attribute_t, sai_a...
+#include "saivirtualrouter.h"                  // for sai_virtual_router_api_t
+#include "switchlink/switchlink.h"             // for switchlink_handle_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L3
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_link.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_link.c:
+#include <stdbool.h>                           // for true
+#include <stdint.h>                            // for uint32_t
+#include <string.h>                            // for memcpy, memset, memcmp
+#include "sai.h"                               // for sai_api_query, SAI_API...
+#include "sairouterinterface.h"                // for sai_router_interface_a...
+#include "saistatus.h"                         // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                          // for sai_attribute_t, sai_a...
+#include "saivirtualrouter.h"                  // for sai_virtual_router_api_t
+#include "switchlink/switchlink.h"             // for switchlink_handle_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_handlers.h"    // for switchlink_create_inte...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L3
+#include "switchlink_init_sai.h"               // for sai_init_rintf_api
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+---
+
+[ 36%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_neigh.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_neigh.c should add these lines:
+#include <netinet/in.h>                      // for in6_addr, in6_addr::(ano...
+#include <stdbool.h>                         // for bool, false, true
+#include <stdint.h>                          // for uint8_t, uint32_t
+#include <string.h>                          // for memcpy, memset, memcmp
+#include <sys/socket.h>                      // for AF_INET, AF_INET6
+#include "sai.h"                             // for sai_api_query, SAI_API_FDB
+#include "saifdb.h"                          // for sai_fdb_entry_t, sai_fdb...
+#include "saineighbor.h"                     // for sai_neighbor_entry_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_ip_...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_neigh_info_t
+#include "switchsai/saiinternal.h"           // for SAI_L2_FWD_LEARN_PHYSICA...
+#include "switchutils/switch_log.h"          // for krnlmon_log_info, krnlmo...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_neigh.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_neigh.c:
+#include <netinet/in.h>                      // for in6_addr, in6_addr::(ano...
+#include <stdbool.h>                         // for bool, false, true
+#include <stdint.h>                          // for uint8_t, uint32_t
+#include <string.h>                          // for memcpy, memset, memcmp
+#include <sys/socket.h>                      // for AF_INET, AF_INET6
+#include "sai.h"                             // for sai_api_query, SAI_API_FDB
+#include "saifdb.h"                          // for sai_fdb_entry_t, sai_fdb...
+#include "saineighbor.h"                     // for sai_neighbor_entry_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_ip_...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_neigh_info_t
+#include "switchlink/switchlink_globals.h"   // for g_default_bridge_h
+#include "switchlink/switchlink_handlers.h"  // for switchlink_create_mac
+#include "switchlink_init_sai.h"             // for switchlink_delete_nexthop
+#include "switchsai/saiinternal.h"           // for SAI_L2_FWD_LEARN_PHYSICA...
+#include "switchutils/switch_log.h"          // for krnlmon_log_info, krnlmo...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+---
+
+[ 37%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_nexthop.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_nexthop.c should add these lines:
+#include <netinet/in.h>                      // for htonl, in_addr
+#include <string.h>                          // for memcpy, memset, NULL
+#include <sys/socket.h>                      // for AF_INET
+#include "sai.h"                             // for sai_api_query, SAI_API_N...
+#include "sainexthop.h"                      // for sai_next_hop_api_t, SAI_...
+#include "sainexthopgroup.h"                 // for sai_next_hop_group_api_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_nexthop_in...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_nexthop.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_nexthop.c:
+#include <netinet/in.h>                      // for htonl, in_addr
+#include <string.h>                          // for memcpy, memset, NULL
+#include <sys/socket.h>                      // for AF_INET
+#include "sai.h"                             // for sai_api_query, SAI_API_N...
+#include "sainexthop.h"                      // for sai_next_hop_api_t, SAI_...
+#include "sainexthopgroup.h"                 // for sai_next_hop_group_api_t
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                        // for sai_attribute_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_nexthop_in...
+#include "switchlink/switchlink_handlers.h"  // for switchlink_create_nexthop
+#include "switchlink_init_sai.h"             // for sai_init_nhop_api, switc...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+---
+
+[ 39%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_route.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_route.c should add these lines:
+#include <netinet/in.h>                      // for in_addr, htonl, in6_addr
+#include <stdbool.h>                         // for false, bool, true
+#include <stdint.h>                          // for uint8_t
+#include <string.h>                          // for memcpy, memset, NULL
+#include <sys/socket.h>                      // for AF_INET, AF_INET6
+#include "sai.h"                             // for sai_api_query, SAI_API_R...
+#include "sairoute.h"                        // for sai_route_entry_t, sai_r...
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saiswitch.h"                       // for SAI_PACKET_ACTION_TRAP
+#include "saitypes.h"                        // for sai_ip_prefix_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_route_info_t
+#include "switchlink/switchlink_utils.h"     // for ipv4_prefix_len_to_mask
+#include "switchutils/switch_log.h"          // for krnlmon_log_debug, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_route.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_route.c:
+#include <netinet/in.h>                      // for in_addr, htonl, in6_addr
+#include <stdbool.h>                         // for false, bool, true
+#include <stdint.h>                          // for uint8_t
+#include <string.h>                          // for memcpy, memset, NULL
+#include <sys/socket.h>                      // for AF_INET, AF_INET6
+#include "sai.h"                             // for sai_api_query, SAI_API_R...
+#include "sairoute.h"                        // for sai_route_entry_t, sai_r...
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saiswitch.h"                       // for SAI_PACKET_ACTION_TRAP
+#include "saitypes.h"                        // for sai_ip_prefix_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_route_info_t
+#include "switchlink/switchlink_globals.h"   // for g_cpu_rx_nhop_h
+#include "switchlink/switchlink_handlers.h"  // for switchlink_create_route
+#include "switchlink/switchlink_utils.h"     // for ipv4_prefix_len_to_mask
+#include "switchlink_init_sai.h"             // for switchlink_delete_ecmp
+#include "switchutils/switch_log.h"          // for krnlmon_log_debug, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+---
+
+[ 40%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_tunnel.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_tunnel.c should add these lines:
+#include <netinet/in.h>                      // for htonl, in_addr
+#include <stdint.h>                          // for uint32_t
+#include <string.h>                          // for memset, NULL
+#include <sys/socket.h>                      // for AF_INET
+#include "sai.h"                             // for sai_api_query, SAI_API_T...
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitunnel.h"                       // for sai_tunnel_api_t, SAI_TU...
+#include "saitypes.h"                        // for sai_attribute_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_tunnel_int...
+#include "switchutils/switch_log.h"          // for krnlmon_log_error, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_tunnel.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_tunnel.c:
+#include <netinet/in.h>                      // for htonl, in_addr
+#include <stdint.h>                          // for uint32_t
+#include <string.h>                          // for memset, NULL
+#include <sys/socket.h>                      // for AF_INET
+#include "sai.h"                             // for sai_api_query, SAI_API_T...
+#include "saistatus.h"                       // for SAI_STATUS_SUCCESS
+#include "saitunnel.h"                       // for sai_tunnel_api_t, SAI_TU...
+#include "saitypes.h"                        // for sai_attribute_t, sai_att...
+#include "switchlink/switchlink.h"           // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"        // for switchlink_db_tunnel_int...
+#include "switchlink/switchlink_handlers.h"  // for switchlink_create_tunnel...
+#include "switchlink_init_sai.h"             // for sai_init_tunnel_api, swi...
+#include "switchutils/switch_log.h"          // for krnlmon_log_error, krnlm...
+#include "switchutils/switch_utils.h"        // for krnlmon_assert
+---
+
+[ 42%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_init_sai.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.h should add these lines:
+#include "saitypes.h"                  // for sai_status_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.h should remove these lines:
+- #include "sai.h"  // lines 26-26
+- #include "switchlink/switchlink_utils.h"  // lines 29-29
+- #include "switchsai/saiinternal.h"  // lines 30-30
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.h:
+#include <stdbool.h>                   // for bool
+#include <stdint.h>                    // for uint32_t
+#include "krnlmon_options.h"           // for LAG_OPTION
+#include "saitypes.h"                  // for sai_status_t
+#include "switchlink/switchlink.h"     // for switchlink_handle_t, switchlin...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.c should add these lines:
+#include "saistatus.h"                 // for SAI_STATUS_SUCCESS
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.c should remove these lines:
+- #include "sai.h"  // lines 22-22
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_init_sai.c:
+#include "switchlink_init_sai.h"
+#include "krnlmon_options.h"           // for LAG_OPTION
+#include "saistatus.h"                 // for SAI_STATUS_SUCCESS
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+---
+
+[ 43%] Building C object switchlink/sai/CMakeFiles/switchlink_sai_o.dir/switchlink_handle_lag.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_lag.c should add these lines:
+#include <stdbool.h>                           // for false, true
+#include <stdint.h>                            // for uint8_t, uint32_t
+#include <stdio.h>                             // for snprintf
+#include <string.h>                            // for memset, memcpy, memcmp
+#include "sai.h"                               // for sai_api_query, SAI_API...
+#include "sailag.h"                            // for sai_lag_api_t, SAI_LAG...
+#include "saistatus.h"                         // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                          // for sai_attribute_t, sai_a...
+#include "switchlink/switchlink.h"             // for switchlink_handle_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_lag.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/sai/switchlink_handle_lag.c:
+#include <linux/if.h>                          // for IF_OPER_DOWN, IF_OPER_UP
+#include <stdbool.h>                           // for false, true
+#include <stdint.h>                            // for uint8_t, uint32_t
+#include <stdio.h>                             // for snprintf
+#include <string.h>                            // for memset, memcpy, memcmp
+#include "sai.h"                               // for sai_api_query, SAI_API...
+#include "sailag.h"                            // for sai_lag_api_t, SAI_LAG...
+#include "saistatus.h"                         // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                          // for sai_attribute_t, sai_a...
+#include "switchlink/switchlink.h"             // for switchlink_handle_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchlink_init_sai.h"               // for sai_init_lag_api, swit...
+#include "switchsde/sde_port_intf.h"           // for sde_pal_get_port_id_fr...
+#include "switchsde/sde_status.h"              // for SDE_SUCCESS
+#include "switchsde/sde_types.h"               // for sde_dev_id_t, sde_stat...
+#include "switchutils/switch_log.h"            // for krnlmon_log_error, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+---
+
+[ 43%] Built target switchlink_sai_o
+Scanning dependencies of target switchlink_o
+[ 44%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_address.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c should add these lines:
+#include <linux/if_addr.h>                     // for ifaddrmsg, IFA_ADDRESS
+#include <linux/rtnetlink.h>                   // for RTM_NEWADDR
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memset, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c:
+#include <linux/if_addr.h>                     // for ifaddrmsg, IFA_ADDRESS
+#include <linux/rtnetlink.h>                   // for RTM_NEWADDR
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memset, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchlink_globals.h"                // for g_default_vrf_h
+#include "switchlink_handlers.h"               // for switchlink_create_route
+#include "switchlink_int.h"                    // for switchlink_process_add...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+---
+
+[ 46%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_db.c.o
+Warning: include-what-you-use reported diagnostics:
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1125:39: error: equality comparison with extraneous parentheses [-Werror,-Wparentheses-equality]
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1125:39: note: remove extraneous parentheses around the comparison to silence this warning
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+        ~                             ^                          ~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1125:39: note: use '=' to turn this equality comparison into an assignment
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+                                      ^~
+                                      =
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1154:35: error: equality comparison with extraneous parentheses [-Werror,-Wparentheses-equality]
+    if ((lag_member_info->ifindex == obj->lag_member_info.ifindex)) {
+         ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1154:35: note: remove extraneous parentheses around the comparison to silence this warning
+    if ((lag_member_info->ifindex == obj->lag_member_info.ifindex)) {
+        ~                         ^                              ~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1154:35: note: use '=' to turn this equality comparison into an assignment
+    if ((lag_member_info->ifindex == obj->lag_member_info.ifindex)) {
+                                  ^~
+                                  =
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1182:39: error: equality comparison with extraneous parentheses [-Werror,-Wparentheses-equality]
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1182:39: note: remove extraneous parentheses around the comparison to silence this warning
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+        ~                             ^                          ~
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:1182:39: note: use '=' to turn this equality comparison into an assignment
+    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+                                      ^~
+                                      =
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.h should add these lines:
+#include <stdint.h>                 // for uint32_t, uint8_t, uint16_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.h:
+#include <stdbool.h>                // for bool
+#include <stdint.h>                 // for uint32_t, uint8_t, uint16_t
+#include "switchlink.h"             // for switchlink_handle_t, switchlink_m...
+#include "switchlink_link_types.h"  // for switchlink_link_type_t, switchlin...
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c should add these lines:
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+#include "tommyds/tommyhashlin.h"      // for tommy_hashlin_search, tommy_ha...
+#include "tommyds/tommylist.h"         // for tommy_list_head, tommy_list_in...
+#include "tommyds/tommytrieinp.h"      // for tommy_trie_inplace_insert, tom...
+#include "tommyds/tommytypes.h"        // for tommy_node
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c should remove these lines:
+- #include <netinet/in.h>  // lines 21-21
+- #include "switchlink_link_types.h"  // lines 29-29
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_db.c:
+#include "switchlink_db.h"
+#include <stdbool.h>                   // for bool, false, true
+#include <stdint.h>                    // for uint32_t, uint8_t
+#include <string.h>                    // for memcpy, memcmp, memset, NULL
+#include "switchlink.h"                // for switchlink_handle_t, switchlin...
+#include "switchlink_db_int.h"         // for switchlink_db_ecmp_obj_t, swit...
+#include "switchlink_int.h"            // for switchlink_init_db
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+#include "tommyds/tommyhashlin.h"      // for tommy_hashlin_search, tommy_ha...
+#include "tommyds/tommylist.h"         // for tommy_list_head, tommy_list_in...
+#include "tommyds/tommytrieinp.h"      // for tommy_trie_inplace_insert, tom...
+#include "tommyds/tommytypes.h"        // for tommy_node
+#include "xxHash/xxhash.h"             // for XXH32
+---
+
+[ 47%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_globals.c.o
+Warning: include-what-you-use reported diagnostics:
+
+(/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.h has correct #includes/fwd-decls)
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should add these lines:
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c:
+#include "switchlink_globals.h"
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+---
+
+[ 49%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_link.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c should add these lines:
+#include <linux/if_link.h>             // for IFLA_ADDRESS, IFLA_BOND_ACTIVE...
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_NEWLINK
+#include <netinet/in.h>                // for in_addr, ntohl, ntohs
+#include <netlink/netlink-compat.h>    // for IFNAMSIZ
+#include <stdbool.h>                   // for true, bool, false
+#include <stdint.h>                    // for uint8_t, uint32_t, uint16_t
+#include <stdio.h>                     // for snprintf
+#include <string.h>                    // for memcpy, strcmp, memcmp
+#include <sys/socket.h>                // for AF_INET
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c should remove these lines:
+- #include <fcntl.h>  // lines 19-19
+- #include <linux/version.h>  // lines 20-20
+- #include <netlink/netlink.h>  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c:
+#include <linux/if_link.h>             // for IFLA_ADDRESS, IFLA_BOND_ACTIVE...
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_NEWLINK
+#include <netinet/in.h>                // for in_addr, ntohl, ntohs
+#include <netlink/attr.h>              // for nla_len, nla_type, nla_get_u32
+#include <netlink/msg.h>               // for nlmsg_attrdata, nlmsg_attrlen
+#include <netlink/netlink-compat.h>    // for IFNAMSIZ
+#include <stdbool.h>                   // for true, bool, false
+#include <stdint.h>                    // for uint8_t, uint32_t, uint16_t
+#include <stdio.h>                     // for snprintf
+#include <string.h>                    // for memcpy, strcmp, memcmp
+#include <sys/socket.h>                // for AF_INET
+#include "krnlmon_options.h"           // for LAG_OPTION
+#include "switchlink.h"                // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchlink_globals.h"        // for g_default_vrf_h
+#include "switchlink_handlers.h"       // for switchlink_create_interface
+#include "switchlink_int.h"            // for switchlink_validate_driver
+#include "switchlink_link_types.h"     // for SWITCHLINK_LINK_TYPE_BOND, SWI...
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug, krnlmon_log...
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+---
+
+[ 50%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_main.c.o
+Warning: include-what-you-use reported diagnostics:
+
+(/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_main.h has correct #includes/fwd-decls)
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_main.c should add these lines:
+#include <linux/netlink.h>             // for nlmsghdr, NETLINK_ROUTE, NLMSG...
+#include <linux/rtnetlink.h>           // for rtgenmsg, RTM_GETROUTE, RTM_GE...
+#include <netlink/handlers.h>          // for NL_CB_CUSTOM, NL_CB_FINISH
+#include <netlink/socket.h>            // for nl_socket_add_memberships, nl_...
+#include <stdio.h>                     // for perror, NULL
+#include <string.h>                    // for strerror_r
+#include <sys/socket.h>                // for AF_INET, AF_INET6, AF_BRIDGE
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nl_msg;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_main.c should remove these lines:
+- #include <assert.h>  // lines 29-29
+- #include "switchlink.h"  // lines 39-39
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_main.c:
+#include "switchlink_main.h"
+#include <errno.h>                     // for EINTR, errno
+#include <fcntl.h>                     // for fcntl, F_GETFL, F_SETFL, O_NON...
+#include <linux/netlink.h>             // for nlmsghdr, NETLINK_ROUTE, NLMSG...
+#include <linux/rtnetlink.h>           // for rtgenmsg, RTM_GETROUTE, RTM_GE...
+#include <netlink/handlers.h>          // for NL_CB_CUSTOM, NL_CB_FINISH
+#include <netlink/msg.h>               // for nlmsg_get_max_size, nlmsg_hdr
+#include <netlink/netlink.h>           // for nl_connect, nl_recvmsgs_default
+#include <netlink/socket.h>            // for nl_socket_add_memberships, nl_...
+#include <pthread.h>                   // for pthread_cancel, pthread_join
+#include <stdint.h>                    // for uint8_t
+#include <stdio.h>                     // for perror, NULL
+#include <string.h>                    // for strerror_r
+#include <sys/select.h>                // for select, FD_ISSET, FD_SET, FD_ZERO
+#include <sys/socket.h>                // for AF_INET, AF_INET6, AF_BRIDGE
+#include <unistd.h>                    // for usleep
+#include "switchlink_int.h"            // for switchlink_process_address_msg
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug, krnlmon_log...
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nl_msg;
+---
+
+[ 52%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_neigh.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c should add these lines:
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_len, nla...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memcpy, memset
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c should remove these lines:
+- #include <linux/if_ether.h>  // lines 19-19
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c:
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH
+#include <net/if.h>                            // for if_indextoname
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_len, nla...
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memcpy, memset
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink.h"                        // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+#include "switchlink_globals.h"                // for g_default_vrf_h, g_def...
+#include "switchlink_handlers.h"               // for switchlink_delete_neigh
+#include "switchlink_int.h"                    // for switchlink_process_nei...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+---
+
+[ 53%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_route.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c should add these lines:
+#include <linux/rtnetlink.h>                   // for rtmsg, RTA_DATA, RTA_G...
+#include <netinet/in.h>                        // for in_addr, ntohl, in6_addr
+#include <stdbool.h>                           // for true, bool, false
+#include <stdint.h>                            // for uint32_t, uint8_t
+#include <string.h>                            // for memset, memcpy, NULL
+#include <sys/socket.h>                        // for AF_INET, AF_INET6, AF_MAX
+#include "switchlink/switchlink_db.h"          // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c should remove these lines:
+- #include <netlink/netlink.h>  // lines 21-21
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c:
+#include <linux/rtnetlink.h>                   // for rtmsg, RTA_DATA, RTA_G...
+#include <netinet/in.h>                        // for in_addr, ntohl, in6_addr
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for true, bool, false
+#include <stdint.h>                            // for uint32_t, uint8_t
+#include <string.h>                            // for memset, memcpy, NULL
+#include <sys/socket.h>                        // for AF_INET, AF_INET6, AF_MAX
+#include "switchlink.h"                        // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchlink_globals.h"                // for g_default_vrf_h, g_cpu...
+#include "switchlink_handlers.h"               // for switchlink_create_ecmp
+#include "switchlink_int.h"                    // for switchlink_process_rou...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+---
+
+[ 55%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_utils.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.h should add these lines:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.h should remove these lines:
+- #include <stdbool.h>  // lines 23-23
+- #include "switchutils/switch_utils.h"  // lines 26-26
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.h:
+#include <netinet/in.h>  // for in6_addr
+#include <stdint.h>      // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.c should add these lines:
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_utils.c:
+#include "switchlink_utils.h"
+#include <string.h>                    // for memset
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+---
+
+[ 56%] Building C object switchlink/CMakeFiles/switchlink_o.dir/switchlink_validate_driver.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_validate_driver.c should add these lines:
+#include <stdbool.h>         // for false, bool, true
+#include <sys/socket.h>      // for socket, AF_INET, SOCK_DGRAM
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_validate_driver.c should remove these lines:
+- #include <linux/errno.h>  // lines 18-18
+- #include <linux/if_bridge.h>  // lines 21-21
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_validate_driver.c:
+#include <linux/ethtool.h>   // for ethtool_drvinfo, ETHTOOL_GDRVINFO
+#include <linux/if.h>        // for ifreq, ifr_name, ifr_data
+#include <linux/sockios.h>   // for SIOCETHTOOL
+#include <stdbool.h>         // for false, bool, true
+#include <string.h>          // for memcmp, strlen, strncpy
+#include <sys/ioctl.h>       // for ioctl
+#include <sys/socket.h>      // for socket, AF_INET, SOCK_DGRAM
+#include <unistd.h>          // for close
+#include "switchlink_int.h"  // for switchlink_validate_driver
+---
+
+[ 56%] Built target switchlink_o
+Scanning dependencies of target switchsai_o
+[ 57%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sai.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sai.c should add these lines:
+#include <stddef.h>                       // for NULL
+#include "sai.h"                          // for SAI_API_MAX, SAI_API_ACL
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for SAI_OBJECT_TYPE_NEXT_HOP_GROUP
+#include "switchapi/switch_base_types.h"  // for _In_, _Out_
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sai.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sai.c:
+#include <stddef.h>                       // for NULL
+#include "krnlmon_options.h"              // for LAG_OPTION
+#include "sai.h"                          // for SAI_API_MAX, SAI_API_ACL
+#include "saiinternal.h"                  // for sai_api_service_t, sai_fdb_...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for SAI_OBJECT_TYPE_NEXT_HOP_GROUP
+#include "switchapi/switch_base_types.h"  // for _In_, _Out_
+#include "switchapi/switch_device.h"      // for switch_api_init
+#include "switchapi/switch_handle.h"      // for switch_handle_type_get, SWI...
+#include "switchapi/switch_nhop.h"        // for switch_api_nhop_id_type_get
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 59%] Building C object switchsai/CMakeFiles/switchsai_o.dir/saifdb.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saifdb.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saifdb.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/saifdb.h:
+#include <saitypes.h>  // for _In_, sai_status_t, sai_attribute_t, _Out_
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saifdb.c should add these lines:
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, SWITCH_API_INVALID_HA...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saifdb.c should remove these lines:
+- #include "switchapi/switch_device.h"  // lines 23-23
+- #include "switchapi/switch_interface.h"  // lines 25-25
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saifdb.c:
+#include "saifdb.h"
+#include <linux/if_ether.h>               // for ETH_ALEN
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, SWITCH_API_INVALID_HA...
+#include "switchapi/switch_fdb.h"         // for switch_api_l2_info_t, switc...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 60%] Building C object switchsai/CMakeFiles/switchsai_o.dir/saineighbor.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saineighbor.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saineighbor.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/saineighbor.h:
+#include <saitypes.h>  // for _In_, sai_status_t, sai_attribute_t, sai_objec...
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saineighbor.c should add these lines:
+#include <inttypes.h>                     // for PRIx64
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, swit...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saineighbor.c should remove these lines:
+- #include <arpa/inet.h>  // lines 20-20
+- #include "switchapi/switch_l3.h"  // lines 23-23
+- #include "switchapi/switch_rif.h"  // lines 26-26
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saineighbor.c:
+#include "saineighbor.h"
+#include <inttypes.h>                     // for PRIx64
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saiinternal.h"                  // for sai_status_to_string, SAI_M...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, swit...
+#include "switchapi/switch_neighbor.h"    // for switch_api_neighbor_info_t
+#include "switchapi/switch_nhop.h"        // for switch_nhop_key_t, switch_a...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 62%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sainexthop.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sainexthop.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sainexthop.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/sainexthop.h:
+#include <saitypes.h>  // for _In_, sai_object_id_t, sai_status_t, sai_attri...
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthop.c should add these lines:
+#include <string.h>                       // for memcpy, memset
+#include "sai.h"                          // for sai_object_type_query
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, SWIT...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthop.c should remove these lines:
+- #include "switchapi/switch_rif.h"  // lines 22-22
+- #include "switchapi/switch_tunnel.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthop.c:
+#include "sainexthop.h"
+#include <string.h>                       // for memcpy, memset
+#include "sai.h"                          // for sai_object_type_query
+#include "saiinternal.h"                  // for sai_status_to_string, sai_i...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, SWIT...
+#include "switchapi/switch_nhop.h"        // for switch_api_nhop_info_t, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 63%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sainexthopgroup.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sainexthopgroup.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sainexthopgroup.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/sainexthopgroup.h:
+#include <saitypes.h>  // for _In_, sai_object_id_t, sai_status_t, sai_attri...
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthopgroup.c should add these lines:
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthopgroup.c should remove these lines:
+- #include "switchapi/switch_device.h"  // lines 21-21
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sainexthopgroup.c:
+#include "sainexthopgroup.h"
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#include "switchapi/switch_nhop.h"        // for switch_api_add_nhop_member
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 65%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sairoute.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sairoute.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sairoute.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/sairoute.h:
+#include <saitypes.h>  // for _In_, sai_status_t, sai_attribute_t, _Out_
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairoute.c should add these lines:
+#include <inttypes.h>                     // for PRIx64
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, swit...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairoute.c should remove these lines:
+- #include "switchapi/switch_device.h"  // lines 21-21
+- #include "switchapi/switch_interface.h"  // lines 22-22
+- #include "switchapi/switch_rif.h"  // lines 24-24
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairoute.c:
+#include "sairoute.h"
+#include <inttypes.h>                     // for PRIx64
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memset, memcpy
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, switch_handle_t, swit...
+#include "switchapi/switch_l3.h"          // for switch_api_route_entry_t
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 66%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sairouterinterface.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sairouterinterface.h should add these lines:
+#include <stdint.h>    // for uint32_t, uint64_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/sairouterinterface.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/sairouterinterface.h:
+#include <saitypes.h>  // for _In_, sai_object_id_t, sai_status_t, _Out_
+#include <stdint.h>    // for uint32_t, uint64_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairouterinterface.c should add these lines:
+#include <string.h>                       // for memcpy, NULL
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, switch_mac...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairouterinterface.c should remove these lines:
+- #include "switchapi/switch_interface.h"  // lines 22-22
+- #include "switchapi/switch_l3.h"  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sairouterinterface.c:
+#include "sairouterinterface.h"
+#include <string.h>                       // for memcpy, NULL
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, switch_mac...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_rif.h"         // for switch_api_rif_info_t, swit...
+#include "switchapi/switch_rmac.h"        // for switch_api_router_mac_add
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 68%] Building C object switchsai/CMakeFiles/switchsai_o.dir/saitunnel.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saitunnel.h should add these lines:
+#include <stdint.h>    // for uint32_t, uint64_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saitunnel.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/saitunnel.h:
+#include <saitypes.h>  // for _In_, sai_object_id_t, sai_status_t, sai_attri...
+#include <stdint.h>    // for uint32_t, uint64_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saitunnel.c should add these lines:
+#include <netinet/in.h>                   // for ntohl
+#include <string.h>                       // for memcpy, NULL
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saiswitch.h"                    // for SAI_TUNNEL_TYPE_IPINIP, SAI...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchutils/switch_log.h"       // for krnlmon_log_debug, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saitunnel.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saitunnel.c:
+#include "saitunnel.h"
+#include <netinet/in.h>                   // for ntohl
+#include <string.h>                       // for memcpy, NULL
+#include "saiinternal.h"                  // for SAI_ASSERT, sai_api_service_t
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saiswitch.h"                    // for SAI_TUNNEL_TYPE_IPINIP, SAI...
+#include "saitypes.h"                     // for sai_attribute_t, sai_attrib...
+#include "switchapi/switch_base_types.h"  // for _In_, switch_ip_addr_t, swi...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS, SWIT...
+#include "switchapi/switch_tunnel.h"      // for switch_api_tunnel_info_t
+#include "switchutils/switch_log.h"       // for krnlmon_log_debug, krnlmon_...
+---
+
+[ 69%] Building C object switchsai/CMakeFiles/switchsai_o.dir/saiutils.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saiutils.c should add these lines:
+#include <arpa/inet.h>                    // for inet_ntop
+#include <netinet/in.h>                   // for ntohl
+#include <stdint.h>                       // for uint32_t, uint8_t
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memcpy, NULL, strlen, strnlen
+#include <sys/socket.h>                   // for AF_INET, AF_INET6
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_ip_prefix_t, sai_ip_addr_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saiutils.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saiutils.c:
+#include <arpa/inet.h>                    // for inet_ntop
+#include <netinet/in.h>                   // for ntohl
+#include <stdint.h>                       // for uint32_t, uint8_t
+#include <stdio.h>                        // for snprintf
+#include <string.h>                       // for memcpy, NULL, strlen, strnlen
+#include <sys/socket.h>                   // for AF_INET, AF_INET6
+#include "saiinternal.h"                  // for get_attr_from_list, sai_ip_...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_ip_prefix_t, sai_ip_addr_t
+#include "switchapi/switch_base_types.h"  // for _In_, _Out_, switch_ip_addr_t
+---
+
+[ 71%] Building C object switchsai/CMakeFiles/switchsai_o.dir/saivirtualrouter.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saivirtualrouter.h should add these lines:
+#include <stdint.h>    // for uint32_t
+
+/home/dfoster/work/latest/krnlmon/SAI/inc/saivirtualrouter.h should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/SAI/inc/saivirtualrouter.h:
+#include <saitypes.h>  // for _In_, sai_object_id_t, sai_status_t, sai_attri...
+#include <stdint.h>    // for uint32_t
+---
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saivirtualrouter.c should add these lines:
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saivirtualrouter.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/saivirtualrouter.c:
+#include "saivirtualrouter.h"
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for _In_, SWITCH_API_INVALID_HA...
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchapi/switch_vrf.h"         // for switch_api_vrf_create, swit...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error
+---
+
+[ 72%] Building C object switchsai/CMakeFiles/switchsai_o.dir/sailag.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sailag.c should add these lines:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint32_t
+#include <string.h>                       // for NULL, memcpy
+#include "sailag.h"                       // for SAI_LAG_ATTR_CUSTOM_RANGE_S...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sailag.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsai/sailag.c:
+#include <stdbool.h>                      // for bool
+#include <stdint.h>                       // for uint32_t
+#include <string.h>                       // for NULL, memcpy
+#include "saiinternal.h"                  // for sai_status_to_string, sai_s...
+#include "sailag.h"                       // for SAI_LAG_ATTR_CUSTOM_RANGE_S...
+#include "saistatus.h"                    // for SAI_STATUS_SUCCESS, SAI_STA...
+#include "saitypes.h"                     // for sai_status_t, sai_attribute_t
+#include "switchapi/switch_base_types.h"  // for switch_handle_t, _In_, swit...
+#include "switchapi/switch_device.h"      // for switch_api_device_default_r...
+#include "switchapi/switch_lag.h"         // for switch_api_lag_info_t, swit...
+#include "switchapi/switch_rmac.h"        // for switch_api_router_mac_add
+#include "switchapi/switch_status.h"      // for SWITCH_STATUS_SUCCESS
+#include "switchutils/switch_log.h"       // for krnlmon_log_error, krnlmon_...
+---
+
+[ 72%] Built target switchsai_o
+Scanning dependencies of target krnlmon
+[ 73%] Building CXX object CMakeFiles/krnlmon.dir/krnlmon_main.cc.o
+[ 75%] Linking CXX shared library libkrnlmon.so
+[ 75%] Built target krnlmon
+Scanning dependencies of target switchlink_neighbor_test
+[ 76%] Building CXX object switchlink/CMakeFiles/switchlink_neighbor_test.dir/switchlink_neigh_test.cc.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh_test.cc should add these lines:
+#include <gtest/gtest-message.h>               // for Message
+#include <gtest/gtest-test-part.h>             // for TestPartResult
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/netlink.h>                     // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH, RTM_DELN...
+#include <netinet/in.h>                        // for in6_addr, htonl, htons
+#include <netlink/attr.h>                      // for nla_put, nla_put_u32
+#include <stdint.h>                            // for uint16_t, uint32_t
+#include <string.h>                            // for memcmp, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include <iosfwd>                              // for std
+#include <memory>                              // for allocator_traits<>::va...
+#include "gtest/gtest_pred_impl.h"             // for EXPECT_EQ, SuiteApiRes...
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh_test.cc should remove these lines:
+- #include <memory.h>  // lines 19-19
+- #include "gtest/gtest.h"  // lines 24-24
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh_test.cc:
+#include <arpa/inet.h>                         // for inet_pton
+#include <gtest/gtest-message.h>               // for Message
+#include <gtest/gtest-test-part.h>             // for TestPartResult
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/netlink.h>                     // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH, RTM_DELN...
+#include <netinet/in.h>                        // for in6_addr, htonl, htons
+#include <netlink/attr.h>                      // for nla_put, nla_put_u32
+#include <netlink/msg.h>                       // for nlmsg_alloc_size, nlms...
+#include <stdint.h>                            // for uint16_t, uint32_t
+#include <string.h>                            // for memcmp, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include <iosfwd>                              // for std
+#include <memory>                              // for allocator_traits<>::va...
+#include <vector>                              // for vector
+#include "gtest/gtest_pred_impl.h"             // for EXPECT_EQ, SuiteApiRes...
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+#include "switchlink_handlers.h"               // for switchlink_create_mac
+#include "switchlink_int.h"                    // for switchlink_process_nei...
+---
+
+[ 78%] Building C object switchlink/CMakeFiles/switchlink_neighbor_test.dir/switchlink_globals.c.o
+Warning: include-what-you-use reported diagnostics:
+
+(/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.h has correct #includes/fwd-decls)
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should add these lines:
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c:
+#include "switchlink_globals.h"
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+---
+
+[ 79%] Building C object switchlink/CMakeFiles/switchlink_neighbor_test.dir/switchlink_neigh.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c should add these lines:
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_len, nla...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memcpy, memset
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c should remove these lines:
+- #include <linux/if_ether.h>  // lines 19-19
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_neigh.c:
+#include <linux/neighbour.h>                   // for ndmsg, NDA_DST, NDA_LL...
+#include <linux/rtnetlink.h>                   // for RTM_NEWNEIGH
+#include <net/if.h>                            // for if_indextoname
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_len, nla...
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memcpy, memset
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink.h"                        // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_INTF_TYPE_L...
+#include "switchlink_globals.h"                // for g_default_vrf_h, g_def...
+#include "switchlink_handlers.h"               // for switchlink_delete_neigh
+#include "switchlink_int.h"                    // for switchlink_process_nei...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+---
+
+[ 81%] Linking CXX executable switchlink_neighbor_test
+[ 81%] Built target switchlink_neighbor_test
+Scanning dependencies of target switchlink_route_test
+[ 82%] Building CXX object switchlink/CMakeFiles/switchlink_route_test.dir/switchlink_route_test.cc.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route_test.cc should add these lines:
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for rtmsg, RTA_GATEWAY, RTA_DST
+#include <netinet/in.h>                // for in6_addr, htonl, in_addr, htons
+#include <netlink/attr.h>              // for nla_put_u32, nla_put
+#include <stdint.h>                    // for uint32_t, uint16_t, uint8_t
+#include <sys/socket.h>                // for AF_INET, AF_INET6, AF_UNSPEC
+#include <iosfwd>                      // for std
+#include <memory>                      // for allocator_traits<>::value_type
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, SuiteApiResolver
+#include "switchlink/switchlink.h"     // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_nexthop_info_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route_test.cc should remove these lines:
+- #include <memory.h>  // lines 19-19
+- #include "gtest/gtest.h"  // lines 24-24
+- #include "switchlink_globals.h"  // lines 27-27
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route_test.cc:
+#include <arpa/inet.h>                 // for inet_pton
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for rtmsg, RTA_GATEWAY, RTA_DST
+#include <netinet/in.h>                // for in6_addr, htonl, in_addr, htons
+#include <netlink/attr.h>              // for nla_put_u32, nla_put
+#include <netlink/msg.h>               // for nlmsg_alloc_size, nlmsg_append
+#include <stdint.h>                    // for uint32_t, uint16_t, uint8_t
+#include <sys/socket.h>                // for AF_INET, AF_INET6, AF_UNSPEC
+#include <iosfwd>                      // for std
+#include <memory>                      // for allocator_traits<>::value_type
+#include <vector>                      // for vector
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, SuiteApiResolver
+#include "switchlink/switchlink.h"     // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_nexthop_info_t
+#include "switchlink_handlers.h"       // for switchlink_create_ecmp, switch...
+#include "switchlink_int.h"            // for switchlink_process_route_msg
+---
+
+[ 84%] Building C object switchlink/CMakeFiles/switchlink_route_test.dir/switchlink_route.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c should add these lines:
+#include <linux/rtnetlink.h>                   // for rtmsg, RTA_DATA, RTA_G...
+#include <netinet/in.h>                        // for in_addr, ntohl, in6_addr
+#include <stdbool.h>                           // for true, bool, false
+#include <stdint.h>                            // for uint32_t, uint8_t
+#include <string.h>                            // for memset, memcpy, NULL
+#include <sys/socket.h>                        // for AF_INET, AF_INET6, AF_MAX
+#include "switchlink/switchlink_db.h"          // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c should remove these lines:
+- #include <netlink/netlink.h>  // lines 21-21
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_route.c:
+#include <linux/rtnetlink.h>                   // for rtmsg, RTA_DATA, RTA_G...
+#include <netinet/in.h>                        // for in_addr, ntohl, in6_addr
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for true, bool, false
+#include <stdint.h>                            // for uint32_t, uint8_t
+#include <string.h>                            // for memset, memcpy, NULL
+#include <sys/socket.h>                        // for AF_INET, AF_INET6, AF_MAX
+#include "switchlink.h"                        // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_ecmp_info_t
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchlink_globals.h"                // for g_default_vrf_h, g_cpu...
+#include "switchlink_handlers.h"               // for switchlink_create_ecmp
+#include "switchlink_int.h"                    // for switchlink_process_rou...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug, krn...
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+---
+
+[ 85%] Linking CXX executable switchlink_route_test
+[ 85%] Built target switchlink_route_test
+Scanning dependencies of target switchlink_address_test
+[ 86%] Building CXX object switchlink/CMakeFiles/switchlink_address_test.dir/switchlink_address_test.cc.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address_test.cc should add these lines:
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/if_addr.h>             // for ifaddrmsg, IFA_ADDRESS
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for RTM_NEWADDR, RTM_DELADDR
+#include <netinet/in.h>                // for in6_addr, htonl, htons, in6_ad...
+#include <netlink/attr.h>              // for nla_put_u32, nla_put
+#include <stdint.h>                    // for uint16_t, uint32_t
+#include <sys/socket.h>                // for AF_INET6, AF_INET, AF_UNIX
+#include <cstddef>                     // for size_t, std
+#include <memory>                      // for allocator_traits<>::value_type
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, SuiteApiResolver
+#include "switchlink/switchlink.h"     // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address_test.cc should remove these lines:
+- #include <linux/if_arp.h>  // lines 19-19
+- #include <memory.h>  // lines 20-20
+- #include "gtest/gtest.h"  // lines 25-25
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address_test.cc:
+#include <arpa/inet.h>                 // for inet_pton
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/if_addr.h>             // for ifaddrmsg, IFA_ADDRESS
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for RTM_NEWADDR, RTM_DELADDR
+#include <netinet/in.h>                // for in6_addr, htonl, htons, in6_ad...
+#include <netlink/attr.h>              // for nla_put_u32, nla_put
+#include <netlink/msg.h>               // for nlmsg_alloc_size, nlmsg_append
+#include <stdint.h>                    // for uint16_t, uint32_t
+#include <sys/socket.h>                // for AF_INET6, AF_INET, AF_UNIX
+#include <cstddef>                     // for size_t, std
+#include <memory>                      // for allocator_traits<>::value_type
+#include <vector>                      // for vector
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, SuiteApiResolver
+#include "switchlink/switchlink.h"     // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchlink_handlers.h"       // for switchlink_create_route, switc...
+#include "switchlink_int.h"            // for switchlink_process_address_msg
+---
+
+[ 88%] Building C object switchlink/CMakeFiles/switchlink_address_test.dir/switchlink_address.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c should add these lines:
+#include <linux/if_addr.h>                     // for ifaddrmsg, IFA_ADDRESS
+#include <linux/rtnetlink.h>                   // for RTM_NEWADDR
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memset, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_address.c:
+#include <linux/if_addr.h>                     // for ifaddrmsg, IFA_ADDRESS
+#include <linux/rtnetlink.h>                   // for RTM_NEWADDR
+#include <netinet/in.h>                        // for in_addr, ntohl
+#include <netlink/attr.h>                      // for nla_data, nla_get_u32
+#include <netlink/msg.h>                       // for nlmsg_attrdata, nlmsg_...
+#include <stdbool.h>                           // for bool, false, true
+#include <string.h>                            // for memset, memcpy
+#include <sys/socket.h>                        // for AF_INET, AF_INET6
+#include "switchlink/switchlink.h"             // for switchlink_ip_addr_t
+#include "switchlink/switchlink_db.h"          // for switchlink_db_interfac...
+#include "switchlink/switchlink_link_types.h"  // for SWITCHLINK_LINK_TYPE_BOND
+#include "switchlink_globals.h"                // for g_default_vrf_h
+#include "switchlink_handlers.h"               // for switchlink_create_route
+#include "switchlink_int.h"                    // for switchlink_process_add...
+#include "switchutils/switch_log.h"            // for krnlmon_log_debug
+#include "switchutils/switch_utils.h"          // for krnlmon_assert
+struct nlmsghdr;
+---
+
+[ 89%] Building C object switchlink/CMakeFiles/switchlink_address_test.dir/switchlink_globals.c.o
+Warning: include-what-you-use reported diagnostics:
+
+(/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.h has correct #includes/fwd-decls)
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should add these lines:
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c:
+#include "switchlink_globals.h"
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+---
+
+[ 91%] Linking CXX executable switchlink_address_test
+[ 91%] Built target switchlink_address_test
+Scanning dependencies of target switchlink_link_test
+[ 92%] Building CXX object switchlink/CMakeFiles/switchlink_link_test.dir/switchlink_link_test.cc.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link_test.cc should add these lines:
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/if_link.h>             // for IFLA_IFNAME, IFLA_INFO_KIND
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_DELLINK, RTM_NE...
+#include <netinet/in.h>                // for htonl, in_addr, htons
+#include <netlink/attr.h>              // for nla_put_u32, nla_put_string
+#include <stdint.h>                    // for uint32_t, uint16_t, uint8_t
+#include <string.h>                    // for memcmp
+#include <memory>                      // for allocator_traits<>::value_type
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, ASSERT_NE, SuiteApi...
+#include "switchlink/switchlink.h"     // for switchlink_handle_t, switchlin...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_tunnel_interface...
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link_test.cc should remove these lines:
+- #include <memory.h>  // lines 5-5
+- #include "gtest/gtest.h"  // lines 10-10
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link_test.cc:
+#include <gtest/gtest-message.h>       // for Message
+#include <gtest/gtest-test-part.h>     // for TestPartResult
+#include <linux/if_arp.h>              // for ARPHRD_ETHER
+#include <linux/if_link.h>             // for IFLA_IFNAME, IFLA_INFO_KIND
+#include <linux/netlink.h>             // for NLMSG_ALIGNTO, nlmsghdr
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_DELLINK, RTM_NE...
+#include <netinet/in.h>                // for htonl, in_addr, htons
+#include <netlink/attr.h>              // for nla_put_u32, nla_put_string
+#include <netlink/msg.h>               // for nlmsg_alloc_size, nlmsg_append
+#include <stdint.h>                    // for uint32_t, uint16_t, uint8_t
+#include <string.h>                    // for memcmp
+#include <memory>                      // for allocator_traits<>::value_type
+#include <vector>                      // for vector
+#include "gtest/gtest_pred_impl.h"     // for EXPECT_EQ, ASSERT_NE, SuiteApi...
+#include "krnlmon_options.h"           // for LAG_OPTION
+#include "switchlink/switchlink.h"     // for switchlink_handle_t, switchlin...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_tunnel_interface...
+#include "switchlink_globals.h"        // for g_default_vrf_h, g_cpu_rx_nhop_h
+#include "switchlink_handlers.h"       // for switchlink_create_interface
+#include "switchlink_int.h"            // for switchlink_process_link_msg
+#include "switchlink_link_types.h"     // for SWITCHLINK_LINK_TYPE_VXLAN
+---
+
+[ 94%] Building C object switchlink/CMakeFiles/switchlink_link_test.dir/switchlink_globals.c.o
+Warning: include-what-you-use reported diagnostics:
+
+(/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.h has correct #includes/fwd-decls)
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should add these lines:
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c should remove these lines:
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_globals.c:
+#include "switchlink_globals.h"
+#include "switchlink/switchlink.h"  // for switchlink_handle_t
+---
+
+[ 95%] Building C object switchlink/CMakeFiles/switchlink_link_test.dir/switchlink_link.c.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c should add these lines:
+#include <linux/if_link.h>             // for IFLA_ADDRESS, IFLA_BOND_ACTIVE...
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_NEWLINK
+#include <netinet/in.h>                // for in_addr, ntohl, ntohs
+#include <netlink/netlink-compat.h>    // for IFNAMSIZ
+#include <stdbool.h>                   // for true, bool, false
+#include <stdint.h>                    // for uint8_t, uint32_t, uint16_t
+#include <stdio.h>                     // for snprintf
+#include <string.h>                    // for memcpy, strcmp, memcmp
+#include <sys/socket.h>                // for AF_INET
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c should remove these lines:
+- #include <fcntl.h>  // lines 19-19
+- #include <linux/version.h>  // lines 20-20
+- #include <netlink/netlink.h>  // lines 23-23
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchlink/switchlink_link.c:
+#include <linux/if_link.h>             // for IFLA_ADDRESS, IFLA_BOND_ACTIVE...
+#include <linux/rtnetlink.h>           // for ifinfomsg, RTM_NEWLINK
+#include <netinet/in.h>                // for in_addr, ntohl, ntohs
+#include <netlink/attr.h>              // for nla_len, nla_type, nla_get_u32
+#include <netlink/msg.h>               // for nlmsg_attrdata, nlmsg_attrlen
+#include <netlink/netlink-compat.h>    // for IFNAMSIZ
+#include <stdbool.h>                   // for true, bool, false
+#include <stdint.h>                    // for uint8_t, uint32_t, uint16_t
+#include <stdio.h>                     // for snprintf
+#include <string.h>                    // for memcpy, strcmp, memcmp
+#include <sys/socket.h>                // for AF_INET
+#include "krnlmon_options.h"           // for LAG_OPTION
+#include "switchlink.h"                // for switchlink_ip_addr_t, switchli...
+#include "switchlink/switchlink_db.h"  // for switchlink_db_interface_info_t
+#include "switchlink_globals.h"        // for g_default_vrf_h
+#include "switchlink_handlers.h"       // for switchlink_create_interface
+#include "switchlink_int.h"            // for switchlink_validate_driver
+#include "switchlink_link_types.h"     // for SWITCHLINK_LINK_TYPE_BOND, SWI...
+#include "switchutils/switch_log.h"    // for krnlmon_log_debug, krnlmon_log...
+#include "switchutils/switch_utils.h"  // for krnlmon_assert
+struct nlattr;
+struct nlmsghdr;
+---
+
+[ 97%] Linking CXX executable switchlink_link_test
+[ 97%] Built target switchlink_link_test
+Scanning dependencies of target switchsde_es2k_test
+[ 98%] Building CXX object switchsde/CMakeFiles/switchsde_es2k_test.dir/switchsde_es2k_test.cc.o
+Warning: include-what-you-use reported diagnostics:
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsde/switchsde_es2k_test.cc should add these lines:
+#include <gtest/gtest-message.h>    // for Message
+#include <gtest/gtest-test-part.h>  // for TestPartResult
+#include "gtest/gtest_pred_impl.h"  // for ASSERT_EQ, SuiteApiResolver, TEST_F
+
+/home/dfoster/work/latest/krnlmon/krnlmon/switchsde/switchsde_es2k_test.cc should remove these lines:
+- #include "gtest/gtest.h"  // lines 10-10
+
+The full include-list for /home/dfoster/work/latest/krnlmon/krnlmon/switchsde/switchsde_es2k_test.cc:
+#include <gtest/gtest-message.h>    // for Message
+#include <gtest/gtest-test-part.h>  // for TestPartResult
+#include "gtest/gtest_pred_impl.h"  // for ASSERT_EQ, SuiteApiResolver, TEST_F
+#include "ipu_types/ipu_types.h"    // for IPU_ALREADY_EXISTS, IPU_DEVICE_LO...
+#include "sde_status.h"             // for SDE_ALREADY_EXISTS, SDE_DEVICE_LO...
+#include "sde_types.h"              // for sde_dev_id_t, sde_dev_port_t
+---
+
+[100%] Linking CXX executable switchsde_es2k_test
+[100%] Built target switchsde_es2k_test
+Scanning dependencies of target switchutils_o
+[100%] Built target switchutils_o
