@@ -72,11 +72,11 @@ add_custom_target(krnlmon-test
 
 set_target_properties(krnlmon-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
-#######################
-# build-krnlmon-tests #
-#######################
+######################
+# krnlmon-unit-tests #
+######################
 
-add_custom_target(build-krnlmon-tests
+add_custom_target(krnlmon-unit-tests
   DEPENDS ${test_targets}
 )
 
