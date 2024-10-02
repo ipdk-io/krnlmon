@@ -123,11 +123,6 @@ void switchlink_process_neigh_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   } else {
     intf_h = ifinfo.intf_h;
   }
-  switchlink_handle_t bridge_h = g_default_bridge_h;
-  if (ifinfo.intf_type == SWITCHLINK_INTF_TYPE_L2_ACCESS) {
-    bridge_h = ifinfo.bridge_h;
-    krnlmon_assert(bridge_h != 0);
-  }
 
   if (msgtype == RTM_NEWNEIGH) {
     if (ipaddr_valid) {

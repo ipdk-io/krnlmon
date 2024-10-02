@@ -1122,7 +1122,7 @@ switchlink_db_status_t switchlink_db_delete_lag_member(
     switchlink_db_lag_member_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+    if (obj->lag_member_info.ifindex == lag_member_info->ifindex) {
       tommy_list_remove_existing(&switchlink_db_lag_member_obj_list,
                                  &obj->list_node);
       switchlink_free(obj);
@@ -1150,7 +1150,7 @@ uint32_t switchlink_db_delete_lacp_member(switchlink_handle_t lag_h) {
     switchlink_db_lag_member_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((obj->lag_member_info.lag_h == lag_h)) {
+    if (obj->lag_member_info.lag_h == lag_h) {
       return obj->lag_member_info.ifindex;
     }
   }
@@ -1176,7 +1176,7 @@ switchlink_db_status_t switchlink_db_update_lag_member_oper_state(
     switchlink_db_lag_member_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((lag_member_info->ifindex == obj->lag_member_info.ifindex)) {
+    if (lag_member_info->ifindex == obj->lag_member_info.ifindex) {
       obj->lag_member_info.oper_state = lag_member_info->oper_state;
       return SWITCHLINK_DB_STATUS_SUCCESS;
     }
@@ -1204,7 +1204,7 @@ switchlink_db_status_t switchlink_db_get_lag_member_info(
     switchlink_db_lag_member_obj_t* obj = node->data;
     krnlmon_assert(obj != NULL);
     node = node->next;
-    if ((obj->lag_member_info.ifindex == lag_member_info->ifindex)) {
+    if (obj->lag_member_info.ifindex == lag_member_info->ifindex) {
       memcpy(lag_member_info, &(obj->lag_member_info),
              sizeof(switchlink_db_lag_member_info_t));
       return SWITCHLINK_DB_STATUS_SUCCESS;
