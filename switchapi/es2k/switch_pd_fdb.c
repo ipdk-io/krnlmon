@@ -610,11 +610,11 @@ switch_status_t switch_pd_l2_rx_forward_table_entry(
     }
   }
 
-  tdi_status_t dealloc_status;
+  tdi_status_t cleanup_status;
 dealloc_resources:
-  dealloc_status = tdi_switch_pd_deallocate_resources(
+  cleanup_status = tdi_switch_pd_deallocate_resources(
       flags_hdl, target_hdl, key_hdl, data_hdl, session, entry_add);
-  if (tdi_status == TDI_SUCCESS) tdi_status = dealloc_status;
+  if (tdi_status == TDI_SUCCESS) tdi_status = cleanup_status;
 
   if (switch_status != SWITCH_STATUS_SUCCESS) {
     return switch_status;
