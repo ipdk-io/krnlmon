@@ -216,7 +216,6 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int linkinfo_attr_type;
 
   switchlink_db_interface_info_t intf_info = {0};
-  switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
   struct link_attrs attrs = {0};
 #ifdef LAG_OPTION
   bool create_lag_member = false;
@@ -334,6 +333,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
 
 #if !defined(OVSP4RT_SUPPORT)
       case SWITCHLINK_LINK_TYPE_VXLAN: {
+        switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
         snprintf(tnl_intf_info.ifname, sizeof(tnl_intf_info.ifname), "%s",
                  attrs.ifname);
         tnl_intf_info.dst_ip = attrs.remote_ip_addr;
