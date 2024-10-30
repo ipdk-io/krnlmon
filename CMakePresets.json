@@ -1,0 +1,44 @@
+{
+    "version": 4,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "common-target",
+            "description": "Common presets for all targets",
+            "hidden": true,
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+                "CMAKE_INSTALL_PREFIX": {
+                    "type": "PATH",
+                    "value": "${sourceDir}/install"
+                },
+                "SET_RPATH": true
+            }
+        },
+        {
+            "name": "base-dpdk-target",
+            "description": "Base presets for DPDK target",
+            "hidden": true,
+            "inherits": ["common-target"],
+            "cacheVariables": {
+                "TDI_TARGET": "dpdk"
+            }
+        },
+        {
+            "name": "base-es2k-target",
+            "description": "Base presets for ES2K target",
+            "hidden": true,
+            "inherits": ["common-target"],
+            "cacheVariables": {
+                "TDI_TARGET": "es2k"
+            }
+        }
+    ]
+}

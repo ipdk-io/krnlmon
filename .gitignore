@@ -7,6 +7,7 @@ MODULE.bazel.lock
 # CMake
 /build/
 /install/
+CMakeUserPresets.json
 
 # VS Code
 /.vscode/
