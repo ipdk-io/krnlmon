@@ -23,6 +23,8 @@ endif()
 
 target_include_directories(switchsde_o PUBLIC ${SDE_INSTALL_DIR}/include)
 
+if(BUILD_TESTING)
+
 if(DPDK_TARGET)
 #######################
 # switchsde_dpdk_test #
@@ -58,3 +60,5 @@ target_include_directories(switchsde_es2k_test PRIVATE
 
 define_unit_test(switchsde_es2k_test)
 endif(ES2K_TARGET)
+
+endif(BUILD_TESTING)

@@ -46,6 +46,8 @@ target_include_directories(switchlink_o PRIVATE
     ${SAI_INCLUDE_DIR}
 )
 
+if(BUILD_TESTING)
+
 ########################
 # switchlink_link_test #
 ########################
@@ -96,3 +98,5 @@ add_executable(switchlink_route_test
 )
 
 define_unit_test(switchlink_route_test)
+
+endif(BUILD_TESTING)
