@@ -39,6 +39,21 @@
             "cacheVariables": {
                 "TDI_TARGET": "es2k"
             }
+        },
+        {
+            "name": "install-path-presets",
+            "description": "Presets for install paths",
+            "hidden": true,
+            "cacheVariables": {
+                "DEPEND_INSTALL_DIR": {
+                    "type": "PATH",
+                    "value": "$env{DEPEND_INSTALL}"
+                },
+                "SDE_INSTALL_DIR": {
+                    "type": "PATH",
+                    "value": "$env{SDE_INSTALL}"
+                }
+            }
         }
     ]
 }
