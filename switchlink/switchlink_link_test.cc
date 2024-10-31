@@ -221,6 +221,8 @@ TEST_F(SwitchlinkTest, can_create_generic_link) {
       0);
 }
 
+#ifdef VXLAN_OPTION
+
 /**
  * Creates a vxlan link.
  *
@@ -300,6 +302,8 @@ TEST_F(SwitchlinkTest, can_create_vxlan_link) {
   EXPECT_EQ(results[0].tunnel_info.ttl, vxlan_ttl);
 }
 
+#endif  // VXLAN_OPTION
+
 /**
  * Attempts to create a bridge link.
  *
@@ -362,6 +366,8 @@ TEST_F(SwitchlinkTest, does_not_create_bridge_link) {
   ASSERT_EQ(results.size(), 0);
 }
 
+#ifdef VXLAN_OPTION
+
 /**
  * Deletes a vxlan link.
  *
@@ -410,6 +416,8 @@ TEST_F(SwitchlinkTest, can_delete_vxlan_link) {
   EXPECT_EQ(results[0].handler, DELETE_TUNNEL_INTERFACE);
   EXPECT_EQ(results[0].ifindex, hdr.ifi_index);
 }
+
+#endif  // VXLAN_OPTION
 
 /**
  * Deletes a tunnel ("tun") link.

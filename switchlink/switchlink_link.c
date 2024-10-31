@@ -331,7 +331,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
       case SWITCHLINK_LINK_TYPE_ETH:
         break;
 
-#if !defined(OVSP4RT_SUPPORT)
+#ifdef VXLAN_OPTION
       case SWITCHLINK_LINK_TYPE_VXLAN: {
         switchlink_db_tunnel_interface_info_t tnl_intf_info = {0};
         snprintf(tnl_intf_info.ifname, sizeof(tnl_intf_info.ifname), "%s",
@@ -405,7 +405,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   } else {
     krnlmon_assert(msgtype == RTM_DELLINK);
 
-#if !defined(OVSP4RT_SUPPORT)
+#ifdef VXLAN_OPTION
     if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
       switchlink_delete_tunnel_interface(ifmsg->ifi_index);
       return;
