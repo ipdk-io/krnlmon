@@ -42,7 +42,7 @@ endfunction()
 ################
 
 if(TEST_COVERAGE)
-  set(test_options -T test -T coverage)
+  set(coverage_options -T test -T coverage)
 endif()
 
 set(test_targets
@@ -62,8 +62,10 @@ endif()
 # minimum of configuration.
 add_custom_target(krnlmon-test
   COMMAND
-    ctest ${test_options}
+    ctest
+    -L krnlmon
     --output-on-failure
+    ${coverage_options}
   DEPENDS
     ${test_targets}
   WORKING_DIRECTORY
@@ -80,7 +82,7 @@ add_custom_target(krnlmon-unit-tests
   DEPENDS ${test_targets}
 )
 
-unset(test_options)
+unset(coverage_options)
 unset(test_targets)
 
 ####################
