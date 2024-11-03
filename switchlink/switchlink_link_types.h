@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-present Barefoot Networks, Inc.
- * Copyright 2022-2023 Intel Corporation.
+ * Copyright 2022-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_LINK_H__
-#define __SWITCHLINK_LINK_H__
+#ifndef __SWITCHLINK_LINK_TYPES_H__
+#define __SWITCHLINK_LINK_TYPES_H__
 
 typedef enum {
   SWITCHLINK_INTF_TYPE_NONE,
@@ -47,4 +47,4 @@ typedef enum {
   SWITCHLINK_BOND_MODE_BALANCE_ALB,
 } switchlink_bond_mode_t;
 
-#endif /* __SWITCHLINK_LINK_H__ */
+#endif /* __SWITCHLINK_LINK_TYPES_H__ */
