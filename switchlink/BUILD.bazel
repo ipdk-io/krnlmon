@@ -13,6 +13,23 @@ OVS_DEFINES = select({
     "//conditions:default": [],
 })
 
+cc_library(
+    name = "switchlink",
+    srcs = [
+        ":switchlink_address",
+        ":switchlink_db",
+        ":switchlink_globals",
+        ":switchlink_link",
+        ":switchlink_main",
+        ":switchlink_neigh",
+        ":switchlink_route",
+        ":switchlink_utils",
+    ] + select({
+        "//flags:es2k_target": [":switchlink_validate_driver"],
+        "//conditions:default": [],
+    }),
+)
+
 krnlmon_cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
@@ -64,6 +81,7 @@ krnlmon_cc_library(
     name = "switchlink_defs",
     srcs = ["switchlink_defs.h"],
     deps = [
+        ":switchlink_types",
         "//switchutils:switch_utils",
     ],
 )
@@ -183,6 +201,11 @@ cc_test(
 )
 
 krnlmon_cc_library(
+    name = "switchlink_types",
+    hdrs = ["switchlink_types.h"],
+)
+
+krnlmon_cc_library(
     name = "switchlink_utils",
     srcs = ["switchlink_utils.c"],
     hdrs = ["switchlink_utils.h"],
@@ -197,21 +220,4 @@ krnlmon_cc_library(
     deps = [
         ":switchlink_int",
     ],
-)
-
-cc_library(
-    name = "switchlink",
-    srcs = [
-        ":switchlink_address",
-        ":switchlink_db",
-        ":switchlink_globals",
-        ":switchlink_link",
-        ":switchlink_main",
-        ":switchlink_neigh",
-        ":switchlink_route",
-        ":switchlink_utils",
-    ] + select({
-        "//flags:es2k_target": [":switchlink_validate_driver"],
-        "//conditions:default": [],
-    }),
 )
