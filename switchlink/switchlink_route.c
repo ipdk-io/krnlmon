@@ -20,7 +20,7 @@
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
 
-#include "switchlink.h"
+#include "switchlink_defs.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"

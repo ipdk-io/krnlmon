@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_H__
-#define __SWITCHLINK_H__
+#ifndef __SWITCHLINK_DEFS_H__
+#define __SWITCHLINK_DEFS_H__
 
 #include <netinet/in.h>
 #include <stdlib.h>
@@ -48,4 +48,4 @@ enum switchlink_nhop_using_by {
   SWITCHLINK_NHOP_FROM_ROUTE = 1 << 1,
 };
 
-#endif /* __SWITCHLINK_H__ */
+#endif /* __SWITCHLINK_DEFS_H__ */

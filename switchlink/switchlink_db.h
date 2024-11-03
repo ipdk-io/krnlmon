@@ -21,7 +21,7 @@
 
 #include <stdbool.h>
 
-#include "switchlink.h"
+#include "switchlink_defs.h"
 #include "switchlink_link_types.h"
 
 #define SWITCHLINK_INTERFACE_NAME_LEN_MAX 32

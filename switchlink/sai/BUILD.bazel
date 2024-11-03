@@ -23,7 +23,7 @@ krnlmon_cc_library(
         ":switchlink_init_sai",
         "//switchlink:switchlink_db",
         "//switchlink:switchlink_handlers",
-        "//switchlink:switchlink_types",
+        "//switchlink:switchlink_defs",
     ],
 )
 
@@ -92,7 +92,7 @@ krnlmon_cc_library(
     deps = [
         "//:krnlmon_options",
         "//switchlink:switchlink_db",
-        "//switchlink:switchlink_types",
+        "//switchlink:switchlink_defs",
         "//switchlink:switchlink_utils",
         "//switchsai:saiinternal",
     ],

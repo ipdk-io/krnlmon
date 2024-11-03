@@ -10,7 +10,7 @@ add_library(switchlink_o OBJECT
     switchlink_db.c
     switchlink_db.h
     switchlink_db_int.h
-    switchlink.h
+    switchlink_defs.h
     switchlink_globals.c
     switchlink_globals.h
     switchlink_handlers.h

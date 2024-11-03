@@ -44,9 +44,9 @@ krnlmon_cc_library(
         "switchlink_db_int.h",
     ],
     deps = [
+        ":switchlink_defs",
         ":switchlink_int",
         ":switchlink_link_types",
-        ":switchlink_types",
         "@target_utils",
         "@target_utils//:tommyds",
         "@target_utils//:xxhash",
@@ -57,12 +57,12 @@ krnlmon_cc_library(
     name = "switchlink_globals",
     srcs = ["switchlink_globals.c"],
     hdrs = ["switchlink_globals.h"],
-    deps = [":switchlink_types"],
+    deps = [":switchlink_defs"],
 )
 
 krnlmon_cc_library(
-    name = "switchlink_types",
-    srcs = ["switchlink.h"],  # rename
+    name = "switchlink_defs",
+    srcs = ["switchlink_defs.h"],
     deps = [
         "//switchutils:switch_utils",
     ],
@@ -74,7 +74,7 @@ krnlmon_cc_library(
     linkopts = ["-lnl-3"],
     deps = [
         ":switchlink_db",
-        ":switchlink_types",
+        ":switchlink_defs",
         "//:krnlmon_options",
         "@nl-3",
     ],
@@ -90,11 +90,11 @@ krnlmon_cc_library(
     srcs = ["switchlink_link.c"],
     defines = OVS_DEFINES,
     deps = [
+        ":switchlink_defs",
         ":switchlink_globals",
         ":switchlink_handlers",
         ":switchlink_int",
         ":switchlink_link_types",
-        ":switchlink_types",
         "//:krnlmon_options",
         "//switchutils:switch_log",
     ],
@@ -129,8 +129,8 @@ krnlmon_cc_library(
         "-lpthread",
     ],
     deps = [
+        ":switchlink_defs",
         ":switchlink_int",
-        ":switchlink_types",
         "//switchutils:switch_log",
         "@nl-3",
         "@target_sys",
@@ -141,10 +141,10 @@ krnlmon_cc_library(
     name = "switchlink_neigh",
     srcs = ["switchlink_neigh.c"],
     deps = [
+        ":switchlink_defs",
         ":switchlink_globals",
         ":switchlink_handlers",
         ":switchlink_int",
-        ":switchlink_types",
         "//switchutils:switch_log",
     ],
 )

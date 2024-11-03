@@ -23,7 +23,7 @@
 #include <netlink/netlink.h>
 
 #include "krnlmon_options.h"
-#include "switchlink.h"
+#include "switchlink_defs.h"
 #include "switchlink_globals.h"
 #include "switchlink_handlers.h"
 #include "switchlink_int.h"
