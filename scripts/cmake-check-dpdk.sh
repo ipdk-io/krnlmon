@@ -10,7 +10,7 @@ cmake --build build -j4 --target install
 echo ""
 echo "===== Test DPDK with OVS ====="
 set +e
-(cd build; ctest)
+(cd build; ctest -L krnlmon --output-on-failure)
 
 echo ""
 echo "===== Build DPDK without OVS ====="
@@ -22,4 +22,4 @@ cmake --build build -j4 --target install
 echo ""
 echo "===== Test DPDK without OVS ====="
 set +e
-(cd build; ctest)
+(cd build; ctest -L krnlmon --output-on-failure)
