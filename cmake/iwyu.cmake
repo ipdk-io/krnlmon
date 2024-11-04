@@ -17,6 +17,7 @@
 #   cmake --build build >& iwyu.log
 
 option(IWYU "Run include-what-you-use" OFF)
+mark_as_advanced(IWYU)
 
 if(IWYU)
   find_program(IWYU_PATH NAMES include-what-you-use iwyu)
