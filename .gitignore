@@ -1,12 +1,12 @@
 # Bazel
 /bazel-*
-.bazelrc
 MODULE.bazel
 MODULE.bazel.lock
 
 # CMake
-/build/
-/install/
+build/
+coverage/
+install/
 CMakeUserPresets.json
 
 # VS Code

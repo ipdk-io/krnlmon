@@ -243,9 +243,7 @@ static void process_linkinfo_attr(const struct nlattr* attr,
         break;
       case IFLA_INFO_SLAVE_DATA:
         if (*slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
-#ifdef LAG_OPTION
           *create_lag_member = true;
-#endif
           nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
             process_info_lag_member_data_attr(infoslavedata, attrs);
           }
@@ -277,9 +275,7 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
 
   switchlink_db_interface_info_t intf_info = {0};
   struct link_attrs attrs = {0};
-#ifdef LAG_OPTION
   bool create_lag_member = false;
-#endif
 
   krnlmon_assert((msgtype == RTM_NEWLINK) || (msgtype == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
