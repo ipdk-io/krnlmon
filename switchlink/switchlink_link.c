@@ -198,6 +198,65 @@ static void process_info_lag_member_data_attr(
 
 /*
  * Routine Description:
+ *    Processes the IFLA_LINKINFO attribute.
+ *
+ * Arguments:
+ *    [in] attr - netlink attribute
+ *    [inout] attrs - link attributes
+ *    [out] link_type - link type
+ *    [out] slave_link_type - slave link type
+ *    [out] create_lag_member - flag to create LAG member
+ *
+ * Return Values:
+ *    void
+ */
+static void process_linkinfo_attr(const struct nlattr* attr,
+                                  struct link_attrs* attrs,
+                                  switchlink_link_type_t* link_type,
+                                  switchlink_link_type_t* slave_link_type,
+                                  bool* create_lag_member) {
+  const struct nlattr *linkinfo, *infodata, *infoslavedata;
+  int linkinfo_attr_type;
+  int attrlen = nla_len(attr);
+
+  // IFLA_LINKINFO is a container type
+  nla_for_each_nested(linkinfo, attr, attrlen) {
+    linkinfo_attr_type = nla_type(linkinfo);
+    switch (linkinfo_attr_type) {
+      case IFLA_INFO_KIND:
+        *link_type = get_link_type(nla_get_string(linkinfo));
+        break;
+      case IFLA_INFO_DATA:
+        // IFLA_INFO_DATA is a container type
+        if (*link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
+          nla_for_each_nested(infodata, linkinfo, attrlen) {
+            process_info_data_attr(infodata, attrs);
+          }
+        } else if (*link_type == SWITCHLINK_LINK_TYPE_BOND) {
+          nla_for_each_nested(infodata, linkinfo, attrlen) {
+            process_info_lag_data_attr(infodata, attrs);
+          }
+        }
+        break;
+      case IFLA_INFO_SLAVE_KIND:
+        *slave_link_type = get_link_type(nla_get_string(linkinfo));
+        break;
+      case IFLA_INFO_SLAVE_DATA:
+        if (*slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
+          *create_lag_member = true;
+          nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
+            process_info_lag_member_data_attr(infoslavedata, attrs);
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+/*
+ * Routine Description:
  *    Processes netlink link messages.
  *
  * Arguments:
@@ -209,17 +268,14 @@ static void process_info_lag_member_data_attr(
  */
 void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
   int hdrlen, attrlen;
-  const struct nlattr *attr, *linkinfo, *infodata, *infoslavedata;
+  const struct nlattr* attr;
   const struct ifinfomsg* ifmsg;
   switchlink_link_type_t link_type = SWITCHLINK_LINK_TYPE_NONE;
   switchlink_link_type_t slave_link_type = SWITCHLINK_LINK_TYPE_NONE;
-  int linkinfo_attr_type;
 
   switchlink_db_interface_info_t intf_info = {0};
   struct link_attrs attrs = {0};
-#ifdef LAG_OPTION
   bool create_lag_member = false;
-#endif
 
   krnlmon_assert((msgtype == RTM_NEWLINK) || (msgtype == RTM_DELLINK));
   ifmsg = nlmsg_data(nlmsg);
@@ -247,42 +303,8 @@ void switchlink_process_link_msg(const struct nlmsghdr* nlmsg, int msgtype) {
         krnlmon_log_debug("IFLA Operstate: %d\n", attrs.oper_state);
         break;
       case IFLA_LINKINFO:
-        // IFLA_LINKINFO is a container type
-        nla_for_each_nested(linkinfo, attr, attrlen) {
-          linkinfo_attr_type = nla_type(linkinfo);
-          switch (linkinfo_attr_type) {
-            case IFLA_INFO_KIND:
-              link_type = get_link_type(nla_get_string(linkinfo));
-              break;
-            case IFLA_INFO_DATA:
-              // IFLA_INFO_DATA is a container type
-              if (link_type == SWITCHLINK_LINK_TYPE_VXLAN) {
-                nla_for_each_nested(infodata, linkinfo, attrlen) {
-                  process_info_data_attr(infodata, &attrs);
-                }
-              } else if (link_type == SWITCHLINK_LINK_TYPE_BOND) {
-                nla_for_each_nested(infodata, linkinfo, attrlen) {
-                  process_info_lag_data_attr(infodata, &attrs);
-                }
-              }
-              break;
-            case IFLA_INFO_SLAVE_KIND:
-              slave_link_type = get_link_type(nla_get_string(linkinfo));
-              break;
-            case IFLA_INFO_SLAVE_DATA:
-              if (slave_link_type == SWITCHLINK_LINK_TYPE_BOND) {
-#ifdef LAG_OPTION
-                create_lag_member = true;
-#endif
-                nla_for_each_nested(infoslavedata, linkinfo, attrlen) {
-                  process_info_lag_member_data_attr(infoslavedata, &attrs);
-                }
-              }
-              break;
-            default:
-              break;
-          }
-        }
+        process_linkinfo_attr(attr, &attrs, &link_type, &slave_link_type,
+                              &create_lag_member);
         break;
       case IFLA_ADDRESS:
         // IFLA_ADDRESS for kind "sit" is 4 octets
