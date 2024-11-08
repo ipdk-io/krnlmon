@@ -18,6 +18,9 @@
 #ifndef __SWITCHLINK_DB_INT_H__
 #define __SWITCHLINK_DB_INT_H__
 
+#include <stdint.h>
+
+#include "switchlink_db_types.h"
 #include "tommyds/tommyhashlin.h"
 #include "tommyds/tommylist.h"
 #include "tommyds/tommytrieinp.h"

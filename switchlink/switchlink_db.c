@@ -23,8 +23,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "switchlink.h"
 #include "switchlink_db_int.h"
+#include "switchlink_defs.h"
 #include "switchlink_int.h"
 #include "switchlink_link_types.h"
 #include "xxHash/xxhash.h"

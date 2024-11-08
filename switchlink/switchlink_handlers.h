@@ -23,8 +23,8 @@
 #include <stdint.h>
 
 #include "krnlmon_options.h"
-#include "switchlink/switchlink.h"
 #include "switchlink/switchlink_db.h"
+#include "switchlink/switchlink_defs.h"
 
 extern void switchlink_init_api(void);
 

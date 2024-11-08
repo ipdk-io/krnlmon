@@ -10,7 +10,8 @@ add_library(switchlink_o OBJECT
     switchlink_db.c
     switchlink_db.h
     switchlink_db_int.h
-    switchlink.h
+    switchlink_db_types.h
+    switchlink_defs.h
     switchlink_globals.c
     switchlink_globals.h
     switchlink_handlers.h
@@ -21,6 +22,7 @@ add_library(switchlink_o OBJECT
     switchlink_main.h
     switchlink_neigh.c
     switchlink_route.c
+    switchlink_types.h
     switchlink_utils.c
     switchlink_utils.h
     $<TARGET_OBJECTS:switchlink_sai_o>

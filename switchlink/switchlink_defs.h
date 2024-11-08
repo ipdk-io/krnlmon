@@ -16,36 +16,15 @@
  * limitations under the License.
  */
 
-#ifndef __SWITCHLINK_H__
-#define __SWITCHLINK_H__
+#ifndef __SWITCHLINK_DEFS_H__
+#define __SWITCHLINK_DEFS_H__
 
-#include <netinet/in.h>
 #include <stdlib.h>
 
+#include "switchlink_types.h"
 #include "switchutils/switch_utils.h"
 
 #define switchlink_malloc(x, c) malloc((x) * (c))
 #define switchlink_free(x) free(x)
 
-#define SWITCH_LINK_INVALID_HANDLE 0x0
-
-typedef uint64_t switchlink_handle_t;
-
-typedef uint8_t switchlink_mac_addr_t[6];
-
-typedef struct switchlink_ip_addr_ {
-  uint8_t family;
-  uint8_t prefix_len;
-  union {
-    struct in_addr v4addr;
-    struct in6_addr v6addr;
-  } ip;
-} switchlink_ip_addr_t;
-
-enum switchlink_nhop_using_by {
-  SWITCHLINK_NHOP_FROM_NONE = 0,
-  SWITCHLINK_NHOP_FROM_NEIGHBOR = 1 << 0,
-  SWITCHLINK_NHOP_FROM_ROUTE = 1 << 1,
-};
-
-#endif /* __SWITCHLINK_H__ */
+#endif /* __SWITCHLINK_DEFS_H__ */

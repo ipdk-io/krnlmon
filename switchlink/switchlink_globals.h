@@ -7,7 +7,7 @@
 #ifndef __SWITCHLINK_GLOBALS_H__
 #define __SWITCHLINK_GLOBALS_H__
 
-#include "switchlink.h"
+#include "switchlink_defs.h"
 
 extern switchlink_handle_t g_default_vrf_h;
 extern switchlink_handle_t g_default_bridge_h;

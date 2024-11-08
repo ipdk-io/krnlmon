@@ -36,7 +36,7 @@
 #include <sys/select.h>
 #include <unistd.h>
 
-#include "switchlink.h"
+#include "switchlink_defs.h"
 #include "switchlink_int.h"
 #include "switchutils/switch_log.h"
 

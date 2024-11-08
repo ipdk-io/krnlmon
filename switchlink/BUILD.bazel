@@ -13,6 +13,23 @@ OVS_DEFINES = select({
     "//conditions:default": [],
 })
 
+cc_library(
+    name = "switchlink",
+    srcs = [
+        ":switchlink_address",
+        ":switchlink_db",
+        ":switchlink_globals",
+        ":switchlink_link",
+        ":switchlink_main",
+        ":switchlink_neigh",
+        ":switchlink_route",
+        ":switchlink_utils",
+    ] + select({
+        "//flags:es2k_target": [":switchlink_validate_driver"],
+        "//conditions:default": [],
+    }),
+)
+
 krnlmon_cc_library(
     name = "switchlink_address",
     srcs = ["switchlink_address.c"],
@@ -38,15 +55,14 @@ cc_test(
 
 krnlmon_cc_library(
     name = "switchlink_db",
-    srcs = [
-        "switchlink_db.c",
-        "switchlink_db.h",
-        "switchlink_db_int.h",
-    ],
+    srcs = ["switchlink_db.c"],
+    hdrs = ["switchlink_db.h"],
     deps = [
+        ":switchlink_db_int",
+        ":switchlink_db_types",
+        ":switchlink_defs",
         ":switchlink_int",
         ":switchlink_link_types",
-        ":switchlink_types",
         "@target_utils",
         "@target_utils//:tommyds",
         "@target_utils//:xxhash",
@@ -54,17 +70,38 @@ krnlmon_cc_library(
 )
 
 krnlmon_cc_library(
-    name = "switchlink_globals",
-    srcs = ["switchlink_globals.c"],
-    hdrs = ["switchlink_globals.h"],
-    deps = [":switchlink_types"],
+    name = "switchlink_db_int",
+    hdrs = ["switchlink_db_int.h"],
+    deps = [
+        ":switchlink_db_types",
+        "@target_utils//:tommyds",
+    ],
 )
 
 krnlmon_cc_library(
-    name = "switchlink_types",
-    srcs = ["switchlink.h"],  # rename
+    name = "switchlink_db_types",
+    hdrs = ["switchlink_db_types.h"],
     deps = [
+        ":switchlink_link_types",
+        ":switchlink_types",
+    ],
+)
+
+krnlmon_cc_library(
+    name = "switchlink_defs",
+    hdrs = ["switchlink_defs.h"],
+    deps = [
+        ":switchlink_types",
         "//switchutils:switch_utils",
+    ],
+)
+
+krnlmon_cc_library(
+    name = "switchlink_globals",
+    srcs = ["switchlink_globals.c"],
+    hdrs = ["switchlink_globals.h"],
+    deps = [
+        ":switchlink_defs",
     ],
 )
 
@@ -74,7 +111,7 @@ krnlmon_cc_library(
     linkopts = ["-lnl-3"],
     deps = [
         ":switchlink_db",
-        ":switchlink_types",
+        ":switchlink_defs",
         "//:krnlmon_options",
         "@nl-3",
     ],
@@ -90,11 +127,11 @@ krnlmon_cc_library(
     srcs = ["switchlink_link.c"],
     defines = OVS_DEFINES,
     deps = [
+        ":switchlink_defs",
         ":switchlink_globals",
         ":switchlink_handlers",
         ":switchlink_int",
         ":switchlink_link_types",
-        ":switchlink_types",
         "//:krnlmon_options",
         "//switchutils:switch_log",
     ],
@@ -129,8 +166,8 @@ krnlmon_cc_library(
         "-lpthread",
     ],
     deps = [
+        ":switchlink_defs",
         ":switchlink_int",
-        ":switchlink_types",
         "//switchutils:switch_log",
         "@nl-3",
         "@target_sys",
@@ -141,10 +178,11 @@ krnlmon_cc_library(
     name = "switchlink_neigh",
     srcs = ["switchlink_neigh.c"],
     deps = [
+        ":switchlink_db",
+        ":switchlink_defs",
         ":switchlink_globals",
         ":switchlink_handlers",
         ":switchlink_int",
-        ":switchlink_types",
         "//switchutils:switch_log",
     ],
 )
@@ -183,6 +221,11 @@ cc_test(
 )
 
 krnlmon_cc_library(
+    name = "switchlink_types",
+    hdrs = ["switchlink_types.h"],
+)
+
+krnlmon_cc_library(
     name = "switchlink_utils",
     srcs = ["switchlink_utils.c"],
     hdrs = ["switchlink_utils.h"],
@@ -197,21 +240,4 @@ krnlmon_cc_library(
     deps = [
         ":switchlink_int",
     ],
-)
-
-cc_library(
-    name = "switchlink",
-    srcs = [
-        ":switchlink_address",
-        ":switchlink_db",
-        ":switchlink_globals",
-        ":switchlink_link",
-        ":switchlink_main",
-        ":switchlink_neigh",
-        ":switchlink_route",
-        ":switchlink_utils",
-    ] + select({
-        "//flags:es2k_target": [":switchlink_validate_driver"],
-        "//conditions:default": [],
-    }),
 )
