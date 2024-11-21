@@ -47,6 +47,10 @@ enum handler_type {
   DELETE_INTERFACE = 2,         // switchlink_delete_interface
   CREATE_TUNNEL_INTERFACE = 3,  // switchlink_create_tunnel_interface
   DELETE_TUNNEL_INTERFACE = 4,  // switchlink_delete_tunnel_interface
+  CREATE_LAG = 5,               // switchlink_create_lag
+  DELETE_LAG = 6,               // switchlink_delete_lag
+  CREATE_LAG_MEMBER = 7,        // switchlink_create_lag_member
+  DELETE_LAG_MEMBER = 8,        // switchlink_delete_lag_member
 };
 
 /**
@@ -58,6 +62,8 @@ struct test_results {
     // Parameter values
     switchlink_db_tunnel_interface_info_t tunnel_info;
     switchlink_db_interface_info_t interface_info;
+    switchlink_db_interface_info_t lag_info;
+    switchlink_db_lag_member_info_t lag_member_info;
     uint32_t ifindex;
   };
   // Handler tracking
@@ -73,14 +79,6 @@ std::vector<test_results> results(2);
 //----------------------------------------------------------------------
 // Test doubles (dummy functions)
 //----------------------------------------------------------------------
-
-#ifdef LAG_OPTION
-void switchlink_create_lag(switchlink_db_interface_info_t* lag_info) {}
-void switchlink_delete_lag(uint32_t ifindex) {}
-void switchlink_create_lag_member(
-    switchlink_db_lag_member_info_t* lag_member_info) {}
-void switchlink_delete_lag_member(uint32_t ifindex) {}
-#endif
 
 #if defined(ES2K_TARGET)
 bool switchlink_validate_driver(const char* ifname) { return true; }
@@ -118,6 +116,39 @@ void switchlink_delete_tunnel_interface(uint32_t ifindex) {
   temp.ifindex = ifindex;
   results.push_back(temp);
 }
+
+#ifdef LAG_OPTION
+
+void switchlink_create_lag(switchlink_db_interface_info_t* lag_info) {
+  struct test_results temp = {0};
+  temp.handler = CREATE_LAG;
+  temp.lag_info = *lag_info;
+  results.push_back(temp);
+}
+
+void switchlink_delete_lag(uint32_t ifindex) {
+  struct test_results temp = {0};
+  temp.handler = DELETE_LAG;
+  temp.ifindex = ifindex;
+  results.push_back(temp);
+}
+
+void switchlink_create_lag_member(
+    switchlink_db_lag_member_info_t* lag_member_info) {
+  struct test_results temp = {0};
+  temp.handler = CREATE_LAG_MEMBER;
+  temp.lag_member_info = *lag_member_info;
+  results.push_back(temp);
+}
+
+void switchlink_delete_lag_member(uint32_t ifindex) {
+  struct test_results temp = {0};
+  temp.handler = DELETE_LAG_MEMBER;
+  temp.ifindex = ifindex;
+  results.push_back(temp);
+}
+
+#endif  // LAG_OPTION
 
 // This function is not called by the UUT, but it is referenced by a
 // function in the same source file. We provide a definition to avoid
