@@ -37,7 +37,7 @@ jobs:
   # 1 - dpdk_build_check
   #---------------------------------------------------------------------
   dpdk_build_check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Check out networking-recipe
@@ -83,7 +83,7 @@ jobs:
   # 2 - dpdk_unit_tests
   #---------------------------------------------------------------------
   dpdk_unit_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Check out networking-recipe
@@ -129,7 +129,7 @@ jobs:
   # check_clang_format
   #---------------------------------------------------------------------
   check_clang_format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Check out krnlmon repository
