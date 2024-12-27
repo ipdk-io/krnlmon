@@ -7,7 +7,7 @@
     },
     "configurePresets": [
         {
-            "name": "common-target",
+            "name": "common-presets",
             "description": "Common presets for all targets",
             "hidden": true,
             "generator": "Unix Makefiles",
@@ -23,19 +23,19 @@
             }
         },
         {
-            "name": "base-dpdk-target",
+            "name": "base-dpdk-presets",
             "description": "Base presets for DPDK target",
             "hidden": true,
-            "inherits": ["common-target"],
+            "inherits": ["common-presets"],
             "cacheVariables": {
                 "TDI_TARGET": "dpdk"
             }
         },
         {
-            "name": "base-es2k-target",
+            "name": "base-es2k-presets",
             "description": "Base presets for ES2K target",
             "hidden": true,
-            "inherits": ["common-target"],
+            "inherits": ["common-presets"],
             "cacheVariables": {
                 "TDI_TARGET": "es2k"
             }
@@ -54,6 +54,14 @@
                     "value": "$env{SDE_INSTALL}"
                 }
             }
+        },
+        {
+            "name": "dpdk",
+            "displayName": "Build krnlmon for DPDK",
+            "inherits": [
+                "base-dpdk-presets",
+                "install-path-presets"
+            ]
         }
     ]
 }
