@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Check out networking-recipe
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ipdk-io/networking-recipe
           submodules: recursive
@@ -94,7 +94,7 @@ jobs:
 
     steps:
       - name: Check out krnlmon repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Get list of changed Files
         id: changed
